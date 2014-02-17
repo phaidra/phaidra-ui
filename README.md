@@ -1,4 +1,4 @@
-phaidra-api 
+phaidra-ui 
 ===========
 
 Prerequisities:
@@ -26,9 +26,9 @@ Prerequisities:
 
 * Run:
 
-  $# morbo -w PhaidraAPI -w templates -w public -w lib api.cgi
+  $# morbo -w PhaidraUI -w templates -w public -w lib phaidra-ui.cgi
 
-  [debug] Reading config file "PhaidraAPI.json".
+  [debug] Reading config file "PhaidraUI.json".
 
   Server available at http://127.0.0.1:3000.
 
@@ -38,13 +38,13 @@ Prerequisities:
 	
 	Hypnotoad:
 	
-	/usr/local/bin/hypnotoad api.cgi
+	/usr/local/bin/hypnotoad phaidra-ui.cgi
 
 	or
 		
 	Morbo:
 	
-	env MOJO_REVERSE_PROXY=1 /usr/local/bin/morbo -w PhaidraAPI -w PhaidraAPI.json -w PhaidraAPI.pm -w templates -w public -w lib api.cgi
+	env MOJO_REVERSE_PROXY=1 /usr/local/bin/morbo -w PhaidraUI -w PhaidraUI.json -w PhaidraUI.pm -w templates -w public -w lib phaidra-ui.cgi
 	
 	Apache virtual host conf (among other stuff, eg SSLEngine config):
 	
@@ -60,32 +60,25 @@ Prerequisities:
         ProxyRequests Off
         ProxyPreserveHost On
 
-		# not used
-        #RewriteCond %{HTTPS} =off
-        #RewriteRule . - [E=protocol:http]
-        #RewriteCond %{HTTPS} =on
-        #RewriteRule . - [E=protocol:https]
-        #RewriteRule ^/api/(.*) %{ENV:protocol}://localhost:3000/$1 [P]
+        ProxyPassReverse  / http://localhost:3000/
+        ProxyPassReverse  / https://localhost:3000/
 
-        ProxyPassReverse  /api/ http://localhost:3000/
-        ProxyPassReverse  /api/ https://localhost:3000/
-
-        ProxyPass /api/ http://localhost:3000/ keepalive=On
+        ProxyPass / http://localhost:3000/ keepalive=On
 
         RequestHeader set X-Forwarded-HTTPS "1"
 
-	Hypnotoad config (PhaidraAPI.json):
+	Hypnotoad config (PhaidraUI.json):
 		proxy: 1	
 
 * Apache/CGI
 
-  $# chown apache:apache api.cgi
+  $# chown apache:apache phaidra-ui.cgi
   
-  $# chmod u+x api.cgi
+  $# chmod u+x ui.cgi
 
   Virtual host config:
   
-        ScriptAlias /api my_document_root/api.cgi
+        ScriptAlias / my_document_root/phaidra-ui.cgi
 
         RewriteEngine on
         RewriteCond %{HTTP:Authorization} ^(.+)
