@@ -10,7 +10,7 @@
 	
 	"secret":"changeme",
 	
-    "log_path":"/var/log/phaidra/PhaidraAPI.log",
+    "log_path":"/var/log/phaidra/PhaidraUI.log",
     
     "log_level":"debug",
     
