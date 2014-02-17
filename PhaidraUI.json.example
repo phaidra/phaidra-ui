@@ -1,0 +1,68 @@
+{
+	"hypnotoad": {
+	
+        "listen": ["http://*:3001"],
+        
+        "proxy": 1
+    },
+
+	"mode":"production",
+	
+	"secret":"changeme",
+	
+    "log_path":"/var/log/phaidra/PhaidraUI.log",
+    
+    "log_level":"debug",
+    
+    "validate_uwmetadata":"1",
+      
+    "defaults": {
+    
+    	"metadata_field_language": "de"
+    	        
+	},
+	
+	"directory_class": "Phaidra::Directory::Univie",
+	
+	"directory": {	        
+	
+        "connect_string": "dbi:Oracle:DB",
+        
+        "username": "username",
+        
+        "password": "password",
+        
+        "org_units_languages": ["en","de"],
+        
+        "study_plans_languages": ["de"]
+	}, 
+    
+    "phaidra": {
+    
+    	"baseurl": "phaidra-instance.univie.ac.at",
+    
+    },              
+    
+    "authentication": {
+    
+    	"realm": "PhaidraUI",
+    	
+    	"ldap": {
+    		"server": "",
+    		
+    		"port": "",
+    		
+    		"useridattribute": "",
+    		
+    		"usersearchbase": "",
+    		
+        	"usersearchfilter": "",   
+        			
+    		"userattributes": "",
+    		
+    		"securityprincipal": "",
+    		
+    		"securitycredentials": ""
+    	}
+    }, 
+}
