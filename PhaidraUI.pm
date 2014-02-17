@@ -58,42 +58,18 @@ sub startup {
 	      	#serializer => 'Storable',
     	},
   	});
-  	
-  	# init databases
-=cut  	
-    $self->plugin('database', {
-    	 
-    	databases => {
-        	'db_metadata' => { 
-				dsn      => $config->{phaidra_db}->{dsn},
-                username => $config->{phaidra_db}->{username},
-                password => $config->{phaidra_db}->{password},
-            },
-        },
-    });
-
     
+    # if we are proxied from base_apache/ui eg like
+    # ProxyPass /ui http://localhost:3000/
+    # then we have to add /ui/ to base of every url req url
+    # (set $config->{proxy_path} in config)
     if($config->{proxy_path}){
 	    $self->hook('before_dispatch' => sub {
-		    my $self = shift;
-		    $self->app->log->debug('bef base:'.$self->app->dumper($self->req->url->base->path->parts));
-		    $self->app->log->debug('bef :'.$self->app->dumper($self->req->url->path->parts));
-	      	#my $path = shift @{$self->req->url->path->parts};
-	      	
-	      	#push @{$self->req->url->base->path->parts}, $config->{proxy_path};
-	      	$self->app->log->debug('af base:'.$self->app->dumper($self->req->url->base->path->parts));
-	      	$self->app->log->debug('af:'.$self->app->dumper($self->req->url->path->parts));
+		    my $self = shift;		    
+	      	push @{$self->req->url->base->path->trailing_slash(1)}, $config->{proxy_path};
 	  	});
     }
 
-    $self->hook(before_dispatch => sub {
-	  my $c = shift;
-	  $c->app->log->debug('bef:'.$c->app->dumper($c->req->url->base->path->parts));
-	  push @{$c->req->url->base->path->trailing_slash(1)},
-	    shift @{$c->req->url->path->leading_slash(0)};
-	    $c->app->log->debug('af:'.$c->app->dumper($c->req->url->path->parts));
-	}) if $self->mode eq 'production';
-=cut      
     my $r = $self->routes;
     $r->namespaces(['PhaidraUI::Controller']);
     
