@@ -13,7 +13,7 @@ sub check {
 	unless($self->is_user_authenticated){
 		$self->flash({opensignin => 1});
 		$self->flash({redirect_to => $self->req->url});
-		$self->redirect_to('/portal') and return 0;	
+		$self->redirect_to('/') and return 0;	
 	}
 
     return 1;    
@@ -23,7 +23,7 @@ sub signout {
 	my $self = shift;
 	$self->logout();
 	$self->flash( alerts => [{ type => 'info', msg => 'You have been signed out' }] );
-	$self->redirect_to('/portal');
+	$self->redirect_to('/');
 }
 
 sub signin {
