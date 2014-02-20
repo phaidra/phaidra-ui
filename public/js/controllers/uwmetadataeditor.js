@@ -1,6 +1,5 @@
-var app = angular.module('uwmetadataeditorApp', ['ui.bootstrap', 'ajoslin.promise-tracker', 'metadataService', 'directoryService']);
 
-app.controller('UwmetadataeditorCtrl', function($scope, $location, MetadataService, DirectoryService, promiseTracker) {
+app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectoryService, MetadataService, promiseTracker) {
     
 	$scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
 	// use: <input ng-pattern="regex_identifier" ...
@@ -15,16 +14,12 @@ app.controller('UwmetadataeditorCtrl', function($scope, $location, MetadataServi
 	
     $scope.fields = [];
     $scope.languages = [];
-    $scope.metadata_format_version = "";
+
     $scope.pid = '';
     $scope.alerts = [];        
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
-    };
-    
-    $scope.getMetadataFormatVersion = function() {
-        return $scope.metadata_format_version;
     };
     	
     $scope.getFieldsCount = function() {
@@ -258,48 +253,23 @@ app.controller('UwmetadataeditorCtrl', function($scope, $location, MetadataServi
     		
     	}
     }
-    
-        
-    $scope.save = function() {
-    	var metadata_format_version = 1;
-    	$scope.form_disabled = true;
-    	var promise = MetadataService.saveUwmetadataToObject(metadata_format_version, $scope.pid, $scope.fields)
-    	$scope.loadingTracker.addPromise(promise);
-    	promise.then(
-        	function(response) { 
-        		$scope.alerts = response.data.alerts;
-        		$scope.languages = [];
-        		$scope.fields = [];    			
-        		$scope.metadata_format_version = '';
-        		$scope.form_disabled = false;
-        	}
-        	,function(response) {
-           		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		$scope.form_disabled = false;
-           	}
-        );
-    	        
-    };
+
     
     $scope.resetEditor = function() {
     	$scope.alerts = [];
 		$scope.languages = [];
 		$scope.fields = [];    			
-		$scope.metadata_format_version = '';
     };
     
     $scope.getUwmetadataTree = function(){
-    	var metadata_format_version = 1;
     	$scope.resetEditor();
-        var promise = MetadataService.getUwmetadataTree(metadata_format_version, pid);        
+        var promise = MetadataService.getUwmetadataTree();        
         $scope.loadingTracker.addPromise(promise);
         promise.then(
     		function(response) { 
     			$scope.alerts = response.data.alerts;
     			$scope.languages = response.data.languages;
     			$scope.fields = response.data.tree;    			
-    			$scope.metadata_format_version = metadata_format_version;
     			$scope.load_init();
     		}
     		,function(response) {
@@ -309,16 +279,9 @@ app.controller('UwmetadataeditorCtrl', function($scope, $location, MetadataServi
     	);
     };
     
-    // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
-    $scope.filterHidden = function(e)
-    {
-        return !e.hidden;        
-    };
-    
     $scope.loadObject = function(pid){
-    	var metadata_format_version = 1;
     	$scope.resetEditor();
-    	var promise = MetadataService.getUwmetadataFromObject(metadata_format_version, pid);
+    	var promise = MetadataService.getUwmetadataFromObject(pid);
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
     		function(response) { 
@@ -333,7 +296,35 @@ app.controller('UwmetadataeditorCtrl', function($scope, $location, MetadataServi
            	}
     	);    	
     };
+        
+        
+ $scope.save = function() {
+    	$scope.form_disabled = true;
+    	var promise = MetadataService.saveUwmetadataToObject($scope.pid, $scope.fields)
+    	$scope.loadingTracker.addPromise(promise);
+    	promise.then(
+        	function(response) { 
+        		$scope.alerts = response.data.alerts;
+        		$scope.languages = [];
+        		$scope.fields = [];    			
+        		$scope.form_disabled = false;
+        	}
+        	,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		$scope.form_disabled = false;
+           	}
+        );
+    	        
+    };
     
+    // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
+    $scope.filterHidden = function(e)
+    {
+        return !e.hidden;        
+    };
+    
+
     $scope.canDelete = function(child){
     	var a = $scope.getContainingArray(this);  
     	var cnt = 0;

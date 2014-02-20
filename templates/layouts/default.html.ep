@@ -12,8 +12,11 @@
   	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     
+    <% if($config->{proxy_path}){ %>
     <base href="<%= url_for->path('/'.$config->{proxy_path})->to_abs %>">
-    
+    <% }else{ %>
+    <base href="<%= url_for->path('/')->to_abs %>">
+    <% } %>
   	<title><%= $title %></title>
   	
   	<link rel="ICON" href="<%= url_for '/img/favicon.ico' %>" type="image/x-icon" />
@@ -62,15 +65,16 @@
   	<!-- Custom Phaidra scripts -->
   	<script type="text/javascript" src="<%= url_for '/js/services/base64.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/directory.js' %>"></script>
-  	<script type="text/javascript" src="<%= url_for '/js/controllers/portal.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
+  	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
   	
   	<!-- Custom Phaidra CSS --> 
-  	<link href="<%= url_for '/css/portal.css' %>" rel="stylesheet">
+  	<link href="<%= url_for '/css/frontend.css' %>" rel="stylesheet">
   	<link href="<%= url_for '/css/main.css' %>" rel="stylesheet">
   	
-  	
+  	<%= content_for 'header' %>
   </head>	
-  <body data-ng-app="portalApp" data-ng-controller="PortalCtrl" data-ng-init="init()">
+  <body data-ng-app="frontendApp" data-ng-controller="FrontendCtrl" data-ng-init="init()">
   
   	<!--[if lt IE 7]>
       <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a>.</p>
@@ -104,16 +108,19 @@
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
       
+      <% if (is_user_authenticated) { %>
       <ul class="nav navbar-nav">
         
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="/uwmetadataeditor_full">UWMetadata</a></li>
+            <li><a href="/uwmetadataeditor">UWMetadata</a></li>
             <li class="divider"></li>
           </ul>
         </li>
+        
       </ul>
+      <% } %>
       
       <ul class="nav navbar-right">      
       	<% if (is_user_authenticated) { %>
@@ -127,6 +134,9 @@
       	<span class="navbar-text">Signed in as <%= current_user->{firstname} %> <%= current_user->{lastname} %></span>
       </ul>
       <% } %>
+      <ul class="nav navbar-right">
+      <img class="load-spinner" ng-show="loadingTracker.active()" src="../img/ajax-loader.gif">
+      </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
@@ -139,15 +149,10 @@
 
   	
   	<footer class="footer">  	
-  		<div class="container">
-  			<p>
-			Code licensed under
-			<a href="https://github.com/phaidra/phaidra-api/blob/master/LICENSE">Apache License</a>			
-			</p>
-			<p>
-				<a href="https://github.com/phaidra/phaidra-api/issues?state=open">Issues</a>
-			</p>
-			<p><a href="https://github.com/phaidra/phaidra-api" class="btn btn-default"><i class="glyphicon icon-github"></i>  Code on Github</a></p>
+  		<div class="container-fluid">
+                  <div class="row">
+                          <div class="col-md-3"><a href="https://github.com/phaidra/phaidra-api"><i class="glyphicon icon-github"></i> Code</a> licensed under <a href="https://github.com/phaidra/phaidra-api/blob/master/LICENSE">Apache License</a>. <a href="https://github.com/phaidra/phaidra-api/issues?state=open">Issues</a></div></div>                          
+                  </div>                  
   		</div>
   	</footer>
   </body>

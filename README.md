@@ -14,6 +14,8 @@ Prerequisities:
   /usr/local/bin/cpanm Mojolicious::Plugin::CHI
   
   /usr/local/bin/cpanm Mojolicious::Plugin::I18N
+
+  /usr/local/bin/cpanm Mojolicious::Plugin::Session
   
   /usr/local/bin/cpanm Mojolicious::Plugin::Authentication
   
