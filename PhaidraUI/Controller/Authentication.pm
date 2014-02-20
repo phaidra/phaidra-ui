@@ -45,6 +45,8 @@ sub signin {
     
     $self->authenticate($username, $password);
     
+    $self->stash('mongo-session')->data(cred => { username => $username, password => $password });
+    
     my $res = $self->stash('phaidra_auth_result');
         
     $self->render(json => { alerts => $res->{alerts}} , status => $res->{status}) ;    

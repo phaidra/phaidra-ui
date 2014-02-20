@@ -1,6 +1,32 @@
-% layout 'uwmetadataeditor', title => 'Metadataeditor';
+% layout 'default', title => 'Metadataeditor';
 
-	<div class="container uwmetadataeditor_full" role="main" >
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/uwmetadataeditor.js' %>"></script>
+   <link href="<%= url_for '/css/uwmetadataeditor.css' %>" rel="stylesheet">
+  
+    <script type="text/javascript">
+            $(document).ready(function(){
+                
+				$('#resetEditor').click(function(){
+					var app = document.getElementById('UwmetadataeditorCtrl');
+					var scope = angular.element(app).scope();
+					scope.$apply(function() {
+						scope.resetEditor();
+					});     
+				});
+				
+				$('.datepicker').datepicker();
+                
+            });
+        </script>
+        
+% end
+
+
+<!--<body data-ng-app="uwmetadataeditorApp" data-ng-controller="UwmetadataeditorCtrl" data-ng-init="init()">-->
+
+	<div class="container uwmetadataeditor_full" role="main" data-ng-controller="UwmetadataeditorCtrl"  data-ng-init="init()">
 
 		<nav id="control-panel" class="navbar navbar-default" role="navigation">
 			<div class="navbar-header">
@@ -21,8 +47,6 @@
 					     <button ng-disabled="form_disabled" data-ng-click="loadObject(pid)" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-open"></span></button>				    
 					</span>
 			      </div>
-			      
-			      <p class="navbar-text" data-ng-show="getMetadataFormatVersion()">Metadata format version: {{getMetadataFormatVersion()}}</p>
 			      
 			      <div class="navbar-form navbar-right" ng-if="fields">
 				   <button ng-disabled="form.$invalid || form_disabled" data-ng-click="save()" class="btn btn-success navbar-left"><span class="glyphicon glyphicon-save"></span> Save</button>

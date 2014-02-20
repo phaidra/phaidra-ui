@@ -1,5 +1,8 @@
 {
-	"hypnotoad": {
+
+    "installation_id": "nice_n_unique",
+
+    "hypnotoad": {
 	
         "listen": ["http://*:3001"],
         
@@ -39,7 +42,8 @@
     
     "phaidra": {
     
-    	"baseurl": "phaidra-instance.univie.ac.at",
+    	"apibaseurl": "services.phaidra-instance.univie.ac.at",
+	"metadata_format_version": "1"
     
     },              
     

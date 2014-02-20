@@ -1,4 +1,4 @@
-var app = angular.module('portalApp', ['ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService']);
+var app = angular.module('frontendApp', ['ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService', 'metadataService']);
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, promiseTracker) {
 		
@@ -6,7 +6,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
 	$scope.alerts = [];   
 	
 	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker('loadingTrackerPortal');
+	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
 	
 	$scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
@@ -35,6 +35,8 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
     			var red = $('#signin').attr('data-redirect');
     			if(red){
     				window.location = red;
+    			}else{
+				window.location.reload();
     			}
     		}
     		,function(response) {
@@ -54,10 +56,10 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
 	};
 };
 
-app.controller('PortalCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker) {
+app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker) {
     
 	// we will use this to track running ajax requests to show spinner	
-	$scope.loadingTracker = promiseTracker.register('loadingTrackerPortal');
+	$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
 	
     $scope.alerts = [];        
     
