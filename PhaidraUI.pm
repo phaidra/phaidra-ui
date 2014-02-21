@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious';
 use Mojo::Log;
 use Mojolicious::Plugin::I18N;
 use Mojolicious::Plugin::Authentication;
+use Mojolicious::Plugin::Session;
 use Mojo::Loader;
 use lib "lib/phaidra_directory";
 use lib "lib/phaidra_binding";
@@ -51,7 +52,7 @@ sub startup {
     $self->plugin(
         session => {
             stash_key     => 'mongo-session',
-	    	store  => PhaidraUI::Model::Session->new( mango => $self->mango ),              
+	    	store  => PhaidraUI::Model::Session->new( mango => $self->mango, 'log' => $self->log ),              
             expires_delta => 7200, #2hrs
 	    	ip_match      => 1
         }
