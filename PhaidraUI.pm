@@ -10,7 +10,15 @@ use Mojolicious::Plugin::Session;
 use Mojo::Loader;
 use lib "lib/phaidra_directory";
 use lib "lib/phaidra_binding";
-use PhaidraUI::Model::Session;
+use PhaidraUI::Model::SessionStore;
+use Sereal::Encoder qw(encode_sereal);
+use Sereal::Decoder qw(decode_sereal);
+use Crypt::CBC              ();
+use Crypt::Rijndael         ();
+use Crypt::URandom          (qw/urandom/);
+use Digest::SHA             (qw/hmac_sha256/);
+use Math::Random::ISAAC::XS ();
+use MIME::Base64 3.12 (qw/encode_base64url decode_base64url/);
 
 # This method will run once at server start
 sub startup {
@@ -49,18 +57,94 @@ sub startup {
 	
     # we might possibly save a lot of data to session 
     # so we are not going to use cookies, but a database instead
+
     $self->plugin(
         session => {
-            stash_key     => 'mongo-session',
-	    	store  => PhaidraUI::Model::Session->new( mango => $self->mango, 'log' => $self->log ),              
-            expires_delta => 7200, #2hrs
+            stash_key     => 'mojox-session',
+	    	store  => PhaidraUI::Model::SessionStore->new( 
+	    		mango => $self->mango, 
+	    		'log' => $self->log 
+	    	),              
+	    	transport => MojoX::Session::Transport::Cookie->new(name => 'b_'.$config->{installation_id}),
+            expires_delta => $config->{session_expiration}, 
 	    	ip_match      => 1
         }
     );
+       
+	$self->hook('before_dispatch' => sub {
+		my $self = shift;		  
+		
+		my $session = $self->stash('mojox-session');
+		$session->load;
+		if($session->sid){
+			# we need mojox-session only for signed-in users
+			if($self->signature_exists){
+				$session->extend_expires;
+				$session->flush;
+			}else{
+				# this will set expire on cookie as well as in store
+				$session->expire;							
+	      		$session->flush;	
+			}
+		}else{
+			if($self->signature_exists){
+				$session->create;
+			}
+		}
+      	
+	});
+	    
+	$self->sessions->default_expiration($config->{session_expiration});
+	# 0 if the ui is not running on https, otherwise the cookies won't be sent and session won't work
+	#$self->sessions->secure($config->{secure_cookies}); 
+	$self->sessions->cookie_name('a_'.$config->{installation_id});
+        
+    $self->helper(save_ba => sub {
+    	my $self = shift;
+		my $u = shift;
+		my $p = shift;
+		
+		my $ciphertext;
+		
+		my $session = $self->stash('mojox-session');
+		$session->load;
+		unless($session->sid){		
+			$session->create;		
+		}	
+		my $ba = encode_sereal({ username => $u, password => $p });  	
+	    my $salt = Math::Random::ISAAC::XS->new( map { unpack( "N", urandom(4) ) } 1 .. 256 )->irand();
+	    my $key = hmac_sha256( $salt, $self->app->config->{enc_key} );
+	    my $cbc = Crypt::CBC->new( -key => $key, -cipher => 'Rijndael' );
+	    
+	    eval {
+	        $ciphertext = encode_base64url( $cbc->encrypt( $ba ) );      
+	    };
+	    $self->app->log->error("Encoding error: $@") if $@;
+		$session->data(ba => $ciphertext, salt => $salt);
+    });
+    
+    $self->helper(load_ba => sub {
+    	my $self = shift;
+    	
+    	my $session = $self->stash('mojox-session');
+		$session->load;
+		unless($session->sid){
+			return undef;
+		}
+		
+		my $salt = $session->data('salt');
+		my $ciphertext = $session->data('ba');		
+	    my $key = hmac_sha256( $salt, $self->app->config->{enc_key} );	
+	    my $cbc = Crypt::CBC->new( -key => $key, -cipher => 'Rijndael' );
+	    my $data;
+	    eval {  
+	    	$data = decode_sereal($cbc->decrypt( decode_base64url($ciphertext) ))	    	
+	   	};
+	    $self->app->log->error("Decoding error: $@") if $@;
+	
+	    return $data;
 
-	$self->sessions->default_expiration(7200); # 2hrs 
-	$self->sessions->secure(1);
-	$self->sessions->cookie_name('phaidra_'.$config->{installation_id});
+    });	
         
   	# init I18N
   	$self->plugin(charset => {charset => 'utf8'});

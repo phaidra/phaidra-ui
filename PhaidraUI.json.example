@@ -13,6 +13,12 @@
 	
 	"secret":"changeme",
 	
+	"enc_key":"changeme",
+	
+	"session_expiration":"7200",
+	
+	"secure_cookies":"1",
+	
     "log_path":"/var/log/phaidra/PhaidraUI.log",
     
     "log_level":"debug",
