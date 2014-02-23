@@ -70,7 +70,7 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     $scope.signin_open = function () {
 
     	var modalInstance = $modal.open({
-            templateUrl: $('head base').attr('href')+'/views/partials/loginform.html',
+            templateUrl: $('head base').attr('href')+'views/partials/loginform.html',
             controller: ModalInstanceCtrl
     	});
     };

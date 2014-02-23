@@ -1,7 +1,7 @@
 
-/* The fixed navbar will overlay your other content, unless you add padding to the bottom of the <body>.  */
+/* The fixed navbar will overlay your other content, unless you add padding to the bottom of the <body>.  
 body { padding-top: 70px; }
-
+*/
 #portal
 {
 	font-size: 1.3em;

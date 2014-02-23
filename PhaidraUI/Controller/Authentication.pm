@@ -43,9 +43,17 @@ sub signin {
     my ($method, $str) = split(/ /,$auth_header);
     my ($username, $password) = split(/:/, b($str)->b64_decode);
     
-    $self->authenticate($username, $password);
+    my $authres = $self->authenticate($username, $password);
     
-    $self->stash('mongo-session')->data(cred => { username => $username, password => $password });
+    $self->app->log->info("User $username ". ($authres ? "successfuly authenticated" : " not authenticated"));
+    $self->app->log->info("Current user: ".$self->app->dumper($self->current_user));
+    
+    my $session = $self->stash('mojox-session');
+	$session->load;
+	unless($session->sid){		
+		$session->create;		
+	}	
+	$self->save_ba($username, $password);
     
     my $res = $self->stash('phaidra_auth_result');
         

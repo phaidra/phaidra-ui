@@ -89,6 +89,10 @@ strong {
     min-width: 315px;
 }
 
+.uwmetadataeditor_full .alert {
+	width: 100%;
+}
+
 .uwmetadataeditor_full input.ng-invalid.ng-dirty {
     background-color: #FA787E;
 }

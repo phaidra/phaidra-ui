@@ -548,10 +548,10 @@ app.directive('phaidraDuration', function() {
           restrict: 'E',
           link: link,
           replace: true,
-          templateUrl: $('head base').attr('href')+'/views/directives/duration.html',
+          templateUrl: $('head base').attr('href')+'views/directives/duration.html',
           scope: {
         	  duration: '=duration'
-            },
+            }
         };
 });
 
@@ -604,7 +604,7 @@ app.directive('phaidraHelp', function($http, $timeout) {
 				 
 		          var promise = $http({
 			          method  : 'GET',
-			          url     : $('head base').attr('href')+'/help/tooltip',
+			          url     : $('head base').attr('href')+'help/tooltip',
 			          params  : { id: attr['phaidraHelpId']  }
 			      });        
 			      scope.loadingTracker.addPromise(promise);
