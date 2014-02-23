@@ -5,7 +5,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectorySer
 	// use: <input ng-pattern="regex_identifier" ...
 	
 	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker.register('loadingTracker');
+	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
 	
 	$scope.default_helptext = 'Loading tooltip content...';
 	
@@ -604,7 +604,7 @@ app.directive('phaidraHelp', function($http, $timeout) {
 				 
 		          var promise = $http({
 			          method  : 'GET',
-			          url     : $('head base').attr('href')+'help/tooltip',
+			          url     : $('head base').attr('href')+'proxy/get_help_tooltip',
 			          params  : { id: attr['phaidraHelpId']  }
 			      });        
 			      scope.loadingTracker.addPromise(promise);
