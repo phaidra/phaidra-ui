@@ -14,23 +14,23 @@ angular.module('metadataService', [])
 		getUwmetadataTree: function() {
 	        return $http({
 	            method  : 'GET',
-	            url     : $('head base').attr('href')+'uwmetadata/tree'
+	            url     : $('head base').attr('href')+'proxy/get_uwmetadata_tree'
 	        });	        
-	   },
+	    },
 		
 		getLanguages: function() {
 	        return $http({
 	            method  : 'GET',
-	            url     : $('head base').attr('href')+'metadata/languages'
+	            url     : $('head base').attr('href')+'proxy/get_uwmetadata_languages'
 	        });	        
-	   },
+	    },
 	   
-	   saveUwmetadataToObject: function(pid, uwmetadata){
+	    saveUwmetadataToObject: function(pid, uwmetadata){
 		   return $http({
 			   method  : 'POST',
-	           url     : $('head base').attr('href')+'object/'+pid+'/uwmetadata',
-	           data    : { uwmetadata: uwmetadata}
+	           url     : $('head base').attr('href')+'proxy/save_object_uwmetadata/'+pid,
+	           data    : { uwmetadata: uwmetadata }
 		   });	        
-	   }
+	    }
 	}
 });

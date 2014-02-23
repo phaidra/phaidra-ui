@@ -180,11 +180,19 @@ sub startup {
     $r->route('signout') 			->via('get')   ->to('authentication#signout');
     $r->route('loginform') 			->via('get')   ->to('authentication#loginform');
     
+    $r->route('proxy/get_uwmetadata_tree') ->via('get')   ->to('proxy#get_uwmetadata_tree');
+    $r->route('proxy/get_uwmetadata_languages') ->via('get')   ->to('proxy#get_uwmetadata_languages');
+    $r->route('proxy/get_help_tooltip') ->via('get')   ->to('proxy#get_help_tooltip');
+    $r->route('proxy/get_directory_get_org_units') ->via('get')   ->to('proxy#get_directory_get_org_units');
+    $r->route('proxy/get_directory_get_study') ->via('get')   ->to('proxy#get_directory_get_study');
+    $r->route('proxy/get_directory_get_study_name') ->via('get')   ->to('proxy#get_directory_get_study_name');        
+    
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
     $auth->route('uwmetadataeditor') ->via('get')  ->to('frontend#uwmetadataeditor'); 
     
     $auth->route('proxy/get_object_uwmetadata/:pid') ->via('get')   ->to('proxy#get_object_uwmetadata');
+    $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');
     
     return $self;
 }
