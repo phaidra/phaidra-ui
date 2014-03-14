@@ -1,4 +1,4 @@
-package PhaidraUI::Model::SessionStore;
+package PhaidraUI::Model::Session::Store::Mongo;
 
 use strict;
 use warnings;

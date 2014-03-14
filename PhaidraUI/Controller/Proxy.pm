@@ -13,16 +13,16 @@ sub get_object_uwmetadata {
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
-	$url->scheme('https');
-	my $ba = $self->load_ba;	
-	$url->userinfo($ba->{username}.":".$ba->{password});
+	$url->scheme('https');		
 	$url->host($self->app->config->{phaidra}->{apibaseurl});
 	$url->path("/object/$pid/uwmetadata");	
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
-		
+	
+	my $token = $self->load_token;
+	
 	# we have to use the useragent from the controller, otherwise the async call does not work
 	# (probably needs ioloop etc)
-  	$self->ua->get($url => sub { 	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
   		my ($ua, $tx) = @_;
 
 	  	if (my $res = $tx->success) {
@@ -51,13 +51,13 @@ sub save_object_uwmetadata {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');
-	my $ba = $self->load_ba;	
-	$url->userinfo($ba->{username}.":".$ba->{password});
 	$url->host($self->app->config->{phaidra}->{apibaseurl});
 	$url->path("/object/$pid/uwmetadata");	
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
-  	$self->ua->post($url,
+	my $token = $self->load_token;
+	
+  	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
   		json => $self->req->json,
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
@@ -195,8 +195,6 @@ sub get_directory_get_study {
 	my $spl = $self->param('spl');
 	my @ids = $self->param('ids');
 	my $values_namespace = $self->param('values_namespace');
-	
-	#$self->app->log->debug($self->app->dumper(\@ids));
 	
 	my $res = { alerts => [], status => 200 };
 	

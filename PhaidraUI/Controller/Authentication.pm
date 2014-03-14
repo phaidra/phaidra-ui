@@ -19,13 +19,6 @@ sub check {
     return 1;    
 }
 
-sub signout {
-	my $self = shift;
-	$self->logout();
-	$self->flash( alerts => [{ type => 'info', msg => 'You have been signed out' }] );
-	$self->redirect_to('/');
-}
-
 sub signin {
 	
 	my $self = shift;
@@ -43,21 +36,51 @@ sub signin {
     my ($method, $str) = split(/ /,$auth_header);
     my ($username, $password) = split(/:/, b($str)->b64_decode);
     
-    my $authres = $self->authenticate($username, $password);
-    
-    $self->app->log->info("User $username ". ($authres ? "successfuly authenticated" : " not authenticated"));
-    $self->app->log->info("Current user: ".$self->app->dumper($self->current_user));
-    
-    my $session = $self->stash('mojox-session');
-	$session->load;
-	unless($session->sid){		
-		$session->create;		
-	}	
-	$self->save_ba($username, $password);
+    $self->authenticate($username, $password);    
     
     my $res = $self->stash('phaidra_auth_result');
         
+    # set token cookie, we are currently not using this, but if js would like to access api directly it needs the token
+    $self->cookie($self->app->config->{authentication}->{token_cookie} => $res->{token});
+    
+    $self->app->log->info("Current user: ".$self->app->dumper($self->current_user));
     $self->render(json => { alerts => $res->{alerts}} , status => $res->{status}) ;    
 }
+
+sub signout {
+	my $self = shift;
+	
+	my $url = Mojo::URL->new;
+	$url->scheme('https');		
+	$url->host($self->app->config->{phaidra}->{apibaseurl});
+	$url->path("/signout");	
+			
+	my $token = $self->load_token;
+				
+	my $tx = $self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token}); 
+		
+	if (my $res = $tx->success) {			  		
+		$self->app->log->info("User ".$self->current_user->{username}." successfuly signed out");
+		$self->stash({phaidra_auth_result => { alerts => [{ type => 'success', msg => "You have been signed out" }], stauts  =>  200 }});
+	}else {
+		my ($err, $code) = $tx->error;
+			 	
+		$self->app->log->info("Sign out failed for user ".$self->current_user->{username});
+	 	if($tx->res->json){	  
+		  	if(exists($tx->res->json->{alerts})) {
+		  		$self->app->log->error($self->app->dumper($tx->res->json->{alerts}));
+		  		$self->stash({phaidra_auth_result => { alerts => $tx->res->json->{alerts}, stauts  =>  $code ? $code : 500 }});						 	
+			}else{
+				$self->app->log->error($err);
+			 	$self->stash({phaidra_auth_result => { alerts => [{ type => 'danger', msg => $err }], stauts  =>  $code ? $code : 500 }});						  	
+			}
+		}		
+	}
+
+	$self->logout();
+
+	$self->redirect_to('/');
+}
+
 
 1;

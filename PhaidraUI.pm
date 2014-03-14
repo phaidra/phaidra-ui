@@ -10,15 +10,7 @@ use Mojolicious::Plugin::Session;
 use Mojo::Loader;
 use lib "lib/phaidra_directory";
 use lib "lib/phaidra_binding";
-use PhaidraUI::Model::SessionStore;
-use Sereal::Encoder qw(encode_sereal);
-use Sereal::Decoder qw(decode_sereal);
-use Crypt::CBC              ();
-use Crypt::Rijndael         ();
-use Crypt::URandom          (qw/urandom/);
-use Digest::SHA             (qw/hmac_sha256/);
-use Math::Random::ISAAC::XS ();
-use MIME::Base64 3.12 (qw/encode_base64url decode_base64url/);
+use PhaidraUI::Model::Session::Store::Mongo;
 
 # This method will run once at server start
 sub startup {
@@ -49,7 +41,46 @@ sub startup {
 		validate_user => sub {
 			my ($self, $username, $password, $extradata) = @_;
 			$self->app->log->info("Validating user: ".$username);
-			return $self->directory->authenticate($self, $username, $password, $extradata);
+			
+			my $url = Mojo::URL->new;
+			$url->scheme('https');		
+			$url->userinfo($username.":".$password);
+			$url->host($self->app->config->{phaidra}->{apibaseurl});
+			$url->path("/signin");	
+				
+		  	my $tx = $self->ua->get($url); 
+		
+		 	if (my $res = $tx->success) {
+			  		
+			  		# save token
+			  		my $token = $tx->res->cookie($self->app->config->{authentication}->{token_cookie})->value;	
+  		
+			  		my $session = $self->stash('mojox-session');
+					$session->load;
+					unless($session->sid){		
+						$session->create;		
+					}	
+					$self->save_token($token);
+			  		
+			  		$self->app->log->info("User $username successfuly authenticated");
+			  		$self->stash({phaidra_auth_result => { token => $token , alerts => $tx->res->json->{alerts}, stauts  =>  200 }});
+			  		
+			  		return $username;
+			 }else {
+				 	my ($err, $code) = $tx->error;
+				 	
+				 	$self->app->log->info("Authentication failed for user $username");
+				 	if($tx->res->json){	  
+					  	if(exists($tx->res->json->{alerts})) {
+					  		$self->stash({phaidra_auth_result => { alerts => $tx->res->json->{alerts}, stauts  =>  $code ? $code : 500 }});						 	
+						 }else{
+						 	$self->stash({phaidra_auth_result => { alerts => [{ type => 'danger', msg => $err }], stauts  =>  $code ? $code : 500 }});						  	
+						 }
+				 	}
+				 	
+				 	return undef;
+			}				
+			
 		},
 	});
 	
@@ -57,11 +88,10 @@ sub startup {
 	
     # we might possibly save a lot of data to session 
     # so we are not going to use cookies, but a database instead
-
     $self->plugin(
         session => {
             stash_key     => 'mojox-session',
-	    	store  => PhaidraUI::Model::SessionStore->new( 
+	    	store  => PhaidraUI::Model::Session::Store::Mongo->new( 
 	    		mango => $self->mango, 
 	    		'log' => $self->log 
 	    	),              
@@ -96,34 +126,23 @@ sub startup {
 	    
 	$self->sessions->default_expiration($config->{session_expiration});
 	# 0 if the ui is not running on https, otherwise the cookies won't be sent and session won't work
-	#$self->sessions->secure($config->{secure_cookies}); 
+	$self->sessions->secure($config->{secure_cookies}); 
 	$self->sessions->cookie_name('a_'.$config->{installation_id});
-        
-    $self->helper(save_ba => sub {
+                      
+    $self->helper(save_token => sub {
     	my $self = shift;
-		my $u = shift;
-		my $p = shift;
-		
-		my $ciphertext;
+		my $token = shift;
 		
 		my $session = $self->stash('mojox-session');
 		$session->load;
 		unless($session->sid){		
 			$session->create;		
 		}	
-		my $ba = encode_sereal({ username => $u, password => $p });  	
-	    my $salt = Math::Random::ISAAC::XS->new( map { unpack( "N", urandom(4) ) } 1 .. 256 )->irand();
-	    my $key = hmac_sha256( $salt, $self->app->config->{enc_key} );
-	    my $cbc = Crypt::CBC->new( -key => $key, -cipher => 'Rijndael' );
-	    
-	    eval {
-	        $ciphertext = encode_base64url( $cbc->encrypt( $ba ) );      
-	    };
-	    $self->app->log->error("Encoding error: $@") if $@;
-		$session->data(ba => $ciphertext, salt => $salt);
+		
+		$session->data(token => $token);
     });
     
-    $self->helper(load_ba => sub {
+    $self->helper(load_token => sub {
     	my $self = shift;
     	
     	my $session = $self->stash('mojox-session');
@@ -132,20 +151,9 @@ sub startup {
 			return undef;
 		}
 		
-		my $salt = $session->data('salt');
-		my $ciphertext = $session->data('ba');		
-	    my $key = hmac_sha256( $salt, $self->app->config->{enc_key} );	
-	    my $cbc = Crypt::CBC->new( -key => $key, -cipher => 'Rijndael' );
-	    my $data;
-	    eval {  
-	    	$data = decode_sereal($cbc->decrypt( decode_base64url($ciphertext) ))	    	
-	   	};
-	    $self->app->log->error("Decoding error: $@") if $@;
-	
-	    return $data;
-
-    });	
-        
+		return $session->data('token');		
+    });	 
+           
   	# init I18N
   	$self->plugin(charset => {charset => 'utf8'});
   	$self->plugin(I18N => {namespace => 'PhaidraUI::I18N', support_url_langs => [qw(en de it sr)]});
