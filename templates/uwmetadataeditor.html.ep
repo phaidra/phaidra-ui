@@ -26,37 +26,33 @@
 
 <!--<body data-ng-app="uwmetadataeditorApp" data-ng-controller="UwmetadataeditorCtrl" data-ng-init="init()">-->
 
-	<div class="container uwmetadataeditor_full" role="main" data-ng-controller="UwmetadataeditorCtrl"  data-ng-init="init()">
+	<%# template for 'save as..' modal %>
+	<script type="text/ng-template" id="save_template_modal.html">
+        <div class="modal-header">
+            <h3>New template title</h3>
+        </div>
+        <div class="modal-body">
+	        <div class="form-group">
+			    <div class="col-sm-10">
+			    	<input class="form-control" placeholder="Untitled" type="text" data-ng-model="newtemplatetitle.value"></input>
+			    </div>        
+			</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
 
-		<nav id="control-panel" class="navbar navbar-default" role="navigation">
-			<div class="navbar-header">
-			    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-			      <span class="sr-only">Toggle navigation</span>
-			      <span class="icon-bar"></span>
-			      <span class="icon-bar"></span>
-			      <span class="icon-bar"></span>
-			    </button>
+	<div class="container uwmetadataeditor_full" role="main" data-ng-controller="UwmetadataeditorCtrl"  data-ng-init="init('<%= $init_data %>')">
 
-		   	</div>
-
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			      <div class="navbar-form input-group load-pid navbar-left">
-			        <input id="pid" ng-pattern="regex_pid" class="form-control" placeholder="load pid" type="text" data-ng-model="pid"></input>
-			      	<span class="input-group-btn">
-					     <button ng-disabled="form_disabled" data-ng-click="loadObject(pid)" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-open"></span></button>				    
-					</span>
-			      </div>
-			      
-			      <div class="navbar-form navbar-right" ng-if="fields">
-				   <button ng-disabled="form.$invalid || form_disabled" data-ng-click="save()" class="btn btn-success navbar-left"><span class="glyphicon glyphicon-save"></span> Save</button>
-				  </div>
-				  
-			      
-	    	</div>
+		% if ($uwmetadataeditor_mode eq 'object') {
+			%= include 'uwmetadataeditor/nav/object_mode'
+		% }
 		
-		</nav>		
-		
+		% if ($uwmetadataeditor_mode eq 'template'){		
+			%= include 'uwmetadataeditor/nav/template_mode'
+		% }
 		
 		<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
 		

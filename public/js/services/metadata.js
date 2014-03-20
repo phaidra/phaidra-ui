@@ -31,6 +31,36 @@ angular.module('metadataService', [])
 	           url     : $('head base').attr('href')+'proxy/save_object_uwmetadata/'+pid,
 	           data    : { uwmetadata: uwmetadata }
 		   });	        
-	    }
+	    },
+
+	    saveTemplateAs: function(title, uwmetadata){
+		   return $http({
+			   method  : 'PUT',
+	           url     : $('head base').attr('href')+'template',
+	           data    : { title: title, uwmetadata: uwmetadata }
+		   });	        
+	    },
+
+	    saveTemplate: function(tid, uwmetadata){
+	    	return $http({
+	    		method  : 'POST',
+	    		url     : $('head base').attr('href')+'template/'+tid,
+	    		data    : { uwmetadata: uwmetadata }
+	    	});	        
+	    },
+	    
+		loadTemplate: function(tid){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'template/'+tid
+			});	        
+	    },
+	    
+		getTemplates: function(username){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'templates/'+username
+			});	        
+		}
 	}
 });

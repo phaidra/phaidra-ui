@@ -1,5 +1,5 @@
 
-app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectoryService, MetadataService, promiseTracker) {
+app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, promiseTracker) {
     
 	$scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
 	// use: <input ng-pattern="regex_identifier" ...
@@ -12,6 +12,9 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectorySer
 	// used to disable the form and it's controls on save
 	$scope.form_disabled = false;
 	
+	$scope.templatetitle = '';
+	$scope.tid = '';
+
     $scope.fields = [];
     $scope.languages = [];
 
@@ -26,8 +29,17 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectorySer
         return $scope.fields.length;
     };
     
-    $scope.init = function () {
-    	//$scope.apply();
+    $scope.init = function (initdata) {
+    	initdata = angular.fromJson(initdata);
+
+    	if(initdata.pid){    		
+    		$scope.pid = initdata.pid;
+    		$scope.loadObject($scope.pid);
+    	}
+    	if(initdata.tid){    		
+    		$scope.tid = initdata.tid;
+    		$scope.loadTemplate($scope.tid);
+    	}
     };
     
     $scope.reset_values = function (node, default_value){
@@ -39,6 +51,22 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectorySer
     	node.value = default_value;
     	node.loaded_value = default_value;
     }
+    
+    $scope.loadLanguages = function (){
+    	var promise = MetadataService.getLanguages();        
+        $scope.loadingTracker.addPromise(promise);
+        promise.then(
+    		function(response) { 
+    			$scope.alerts = response.data.alerts;
+    			$scope.languages = response.data.languages;  			
+    		}
+    		,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	);
+    }
+    
     
     $scope.curriculum_update_handler = function(curriculum_child_node){
 		
@@ -316,8 +344,82 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectorySer
            	}
         );
     	        
-    };
+ };
     
+ 
+ $scope.saveTemplate = function() {
+	 $scope.form_disabled = true;
+     var promise = MetadataService.saveTemplate($scope.tid, $scope.fields);
+     $scope.loadingTracker.addPromise(promise);
+     promise.then(
+      	function(response) { 
+      		$scope.alerts = response.data.alerts;
+      		$scope.form_disabled = false;
+      	}
+      	,function(response) {
+      		$scope.alerts = response.data.alerts;
+      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+      		$scope.form_disabled = false;
+      	}
+     );    	      
+ };   
+ 
+  $scope.loadTemplate = function() {
+	 $scope.form_disabled = true;
+     var promise = MetadataService.loadTemplate($scope.tid);
+     $scope.loadingTracker.addPromise(promise);
+     promise.then(
+      	function(response) { 
+      		$scope.alerts = response.data.alerts;
+      		$scope.fields = response.data.uwmetadata;
+      		$scope.templatetitle = response.data.title;
+      		$scope.loadLanguages();
+      		$scope.form_disabled = false;
+      	}
+      	,function(response) {
+      		$scope.alerts = response.data.alerts;
+      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+      		$scope.form_disabled = false;
+      	}
+     );    	      
+ };   
+   
+	
+$scope.saveTemplateAs = function () {
+
+    var templateModalInstance = $modal.open({
+      templateUrl: 'save_template_modal.html',
+      controller: TemplateModalInstanceCtrl,
+      resolve: {
+        currenttitle: function () {
+          return $scope.templatetitle;
+        }
+      }
+    });
+
+    templateModalInstance.result.then(function (title) {
+      $scope.templatetitle = title;
+      
+      // save template
+      $scope.form_disabled = true;
+      var promise = MetadataService.saveTemplateAs($scope.templatetitle, $scope.fields);
+      $scope.loadingTracker.addPromise(promise);
+      promise.then(
+       	function(response) { 
+       		$scope.alerts = response.data.alerts;
+       		$scope.tid = response.data.tid;
+       		$scope.form_disabled = false;
+       	}
+       	,function(response) {
+       		$scope.alerts = response.data.alerts;       		
+       		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+       		$scope.form_disabled = false;
+       	}
+      );
+
+    });
+  };   
+
     // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
     $scope.filterHidden = function(e)
     {
@@ -502,6 +604,21 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $location, DirectorySer
     }
     
 });
+
+var TemplateModalInstanceCtrl = function ($scope, $modalInstance, currenttitle) {
+
+  $scope.currenttitle = currenttitle;
+  
+  $scope.newtemplatetitle = { value: currenttitle };
+  
+  $scope.ok = function () {	  
+	  $modalInstance.close($scope.newtemplatetitle.value);
+  };
+
+  $scope.cancel = function () {
+	  $modalInstance.dismiss('cancel');
+  };
+};
 
 app.directive('phaidraDuration', function() {
       

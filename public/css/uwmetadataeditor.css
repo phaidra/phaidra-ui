@@ -138,7 +138,7 @@ strong {
 }
 	
 .uwmetadataeditor_full #pid {
-	width: 100px;
+	width: 120px;
 	min-width: 100px;
 }
 
@@ -387,4 +387,9 @@ reenable disabled radius
 .load-spinner {
 	
 	margin-left: 10px;
+}
+
+.template-title {
+    font-size: 18px;
+    padding: 5px;
 }
