@@ -1,0 +1,37 @@
+% layout 'default', title => 'Templates';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/templates.js' %>"></script>
+   <link href="<%= url_for '/css/templates.css' %>" rel="stylesheet">
+        
+% end
+
+%= include 'alerts'
+	
+<div class="container" role="main" data-ng-controller="TemplatesCtrl"  data-ng-init="init('<%= $init_data %>')">
+
+	<input type="text" ng-model="search" class="search-query form-control" placeholder="Filter">
+	<table class="table">
+	  <thead>
+	  <tr>
+	    <th>Title</th>
+	    <th>Created</th>
+	    <th>Updated</th>
+	    <th><a href="/uwmetadata_template_editor/"><i class="glyphicon glyphicon-plus"></i></a></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr ng-repeat="template in templates | filter:search | orderBy:'updated'">
+	    <td><a href="/uwmetadata_template_editor/{{template._id}}" target="_blank">{{template.title}}</a></td>
+	    <td>{{template.created | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	    <td>{{template.updated | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	    <td>
+	      <a href="/uwmetadata_template_editor/{{template._id}}"><i class="glyphicon glyphicon-pencil"></i></a>
+	    </td>
+	  </tr>
+	  </tbody>
+	</table>
+
+</div>
+

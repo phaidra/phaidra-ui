@@ -1,0 +1,39 @@
+<nav id="control-panel" class="navbar navbar-default">
+			<div class="navbar-header">
+			    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			      <span class="sr-only">Toggle navigation</span>
+			      <span class="icon-bar"></span>
+			      <span class="icon-bar"></span>
+			      <span class="icon-bar"></span>
+			    </button>
+		   	</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <div class="navbar-form input-group load-pid navbar-left">
+			        		
+			        <input id="pid" ng-pattern="regex_pid" class="form-control navbar-btn" placeholder="Load from PID" type="text" data-ng-model="pid"></input>	
+			      	<span class="input-group-btn">			      	
+					     <button ng-disabled="form_disabled" data-ng-click="loadObject(pid)" class="btn btn-primary navbar-btn" type="button"><span class="glyphicon glyphicon-open"></span></button>					     				    
+					</span>
+									
+			      
+			      </div>
+			      
+			      <div class="navbar-form input-group new-template navbar-left">				      
+			      	<button ng-disabled="form_disabled" data-ng-click="getUwmetadataTree()" class="btn btn-primary navbar-btn" type="button"><span class="glyphicon glyphicon-asterisk"></span> New template</button>
+			      </div>
+			      
+			      <p ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}}</p>
+			      
+			      <div class="navbar-form navbar-right">
+			      
+			      	<button ng-if="fields && tid" ng-disabled="form.$invalid || form_disabled" data-ng-click="saveTemplate()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-floppy-save"></span> Save</button>
+					<button ng-if="fields" ng-disabled="form.$invalid || form_disabled" data-ng-click="saveTemplateAs()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-floppy-save"></span> Save as...</button>
+					
+				  </div>
+				  
+			      
+	    	</div>
+		
+		</nav>		
