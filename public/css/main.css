@@ -55,9 +55,10 @@
 }
 
 
-.well {
+.well,.navbar-default {
 	background: url("../img/ticks_light.png") repeat scroll 0 0 transparent;
 }
+
 
 /* muss add, see: http://angular-ui.github.io/bootstrap/ */
 .nav, .pagination, .carousel a { cursor: pointer; }
@@ -85,6 +86,8 @@
  	margin-top: -1px;
  	padding-right: 2px;
 }
+
+
 /*
 .alert {
 	width: 50%;

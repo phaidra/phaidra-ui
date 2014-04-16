@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use v5.10;
 use Mojo::ByteStream qw(b);
+use Mojo::JSON qw(encode_json);
 use base 'Mojolicious::Controller';
 
 # bridge
@@ -16,6 +17,8 @@ sub check {
 		$self->redirect_to('/') and return 0;	
 	}
 
+	my $init_data = { current_user => $self->current_user };
+    $self->stash(init_data => encode_json($init_data));   
     return 1;    
 }
 

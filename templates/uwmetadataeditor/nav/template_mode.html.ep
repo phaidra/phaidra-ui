@@ -1,4 +1,4 @@
-<nav id="control-panel" class="navbar navbar-default">
+<nav ng-if="fields" id="control-panel" class="navbar navbar-default">
 			<div class="navbar-header">
 			    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 			      <span class="sr-only">Toggle navigation</span>
@@ -16,13 +16,8 @@
 			      	<span class="input-group-btn">			      	
 					     <button ng-disabled="form_disabled" data-ng-click="loadObject(pid)" class="btn btn-primary navbar-btn" type="button"><span class="glyphicon glyphicon-open"></span></button>					     				    
 					</span>
-									
-			      
-			      </div>
-			      
-			      <div class="navbar-form input-group new-template navbar-left">				      
-			      	<button ng-disabled="form_disabled" data-ng-click="getUwmetadataTree()" class="btn btn-primary navbar-btn" type="button"><span class="glyphicon glyphicon-asterisk"></span> New template</button>
-			      </div>
+					
+			      </div>			      
 			      
 			      <p ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}}</p>
 			      

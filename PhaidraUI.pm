@@ -198,6 +198,8 @@ sub startup {
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
     $auth->route('uwmetadataeditor/:pid') ->via('get')  ->to('frontend#uwmetadataeditor');
+    
+    $auth->route('uwmetadata_template_editor') ->via('get')  ->to('frontend#uwmetadata_template_editor');
     $auth->route('uwmetadata_template_editor/:tid') ->via('get')  ->to('frontend#uwmetadata_template_editor'); 
     
     $auth->route('proxy/get_object_uwmetadata/:pid') ->via('get')   ->to('proxy#get_object_uwmetadata');
@@ -209,6 +211,9 @@ sub startup {
     
     $auth->route('templates') ->via('get')   ->to('template#browse');
     $auth->route('templates/:username') ->via('get')   ->to('template#list');
+    
+    $auth->route('objects') ->via('get')   ->to('objects#browse');
+    $auth->route('objects/:username') ->via('get')   ->to('objects#my_objects');
     
     return $self;
 }

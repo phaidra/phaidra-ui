@@ -23,9 +23,6 @@
         
 % end
 
-
-<!--<body data-ng-app="uwmetadataeditorApp" data-ng-controller="UwmetadataeditorCtrl" data-ng-init="init()">-->
-
 	<%# template for 'save as..' modal %>
 	<script type="text/ng-template" id="save_template_modal.html">
         <div class="modal-header">
@@ -44,7 +41,7 @@
         </div>
     </script>
 
-	<div class="container uwmetadataeditor_full" role="main" data-ng-controller="UwmetadataeditorCtrl"  data-ng-init="init('<%= $init_data %>')">
+	<div class="container uwmetadataeditor_full" role="main" data-ng-controller="UwmetadataeditorCtrl" data-ng-init="init('<%= $init_data %>')">
 
 		% if ($uwmetadataeditor_mode eq 'object') {
 			%= include 'uwmetadataeditor/nav/object_mode'

@@ -2,14 +2,13 @@
 
 % content_for header => begin
    
-   <script type="text/javascript" src="<%= url_for '/js/controllers/templates.js' %>"></script>
-   <link href="<%= url_for '/css/templates.css' %>" rel="stylesheet">
+   <script type="text/javascript" src="<%= url_for '/js/controllers/templates.js' %>"></script>   
         
 % end
 
 %= include 'alerts'
 	
-<div class="container" role="main" data-ng-controller="TemplatesCtrl"  data-ng-init="init('<%= $init_data %>')">
+<div class="container" data-ng-controller="TemplatesCtrl"  data-ng-init="init('<%= $init_data %>')">
 
 	<input type="text" ng-model="search" class="search-query form-control" placeholder="Filter">
 	<table class="table">

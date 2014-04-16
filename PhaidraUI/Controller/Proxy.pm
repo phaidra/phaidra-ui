@@ -92,7 +92,6 @@ sub get_uwmetadata_tree {
   	$self->ua->get($url => sub { 	
   		my ($ua, $tx) = @_;
 	  	if (my $res = $tx->success) {
-	  		$self->app->log->debug("XXXXXXXXX get_uwmetadata_tree:".$self->app->dumper($res->json));
 	  		$self->render(json => $res->json, status => 200 );
 	  	}else {
 		 	my ($err, $code) = $tx->error;	  

@@ -11,14 +11,20 @@ app.controller('TemplatesCtrl',  function($scope, $modal, $location, DirectorySe
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
-    	        
-    $scope.init = function (initdata) {
-    	initdata = angular.fromJson(initdata);
-
-    	if(initdata.current_user.username){    		
-    		$scope.getTemplates(initdata.current_user.username);
+    
+        
+	$scope.initdata = '';
+	$scope.current_user = '';
+			
+	$scope.init = function (initdata) {
+		$scope.initdata = angular.fromJson(initdata);
+		$scope.current_user = $scope.initdata.current_user;
+		
+		if($scope.current_user.username){    		
+    		$scope.getTemplates($scope.current_user.username);
     	}
     };
+
      
  $scope.getTemplates = function(username) {
 	 $scope.form_disabled = true;

@@ -3,11 +3,11 @@ var app = angular.module('frontendApp', ['ui.bootstrap', 'ui.bootstrap.modal', '
 var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, promiseTracker) {
 		
 	$scope.user = {username: '', password: ''};
-	$scope.alerts = [];   
+	$scope.alerts = [];   	
 	
 	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-	
+	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
+
 	$scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
@@ -36,7 +36,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
     			if(red){
     				window.location = red;
     			}else{
-				window.location.reload();
+    				window.location.reload();
     			}
     		}
     		,function(response) {
@@ -47,7 +47,6 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
             }
         );
 		return;
-		
 		
 	};
 
@@ -62,6 +61,14 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
 	$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
 	
     $scope.alerts = [];        
+        
+	$scope.initdata = '';
+	$scope.current_user = '';
+			
+	$scope.init = function (initdata) {
+		$scope.initdata = angular.fromJson(initdata);
+		$scope.current_user = $scope.initdata.current_user;
+    };
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);

@@ -12,6 +12,9 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 	// used to disable the form and it's controls on save
 	$scope.form_disabled = false;
 	
+	$scope.initdata = '';
+	$scope.current_user = '';
+
 	$scope.templatetitle = '';
 	$scope.tid = '';
 
@@ -30,16 +33,19 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     };
     
     $scope.init = function (initdata) {
-    	initdata = angular.fromJson(initdata);
-
-    	if(initdata.pid){    		
-    		$scope.pid = initdata.pid;
+    	$scope.initdata = angular.fromJson(initdata);
+    	$scope.current_user = $scope.initdata.current_user;
+    	if($scope.initdata.pid){    		
+    		$scope.pid = $scope.initdata.pid;
     		$scope.loadObject($scope.pid);
-    	}
-    	if(initdata.tid){    		
-    		$scope.tid = initdata.tid;
-    		$scope.loadTemplate($scope.tid);
-    	}
+    	}else{
+    		if($scope.initdata.tid){    		
+    			$scope.tid = $scope.initdata.tid;
+    			$scope.loadTemplate($scope.tid);
+    		}else{
+    			$scope.getUwmetadataTree();	
+    		}    		
+    	}    	
     };
     
     $scope.reset_values = function (node, default_value){
@@ -65,8 +71,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
            		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
            	}
     	);
-    }
-    
+    }    
     
     $scope.curriculum_update_handler = function(curriculum_child_node){
 		
@@ -246,8 +251,6 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     	}
     	
     };
-    
-     
 
     $scope.get_model_parent = function (parent, children, model) {
     	var i = 0; 	
@@ -282,7 +285,6 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     	}
     }
 
-    
     $scope.resetEditor = function() {
     	$scope.alerts = [];
 		$scope.languages = [];

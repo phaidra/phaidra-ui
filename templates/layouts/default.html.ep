@@ -74,7 +74,7 @@
   	
   	<%= content_for 'header' %>
   </head>	
-  <body data-ng-app="frontendApp" data-ng-controller="FrontendCtrl" data-ng-init="init()">
+  <body data-ng-app="frontendApp" data-ng-controller="FrontendCtrl" data-ng-init="init('<%= $init_data %>')">
   
   	<!--[if lt IE 7]>
       <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a>.</p>
@@ -114,19 +114,15 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="/uwmetadata_template_editor">UWMetadata template</a></li>
+            
+            <li><a href="/uwmetadataeditor">Edit object</a></li>
             <li class="divider"></li>
-          </ul>
-        </li>
-        
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse <b class="caret"></b></a>
-          <ul class="dropdown-menu">
             <li><a href="/templates">My templates</a></li>
+            <li><a href="/objects/<%= current_user->{username} %>">My objects</a></li>
             
           </ul>
         </li>
-        
+                
       </ul>
       <% } %>
       
