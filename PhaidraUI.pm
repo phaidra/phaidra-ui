@@ -45,9 +45,9 @@ sub startup {
 			my $url = Mojo::URL->new;
 			$url->scheme('https');		
 			$url->userinfo($username.":".$password);
-			$url->host($self->app->config->{phaidra}->{apibaseurl});
-			$url->path("/signin");	
-				
+			my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+			$url->host($base[0]);
+			$url->path($base[1]."/signin") if exists($base[1]);	
 		  	my $tx = $self->ua->get($url); 
 		
 		 	if (my $res = $tx->success) {
@@ -63,20 +63,17 @@ sub startup {
 					$self->save_token($token);
 			  		
 			  		$self->app->log->info("User $username successfuly authenticated");
-			  		$self->stash({phaidra_auth_result => { token => $token , alerts => $tx->res->json->{alerts}, stauts  =>  200 }});
+			  		$self->stash({phaidra_auth_result => { token => $token , alerts => $tx->res->json->{alerts}, status  =>  200 }});
 			  		
 			  		return $username;
 			 }else {
 				 	my ($err, $code) = $tx->error;
-				 	
-				 	$self->app->log->info("Authentication failed for user $username");
-				 	if($tx->res->json){	  
-					  	if(exists($tx->res->json->{alerts})) {
-					  		$self->stash({phaidra_auth_result => { alerts => $tx->res->json->{alerts}, stauts  =>  $code ? $code : 500 }});						 	
-						 }else{
-						 	$self->stash({phaidra_auth_result => { alerts => [{ type => 'danger', msg => $err }], stauts  =>  $code ? $code : 500 }});						  	
-						 }
-				 	}
+				 	$self->app->log->info("Authentication failed for user $username. Error code: $code, Error: $err");
+				 	if($tx->res->json && exists($tx->res->json->{alerts})){	  
+						$self->stash({phaidra_auth_result => { alerts => $tx->res->json->{alerts}, status  =>  $code ? $code : 500 }});						 	
+				 	}else{
+						$self->stash({phaidra_auth_result => { alerts => [{ type => 'danger', msg => $err }], status  =>  $code ? $code : 500 }});
+					}
 				 	
 				 	return undef;
 			}				

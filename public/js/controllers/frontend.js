@@ -42,8 +42,8 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
     		,function(response) {
     			$scope.form_disabled = false;
     			$scope.alerts = response.data.alerts;
-            	$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-            	$modalInstance.close();
+ //           	$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+ //           	$modalInstance.close();
             }
         );
 		return;
