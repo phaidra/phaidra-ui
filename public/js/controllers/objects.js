@@ -1,12 +1,12 @@
 
-app.controller('TemplatesCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, promiseTracker) {
+app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryService, SearchService, promiseTracker) {
     
 	// we will use this to track running ajax requests to show spinner
 	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
 	
 	$scope.alerts = [];
 	
-	$scope.templates = [];        
+	$scope.objects = [];        
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
@@ -18,18 +18,18 @@ app.controller('TemplatesCtrl',  function($scope, $modal, $location, DirectorySe
 	$scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;		
-    	$scope.getTemplates();    	
+    	$scope.getUserObjects();    	
     };
 
      
- $scope.getTemplates = function() {
+ $scope.getUserObjects = function() {
 	 $scope.form_disabled = true;
-     var promise = MetadataService.getTemplates();
+     var promise = SearchService.getUserObjects();
      $scope.loadingTracker.addPromise(promise);
      promise.then(
       	function(response) { 
       		$scope.alerts = response.data.alerts;
-      		$scope.templates = response.data.templates;
+      		$scope.objects = response.data.objects;
       		$scope.form_disabled = false;
       	}
       	,function(response) {

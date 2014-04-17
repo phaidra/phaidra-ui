@@ -66,6 +66,7 @@
   	<script type="text/javascript" src="<%= url_for '/js/services/base64.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/directory.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/search.js' %>"></script> 
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
   	
   	<!-- Custom Phaidra CSS --> 
@@ -101,11 +102,11 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       
-      <form class="navbar-form navbar-left" role="search">
+      <form class="navbar-form navbar-left" role="search" >
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
+          <input type="text" class="form-control" placeholder="Search" disabled>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default" disabled>Submit</button>
       </form>
       
       <% if (is_user_authenticated) { %>
@@ -115,10 +116,11 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
           <ul class="dropdown-menu">
             
-            <li><a href="/uwmetadataeditor">Edit object</a></li>
-            <li class="divider"></li>
-            <li><a href="/templates">My templates</a></li>
-            <li><a href="/objects/<%= current_user->{username} %>">My objects</a></li>
+            
+            <li><a href="/templates/browse">My templates</a></li>
+            
+            
+            <li><a href="/objects/browse">My objects</a></li>
             
           </ul>
         </li>
@@ -155,7 +157,7 @@
   	<footer class="footer">  	
   		<div class="container-fluid">
                   <div class="row">
-                          <div class="col-md-3"><a href="https://github.com/phaidra/phaidra-api"><i class="glyphicon icon-github"></i> Code</a> licensed under <a href="https://github.com/phaidra/phaidra-api/blob/master/LICENSE">Apache License</a>. <a href="https://github.com/phaidra/phaidra-api/issues?state=open">Issues</a></div></div>                          
+                          <div class="col-md-3"><a href="https://github.com/phaidra/phaidra-ui"><i class="glyphicon icon-github"></i> Code</a> licensed under <a href="https://github.com/phaidra/phaidra-ui/blob/master/LICENSE">Apache License</a>. <a href="https://github.com/phaidra/phaidra-ui/issues?state=open">Issues</a></div></div>                          
                   </div>                  
   		</div>
   	</footer>

@@ -158,9 +158,10 @@ sub startup {
   	# init cache
   	$self->plugin(CHI => {
 	    default => {
-	      	driver     => 'File', # FastMmap seems to have problems saving the metadata structure (it won't save anything)
-	    	root_dir   => '/tmp/phaidra-ui-cache',
-	    	cache_size => '20m',
+	      	driver		=> 'Memory',
+	      	#driver     => 'File', # FastMmap seems to have problems saving the metadata structure (it won't save anything)
+	    	#root_dir   => '/tmp/phaidra-ui-cache',
+	    	#cache_size => '20m',
 	      	global => 1,
 	      	#serializer => 'Storable',
 	    },
@@ -191,10 +192,12 @@ sub startup {
     $r->route('proxy/get_directory_get_org_units') ->via('get')   ->to('proxy#get_directory_get_org_units');
     $r->route('proxy/get_directory_get_study') ->via('get')   ->to('proxy#get_directory_get_study');
     $r->route('proxy/get_directory_get_study_name') ->via('get')   ->to('proxy#get_directory_get_study_name');        
+    $r->route('proxy/objects') ->via('get')   ->to('proxy#search_owner');
+    $r->route('proxy/objects/:username') ->via('get')   ->to('proxy#search_owner');
     
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
-    $auth->route('uwmetadataeditor/:pid') ->via('get')  ->to('frontend#uwmetadataeditor');
+    $auth->route('uwmetadata_editor/:pid') ->via('get')  ->to('frontend#uwmetadataeditor');
     
     $auth->route('uwmetadata_template_editor') ->via('get')  ->to('frontend#uwmetadata_template_editor');
     $auth->route('uwmetadata_template_editor/:tid') ->via('get')  ->to('frontend#uwmetadata_template_editor'); 
@@ -206,11 +209,11 @@ sub startup {
     $auth->route('template/:tid') ->via('post')   ->to('template#save');    
     $auth->route('template/:tid') ->via('get')   ->to('template#load');
     
-    $auth->route('templates') ->via('get')   ->to('template#browse');
-    $auth->route('templates/:username') ->via('get')   ->to('template#list');
+    $auth->route('templates/browse') ->via('get')   ->to('template#browse');
+    $auth->route('templates') ->via('get')   ->to('template#list');
     
-    $auth->route('objects') ->via('get')   ->to('objects#browse');
-    $auth->route('objects/:username') ->via('get')   ->to('objects#my_objects');
+    $auth->route('objects/browse') ->via('get')   ->to('object#browse');
+    
     
     return $self;
 }

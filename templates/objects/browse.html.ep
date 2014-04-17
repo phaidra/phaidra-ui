@@ -1,0 +1,35 @@
+% layout 'default', title => 'Objects';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/objects.js' %>"></script>        
+        
+% end
+
+%= include 'alerts'
+	
+<div class="container" data-ng-controller="ObjectsCtrl" data-ng-init="init('<%= $init_data %>')">
+
+	<table class="table">
+	  <thead>
+	  <tr>
+	    <th>Title</th>
+	    <th>Created</th>
+	    <th>Updated</th>
+	    <th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr ng-repeat="object in objects | orderBy:'updated'">
+	    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a></td>
+	    <td>{{object['fgs.createdDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	    <td>{{object['fgs.lastModifiedDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	    <td>
+	      <a href="/uwmetadata_editor/{{object.PID}}"><i class="glyphicon glyphicon-pencil"></i></a>
+	    </td>
+	  </tr>
+	  </tbody>
+	</table>
+
+</div>
+

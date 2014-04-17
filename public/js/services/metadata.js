@@ -56,10 +56,10 @@ angular.module('metadataService', [])
 			});	        
 	    },
 	    
-		getTemplates: function(username){
+		getTemplates: function(){
 			return $http({
 				method  : 'GET',
-				url     : $('head base').attr('href')+'templates/'+username
+				url     : $('head base').attr('href')+'templates/'
 			});	        
 		}
 	}

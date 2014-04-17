@@ -45,8 +45,7 @@ sub load {
 				   
 				}
 	);
-	
-	
+		
 }
 
 sub save {
@@ -90,6 +89,9 @@ sub create {
 sub browse {
     my $self = shift;  	 
 
+	my $init_data = { current_user => $self->current_user };
+    $self->stash(init_data => encode_json($init_data));
+      
 	$self->render('templates/browse');
 }
 
@@ -110,6 +112,7 @@ sub list {
 			    	$self->app->log->info("[".$self->current_user->{username}."] Error searching templates: ".$self->app->dumper($error));
 			    	$self->render(json => { alerts => [{ type => 'danger', msg => "Error searching templates" }] }, status => 500);	
 			    }
+			    
 			    my $collsize = scalar @{$coll};
 			    $self->render(json => { templates => $coll, alerts => [{ type => 'success', msg => "Found $collsize templates" }] , status => 200 });
 			}

@@ -54,8 +54,13 @@ sub signout {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');		
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/signout");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/signout") ;
+	}else{
+		$url->path("/signout") ;
+	}
 			
 	my $token = $self->load_token;
 				

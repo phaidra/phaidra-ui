@@ -1,4 +1,4 @@
-var app = angular.module('frontendApp', ['ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService', 'metadataService']);
+var app = angular.module('frontendApp', ['ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService']);
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, promiseTracker) {
 		

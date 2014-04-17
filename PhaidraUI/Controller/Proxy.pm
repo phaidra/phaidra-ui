@@ -14,11 +14,16 @@ sub get_object_uwmetadata {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');		
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/object/$pid/uwmetadata");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/object/$pid/uwmetadata") ;
+	}else{
+		$url->path("/object/$pid/uwmetadata") ;
+	}
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
-	my $token = $self->load_token;
+	my $token = $self->load_token;	
 	
 	# we have to use the useragent from the controller, otherwise the async call does not work
 	# (probably needs ioloop etc)
@@ -42,6 +47,44 @@ sub get_object_uwmetadata {
 
 }
 
+sub search_owner {
+    my $self = shift;  	 
+    
+    my $username = defined($self->stash('username')) ? $self->stash('username') : $self->current_user->{username} ;
+    
+    my $url = Mojo::URL->new;
+	$url->scheme('https');		
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/search/owner/$username") ;
+	}else{
+		$url->path("/search/owner/$username") ;
+	}
+	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
+	
+	my $token = $self->load_token;
+	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
+  		my ($ua, $tx) = @_;
+
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;
+		 	if($tx->res->json){	  
+			  	if(exists($tx->res->json->{alerts})) {
+				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+				 }else{
+				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+				 }
+		 	}
+		}
+		
+  	});	
+    
+}
+
 sub save_object_uwmetadata {
 	
 	my $self = shift;  	
@@ -51,8 +94,14 @@ sub save_object_uwmetadata {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/object/$pid/uwmetadata");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/object/$pid/uwmetadata") ;
+	}else{
+		$url->path("/object/$pid/uwmetadata") ;
+	}
+		
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
 	my $token = $self->load_token;
@@ -85,8 +134,13 @@ sub get_uwmetadata_tree {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');	
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/uwmetadata/tree");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/uwmetadata/tree") ;
+	}else{
+		$url->path("/uwmetadata/tree") ;
+	}
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 		
   	$self->ua->get($url => sub { 	
@@ -111,10 +165,14 @@ sub get_uwmetadata_languages {
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
-	$url->scheme('https');	
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/uwmetadata/languages");		
-		
+	$url->scheme('https');		
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/uwmetadata/languages") ;
+	}else{
+		$url->path("/uwmetadata/languages") ;
+	}
   	$self->ua->get($url => sub { 	
   		my ($ua, $tx) = @_;
 	  	if (my $res = $tx->success) {
@@ -139,9 +197,15 @@ sub get_help_tooltip {
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
-	$url->scheme('https');	
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/help/tooltip");	
+	$url->scheme('https');		
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/help/tooltip") ;
+	}else{
+		$url->path("/help/tooltip") ;
+	}
+	
 	$url->query({id => $id});
 		
   	$self->ua->get($url => sub { 	
@@ -170,8 +234,13 @@ sub get_directory_get_org_units {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');	
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/directory/get_org_units");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/directory/get_org_units") ;
+	}else{
+		$url->path("/directory/get_org_units") ;
+	}
 	$url->query({parent_id => $parent_id, values_namespace => $values_namespace});
 		
   	$self->ua->get($url => sub { 	
@@ -200,8 +269,14 @@ sub get_directory_get_study {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');	
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/directory/get_study");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/directory/get_study") ;
+	}else{
+		$url->path("/directory/get_study") ;
+	}
+	
 	$url->query({spl => $spl, ids => \@ids, values_namespace => $values_namespace});
 		
   	$self->ua->get($url => sub { 	
@@ -230,8 +305,13 @@ sub get_directory_get_study_name {
 	
 	my $url = Mojo::URL->new;
 	$url->scheme('https');	
-	$url->host($self->app->config->{phaidra}->{apibaseurl});
-	$url->path("/directory/get_study_name");	
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/directory/get_study_name") ;
+	}else{
+		$url->path("/directory/get_study_name") ;
+	}
 	$url->query({spl => $spl, ids => @ids});
 		
   	$self->ua->get($url => sub { 	
