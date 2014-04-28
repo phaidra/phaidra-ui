@@ -18,13 +18,12 @@ app.controller('TemplatesCtrl',  function($scope, $modal, $location, DirectorySe
 	$scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;		
-    	$scope.getTemplates();    	
+    	$scope.getMyTemplates();    	
     };
-
      
- $scope.getTemplates = function() {
+ $scope.getMyTemplates = function() {
 	 $scope.form_disabled = true;
-     var promise = MetadataService.getTemplates();
+     var promise = MetadataService.getMyTemplates();
      $scope.loadingTracker.addPromise(promise);
      promise.then(
       	function(response) { 

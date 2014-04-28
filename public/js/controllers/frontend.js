@@ -3,7 +3,7 @@ var app = angular.module('frontendApp', ['ui.bootstrap', 'ui.bootstrap.modal', '
 var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, promiseTracker) {
 		
 	$scope.user = {username: '', password: ''};
-	$scope.alerts = [];   	
+	$scope.alerts = [];		
 	
 	// we will use this to track running ajax requests to show spinner
 	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
@@ -12,14 +12,14 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, prom
     	$scope.alerts.splice(index, 1);
     };
     
-    $scope.hitEnter = function(evt){
+    $scope.hitEnterSignin = function(evt){
     	if(angular.equals(evt.keyCode,13) 
     			&& !(angular.equals($scope.user.username,null) || angular.equals($scope.user.username,''))
     			&& !(angular.equals($scope.user.password,null) || angular.equals($scope.user.password,''))
     			)
     	$scope.signin();
     };
-	
+    	
 	$scope.signin = function () {
 		
 		$scope.form_disabled = true;
@@ -61,13 +61,20 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
 	$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
 	
     $scope.alerts = [];        
-        
+    $scope.query = '';   
+    
 	$scope.initdata = '';
 	$scope.current_user = '';
 			
 	$scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
+    };
+        
+    $scope.hitEnterSearch = function(evt){    	
+    	if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
+    		window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
+    	}
     };
     
     $scope.closeAlert = function(index) {

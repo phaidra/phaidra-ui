@@ -16,7 +16,7 @@
 	    <th>Title</th>
 	    <th>Created</th>
 	    <th>Updated</th>
-	    <th></th>
+	    <th><span ng-if="numPages" class="grey">Page: {{currentPage}} / {{numPages}}</span></th>
 	  </tr>
 	  </thead>
 	  <tbody>
@@ -27,9 +27,10 @@
 	    <td>
 	      <a href="/uwmetadata_editor/{{object.PID}}"><i class="glyphicon glyphicon-pencil"></i></a>
 	    </td>
-	  </tr>
+	  </tr>	  
 	  </tbody>
 	</table>
 
+	<pagination total-items="totalItems" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false"></pagination>
 </div>
 

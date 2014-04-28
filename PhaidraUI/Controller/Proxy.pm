@@ -17,9 +17,9 @@ sub get_object_uwmetadata {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/object/$pid/uwmetadata") ;
+		$url->path($base[1]."/object/$pid/uwmetadata");
 	}else{
-		$url->path("/object/$pid/uwmetadata") ;
+		$url->path("/object/$pid/uwmetadata");
 	}
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
@@ -47,6 +47,57 @@ sub get_object_uwmetadata {
 
 }
 
+sub search {
+    my $self = shift;  	     
+    
+    my $url = Mojo::URL->new;
+	$url->scheme('https');		
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/search");
+	}else{
+		$url->path("/search");
+	}
+	
+	my %params;
+	$params{q} = $self->param('q');
+	if(defined($self->param('from'))){
+		$params{from} = $self->param('from');
+	}
+	if(defined($self->param('limit'))){
+		$params{limit} = $self->param('limit');
+	}
+	if(defined($self->param('sort'))){
+		$params{'sort'} = $self->param('sort');
+	}
+	if(defined($self->param('reverse'))){
+		$params{'reverse'} = $self->param('reverse');
+	}
+    $url->query(\%params);	
+
+	my $token = $self->load_token;
+	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
+  		my ($ua, $tx) = @_;
+
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;
+		 	if($tx->res->json){	  
+			  	if(exists($tx->res->json->{alerts})) {
+				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+				 }else{
+				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+				 }
+		 	}
+		}
+		
+  	});	
+    
+}
+
 sub search_owner {
     my $self = shift;  	 
     
@@ -57,11 +108,25 @@ sub search_owner {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/search/owner/$username") ;
+		$url->path($base[1]."/search/owner/$username");
 	}else{
-		$url->path("/search/owner/$username") ;
+		$url->path("/search/owner/$username");
 	}
-	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
+		    
+	my %params;
+	if(defined($self->param('from'))){
+		$params{from} = $self->param('from');
+	}
+	if(defined($self->param('limit'))){
+		$params{limit} = $self->param('limit');
+	}
+	if(defined($self->param('sort'))){
+		$params{'sort'} = $self->param('sort');
+	}
+	if(defined($self->param('reverse'))){
+		$params{'reverse'} = $self->param('reverse');
+	}
+    $url->query(\%params);
 	
 	my $token = $self->load_token;
 	
@@ -97,9 +162,9 @@ sub save_object_uwmetadata {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/object/$pid/uwmetadata") ;
+		$url->path($base[1]."/object/$pid/uwmetadata");
 	}else{
-		$url->path("/object/$pid/uwmetadata") ;
+		$url->path("/object/$pid/uwmetadata");
 	}
 		
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
@@ -137,9 +202,9 @@ sub get_uwmetadata_tree {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/uwmetadata/tree") ;
+		$url->path($base[1]."/uwmetadata/tree");
 	}else{
-		$url->path("/uwmetadata/tree") ;
+		$url->path("/uwmetadata/tree");
 	}
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 		
@@ -169,9 +234,9 @@ sub get_uwmetadata_languages {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/uwmetadata/languages") ;
+		$url->path($base[1]."/uwmetadata/languages");
 	}else{
-		$url->path("/uwmetadata/languages") ;
+		$url->path("/uwmetadata/languages");
 	}
   	$self->ua->get($url => sub { 	
   		my ($ua, $tx) = @_;
@@ -201,9 +266,9 @@ sub get_help_tooltip {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/help/tooltip") ;
+		$url->path($base[1]."/help/tooltip");
 	}else{
-		$url->path("/help/tooltip") ;
+		$url->path("/help/tooltip");
 	}
 	
 	$url->query({id => $id});
@@ -237,9 +302,9 @@ sub get_directory_get_org_units {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/directory/get_org_units") ;
+		$url->path($base[1]."/directory/get_org_units");
 	}else{
-		$url->path("/directory/get_org_units") ;
+		$url->path("/directory/get_org_units");
 	}
 	$url->query({parent_id => $parent_id, values_namespace => $values_namespace});
 		
@@ -272,9 +337,9 @@ sub get_directory_get_study {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/directory/get_study") ;
+		$url->path($base[1]."/directory/get_study");
 	}else{
-		$url->path("/directory/get_study") ;
+		$url->path("/directory/get_study");
 	}
 	
 	$url->query({spl => $spl, ids => \@ids, values_namespace => $values_namespace});
@@ -308,9 +373,9 @@ sub get_directory_get_study_name {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/directory/get_study_name") ;
+		$url->path($base[1]."/directory/get_study_name");
 	}else{
-		$url->path("/directory/get_study_name") ;
+		$url->path("/directory/get_study_name");
 	}
 	$url->query({spl => $spl, ids => @ids});
 		

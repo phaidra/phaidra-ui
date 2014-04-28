@@ -20,20 +20,6 @@ sub home {
     $self->render('home');	
 }
 
-sub uwmetadataeditor {
-    my $self = shift;  	
-    $self->stash(uwmetadataeditor_mode => 'object');
-    my $init_data = { pid => $self->stash('pid'), current_user => $self->current_user };
-    $self->stash(init_data => encode_json($init_data));
-    $self->render('uwmetadataeditor');	
-}
 
-sub uwmetadata_template_editor {
-    my $self = shift;
-    $self->stash(uwmetadataeditor_mode => 'template');
-    my $init_data = { tid => $self->stash('tid'), current_user => $self->current_user };
-    $self->stash(init_data => encode_json($init_data));  	 
-    $self->render('uwmetadataeditor');	
-}
 
 1;

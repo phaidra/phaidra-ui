@@ -86,16 +86,16 @@ sub create {
 	}
 }
 
-sub browse {
+sub templates {
     my $self = shift;  	 
 
 	my $init_data = { current_user => $self->current_user };
     $self->stash(init_data => encode_json($init_data));
       
-	$self->render('templates/browse');
+	$self->render('templates/list');
 }
 
-sub list {
+sub my {
     my $self = shift;  	 
     
     $self->render_later;
