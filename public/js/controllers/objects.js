@@ -6,14 +6,20 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 	
 	$scope.alerts = [];
 	
-	$scope.objects = [];        
+	$scope.objects = [];
+	
+	$scope.selected = ['o:11873'];  
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
     
+    $scope.selectObject = function(pid) {
+    	$scope.selected.push(pid);
+    };
+    
     $scope.totalItems = 0;
-    $scope.currentPage = 0;
+    $scope.currentPage = 1;
     $scope.maxSize = 10;
     $scope.from = 1;
     $scope.limit = 10;
@@ -50,7 +56,7 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	if($scope.query){
     		$scope.search($scope.query, $scope.from, $scope.limit, $scope.sort, $scope.reverse);
     	}else{
-    		$scope.getUserObjects(null, $scope.uofrom, $scope.uolimit, $scope.uosort, $scope.uoreverse); // no username -> current_user    		
+    		$scope.getUserObjects(null, $scope.uofrom, $scope.uolimit, $scope.uosort, $scope.uoreverse); // no username -> current_user
     	}
     };
 

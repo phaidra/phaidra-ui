@@ -163,7 +163,13 @@
   	<footer class="footer">  	
   		<div class="container-fluid">
                   <div class="row">
-                          <div class="col-md-3"><a href="https://github.com/phaidra/phaidra-ui"><i class="glyphicon icon-github"></i> Code</a> licensed under <a href="https://github.com/phaidra/phaidra-ui/blob/master/LICENSE">Apache License</a>. <a href="https://github.com/phaidra/phaidra-ui/issues?state=open">Issues</a></div></div>                          
+                          <div class="col-md-3">
+                          	<a href="https://github.com/phaidra/phaidra-ui"><i class="glyphicon icon-github"></i> Code</a> licensed under <a href="https://github.com/phaidra/phaidra-ui/blob/master/LICENSE">Apache License</a>. <a href="https://github.com/phaidra/phaidra-ui/issues?state=open">Issues</a>
+                          </div>
+                          <div class="col-md-6"></div>
+                          <div class="col-md-3">
+                          	<span class="glyphicon glyphicon-heart"></span>
+                          </div>                          
                   </div>                  
   		</div>
   	</footer>

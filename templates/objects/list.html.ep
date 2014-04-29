@@ -10,17 +10,56 @@
 	
 <div class="container" data-ng-controller="ObjectsCtrl" data-ng-init="init('<%= $init_data %>')">
 
+	<nav ng-if="totalItems" id="control-panel" class="navbar navbar-default list-navbar">
+	
+			<div class="navbar-header">
+			    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			      <span class="sr-only">Toggle navigation</span>
+			      <span class="icon-bar"></span>
+			      <span class="icon-bar"></span>
+			      <span class="icon-bar"></span>
+			    </button>
+		   	</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      
+			      <div class="navbar-form navbar-left">
+			      	<button data-ng-click="allGoldEverything()" class="btn btn-default navbar-btn">Select all</button>			             
+					<button data-ng-click="selectVisible()" class="btn btn-default navbar-btn">Select visible</button>									   
+				  </div>				  
+			      
+	    	</div>
+		
+	</nav>		
+	
+	<div class="container-fluid">
+		<div class="row">
+	     	<div class="col-md-2">
+	        	<span class="hits">{{totalItems}} hits</span>
+	        </div>
+	        <div class="col-md-8"><center><pagination total-items="totalItems" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages"></pagination></center></div>
+	        <div class="col-md-2">
+	        	<span class="pages">{{currentPage}} / {{numPages}}</span>
+	        </div>                          
+    	</div> 
+	</div> 
+	
 	<table class="table">
 	  <thead>
 	  <tr>
+	  	<th></th>
+	  	<th>Id</th>
 	    <th>Title</th>
 	    <th>Created</th>
 	    <th>Updated</th>
-	    <th><span ng-if="numPages" class="grey">Page: {{currentPage}} / {{numPages}}</span></th>
+	    <th></th>
 	  </tr>
 	  </thead>
 	  <tbody>
 	  <tr ng-repeat="object in objects | orderBy:'updated'">
+	    <td><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selected.indexOf(object.PID) != -1}" data-ng-click="selectObject('{{object.PID}}')"></span></td>
+	  	<td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.PID}}</a></td>
 	    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a></td>
 	    <td>{{object['fgs.createdDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
 	    <td>{{object['fgs.lastModifiedDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
@@ -30,7 +69,6 @@
 	  </tr>	  
 	  </tbody>
 	</table>
-
-	<pagination total-items="totalItems" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false"></pagination>
+	
 </div>
 
