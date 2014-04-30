@@ -1,5 +1,5 @@
 
-app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, promiseTracker) {
+app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, promiseTracker) {
     
 	$scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
 	// use: <input ng-pattern="regex_identifier" ...

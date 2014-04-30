@@ -74,7 +74,13 @@ sub search {
 	if(defined($self->param('reverse'))){
 		$params{'reverse'} = $self->param('reverse');
 	}
-    $url->query(\%params);	
+	if(defined($self->param('fields'))){	
+		my @fields = $self->param('fields');	
+		$params{'fields'} = \@fields;
+	}
+    $url->query(\%params);
+    
+    #$self->app->log->debug($self->app->dumper(\%params));		
 
 	my $token = $self->load_token;
 	

@@ -32,7 +32,9 @@
   	
   	<!-- AngularJS -->
   	<!--<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>-->
-  	<script src="<%= url_for '/js/angular.min.js' %>"></script>
+  	<!--<script src="<%= url_for '/js/angular.min.js' %>"></script>-->
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-animate.js"></script>
   	
   	<!-- AngularJS Select2 -->
   	<!--<script type="text/javascript" src="<%= url_for '/js/ngselect2.js' %>"></script>-->
@@ -66,7 +68,8 @@
   	<script type="text/javascript" src="<%= url_for '/js/services/base64.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/directory.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
-	<script type="text/javascript" src="<%= url_for '/js/services/search.js' %>"></script> 
+	<script type="text/javascript" src="<%= url_for '/js/services/search.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/frontend.js' %>"></script>  
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
   	
   	<!-- Custom Phaidra CSS --> 
@@ -124,7 +127,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
           <ul class="dropdown-menu">
             
-            <li><a href="/templates/my">My templates</a></li>
+            <li><a href="/templates/">My templates</a></li>
             
             <li><a href="/search/">My objects</a></li>
             

@@ -3,21 +3,22 @@ angular.module('searchService', [])
 	
 	return {
 		
-		getUserObjects: function(username, from, limit, sort, reverse){
+		getUserObjects: function(username, from, limit, sort, reverse, fields){
 			var user = username ? username : '';
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'proxy/objects/' + user,
-				params  : { from: from, limit: limit, sort: sort, reverse: reverse }
+				params  : { from: from, limit: limit, sort: sort, reverse: reverse, fields: fields }
 			});	        
 		},
 		
-		search: function(query, from, limit, sort, reverse){
+		search: function(query, from, limit, sort, reverse, fields){
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'proxy/search',
-				params  : { q: query, from: from, limit: limit, sort: sort, reverse: reverse }
+				params  : { q: query, from: from, limit: limit, sort: sort, reverse: reverse, fields: fields }
 			});	        
-		}
+		}	
+
 	}
 });

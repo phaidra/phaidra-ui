@@ -186,6 +186,8 @@ sub startup {
     $r->route('signout') 			->via('get')   ->to('authentication#signout');
     $r->route('loginform') 			->via('get')   ->to('authentication#loginform');
     
+    $r->route('search') ->via('get')   ->to('object#search');
+    
     $r->route('proxy/get_uwmetadata_tree') ->via('get')   ->to('proxy#get_uwmetadata_tree');
     $r->route('proxy/get_uwmetadata_languages') ->via('get')   ->to('proxy#get_uwmetadata_languages');
     $r->route('proxy/get_help_tooltip') ->via('get')   ->to('proxy#get_help_tooltip');
@@ -199,7 +201,7 @@ sub startup {
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
     
-    $auth->route('search') ->via('get')   ->to('object#search');
+    $auth->route('selection') 			->via('post')   ->to('frontend#selection_update');
     
     $auth->route('uwmetadata_editor/:pid') ->via('get')  ->to('object#uwmetadataeditor');
     

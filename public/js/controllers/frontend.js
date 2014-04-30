@@ -1,6 +1,6 @@
-var app = angular.module('frontendApp', ['ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService']);
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, promiseTracker) {
+var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
 		
 	$scope.user = {username: '', password: ''};
 	$scope.alerts = [];		

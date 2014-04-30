@@ -20,6 +20,9 @@ sub home {
     $self->render('home');	
 }
 
+sub selection_update {
+	
+}
 
 
 1;

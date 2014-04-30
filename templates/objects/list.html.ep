@@ -7,6 +7,7 @@
 % end
 
 %= include 'alerts'
+
 	
 <div class="container" data-ng-controller="ObjectsCtrl" data-ng-init="init('<%= $init_data %>')">
 
@@ -24,9 +25,28 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			      
-			      <div class="navbar-form navbar-left">
-			      	<button data-ng-click="allGoldEverything()" class="btn btn-default navbar-btn">Select all</button>			             
-					<button data-ng-click="selectVisible()" class="btn btn-default navbar-btn">Select visible</button>									   
+			      <div class="navbar-form navbar-left">			      
+			      
+				      <div class="btn-group">
+						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						    <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.length > 0}" ></span> <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu" role="menu">
+						    <li><a href="#" data-ng-click="allGoldEverything(event);" onClick="event.preventDefault ? event.preventDefault() : (event.returnValue=false)">All</a></li>
+						    <li><a href="#" data-ng-click="selectNone()" onClick="event.preventDefault ? event.preventDefault() : (event.returnValue=false)">None</a></li>
+						    <li><a href="#" data-ng-click="selectVisible()" onClick="event.preventDefault ? event.preventDefault() : (event.returnValue=false)">Visible</a></li>						    
+						  </ul>						 
+					  </div>
+			      	
+			      	  <div class="btn-group animate-if" ng-if="selection.length" >
+						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						    Action <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu" role="menu">
+						    <li><a href="#" data-ng-click="createCollection()" onClick="event.preventDefault ? event.preventDefault() : (event.returnValue=false)">Create collection</a></li>
+						    <li class="disabled"><a href="#" onClick="event.preventDefault ? event.preventDefault() : (event.returnValue=false)">Edit</a></li>						    						    
+						  </ul>
+					  </div>								   
 				  </div>				  
 			      
 	    	</div>
@@ -48,7 +68,7 @@
 	<table class="table">
 	  <thead>
 	  <tr>
-	  	<th></th>
+	  	<th><span class="grey" ng-if="selection.length">{{selection.length}}</span></th>
 	  	<th>Id</th>
 	    <th>Title</th>
 	    <th>Created</th>
@@ -58,7 +78,7 @@
 	  </thead>
 	  <tbody>
 	  <tr ng-repeat="object in objects | orderBy:'updated'">
-	    <td><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selected.indexOf(object.PID) != -1}" data-ng-click="selectObject('{{object.PID}}')"></span></td>
+	    <td><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)"></span></td>
 	  	<td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.PID}}</a></td>
 	    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a></td>
 	    <td>{{object['fgs.createdDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>

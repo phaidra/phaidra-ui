@@ -63,6 +63,7 @@
   	<script type="text/javascript" src="<%= url_for '/js/services/base64.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/directory.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/frontend.js' %>"></script>
   	<script type="text/javascript" src="<%= url_for '/js/controllers/uwmetadataeditor.js' %>"></script>
   	
   	<!-- Custom Phaidra CSS --> 
