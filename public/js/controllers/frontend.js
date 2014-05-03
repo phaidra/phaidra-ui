@@ -1,6 +1,6 @@
-var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService']);
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
+var SigninModalCtrl = function ($scope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
 		
 	$scope.user = {username: '', password: ''};
 	$scope.alerts = [];		
@@ -42,8 +42,6 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, DirectoryService, Fron
     		,function(response) {
     			$scope.form_disabled = false;
     			$scope.alerts = response.data.alerts;
- //           	$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
- //           	$modalInstance.close();
             }
         );
 		return;
@@ -85,7 +83,7 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
 
     	var modalInstance = $modal.open({
             templateUrl: $('head base').attr('href')+'views/partials/loginform.html',
-            controller: ModalInstanceCtrl
+            controller: SigninModalCtrl
     	});
     };
     

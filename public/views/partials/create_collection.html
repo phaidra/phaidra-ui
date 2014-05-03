@@ -1,0 +1,33 @@
+
+<div class="modal">
+	<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"><span class="glyphicon glyphicon-asterisk"></span> Create new collection <img class="load-spinner" ng-show="loadingTracker.active()" src="/img/ajax-loader.gif"></h4>
+					
+				</div>
+				<div class="modal-body">
+				
+					<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+				
+					<data-ng-form name="collform" novalidate role="form">
+						<fieldset data-ng-disabled="form_disabled">
+							<div class="form-group input-group-lg" ng-class="{true: 'has-error'}[collform.title.$dirty && collform.title.$invalid]">
+								<label class="control-label" for="title">Title:</label>
+								<input type="text" class="form-control" name="title" id="title" ng-required="1" ng-model="modaldata.title" ng-keyup="hitEnterCreate($event)" required>
+							</div>
+							<div class="form-group input-group-lg" ng-class="{true: 'has-error'}[collform.description.$dirty && collform.description.$invalid]">
+								<label class="control-label" for="description">Description:</label>
+								<textarea type="text" class="form-control coll-desc" name="description" id="coll-desc" ng-required="1" ng-model="modaldata.description" ng-keyup="hitEnterCreate($event)" required></textarea>
+							</div>
+						</fieldset>
+					</data-ng-form>
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+					<button type="button" class="btn btn-primary" ng-click="createCollection()" ng-disabled="(collform.$dirty && collform.$invalid) || collform.$pristine || form_disabled">Create</button>
+				</div>
+			</div>
+		</div>
+	</div>

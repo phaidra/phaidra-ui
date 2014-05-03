@@ -187,7 +187,8 @@ sub startup {
     $r->route('loginform') 			->via('get')   ->to('authentication#loginform');
     
     $r->route('search') ->via('get')   ->to('object#search');
-    
+    $r->route('collection/:pid') ->via('get')   ->to('collection#view');
+  
     $r->route('proxy/get_uwmetadata_tree') ->via('get')   ->to('proxy#get_uwmetadata_tree');
     $r->route('proxy/get_uwmetadata_languages') ->via('get')   ->to('proxy#get_uwmetadata_languages');
     $r->route('proxy/get_help_tooltip') ->via('get')   ->to('proxy#get_help_tooltip');
@@ -197,11 +198,13 @@ sub startup {
     $r->route('proxy/objects') ->via('get')   ->to('proxy#search_owner');
     $r->route('proxy/objects/:username') ->via('get')   ->to('proxy#search_owner');
     $r->route('proxy/search') ->via('get')   ->to('proxy#search');
+    $r->route('proxy/object/:pid/related') ->via('get')   ->to('proxy#get_related_objects');
     
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
     
-    $auth->route('selection') 			->via('post')   ->to('frontend#selection_update');
+    $auth->route('selection') 			->via('post')   ->to('frontend#post_selection');
+    $auth->route('selection') 			->via('get')   ->to('frontend#get_selection');
     
     $auth->route('uwmetadata_editor/:pid') ->via('get')  ->to('object#uwmetadataeditor');
     
@@ -209,7 +212,8 @@ sub startup {
     $auth->route('uwmetadata_template_editor/:tid') ->via('get')  ->to('object#uwmetadata_template_editor'); 
     
     $auth->route('proxy/get_object_uwmetadata/:pid') ->via('get')   ->to('proxy#get_object_uwmetadata');
-    $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');
+    $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');    
+    $auth->route('proxy/collection/create') ->via('post')   ->to('proxy#collection_create');
         
     $auth->route('template') ->via('put')   ->to('template#create');
     $auth->route('template/:tid') ->via('post')   ->to('template#save');    

@@ -3,13 +3,19 @@ angular.module('frontendService', [])
 	
 	return {
 		
-		updateSelection: function(ids){
+		updateSelection: function(selection){
 			return $http({
 				method  : 'POST',
 				url     : $('head base').attr('href')+'selection',
-				data  : { ids: ids }
+				data  : { selection: selection }
+			});	        
+		},
+		
+		getSelection: function(selection){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'selection'
 			});	        
 		}
-		
 	}
 });

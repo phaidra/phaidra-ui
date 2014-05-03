@@ -1,15 +1,15 @@
-% layout 'default', title => 'Objects';
+% layout 'default', title => 'Members';
 
 % content_for header => begin
    
-   <script type="text/javascript" src="<%= url_for '/js/controllers/objects.js' %>"></script>    
+   <script type="text/javascript" src="<%= url_for '/js/controllers/members.js' %>"></script>    
         
 % end
 
 %= include 'alerts'
 
 	
-<div class="container" data-ng-controller="ObjectsCtrl" data-ng-init="init('<%= $init_data %>')">
+<div class="container" data-ng-controller="MembersCtrl" data-ng-init="init('<%= $init_data %>')">
 
 	<nav ng-if="totalItems && current_user" id="control-panel" class="navbar navbar-default list-navbar">
 	
@@ -69,20 +69,18 @@
 	  <thead>
 	  <tr>
 	  	<th ng-if="current_user"><span class="grey" ng-if="selection.length">{{selection.length}}</span></th>
+	  	<th>#</th>
 	  	<th>Id</th>
-	    <th>Title</th>
-	    <th>Created</th>
-	    <th>Updated</th>
+	    <th>Title</th>	    
 	    <th></th>
 	  </tr>
 	  </thead>
 	  <tbody>
-	  <tr ng-repeat="object in objects | orderBy:'updated'">
-	    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)"></span></td>
-	  	<td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.PID}}</a></td>
-	    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a></td>
-	    <td>{{object['fgs.createdDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
-	    <td>{{object['fgs.lastModifiedDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	  <tr ui-sortable="sortableOptions" class="object-list" ng-model="objects" ng-repeat="object in objects | orderBy:'updated'">
+	    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>
+	  	<td>{{object.pos}}</td>
+	  	<td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.pid}}</a></td>
+	    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.title}}</a></td>
 	    <td>
 	      <a href="/uwmetadata_editor/{{object.PID}}"><i class="glyphicon glyphicon-pencil"></i></a>
 	    </td>

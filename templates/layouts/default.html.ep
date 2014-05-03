@@ -35,6 +35,7 @@
   	<!--<script src="<%= url_for '/js/angular.min.js' %>"></script>-->
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-animate.js"></script>
+  	<script src="<%= url_for '/js/sortable-angular-1.2.js' %>"></script>
   	
   	<!-- AngularJS Select2 -->
   	<!--<script type="text/javascript" src="<%= url_for '/js/ngselect2.js' %>"></script>-->
@@ -69,7 +70,8 @@
 	<script type="text/javascript" src="<%= url_for '/js/services/directory.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/search.js' %>"></script>
-	<script type="text/javascript" src="<%= url_for '/js/services/frontend.js' %>"></script>  
+	<script type="text/javascript" src="<%= url_for '/js/services/frontend.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/object.js' %>"></script>    
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
   	
   	<!-- Custom Phaidra CSS --> 
