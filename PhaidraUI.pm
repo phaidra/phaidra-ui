@@ -214,6 +214,7 @@ sub startup {
     $auth->route('proxy/get_object_uwmetadata/:pid') ->via('get')   ->to('proxy#get_object_uwmetadata');
     $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');    
     $auth->route('proxy/collection/create') ->via('post')   ->to('proxy#collection_create');
+    $auth->route('proxy/collection/:pid/members/order') ->via('post')   ->to('proxy#collection_order');
         
     $auth->route('template') ->via('put')   ->to('template#create');
     $auth->route('template/:tid') ->via('post')   ->to('template#save');    

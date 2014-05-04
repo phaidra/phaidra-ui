@@ -12,21 +12,6 @@ __PACKAGE__->attr('log');
 
 #sub is_async { 1 }
 
-=cut
-sub new {
-    my ($class) = @_;
-    my $self = $class->SUPER::new();
-    bless $self, $class;
-	
-	
-	#$logp->debug("XXXXX new session object");
-    #$self->mango($mango);
-    #$self->log($logp);
-
-    return $self;
-}
-=cut
-
 sub create {
     my ($self, $sid, $expires, $data) = @_;
     

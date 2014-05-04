@@ -24,6 +24,8 @@
   	<!-- jQuery -->
   	<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
   	<script src="<%= url_for '/js/jquery.min.js' %>"></script>
+  	<script src="<%= url_for '/js/jquery-ui-1.10.4.custom.min.js' %>"></script>
+
   	
   	<!-- Select2 -->
   	<!--<link rel="stylesheet" href="<%= url_for '/css/select2.css' %>">-->
@@ -126,13 +128,11 @@
       <ul class="nav navbar-nav">
         
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            
-            <li><a href="/templates/">My templates</a></li>
-            
-            <li><a href="/search/">My objects</a></li>
-            
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">My <b class="caret"></b></a>
+          <ul class="dropdown-menu">            
+            <li><a href="/templates/">Templates</a></li>            
+            <li><a href="/search/">Objects</a></li>
+            <li class="disabled"><a href="/settings/">Settings</a></li>
           </ul>
         </li>
                 
@@ -173,7 +173,7 @@
                           </div>
                           <div class="col-md-6"></div>
                           <div class="col-md-3">
-                          	<span class="glyphicon glyphicon-heart"></span>
+                          	<span class="glyphicon glyphicon-heart" title="(fnord)"></span>
                           </div>                          
                   </div>                  
   		</div>

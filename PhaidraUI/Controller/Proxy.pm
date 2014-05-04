@@ -25,8 +25,6 @@ sub get_object_uwmetadata {
 	
 	my $token = $self->load_token;	
 	
-	# we have to use the useragent from the controller, otherwise the async call does not work
-	# (probably needs ioloop etc)
   	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
   		my ($ua, $tx) = @_;
 
@@ -472,7 +470,7 @@ sub collection_create {
 	}
 	
 	my $token = $self->load_token;
-	#$self->app->log->debug("XXXXXXXX ".$self->app->dumper($self->req->json));
+
   	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
   		json => $self->req->json,
   	 	sub { 	
@@ -493,5 +491,44 @@ sub collection_create {
 
 }
 
+sub collection_order {
+	
+	my $self = shift;  				
+	
+	my $res = { alerts => [], status => 200 };
+	
+	my $pid = $self->stash('pid');
+	
+	my $url = Mojo::URL->new;
+	$url->scheme('https');
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/collection/$pid/members/order");
+	}else{
+		$url->path("/collection/$pid/members/order");
+	}
+	
+	my $token = $self->load_token;
+
+  	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
+  		json => $self->req->json,
+  	 	sub { 	
+	  		my ($ua, $tx) = @_;
+	
+		  	if (my $res = $tx->success) {
+		  		$self->render(json => $res->json, status => 200 );
+		  	}else {
+			 	my ($err, $code) = $tx->error;	 
+			 	if(exists($tx->res->json->{alerts})) {
+			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+			 	}else{
+			  		$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			 	}
+			}		
+  		}
+  	);
+
+}
 
 1;

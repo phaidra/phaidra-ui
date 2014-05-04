@@ -1,5 +1,5 @@
 
-app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryService, SearchService, FrontendService, promiseTracker) {
+app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryService, SearchService, ObjectService, FrontendService, promiseTracker) {
     
 	// we will use this to track running ajax requests to show spinner
 	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
@@ -10,9 +10,52 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 	
 	$scope.objects = [];
 	
+	$scope.pid = '';
+    $scope.totalItems = 0;
+    $scope.currentPage = 1;
+    $scope.maxSize = 10;
+    $scope.from = 1;
+    $scope.limit = 10;
+        
+	$scope.initdata = '';
+	$scope.current_user = '';	
+	
+	$scope.order_dirty = false;		
+	
+	// cannot do this in ui-sortable update event because at that moment the model
+	// was not yet updated, only the DOM
+	$scope.$watchCollection('objects', function() { 		
+		if($scope.order_dirty){
+			$scope.order_dirty = false;
+			// assign a pos to all objects, as they are now			
+			var members = [];
+			for(var i = 0; i < $scope.objects.length ; i++){
+				$scope.objects[i].pos = i;
+				members[i] = { pid: $scope.objects[i].pid, pos: i };
+			}
+			
+			var promise = ObjectService.orderCollection($scope.pid, members);
+		    $scope.loadingTracker.addPromise(promise);
+		    promise.then(
+		     	function(response) { 
+		     		$scope.alerts = response.data.alerts;
+		     		return false;
+		     	}
+		     	,function(response) {
+		     		$scope.alerts = response.data.alerts;
+		     		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+		     		return false;
+		     	}
+		    );
+		}
+		
+	});
+	
 	$scope.sortableOptions = {
 	    placeholder: "object",
-	    connectWith: ".object-list"
+	    update: function(e, ui) {
+			$scope.order_dirty = true;			
+		}
 	};
   
     
@@ -28,7 +71,7 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
     $scope.selectVisible = function(event){
     	$scope.selection = [];	
     	for( var i = 0 ; i < $scope.objects.length ; i++ ){	     			
-	    	$scope.selection.push($scope.objects[i].PID);
+	    	$scope.selection.push($scope.objects[i].pid);
 	    }
     	$scope.saveSelection();
     };
@@ -97,13 +140,6 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
     	}	
     	$scope.saveSelection();
     };
-    
-    $scope.pid = '';
-    $scope.totalItems = 0;
-    $scope.currentPage = 1;
-    $scope.maxSize = 10;
-    $scope.from = 1;
-    $scope.limit = 10;
   
     $scope.setPage = function (page) {
     	if(page == 1){
@@ -117,13 +153,11 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
     	$scope.currentPage = page;
     };
 
-	$scope.initdata = '';
-	$scope.current_user = '';
-			
 	$scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
 		$scope.pid = $scope.initdata.pid;
+		$scope.owner = $scope.initdata.owner;
     	
     	$scope.query = $scope.initdata.query;
     	$scope.getCollectionMembers($scope.pid, $scope.from, $scope.limit);
@@ -154,6 +188,21 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 	    );    	      
   };   
 
+    $scope.createCollection = function () {
+
+	  var modalInstance = $modal.open({
+            templateUrl: $('head base').attr('href')+'views/partials/create_collection.html',
+            controller: CollModalCtrl,
+            resolve: {
+		      current_user: function(){
+		        return $scope.current_user;
+		      },
+		      selection: function(){
+			    return $scope.selection;
+			  }
+		    }
+	  });
+  };
  
 });
 

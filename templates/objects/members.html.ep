@@ -64,27 +64,27 @@
 	        </div>                          
     	</div> 
 	</div> 
-	
+
 	<table class="table">
 	  <thead>
-	  <tr>
-	  	<th ng-if="current_user"><span class="grey" ng-if="selection.length">{{selection.length}}</span></th>
-	  	<th>#</th>
-	  	<th>Id</th>
-	    <th>Title</th>	    
-	    <th></th>
-	  </tr>
+		  <tr>
+		  	<th ng-if="current_user"><span class="grey" ng-if="selection.length">{{selection.length}}</span></th>
+		  	<th>#</th>
+		  	<th>Id</th>
+		    <th>Title</th>	    
+		    <th></th>
+		  </tr>
 	  </thead>
-	  <tbody>
-	  <tr ui-sortable="sortableOptions" class="object-list" ng-model="objects" ng-repeat="object in objects | orderBy:'updated'">
-	    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>
-	  	<td>{{object.pos}}</td>
-	  	<td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.pid}}</a></td>
-	    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.title}}</a></td>
-	    <td>
-	      <a href="/uwmetadata_editor/{{object.PID}}"><i class="glyphicon glyphicon-pencil"></i></a>
-	    </td>
-	  </tr>	  
+	  <tbody <% if($init_data_perl->{current_user}->{username} eq $init_data_perl->{owner}){ %> ui-sortable="sortableOptions" ng-model="objects" <% } %>>
+		  <tr class="object-list" ng-repeat="object in objects">
+		    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>
+		  	<td>{{object.pos}}</td>
+		  	<td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.pid}}</a></td>
+		    <td><a href="/uwmetadata_editor/{{object.PID}}" target="_blank">{{object.title}}</a></td>
+		    <td>
+		      <a href="/uwmetadata_editor/{{object.PID}}"><i class="glyphicon glyphicon-pencil"></i></a>
+		    </td>
+		  </tr>	  
 	  </tbody>
 	</table>
 	
