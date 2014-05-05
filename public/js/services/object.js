@@ -6,7 +6,7 @@ angular.module('objectService', [])
 		createCollection: function(uwmetadata, members){
 			return $http({
 				method  : 'POST',
-				url     : $('head base').attr('href')+'/proxy/collection/create',
+				url     : $('head base').attr('href')+'proxy/collection/create',
 				data  : { uwmetadata: uwmetadata, members: members }
 			});	        
 		},
@@ -14,7 +14,7 @@ angular.module('objectService', [])
 		orderCollection: function(pid, members){
 			return $http({
 				method  : 'POST',
-				url     : $('head base').attr('href')+'/proxy/collection/'+pid+'/members/order',
+				url     : $('head base').attr('href')+'proxy/collection/'+pid+'/members/order',
 				data  : { members: members }
 			});	        
 		}

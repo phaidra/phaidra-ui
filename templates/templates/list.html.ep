@@ -10,7 +10,8 @@
 	
 <div class="container" data-ng-controller="TemplatesCtrl"  data-ng-init="init('<%= $init_data %>')">
 
-	<input type="text" ng-model="search" class="search-query form-control" placeholder="Filter">
+	<input type="text" ng-model="filterinput" class="search-query form-control" placeholder="Filter">
+
 	<table class="table">
 	  <thead>
 	  <tr>
@@ -21,7 +22,7 @@
 	  </tr>
 	  </thead>
 	  <tbody>
-	  <tr ng-repeat="template in templates | filter:search | orderBy:'updated'">
+	  <tr ng-repeat="template in templates| filter:filterinput | orderBy:'updated':true">
 	    <td><a href="/uwmetadata_template_editor/{{template._id}}" target="_blank">{{template.title}}</a></td>
 	    <td>{{template.created | date:'dd.MM.yyyy HH:mm:ss'}}</td>
 	    <td>{{template.updated | date:'dd.MM.yyyy HH:mm:ss'}}</td>

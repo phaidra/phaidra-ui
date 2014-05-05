@@ -250,6 +250,12 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     	}
     };
     
+    $scope.search = function(){    	
+    	if(!(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
+    		window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
+    	}
+    };
+    
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };

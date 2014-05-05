@@ -5,12 +5,18 @@ use warnings;
 use v5.10;
 use Mojo::JSON qw(encode_json);
 use base 'Mojolicious::Controller';
+use PhaidraUI::Model::Object;
 
 sub uwmetadataeditor {
     my $self = shift;  	
     $self->stash(uwmetadataeditor_mode => 'object');
-    my $init_data = { pid => $self->stash('pid'), current_user => $self->current_user };
+    
+    my $object_model = PhaidraUI::Model::Object->new;	
+	my $owner = $object_model->get_owner($self, $self->stash('pid'));
+    
+    my $init_data = { pid => $self->stash('pid'), current_user => $self->current_user, owner => $owner };
     $self->stash(init_data => encode_json($init_data));
+    $self->stash(init_data_perl => $init_data);
     $self->render('uwmetadataeditor');	
 }
 

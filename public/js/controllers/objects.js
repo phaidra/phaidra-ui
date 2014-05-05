@@ -9,6 +9,17 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 	$scope.selection = [];	 
 	
 	$scope.objects = [];
+	
+	$scope.initdata = '';
+	$scope.current_user = '';
+	    
+    $scope.totalItems = 0;
+    $scope.currentPage = 1;
+    $scope.maxSize = 10;
+    $scope.from = 1;
+    $scope.limit = 10;
+    $scope.sort = 'uw.general.title,SCORE';
+    $scope.reverse = 0;
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
@@ -91,14 +102,7 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	}	
     	$scope.saveSelection();
     };
-    
-    $scope.totalItems = 0;
-    $scope.currentPage = 1;
-    $scope.maxSize = 10;
-    $scope.from = 1;
-    $scope.limit = 10;
-    $scope.sort = 'uw.general.title,SCORE';
-    $scope.reverse = 0;
+
   
     $scope.setPage = function (page) {
     	if(page == 1){
@@ -109,13 +113,10 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	if($scope.query){    		    		
     		$scope.search($scope.query, $scope.from, $scope.limit, $scope.sort, $scope.reverse);
     	}else{
-    		$scope.getUserObjects(null, $scope.from, $scope.limit, $scope.sort, $scope.reverse); // no username -> current_user    		
+    		$scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user    		
     	}
     	$scope.currentPage = page;
     };
-
-	$scope.initdata = '';
-	$scope.current_user = '';
 			
 	$scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
@@ -125,7 +126,7 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	if($scope.query){
     		$scope.search($scope.query, $scope.from, $scope.limit, $scope.sort, $scope.reverse);
     	}else{
-    		$scope.getUserObjects(null, $scope.from, $scope.limit, $scope.sort, $scope.reverse); // no username -> current_user
+    		$scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user
     	}
     	
     	if($scope.current_user){

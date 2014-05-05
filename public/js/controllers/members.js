@@ -27,18 +27,54 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 	$scope.$watchCollection('objects', function() { 		
 		if($scope.order_dirty){
 			$scope.order_dirty = false;
-			// assign a pos to all objects, as they are now			
-			var members = [];
-			for(var i = 0; i < $scope.objects.length ; i++){
-				$scope.objects[i].pos = i;
-				members[i] = { pid: $scope.objects[i].pid, pos: i };
-			}
-			
-			var promise = ObjectService.orderCollection($scope.pid, members);
+			// assign a pos to all objects, as they are now
+			var fields = ['PID'];
+			var promise = SearchService.getCollectionMembers($scope.pid, 1, 0, fields);
 		    $scope.loadingTracker.addPromise(promise);
 		    promise.then(
-		     	function(response) { 
+		     	function(response) {
 		     		$scope.alerts = response.data.alerts;
+		     		var members = [];
+		     		for( var i = 0 ; i < response.data.objects.length ; i++ ){	     			
+		     			members.push({ pid: response.data.objects[i].pid, pos: response.data.objects[i].pos});
+		     		}	
+		     		
+		     		// get new positions from this page
+		     		var new_pos_members = {};
+		     		for(var i = 0; i < $scope.objects.length ; i++){
+						var pos = i;
+						if($scope.from > 1){
+							pos = i + ($scope.from-1);
+						}	
+						new_pos_members[$scope.objects[i].pid] = pos;
+						// update pos on frontend
+						$scope.objects[i].pos = pos; 
+					}		     		
+
+		     		for(var i = 0; i < members.length ; i++){
+		     			// if this object was repositioned, assign new position
+						if(new_pos_members[members[i].pid]){
+							members[i].pos = new_pos_members[members[i].pid];
+						}else{
+							// otherwise assign the position it ha
+							members[i].pos = i;
+						}						
+					}		     		
+
+					var promise = ObjectService.orderCollection($scope.pid, members);
+				    $scope.loadingTracker.addPromise(promise);
+				    promise.then(
+				     	function(response) { 
+				     		$scope.alerts = response.data.alerts;
+				     		return false;
+				     	}
+				     	,function(response) {
+				     		$scope.alerts = response.data.alerts;
+				     		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+				     		return false;
+				     	}
+				    );
+		     		
 		     		return false;
 		     	}
 		     	,function(response) {
@@ -46,7 +82,8 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 		     		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
 		     		return false;
 		     	}
-		    );
+		    );   
+			
 		}
 		
 	});
@@ -78,7 +115,7 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 
     $scope.allGoldEverything = function(event){
     	var fields = ['PID'];
-	    var promise = SearchService.getCollectionMembers($scope.from, 0, fields);
+	    var promise = SearchService.getCollectionMembers($scope.pid, 1, 0, fields);
 	    $scope.loadingTracker.addPromise(promise);
 	    promise.then(
 	     	function(response) { 

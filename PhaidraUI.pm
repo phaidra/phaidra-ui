@@ -186,8 +186,7 @@ sub startup {
     $r->route('signout') 			->via('get')   ->to('authentication#signout');
     $r->route('loginform') 			->via('get')   ->to('authentication#loginform');
     
-    $r->route('search') ->via('get')   ->to('object#search');
-    $r->route('collection/:pid') ->via('get')   ->to('collection#view');
+    $r->route('search') ->via('get')   ->to('object#search');    
   
     $r->route('proxy/get_uwmetadata_tree') ->via('get')   ->to('proxy#get_uwmetadata_tree');
     $r->route('proxy/get_uwmetadata_languages') ->via('get')   ->to('proxy#get_uwmetadata_languages');
@@ -222,6 +221,8 @@ sub startup {
     
     $auth->route('templates') ->via('get')   ->to('template#templates');
     $auth->route('templates/my') ->via('get')   ->to('template#my');
+        
+    $auth->route('collection/:pid') ->via('get')   ->to('collection#view');
     
     return $self;
 }

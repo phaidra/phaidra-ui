@@ -335,8 +335,8 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     	promise.then(
         	function(response) { 
         		$scope.alerts = response.data.alerts;
-        		$scope.languages = [];
-        		$scope.fields = [];    			
+        		//$scope.languages = [];
+        		//$scope.fields = [];    			
         		$scope.form_disabled = false;
         	}
         	,function(response) {

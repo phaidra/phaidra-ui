@@ -15,9 +15,11 @@
 			        <button ng-disabled="form.$invalid || form_disabled" data-ng-click="saveTemplateAs()" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-file"></span> Create template</button>
 			      </div>			      
 			      
+			      <% if($init_data_perl->{current_user}->{username} eq $init_data_perl->{owner}){ %>
 			      <div class="navbar-form navbar-right">			             
 					<button ng-disabled="form.$invalid || form_disabled" data-ng-click="save()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save to {{pid}}</button>									   
 				  </div>				  
+				  <% } %>
 			      
 	    	</div>
 		
