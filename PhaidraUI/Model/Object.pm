@@ -24,7 +24,8 @@ sub get_owner {
 	}
 	$url->query({q => "<info:fedora/$pid> <info:fedora/fedora-system:def/model#ownerId> *"});
 	
-  	my $get = $c->ua->get($url);  	
+	my $ua = Mojo::UserAgent->new;
+  	my $get = $ua->get($url);  	
   	if (my $r = $get->success) {
   		my @res = $r->json->{result};
   		# result -> first triple -> object

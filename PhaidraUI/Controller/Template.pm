@@ -65,6 +65,20 @@ sub save {
 
 }
 
+sub delete {
+	
+	my $self = shift;  	
+	my $tid = $self->stash('tid');
+	
+	$self->app->log->info("[".$self->current_user->{username}."] Removing template $tid");
+	
+	my $oid = Mango::BSON::ObjectID->new($tid);
+	
+	my $reply = $self->mango->db->collection('templates.uwmetadata')->remove({_id => $oid});
+		
+	$self->render(json => { alerts => [] }, status => 200);
+}
+
 
 sub create {
 	my $self = shift;  

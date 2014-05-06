@@ -214,10 +214,13 @@ sub startup {
     $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');    
     $auth->route('proxy/collection/create') ->via('post')   ->to('proxy#collection_create');
     $auth->route('proxy/collection/:pid/members/order') ->via('post')   ->to('proxy#collection_order');
+    $auth->route('proxy/collection/:pid/members/:itempid/order/:position') ->via('post')   ->to('proxy#collection_member_order');
+    $auth->route('proxy/collection/:pid/members/:itempid/order/') ->via('post')   ->to('proxy#collection_member_order');
         
     $auth->route('template') ->via('put')   ->to('template#create');
     $auth->route('template/:tid') ->via('post')   ->to('template#save');    
     $auth->route('template/:tid') ->via('get')   ->to('template#load');
+    $auth->route('template/:tid') ->via('delete')   ->to('template#delete');    
     
     $auth->route('templates') ->via('get')   ->to('template#templates');
     $auth->route('templates/my') ->via('get')   ->to('template#my');

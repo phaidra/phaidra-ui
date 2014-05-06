@@ -19,6 +19,7 @@
 
 .modal .load-spinner {
 	float: right;	
+	margin-top: 8px;
 }
 
 .right {
@@ -116,6 +117,10 @@
   	bottom: 0;
 }
 
+.popover .input-sm {
+	width:70px;
+}
+
 .icon-github {
     background: url("../img/github-16px.png") no-repeat scroll 0 0 transparent;
     height: 16px;
@@ -144,3 +149,7 @@
 .alert {
 	width: 50%;
 }*/
+
+.dragged-object {
+	background-color: white;
+}

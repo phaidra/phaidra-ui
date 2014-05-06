@@ -17,6 +17,13 @@ angular.module('objectService', [])
 				url     : $('head base').attr('href')+'proxy/collection/'+pid+'/members/order',
 				data  : { members: members }
 			});	        
-		}
+		},
+
+		collectionMemberPosition: function(collectionpid, itempid, itemposition){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'proxy/collection/'+collectionpid+'/members/'+itempid+'/order/'+itemposition
+			});	        
+}
 	}
 });

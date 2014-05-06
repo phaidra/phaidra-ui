@@ -49,6 +49,13 @@ angular.module('metadataService', [])
 	    	});	        
 	    },
 	    
+		deleteTemplate: function(tid){
+			return $http({
+				method  : 'DELETE',
+				url     : $('head base').attr('href')+'template/'+tid
+			});	        
+		},
+	    
 		loadTemplate: function(tid){
 			return $http({
 				method  : 'GET',

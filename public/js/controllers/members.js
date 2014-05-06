@@ -1,5 +1,5 @@
 
-app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryService, SearchService, ObjectService, FrontendService, promiseTracker) {
+app.controller('MembersCtrl',  function($scope, $modal, $location, $timeout, DirectoryService, SearchService, ObjectService, FrontendService, promiseTracker) {
     
 	// we will use this to track running ajax requests to show spinner
 	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
@@ -24,78 +24,46 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 	
 	// cannot do this in ui-sortable update event because at that moment the model
 	// was not yet updated, only the DOM
-	$scope.$watchCollection('objects', function() { 		
+	
+	$scope.$watchCollection('objects', function() { 	
+	
 		if($scope.order_dirty){
 			$scope.order_dirty = false;
-			// assign a pos to all objects, as they are now
-			var fields = ['PID'];
-			var promise = SearchService.getCollectionMembers($scope.pid, 1, 0, fields);
-		    $scope.loadingTracker.addPromise(promise);
-		    promise.then(
-		     	function(response) {
-		     		$scope.alerts = response.data.alerts;
-		     		var members = [];
-		     		for( var i = 0 ; i < response.data.objects.length ; i++ ){	     			
-		     			members.push({ pid: response.data.objects[i].pid, pos: response.data.objects[i].pos});
-		     		}	
-		     		
-		     		// get new positions from this page
-		     		var new_pos_members = {};
-		     		for(var i = 0; i < $scope.objects.length ; i++){
-						var pos = i;
-						if($scope.from > 1){
-							pos = i + ($scope.from-1);
-						}	
-						new_pos_members[$scope.objects[i].pid] = pos;
-						// update pos on frontend
-						$scope.objects[i].pos = pos; 
-					}		     		
-
-		     		for(var i = 0; i < members.length ; i++){
-		     			// if this object was repositioned, assign new position
-						if(new_pos_members[members[i].pid]){
-							members[i].pos = new_pos_members[members[i].pid];
-						}else{
-							// otherwise assign the position it ha
-							members[i].pos = i;
-						}						
-					}		     		
-
-					var promise = ObjectService.orderCollection($scope.pid, members);
-				    $scope.loadingTracker.addPromise(promise);
-				    promise.then(
-				     	function(response) { 
-				     		$scope.alerts = response.data.alerts;
-				     		return false;
-				     	}
-				     	,function(response) {
-				     		$scope.alerts = response.data.alerts;
-				     		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-				     		return false;
-				     	}
-				    );
-		     		
-		     		return false;
-		     	}
-		     	,function(response) {
-		     		$scope.alerts = response.data.alerts;
-		     		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-		     		return false;
-		     	}
-		    );   
 			
+			// the position of the objects in the array was already updated, 	
+			// but we have to manually update the 'pos' attribute
+		    for(var i = 0; i < $scope.objects.length ; i++){
+		    	$scope.objects[i].pos = i;						 
+			}		     		
+
 		}
 		
 	});
 	
+	
 	$scope.sortableOptions = {
-	    placeholder: "object",
+	    placeholder: "dragged-object",
 	    update: function(e, ui) {
-			$scope.order_dirty = true;			
+			$scope.order_dirty = true;	
+			var itempid = $scope.objects[ui.item.sortable.index].pid;
+			var newposition = ui.item.sortable.dropindex;
+			var promise = ObjectService.collectionMemberPosition($scope.pid, itempid, newposition);
+			$scope.loadingTracker.addPromise(promise);
+			promise.then(
+				function(response) { 
+				   	$scope.alerts = response.data.alerts;
+				   	//$scope.setPage($scope.currentPage);
+				   	return false;
+				}
+				,function(response) {
+				   	$scope.alerts = response.data.alerts;
+				   	$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+				   	return false;
+				}
+			);
 		}
 	};
-  
-    
+      
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
@@ -195,7 +163,7 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 		$scope.current_user = $scope.initdata.current_user;
 		$scope.pid = $scope.initdata.pid;
 		$scope.owner = $scope.initdata.owner;
-    	
+		
     	$scope.query = $scope.initdata.query;
     	$scope.getCollectionMembers($scope.pid, $scope.from, $scope.limit);
     	
@@ -215,6 +183,18 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
 	     		$scope.alerts = response.data.alerts;
 	     		$scope.objects = response.data.objects;
 	     		$scope.totalItems = response.data.hits;
+	     		// little hack to run the editable init after the angular digest 
+	     		$timeout(function() { $('.position-editable').editable({
+		     			success: function(response) {	     						
+	     					$scope.setPage($scope.currentPage);	     						
+		     			},
+		     			error: function(response) {	   		     			
+		     				$scope.alerts = response.responseJSON.alerts;
+		     				return $scope.alerts[0].msg; 
+		     			},
+		     			emptytext: '?'
+		     			})
+	     		},0);				
 	     		$scope.form_disabled = false;
 	     	}
 	     	,function(response) {
@@ -243,4 +223,7 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, DirectoryServ
  
 });
 
-
+$(document).ready(function() {
+    //toggle `popup` / `inline` mode
+    $.fn.editable.defaults.mode = 'popup';        
+});

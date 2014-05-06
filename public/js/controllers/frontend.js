@@ -242,6 +242,7 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
 	$scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
+		$scope.baseurl = $('head base').attr('href');
     };
         
     $scope.hitEnterSearch = function(evt){    	
@@ -276,5 +277,8 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
       
 });
 
-
-
+/*
+app.run(function(editableOptions) {
+  editableOptions.theme = 'bs3';
+});
+*/

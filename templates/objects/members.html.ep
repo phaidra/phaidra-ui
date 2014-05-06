@@ -43,7 +43,7 @@
 						    Action <span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu" role="menu">
-						    <li><a href="" >Create collection</a></li>
+						    <li><a href="" data-ng-click="createCollection()">Create collection</a></li>
 						    <li class="disabled"><a href="" >Edit</a></li>						    						    
 						  </ul>
 					  </div>								   
@@ -64,7 +64,6 @@
 	        </div>                          
     	</div> 
 	</div> 
-
 	<table class="table">
 	  <thead>
 		  <tr>
@@ -78,8 +77,8 @@
 	  </thead>
 	  <tbody <% if($init_data_perl->{current_user}->{username} eq $init_data_perl->{owner}){ %> ui-sortable="sortableOptions" ng-model="objects" <% } %>>
 		  <tr class="object-list" ng-repeat="object in objects">
-		    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>
-		  	<td>{{object.pos}}</td>
+		    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>		  
+		  	<td><a href="" class="position-editable" data-url="{{baseurl}}/proxy/collection/{{pid}}/members/{{object.pid}}/order/" data-value="" data-name="position" data-type="text" data-pk="{{object.pid}}" data-title="New position">{{object.pos}}</a></td>
 		  	<td><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.pid}}///60" class="img-thumbnail" width="60" height="60" title="{{object.title}}" alt="{{object['uw.general.title']}}"></td>
 		  	<td>	  		
 	  		<div ng-switch on="object.cmodel">
@@ -94,7 +93,7 @@
 	  	<td>	  		
 	  		<div ng-switch on="object.cmodel">
 	  			<div ng-switch-when="cmodel:Collection">
-	  				<pre>{{object.cmodel}}</pre><a href="/collection/{{object.pid}}" target="_blank">{{object.title}}</a>	
+	  				<a href="/collection/{{object.pid}}" target="_blank">{{object.title}}</a>	
 	  			</div>
 	  			<div ng-switch-default>
 	  				{{object.title}}

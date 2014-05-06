@@ -19,6 +19,7 @@
 	    <th>Created</th>
 	    <th>Updated</th>
 	    <th><a href="/uwmetadata_template_editor/"><i class="glyphicon glyphicon-plus"></i></a></th>
+	    <th></th>
 	  </tr>
 	  </thead>
 	  <tbody>
@@ -28,6 +29,9 @@
 	    <td>{{template.updated | date:'dd.MM.yyyy HH:mm:ss'}}</td>
 	    <td>
 	      <a href="/uwmetadata_template_editor/{{template._id}}"><i class="glyphicon glyphicon-pencil"></i></a>
+	    </td>
+	    <td>
+	      <a href="" ng-click="deleteTemplate(template._id)"><i class="glyphicon glyphicon-remove"></i></a>
 	    </td>
 	  </tr>
 	  </tbody>
