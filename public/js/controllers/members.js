@@ -33,7 +33,7 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, $timeout, Dir
 			// the position of the objects in the array was already updated, 	
 			// but we have to manually update the 'pos' attribute
 		    for(var i = 0; i < $scope.objects.length ; i++){
-		    	$scope.objects[i].pos = i;						 
+		    	$scope.objects[i].pos = ($scope.from-1)+i;						 
 			}		     		
 
 		}
@@ -46,7 +46,7 @@ app.controller('MembersCtrl',  function($scope, $modal, $location, $timeout, Dir
 	    update: function(e, ui) {
 			$scope.order_dirty = true;	
 			var itempid = $scope.objects[ui.item.sortable.index].pid;
-			var newposition = ui.item.sortable.dropindex;
+			var newposition = ui.item.sortable.dropindex+($scope.from-1);
 			var promise = ObjectService.collectionMemberPosition($scope.pid, itempid, newposition);
 			$scope.loadingTracker.addPromise(promise);
 			promise.then(
