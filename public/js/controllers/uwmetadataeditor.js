@@ -667,7 +667,7 @@ app.directive('phaidraDuration', function() {
           restrict: 'E',
           link: link,
           replace: true,
-          templateUrl: $('head base').attr('href')+'views/directives/duration.html',
+          template: '<div class="duration"><input class="form-control" maxlength="2" ng-pattern="regex_duration" type="text" ng-model="durationObject.hours" placeholder="00"  ><span class="input-group-addon">Hours</span><input class="form-control" maxlength="2" ng-pattern="regex_duration" type="text" ng-model="durationObject.minutes" placeholder="00"  ><span class="input-group-addon">Minutes</span><input class="form-control" maxlength="2" ng-pattern="regex_duration" type="text" ng-model="durationObject.seconds" placeholder="00"  ><span class="input-group-addon">Seconds</span></div>',
           scope: {
         	  duration: '=duration'
             }

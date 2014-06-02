@@ -1,5 +1,7 @@
 % layout 'default', title => 'Metadataeditor';
 
+%= include 'partials_cache'
+
 % content_for header => begin
    
    <script type="text/javascript" src="<%= url_for '/js/controllers/uwmetadataeditor.js' %>"></script>
