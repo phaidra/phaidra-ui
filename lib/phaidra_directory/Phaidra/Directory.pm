@@ -30,6 +30,24 @@ sub authenticate($$$$){
 	$app->log->error("This method is not implemented");	
 }
 
+sub validate_user(){
+	my $app = shift;
+	my $username = shift; 
+	my $password = shift;
+	my $extradata = shift;
+	
+	my $ret = authenticate($app, $username, $password, $extradata);
+	
+	# Mojolicious::Plugin::Authenticate requires that error returns undef and success uid
+	if($ret->{status} eq 200){
+		$app->log->info("successfuly authenticated $username");
+		return $username;
+	}else{
+		$app->log->error("authentication failed, error code: ".$ret->{status}."\n".$app->dumper($ret->{alerts}));
+		return undef;	
+	}
+}
+
 sub get_name {    
 	my $self = shift;
 	my $c = shift;
@@ -147,8 +165,7 @@ sub get_pers_funktion_name {
 	$c->app->log->error("This method is not implemented");
 }
   
-# getLoginData
-sub get_login_data {
+sub get_user_data {
 	my $self = shift;
 	my $c = shift;
 	my $username = shift;

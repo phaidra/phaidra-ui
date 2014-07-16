@@ -36,7 +36,7 @@ sub startup {
 			my $self = shift;
 			my $username  = shift;
 			$self->app->log->info("Loading user: ".$username);
-			return $self->directory->get_login_data($self, $username);
+			return $self->directory->get_user_data($self, $username);
 		},
 		validate_user => sub {
 			my ($self, $username, $password, $extradata) = @_;
