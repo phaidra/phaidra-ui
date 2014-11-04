@@ -1,4 +1,4 @@
-phaidra-api 
+phaidra-ui
 ===========
 
 Prerequisities:
