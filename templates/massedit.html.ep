@@ -1,0 +1,185 @@
+
+% layout 'default', title => 'Objects';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/massedit.js' %>"></script>    
+        
+% end
+
+%= include 'alerts'
+
+
+
+
+<div class="container" data-ng-controller="MasseditCtrl" data-ng-init="init('<%= $init_data %>')">
+		
+	<nav class="navbar navbar-default list-navbar">
+                <div class="navbar-form navbar-left">			      
+		          <div class="btn-group">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						    <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': massedit.selection.length > 0}" ></span> <span class="caret"></span>
+					</button>
+						  <ul class="dropdown-menu" role="menu">
+						    <li><a href="" data-ng-click="selectAll()">All</a></li>
+						    <li><a href="" data-ng-click="selectNone()">None</a></li>
+						    <li><a href="" data-ng-click="selectVisible()">Visible</a></li>						    
+						  </ul>						 
+			  </div>
+			  <div class="btn-group animate-if" >
+				        <button  data-ng-click="saveSelectionInMassedit()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						    Mass edit templates <span class="caret"></span>
+				        </button>
+				         <ul class="dropdown-menu" role="menu">
+						    <li><a href="" data-ng-click="templateSave()">Save mass edit template</a></li>
+						    <li><a href="" data-ng-click="templateSaveAs()">Save As mass edit template</a></li>
+						    <li><a href="" data-ng-click="templateLoad()">Load mass edit template</a></li>
+						    <li><a href="" data-ng-click="templateDelete()">Delete mass edit template</a></li>
+						    <!-- <li><a href="" data-ng-click="editCollection()" >Edit</a></li> 
+						    <li><a href="/massedit/" >Edit</a></li>-->
+				         </ul>
+			  </div>    	
+			  <div class="btn-group animate-if" ng-if="massedit.selection.length" >
+				        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						    Action <span class="caret"></span>
+				        </button>
+				         <ul class="dropdown-menu" role="menu">
+						    <li><a href="" data-ng-click="createCollection()">Create collection</a></li>
+						    <!-- <li><a href="" data-ng-click="editCollection()" >Edit</a></li> -->
+						    <li><a href="/massedit/" >Edit</a></li>
+				         </ul>
+			  </div>
+
+ 			  <div ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical" > 
+                                  <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="fildToEdit" data-toggle="dropdown" data-ng-click="getFields()">
+                                                 Add field to be mass edited
+                                                 <span class="caret"></span>
+                                         </button>
+                                         <ul class="dropdown-menu dropdown-menu-massedit" role="menu" aria-labelledby="dropdownMenu1"  >
+                                               <li role="presentation" ng-repeat="field in uwmFields | orderBy:['xmlns','xmlname']">
+                                                      <a role="menuitem" tabindex="-1" href="" data-ng-click="addField(field.xmlname)">{{field.xmlns}} : {{field.xmlname}}</a>
+                                                </li>
+                                         </ul>
+                                 </div>
+
+                         </div>
+		</div>
+
+
+       </nav>
+       <nav>
+                <div class="navbar-form well massedit-well1" >
+	            
+	                 <div class="navbar-form navbar-left">
+	                        <form id="uploadbanner" enctype="multipart/form-data" method="post" action="massedit">
+                                       <input class="btn btn-default" id="fileupload" name="scv" type="file" />
+                                       <input ng-click="csvfileselected.onSubmit($event)" class="btn btn-default" type="submit" value="Load from csv" id="submit" />
+                                </form>
+                         </div>
+                         <div class="navbar-form navbar-left">
+                              <form id="download" enctype="multipart/form-data" method="post" action="massedit/savecsv">
+                                <input class="hidden" id="data" name="data"  ng-model="saveAsCsv" />
+                                <input class="btn btn-default" ng-click="preparforsaving()" type="submit" value="Save as csv" id="submit" />
+                              </form>
+                         </div>
+  
+               </div>
+
+       </nav>
+                      <button type="button" class="btn  btn-success btn-lg massedit-aplly-button" data-ng-click="apllychanges()">
+                                         Apply changes
+                      </button> 
+	<div class="container-fluid">
+		         <div class="row">
+	     	                 <div class="col-md-2">
+	        	                  <span class="hits">{{massedit.datastructure.length}} hits</span>
+	                         </div>
+	                         <div class="col-md-8">
+	                                  <center>
+	                                            <pagination total-items="massedit.datastructure.length" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages">
+	                                            </pagination>               
+	                                            
+	                                            <div ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
+                                                              <div class="dropdown">
+                                                                      <button class="btn btn-default dropdown-toggle massedit-button-recordsperpage" type="button" id="recordsperpage" data-toggle="dropdown">
+                                                                              per page
+                                                                              <span class="caret"></span>
+                                                                      </button>
+                                                                      <ul class="dropdown-menu dropdown-menu-massedit massedit-ul-recordsperpage" role="menu" aria-labelledby="dropdownMenu1"  >
+                                                                                <li role="presentation">
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(5)">5</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(10)">10</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(20)">20</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(50)">50</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(100)">100</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(500)">500</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(1000)">1000</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(10000)">10000</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage('All')">All</a>
+                                                                                </li>
+                                                                      </ul>
+                                                               </div>
+
+                                                      </div>
+	                                  </center>
+	                         </div>
+	                         <div class="col-md-2">
+	        	                   <span class="pages">{{currentPage}} / {{numPages}}</span>
+	                         </div>                          
+    	                </div> 
+	</div> 
+	
+	<div ng-if="massedit.current_template" class="bold" >Currently editing template: {{massedit.current_template}} </div>
+	<table class="table">
+	  <thead>
+	  <tr>
+	  	<th ng-if="current_user"><span class="grey" ng-if="massedit.datastructure.length">{{massedit.datastructure.length}}</span></th>
+	  	<th></th>
+	  	<th>Id</th>
+	         <th ng-repeat="field in massedit.changesFirst">
+	           {{field.field}} 
+	           <button type="button" class="btn btn-default btn-lg massedit-button" data-ng-click="removeField(field.field)">remove</button>
+	         </th>
+	    <th>
+	        <a role="menuitem" tabindex="-1" href="" data-ng-click="addRecord()"><i class="glyphicon glyphicon-plus"></i></a>
+	    </th>
+	    <th>
+	         <a ng-if="massedit.selection.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAll()">All/<i class="glyphicon glyphicon-trash"></i></a>
+	    </th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr ng-class="{'grey': massedit.selection.indexOf(object.PID) == -1}" ng-repeat="object in massedit.datastructuredisplay ">	  
+	     <td ng-if="current_user">
+	            <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': massedit.selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)">
+	            </span>
+	     </td>
+	     <td><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.PID}}///60" class="img-thumbnail" width="60" height="60" title="{{object['uw.general.title']}}" alt="{{object['uw.general.title']}}"></td>
+	  	    <td>	  		
+	  	 	<div ng-switch on="object['fgs.contentModel']">
+	  			<div ng-switch-when="cmodel:Collection">
+	  				<a href="/collection/{{object.PID}}" target="_blank">{{object.PID}}</a>	
+	  			</div>
+	  			<div ng-switch-default>
+	  				{{object.PID}}
+	  		        </div>
+	  	        </div>
+	     </td>   
+	     <td ng-repeat="field in object.changes">
+	            {{field.value}}
+	     </td>
+	     <td>
+	           <a role="menuitem" tabindex="-1" href="" data-ng-click="editRecord(object.PID)"><i class="glyphicon glyphicon-pencil"></i></a>
+	     </td>
+	     <td>
+	           <a role="menuitem" tabindex="-1" href="" data-ng-click="deleteRecord(object.PID)"><i class="glyphicon glyphicon-trash"></i></a>
+	     </td>
+	  </tr>	  
+	  </tbody>
+	</table>
+	
+</div>
+
+
+
