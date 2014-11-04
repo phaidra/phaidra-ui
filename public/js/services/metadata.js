@@ -2,7 +2,7 @@ angular.module('metadataService', [])
 .factory('MetadataService', function($http) {
 	
 	return {
-		getUwmetadataFromObject: function(pid) {
+	    getUwmetadataFromObject: function(pid) {
 	         //return the promise directly.
 	         return $http({
 	             method  : 'GET',
@@ -11,14 +11,14 @@ angular.module('metadataService', [])
 	         });
 	    },
 	
-		getUwmetadataTree: function() {
+	    getUwmetadataTree: function() {
 	        return $http({
 	            method  : 'GET',
 	            url     : $('head base').attr('href')+'proxy/get_uwmetadata_tree'
 	        });	        
 	    },
 		
-		getLanguages: function() {
+	    getLanguages: function() {
 	        return $http({
 	            method  : 'GET',
 	            url     : $('head base').attr('href')+'proxy/get_uwmetadata_languages'
@@ -49,21 +49,21 @@ angular.module('metadataService', [])
 	    	});	        
 	    },
 	    
-		deleteTemplate: function(tid){
+	   deleteTemplate: function(tid){
 			return $http({
 				method  : 'DELETE',
 				url     : $('head base').attr('href')+'template/'+tid
 			});	        
 		},
 	    
-		loadTemplate: function(tid){
+	   loadTemplate: function(tid){
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'template/'+tid
 			});	        
 	    },
 	    
-		getMyTemplates: function(){
+	   getMyTemplates: function(){
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'templates/my'

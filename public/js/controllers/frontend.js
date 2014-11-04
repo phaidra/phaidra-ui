@@ -1,4 +1,4 @@
-var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService']);
 
 var SigninModalCtrl = function ($scope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
 		
@@ -22,11 +22,11 @@ var SigninModalCtrl = function ($scope, $modalInstance, DirectoryService, Fronte
     	
 	$scope.signin = function () {
 		
-		$scope.form_disabled = true;
+	      $scope.form_disabled = true;
 		
-		var promise = DirectoryService.signin($scope.user.username, $scope.user.password);		
-    	$scope.loadingTracker.addPromise(promise);
-    	promise.then(
+	      var promise = DirectoryService.signin($scope.user.username, $scope.user.password);		
+    	      $scope.loadingTracker.addPromise(promise);
+    	      promise.then(
     		function(response) { 
     			$scope.form_disabled = false;
     			$scope.alerts = response.data.alerts;
@@ -227,24 +227,26 @@ var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectSer
 	};
 };
 
-
-app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker) {
+app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker,FrontendService) {
     
-	// we will use this to track running ajax requests to show spinner	
-	$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
+   
+    // we will use this to track running ajax requests to show spinner	
+    $scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
 	
     $scope.alerts = [];        
     $scope.query = '';   
     
-	$scope.initdata = '';
-	$scope.current_user = '';
+    
+    $scope.initdata = '';
+    $scope.current_user = '';
 			
-	$scope.init = function (initdata) {
-		$scope.initdata = angular.fromJson(initdata);
+    $scope.init = function (initdata) {
+                 $scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
-		$scope.baseurl = $('head base').attr('href');
+		$scope.baseurl = $('head base').attr('href'); 
+		//$scope.initdataTemp = initdataTemp;
     };
-        
+    
     $scope.hitEnterSearch = function(evt){    	
     	if(angular.equals(evt.keyCode,13) && !(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
     		window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
@@ -255,7 +257,14 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     	if(!(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
     		window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
     	}
+    	console.log("FrontendCtrl scope: ", $scope); 
+    	//if(!(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
+    	//	window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
+    	//}
     };
+
+    
+    
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
@@ -273,12 +282,9 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     	if($('#signin').attr('data-open') == 1){
     		$scope.signin_open();
     	}
+	
     };
-      
+    
+    
 });
 
-/*
-app.run(function(editableOptions) {
-  editableOptions.theme = 'bs3';
-});
-*/

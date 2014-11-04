@@ -16,6 +16,54 @@ angular.module('frontendService', [])
 				method  : 'GET',
 				url     : $('head base').attr('href')+'selection'
 			});	        
-		}
+		},
+	        getUsername: function(username){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'username'
+			});	        
+		},
+	        MEapllychanges: function(owner, items){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/apllychanges',
+				data  : { owner: owner, items: items }
+			});	        
+		},
+		getUwmdatatree: function(){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'proxy/get_uwmetadata_tree'
+			});	        
+		},
+	       saveMassTemplate: function(owner, items){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/savetemplate',
+				data  : { owner: owner, items: items }
+			});	        
+		},
+	       saveAsMassTemplate: function(user, templatename, selections, datastructure){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/saveastemplate',
+				data  : { user: user, templatename: templatename, selections: selections, datastructure: datastructure }
+			});	        
+		},
+	        loadMassTemplate: function(owner, template){
+	             alert(template);
+		     return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/loadtemplate',
+				data  : { owner: owner, template: template }
+			});	        
+		},
+	       deleteMassTemplate: function(owner, fordeletion){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/deletetemplate',
+				data  : { owner: owner, fordeletion: fordeletion }
+			});	        
+		},
 	}
 });

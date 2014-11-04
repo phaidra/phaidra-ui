@@ -8,7 +8,6 @@
 
 %= include 'alerts'
 
-	
 <div class="container" data-ng-controller="ObjectsCtrl" data-ng-init="init('<%= $init_data %>')">
 
 	<nav ng-if="totalItems && current_user" id="control-panel" class="navbar navbar-default list-navbar">
@@ -36,20 +35,22 @@
 						    <li><a href="" data-ng-click="selectNone()">None</a></li>
 						    <li><a href="" data-ng-click="selectVisible()">Visible</a></li>						    
 						  </ul>						 
-					  </div>
+				      </div>
 			      	
-			      	  <div class="btn-group animate-if" ng-if="selection.length" >
+			      	      <div class="btn-group animate-if" ng-if="selection.length" >
 						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						    Action <span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu" role="menu">
 						    <li><a href="" data-ng-click="createCollection()">Create collection</a></li>
-						    <li class="disabled"><a href="">Edit</a></li>						    						    
+						    <!-- <li><a href="" data-ng-click="editCollection()" >Edit</a></li> -->
+						    <li><a href="/massedit/" >Mass edit</a></li>
+						  
 						  </ul>
-					  </div>								   
-				  </div>				  
+			             </div>								   
+		             </div>				  
 			      
-	    	</div>
+	    	        </div>
 		
 	</nav>		
 	

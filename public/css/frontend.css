@@ -113,3 +113,63 @@ margin-top: 5px;
 #coll-desc {
 	height: 100px;
 }
+
+.massedit-button{
+    padding: 0px 2px;
+}  
+.massedit-aplly-button{
+   float:right;
+}
+
+.dropdown-menu-massedit{
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+.massedit-modal-dialog{
+    height: auto;
+    max-height: 400px;
+    overflow-x: hidden;
+    width:85% !important;
+}
+.massedit-saveAsTemplateRadio{
+    margin-left: 15px;
+}
+.massedit-loadTemplateButton{
+   background-color: #428bca;
+   color: #fff;
+   border: medium none;
+   padding: 5px 12px;
+}
+.massedit-loadTemplateForm{
+   padding: 1px;
+   background-color: #428bca;
+   border-color: #428bca;
+}
+.massedit-loadTemplateButton:hover, .massedit-loadTemplateButton:focus, .massedit-loadTemplateButton:active{
+  border-color: #285e8e !important;
+  color: #fff !important;
+  background-color: #3276b1 !important;
+}
+.massedit-loadTemplateForm:hover, .massedit-loadTemplateForm:focus, .massedit-loadTemplateForm:active{
+    border-color: #285e8e !important;
+    background-color: #3276b1 !important;
+}
+.bold{
+   font-weight: bold;
+}
+.massedit-well1{
+  height: 90px;
+  padding: 0px;
+}
+
+.massedit-recordsperpage{
+  margin-bottom: 66px;
+}
+.massedit-ul-recordsperpage{
+  max-height: 140px;
+  min-width: 100px;
+}
+.massedit-button-recordsperpage{
+    color: #428bca;
+}

@@ -15,7 +15,11 @@ use PhaidraUI::Model::Session::Store::Mongo;
 # This method will run once at server start
 sub startup {
     my $self = shift;
-
+    
+     # for download in csv
+     $self->types->type(dwn => 'application/x-download; charset=utf-8');
+    
+    
     my $config = $self->plugin( 'JSONConfig' => { file => 'PhaidraUI.json' } );
 	$self->config($config);  
 	$self->mode($config->{mode});     
@@ -67,6 +71,7 @@ sub startup {
 			  		
 			  		return $username;
 			 }else {
+				 	
 				 	my ($err, $code) = $tx->error;
 				 	$self->app->log->info("Authentication failed for user $username. Error code: $code, Error: $err");
 				 	if($tx->res->json && exists($tx->res->json->{alerts})){	  
@@ -123,7 +128,8 @@ sub startup {
 	    
 	$self->sessions->default_expiration($config->{session_expiration});
 	# 0 if the ui is not running on https, otherwise the cookies won't be sent and session won't work
-	$self->sessions->secure($config->{secure_cookies}); 
+	# $self->sessions->secure($config->{secure_cookies});
+        $self->sessions->secure($config->{0}); 
 	$self->sessions->cookie_name('a_'.$config->{installation_id});
                       
     $self->helper(save_token => sub {
@@ -181,6 +187,12 @@ sub startup {
     my $r = $self->routes;
     $r->namespaces(['PhaidraUI::Controller']);
     
+    #$r->route('massedit') 			  	->via('get')   ->to('frontend#mass_edit');
+    
+    $r->route('massedit') 			        ->via('get')   ->to('massedit#mass_edit');
+    $r->route('massedit') 			        ->via('post')   ->to('massedit#mass_edit');
+    $r->route('massedit/savecsv') 			->via('post')   ->to('massedit#save_csv');
+    
     $r->route('') 			  		->via('get')   ->to('frontend#home');
     $r->route('signin') 			  	->via('get')   ->to('authentication#signin');
     $r->route('signout') 			->via('get')   ->to('authentication#signout');
@@ -203,7 +215,14 @@ sub startup {
     my $auth = $r->bridge->to('authentication#check');
     
     $auth->route('selection') 			->via('post')   ->to('frontend#post_selection');
-    $auth->route('selection') 			->via('get')   ->to('frontend#get_selection');
+    $auth->route('selection') 			->via('get')    ->to('frontend#get_selection');
+    $auth->route('username') 			->via('get')    ->to('frontend#get_username');
+   
+    $auth->route('massedit/apllychanges') 	->via('post')   ->to('massedit#save_changes');
+    $auth->route('massedit/saveastemplate') 	->via('post')   ->to('massedit#save_as_template');
+    $auth->route('massedit/savetemplate') 	->via('post')   ->to('massedit#save_template');
+    $auth->route('massedit/loadtemplate') 	->via('post')   ->to('massedit#load_template');
+    $auth->route('massedit/deletetemplate') 	->via('post')   ->to('massedit#delete_template');
     
     $auth->route('uwmetadata_editor/:pid') ->via('get')  ->to('object#uwmetadataeditor');
     

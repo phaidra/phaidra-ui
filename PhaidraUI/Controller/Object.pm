@@ -29,17 +29,22 @@ sub uwmetadata_template_editor {
 }
 
 sub search {
-    my $self = shift;  	 
-
+        
+        my $self = shift;  	 
 	my $query = $self->param('q');
 
-	my $init_data = { current_user => $self->current_user };
+	my $init_data = { current_user => $self->current_user ,  mf_test_data => 'bli bla2'};
 	
 	if($query){
 		$init_data->{query} = $query;	
 	}
 	
-    $self->stash(init_data => encode_json($init_data));
+	$self->flash({'vlado2' => '123'});
+	$self->session('MEquery' => $query);
+	#$self->app->log->info("Flash55: ".$self->app->dumper($self->flash));
+	
+	
+        $self->stash(init_data => encode_json($init_data));
     
 	$self->render('objects/list');
 }

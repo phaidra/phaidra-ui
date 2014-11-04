@@ -12,7 +12,7 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 	
 	$scope.initdata = '';
 	$scope.current_user = '';
-	    
+	
     $scope.totalItems = 0;
     $scope.currentPage = 1;
     $scope.maxSize = 10;
@@ -82,8 +82,12 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 	    promise.then(
 	     	function(response) { 
 	      		$scope.alerts = response.data.alerts;
-	      		$scope.selection = response.data.selection;
+	      		
+			console.log("responsedata: ", response.data);
+			console.log("responsejson: ", response.json);
+			$scope.selection = response.data.selection;
 	      		$scope.form_disabled = false;
+			//alert('selection:'+$scope.selection);
 	      	}
 	      	,function(response) {
 	      		$scope.alerts = response.data.alerts;
@@ -118,9 +122,9 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	$scope.currentPage = page;
     };
 			
-	$scope.init = function (initdata) {
+    $scope.init = function (initdata) {
 		$scope.initdata = angular.fromJson(initdata);
-		$scope.current_user = $scope.initdata.current_user;		
+		$scope.current_user = $scope.initdata.current_user;
     	
     	$scope.query = $scope.initdata.query;
     	if($scope.query){
@@ -128,7 +132,8 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	}else{
     		$scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user
     	}
-    	
+    	//alert('user:'+$scope.current_user);
+	console.log("$scopecurrent_user: ", $scope.current_user);
     	if($scope.current_user){
     		$scope.loadSelection();
     	}
@@ -189,6 +194,7 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 		    }
 	  });
   };
+  
  
 });
 

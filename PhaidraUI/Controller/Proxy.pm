@@ -200,6 +200,7 @@ sub search_owner {
 				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 				 }else{
 				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+				  	
 				 }
 		 	}
 		}

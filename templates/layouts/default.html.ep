@@ -77,7 +77,8 @@
 	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/search.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/frontend.js' %>"></script>
-	<script type="text/javascript" src="<%= url_for '/js/services/object.js' %>"></script>    
+	<script type="text/javascript" src="<%= url_for '/js/services/object.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/massedit.js' %>"></script>   
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
   	
   	<!-- Custom Phaidra CSS --> 
