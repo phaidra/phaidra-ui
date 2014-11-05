@@ -16,7 +16,7 @@ use PhaidraUI::Model::Session::Store::Mongo;
 sub startup {
     my $self = shift;
     
-     # for download in csv
+     # for download in csv; massedit
      $self->types->type(dwn => 'application/x-download; charset=utf-8');
     
     
@@ -187,11 +187,9 @@ sub startup {
     my $r = $self->routes;
     $r->namespaces(['PhaidraUI::Controller']);
     
-    #$r->route('massedit') 			  	->via('get')   ->to('frontend#mass_edit');
+
     
-    $r->route('massedit') 			        ->via('get')   ->to('massedit#mass_edit');
-    $r->route('massedit') 			        ->via('post')   ->to('massedit#mass_edit');
-    $r->route('massedit/savecsv') 			->via('post')   ->to('massedit#save_csv');
+
     
     $r->route('') 			  		->via('get')   ->to('frontend#home');
     $r->route('signin') 			  	->via('get')   ->to('authentication#signin');
@@ -218,9 +216,12 @@ sub startup {
     $auth->route('selection') 			->via('get')    ->to('frontend#get_selection');
     $auth->route('username') 			->via('get')    ->to('frontend#get_username');
    
+    $auth->route('massedit') 			->via('get')    ->to('massedit#mass_edit');
+    $auth->route('massedit') 			->via('post')   ->to('massedit#mass_edit');
+    $auth->route('massedit/savecsv') 	        ->via('post')   ->to('massedit#save_csv');
+   
     $auth->route('massedit/apllychanges') 	->via('post')   ->to('massedit#save_changes');
     $auth->route('massedit/saveastemplate') 	->via('post')   ->to('massedit#save_as_template');
-    $auth->route('massedit/savetemplate') 	->via('post')   ->to('massedit#save_template');
     $auth->route('massedit/loadtemplate') 	->via('post')   ->to('massedit#load_template');
     $auth->route('massedit/deletetemplate') 	->via('post')   ->to('massedit#delete_template');
     
