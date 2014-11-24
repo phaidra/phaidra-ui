@@ -83,8 +83,8 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 	     	function(response) { 
 	      		$scope.alerts = response.data.alerts;
 	      		
-			console.log("responsedata: ", response.data);
-			console.log("responsejson: ", response.json);
+			//console.log("responsedata: ", response.data);
+			//console.log("responsejson: ", response.json);
 			$scope.selection = response.data.selection;
 	      		$scope.form_disabled = false;
 			//alert('selection:'+$scope.selection);
@@ -133,7 +133,7 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     		$scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user
     	}
     	//alert('user:'+$scope.current_user);
-	console.log("$scopecurrent_user: ", $scope.current_user);
+	//console.log("$scopecurrent_user: ", $scope.current_user);
     	if($scope.current_user){
     		$scope.loadSelection();
     	}

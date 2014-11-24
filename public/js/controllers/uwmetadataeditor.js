@@ -45,7 +45,8 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     		}else{
     			$scope.getUwmetadataTree();	
     		}    		
-    	}    	
+    	}
+    	
     };
     
     $scope.reset_values = function (node, default_value){
@@ -299,7 +300,8 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     		function(response) { 
     			$scope.alerts = response.data.alerts;
     			$scope.languages = response.data.languages;
-    			$scope.fields = response.data.tree;    			
+    			$scope.fields = response.data.tree;
+			//console.log("getUwmetadataTree fields: ", response.data);
     			$scope.load_init();
     		}
     		,function(response) {
@@ -317,7 +319,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     		function(response) { 
     			$scope.alerts = response.data.alerts;
     			$scope.languages = response.data.languages;
-    			$scope.fields = response.data.metadata;
+			$scope.fields = response.data.uwmetadata;
     			$scope.load_init();
     		}
     		,function(response) {
@@ -335,7 +337,8 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     	promise.then(
         	function(response) { 
         		$scope.alerts = response.data.alerts;
-        		//$scope.languages = [];
+        		//console.log("save fields: ", response.data.metadata);
+	         //$scope.languages = [];
         		//$scope.fields = [];    			
         		$scope.form_disabled = false;
         	}
@@ -374,6 +377,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
       	function(response) { 
       		$scope.alerts = response.data.alerts;
       		$scope.fields = response.data.uwmetadata;
+		//console.log("loadTemplate fields: ",response.data);
       		$scope.templatetitle = response.data.title;
       		$scope.loadLanguages();
       		$scope.form_disabled = false;

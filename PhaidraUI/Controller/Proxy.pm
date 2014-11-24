@@ -5,6 +5,10 @@ use warnings;
 use v5.10;
 use base 'Mojolicious::Controller';
 
+use Data::Dumper;
+$Data::Dumper::Indent= 1; 
+
+
 sub get_object_uwmetadata {
 	
 	my $self = shift;  	
@@ -30,6 +34,7 @@ sub get_object_uwmetadata {
 
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
+	  		$self->app->log->debug('get_object_uwmetadata', $self->app->dumper($res->json));	
 	  	}else {
 		 	my ($err, $code) = $tx->error;
 		 	if($tx->res->json){	  
@@ -278,8 +283,7 @@ sub get_uwmetadata_tree {
 			 }else{
 			  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
 			 }
-		}
-		
+		}	
   	});
 }
 
@@ -534,7 +538,7 @@ sub collection_order {
 
 sub collection_member_order {
 	
-	my $self = shift;  				
+	my $self = shift;  			 	
 	
 	my $res = { alerts => [], status => 200 };
 	
@@ -576,5 +580,58 @@ sub collection_member_order {
   	);
 
 }
+ 
+sub get_object_tripl{
+   
+        my $self = shift;
+       
+        my $res = { alerts => [], status => 200 };
+        my $q;
+        #my $limit;
+     
+        if(defined($self->param('q'))){
+		$q = $self->param('q');
+        } 
+        #if(defined($self->param('limit'))){
+	#	$limit = $self->param('limit');
+        #}
+        $q = '<info:fedora/'.$q.'> <http://purl.org/dc/elements/1.1/title> *';
+     
+     	my $url = Mojo::URL->new;
+	$url->scheme('https');
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/search/triples");
+		#$self->app->log->info("get_object_tripl path".$base[1]."/search/triples ") ;
+	}else{
+		# $url->path("/collection/$pid/members/$itempid/order/$position");
+		#$self->app->log->info("get_object_tripl2 path /search/triples ") ;
+		$url->path("/search/triples");
+	}
+        
+        #$url->query({'q' => $q, 'limit' => $limit});
+        $url->query({'q' => $q});
+      	my $token = $self->load_token;
+	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
+  		my ($ua, $tx) = @_;
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  		#$self->app->log->debug("get_object_tripl success".$self->app->dumper($res->json));
+	  	}else{
+		 	my ($err, $code) = $tx->error;
+		 	$self->app->log->info("get_object_tripl error") ;
+		 	if($tx->res->json){	  
+			  	 if(exists($tx->res->json->{alerts})){
+				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+				 }else{
+				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+				 }
+		        }
+		}	
+  	});  	
+}
+
 
 1;

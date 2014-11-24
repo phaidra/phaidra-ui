@@ -39,16 +39,7 @@
 						    <li><a href="/massedit/" >Edit</a></li>-->
 				         </ul>
 			  </div>    	
-			  <div class="btn-group animate-if" ng-if="massedit.selection.length" >
-				        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						    Action <span class="caret"></span>
-				        </button>
-				         <ul class="dropdown-menu" role="menu">
-						    <li><a href="" data-ng-click="createCollection()">Create collection</a></li>
-						    <!-- <li><a href="" data-ng-click="editCollection()" >Edit</a></li> -->
-						    <li><a href="/massedit/" >Edit</a></li>
-				         </ul>
-			  </div>
+
 
  			  <div ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical" > 
                                   <div class="dropdown">
@@ -63,6 +54,11 @@
                                          </ul>
                                  </div>
 
+                         </div>
+                         <div class="checkbox navbar-form massedit-checkbox-title">
+                              <label>
+                                  <input ng-model="titleDisplay" data-ng-click="displayTitle()" type="checkbox" checked > Display original Title
+                              </label>
                          </div>
 		</div>
 
@@ -83,7 +79,6 @@
                                 <input class="btn btn-default" ng-click="preparforsaving()" type="submit" value="Save as csv" id="submit" />
                               </form>
                          </div>
-  
                </div>
 
        </nav>
@@ -137,6 +132,7 @@
 	  	<th ng-if="current_user"><span class="grey" ng-if="massedit.datastructure.length">{{massedit.datastructure.length}}</span></th>
 	  	<th></th>
 	  	<th>Id</th>
+	  	<th ng-if="massedit.titleDisplay" >[Original] Title</th>
 	         <th ng-repeat="field in massedit.changesFirst">
 	           {{field.field}} 
 	           <button type="button" class="btn btn-default btn-lg massedit-button" data-ng-click="removeField(field.field)">remove</button>
@@ -165,7 +161,10 @@
 	  				{{object.PID}}
 	  		        </div>
 	  	        </div>
-	     </td>   
+	     </td>
+	     <td ng-if="massedit.titleDisplay" >
+	         {{object.title}}
+	     </td>
 	     <td ng-repeat="field in object.changes">
 	            {{field.value}}
 	     </td>

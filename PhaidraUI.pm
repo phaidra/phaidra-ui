@@ -216,7 +216,7 @@ sub startup {
     $auth->route('selection') 			->via('get')    ->to('frontend#get_selection');
     $auth->route('username') 			->via('get')    ->to('frontend#get_username');
    
-    $auth->route('massedit') 			->via('get')    ->to('massedit#mass_edit');
+    $auth->route('massedit') 			->via('get')    ->to('massedit#mass_edit'); ###
     $auth->route('massedit') 			->via('post')   ->to('massedit#mass_edit');
     $auth->route('massedit/savecsv') 	        ->via('post')   ->to('massedit#save_csv');
    
@@ -229,6 +229,8 @@ sub startup {
     
     $auth->route('uwmetadata_template_editor') ->via('get')  ->to('object#uwmetadata_template_editor');
     $auth->route('uwmetadata_template_editor/:tid') ->via('get')  ->to('object#uwmetadata_template_editor'); 
+    
+    $auth->route('proxy/get_object_tripl') ->via('get')   ->to('proxy#get_object_tripl');
     
     $auth->route('proxy/get_object_uwmetadata/:pid') ->via('get')   ->to('proxy#get_object_uwmetadata');
     $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');    

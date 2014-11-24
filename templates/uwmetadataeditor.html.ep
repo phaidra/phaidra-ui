@@ -55,16 +55,16 @@
 		
 		<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
 		
-		
 		<div class="well" id="UwmetadataeditorCtrl" data-ng-show="fields" data-ng-cloak >
-		
+		 
 			<form name="form" class="form-horizontal" novalidate role="form">
-			
+			   
 				<fieldset ng-disabled="form_disabled">
-				
+				       
 					<tabset>
 					
 						<!-- 1.st level are tabs -->
+						
 						<tab data-ng-repeat="field in fields | filter:filterHidden" active="field.active" disabled="field.disabled">
 				      		
 				      		<tab-heading>

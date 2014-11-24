@@ -68,6 +68,15 @@ angular.module('metadataService', [])
 				method  : 'GET',
 				url     : $('head base').attr('href')+'templates/my'
 			});	        
-		}
+	   },
+	   
+	   get_object_tripl: function(q, limit){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'proxy/get_object_tripl/',
+				params  : { q: q, limit: limit }
+			});	        
+	   }
+	   
 	}
 });

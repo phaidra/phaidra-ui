@@ -1,5 +1,5 @@
-app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectoryService, SearchService, FrontendService, promiseTracker, Massedit) {
-
+app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, DirectoryService, SearchService, FrontendService, MetadataService, promiseTracker, Massedit) {
+    
     $scope.flaged = 1;
     
     $scope.currentPage = 1; // starting page
@@ -27,7 +27,8 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 	      	}
 	      	,function(response) {
 	      		$scope.alerts = response.data.alerts;
-	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+			//alert('getUwmdataTree'+response.data.alerts);
+	      		//$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
 	      		$scope.form_disabled = false;
 	      	}
     );
@@ -44,6 +45,8 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
     
     $scope.current_user = '';
 	
+    $scope.titleDisplay = true;
+    
     $scope.massedit = Massedit;
 	
     $scope.saveAsCsv = angular.toJson(Massedit.datastructure);
@@ -110,12 +113,11 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 			               var selectedObject = {};
 			               selectedObject.PID = Massedit.selection[j];
 				       Massedit.datastructure.push(selectedObject);
-			          }
+			         }
 			    }  
 			}
-                        $scope.updateDataStructureDisplay(page);
-	      		 $scope.form_disabled = false;
-			
+			Massedit.updateDataStructureDisplay(page, Massedit, $scope.limit);
+	      		$scope.form_disabled = false;
 	      	},
 	      	function(response) {
 	      		$scope.alerts = response.data.alerts;
@@ -124,7 +126,8 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 	      	}
 	    );
     }
-
+    
+     
     $scope.toggleObject = function(pid) {
     	if( ('undefined' !== typeof Massedit.selection) && (Massedit.selection != null) ){
 	      var idx = Massedit.selection.indexOf(pid);
@@ -140,27 +143,15 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
     
     
     $scope.setPage = function (page) {
-    	    
-            $scope.updateDataStructureDisplay(page);	
+
+            Massedit.updateDataStructureDisplay(page, Massedit, $scope.limit);
     	    $scope.currentPage = page;
     };
 
-    // related to Massedit.updateDataStructureDisplay in massEditService
-    $scope.updateDataStructureDisplay = function (page) {
-
-	    Massedit.datastructuredisplay = [];
-	    var start  = (page-1)* $scope.limit ;
-	    var max = (page-1)* $scope.limit +  $scope.limit - 1;  // = $scope.limit*page -1 
-	    for (var i = start; i <= max  ; i++) {
-	         if('undefined' !== typeof Massedit.datastructure[i] ){ 
-		       Massedit.datastructuredisplay.push(Massedit.datastructure[i]);
-		 }
-	    }
-    };
-    
     $scope.init = function (initdata) {
        try { 
-             $scope.initdata = angular.fromJson(initdata);
+             Massedit.titleDisplay = true;
+	     $scope.initdata = angular.fromJson(initdata);
 
 	     $scope.current_user = $scope.initdata.current_user;
 	
@@ -189,7 +180,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 	                       Massedit.datastructure.push(record);
 	                }
 	                $scope.saveSelection();
-		        $scope.updateDataStructureDisplay(1);
+			Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
 		        // for remove-column row
 		        Massedit.changesFirst = Massedit.datastructure[0].changes;
 		  }else if( (typeof $scope.initdata.tmpl_datastructure  !== 'undefined') && (typeof $scope.initdata.tmpl_selection  !== 'undefined') ){
@@ -197,11 +188,11 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 		        Massedit.datastructure = $scope.initdata.tmpl_datastructure;
 		        Massedit.selection = $scope.initdata.tmpl_selection;
 		        $scope.saveSelection();
-		        $scope.updateDataStructureDisplay(1);
+			Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
 		        Massedit.changesFirst = Massedit.datastructure[0].changes;
 		        Massedit.current_template =  $scope.initdata.tmpl_name;
 		  }else{
-		        //initial empty template with selected objects
+		        //initial empty template with selected objects and set datastructuredisplay
 		        $scope.loadSelection(1);
 		  }
     	      } 
@@ -225,7 +216,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
             for (var i = 0 ; i < Massedit.datastructure.length  ; i++) {
 	        if(Massedit.datastructure[i].PID === pid){
 		     Massedit.datastructure.splice(i, 1);
-		     $scope.updateDataStructureDisplay($scope.currentPage);
+		     Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
 		}  
 	   }
 	   var idx = Massedit.selection.indexOf(pid);
@@ -236,27 +227,6 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 	   $scope.saveSelection();
      };
      
-
-    
-
- 
- 
-  // do I need this in massedit???
-  $scope.createCollection = function () {
-
-	  var modalInstance = $modal.open({
-            templateUrl: $('head base').attr('href')+'views/partials/create_collection.html',
-            controller: CollModalCtrl,
-            resolve: {
-		      current_user: function(){
-		        return $scope.current_user;
-		      },
-		      selection: function(){
-			    return Massedit.selection;
-			  }
-		    }
-	  });
-  };
     
     $scope.getDatastructureFlaged = function () {
          
@@ -288,32 +258,6 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 		                         }
 	                 }
           }); 
-     
-     
-     
-     
-     
-     
-     
-     /*
-     
-         $scope.saveSelection();
-         var promise = FrontendService.MEapllychanges($scope.current_user.username, $scope.getDatastructureFlaged());
-         $scope.loadingTracker.addPromise(promise); 
-         promise.then(
-	     	function(response) { 
-	      		$scope.alerts = response.data.alerts;
-	                window.location = $('head base').attr('href');
-	      		$scope.form_disabled = false;
-	      	}
-	      	,function(response) {
-	      		$scope.alerts = response.data.alerts;
-	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-	      		$scope.form_disabled = false;
-	      	}
-         );
-
-     */
   };
   
   $scope.removeField = function (field) {
@@ -333,7 +277,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 	// seting if undefined when to fast clicking on choose field button
 	if(typeof $scope.uwm  !== 'undefined'){
 	       $scope.getAllUwmFields($scope.uwm.tree);
-	} 
+	}
   }; 
   
   $scope.getAllUwmFields = function (tree) {  
@@ -345,7 +289,14 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
 		          var field = {};
 		          field.xmlname = child.xmlname;
 		          field.xmlns   = child.xmlns;
-		          $scope.uwmFields.push(field);
+			  field.help_id = child.help_id;
+			  if(field.help_id == 'helpmeta_37'){
+			       field.xmlname = field.xmlname+'#rights';
+			  }
+	                 if(field.help_id == 'helpmeta_4'){
+			       field.xmlname = field.xmlname+'#general';
+			  }
+			  $scope.uwmFields.push(field);
 		     //}
 		 }
                 $scope.getAllUwmFields(child.children);
@@ -356,13 +307,13 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
   $scope.recordsPerPage = function (recordsPerPage) { 
       
        $scope.limit = recordsPerPage;
-       $scope.updateDataStructureDisplay(1);
+       Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
   }
   
   
     $scope.addField = function (field) {
-       
-	     $scope.currentField = field;
+
+             $scope.currentField = field;
              Massedit.currentField =  $scope.currentField;
              var modalInstance = $modal.open({
              templateUrl: $('head base').attr('href')+'views/partials/massedit/addfield.html',
@@ -509,6 +460,18 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, DirectorySer
                  $scope.templateSaveAs();
 	   }
      }
+    
+     $scope.displayTitle = function () { 
+    
+         if($scope.titleDisplay == true){
+    	        Massedit.titleDisplay = false;
+         }else{
+    		Massedit.titleDisplay = true;
+    	 }
+    	 if(Massedit.titleDisplay){
+	      Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
+	 }
+    }
      
 });
 
@@ -755,8 +718,14 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
 		    }
 	       }
 	       Massedit.datastructure.unshift(newRecord);
-
-	       Massedit.datastructuredisplay = Massedit.updateDataStructureDisplay(1, Massedit.datastructure,recordsPerPage);
+               
+	       // alerts from massEditService
+	       Massedit.alerts = [];
+	       
+	       Massedit.updateDataStructureDisplay(1, Massedit ,recordsPerPage, $scope.titleDisplay, $scope.massedit.newPID);
+	       
+	       $scope.alerts = Massedit.alerts;
+	       
 	       Massedit.selection.push($scope.massedit.newPID);
 	       $scope.saveSelection();
 	       $modalInstance.close();
@@ -913,4 +882,3 @@ var MEAlertsLoadCsvModalCtrl = function ($scope, $modalInstance, $location, Fron
 	};
      
 }
-

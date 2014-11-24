@@ -8,6 +8,74 @@ use Mojo::JSON qw(encode_json);
 use Mojo::JSON qw(decode_json);
 use base 'Mojolicious::Controller';
 
+
+sub get_object_tripl{
+   
+        my $self = shift;
+        #die('ended!!!!');
+        my $res = { alerts => [], status => 200 };
+        my $q;
+        my $limit;
+     
+        if(defined($self->param('q'))){
+		$q = $self->param('q');
+        } 
+        if(defined($self->param('limit'))){
+		$limit = $self->param('limit');
+        }
+        
+        $q = '%3Cinfo:fedora/o:13681%3E%20%3Chttp://purl.org/dc/elements/1.1/title%3E%20*';
+        $q = '<info:fedora/o:67146> <http://purl.org/dc/elements/1.1/title> *';
+        #$q = '<info:fedora/o:67144> * *';
+        $self->app->log->info("get_object_tripl pram $limit $q ") ;
+     
+     	my $url = Mojo::URL->new;
+	$url->scheme('https');
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/search/triples");
+		$self->app->log->info("get_object_tripl path".$base[1]."/search/triples ") ;
+	}else{
+		# $url->path("/collection/$pid/members/$itempid/order/$position");
+		$self->app->log->info("get_object_tripl2 path /search/triples ") ;
+		$url->path("/search/triples");
+	}
+        
+        #$url->query({'q' => $q, 'limit' => $limit});
+        $url->query({'q' => $q});
+      	my $token = $self->load_token;
+	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
+  		my ($ua, $tx) = @_;
+                #$self->app->log->debug("get_object_tripl ua".$self->app->dumper($ua));
+                #$self->app->log->debug("get_object_tripl tx".$self->app->dumper($tx));
+	  	if (my $res = $tx->success) {
+	  		#$self->app->log->info("get_object_tripl success") ;
+	  		$self->app->log->debug("get_object_tripl success".$self->app->dumper($res->json));
+	  		#$self->app->log->debug("get_object_tripl success".$self->app->dumper($res));
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;
+		 	$self->app->log->info("get_object_tripl error") ;
+		 	if($tx->res->json){	  
+			  	if(exists($tx->res->json->{alerts})) {
+				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+				 }else{
+				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+				 }
+		        }
+		}	
+  	});
+        
+        #$self->render(json => { alerts => [] }, status => 200);
+       	
+  	
+}
+
+
+
+
 #
 sub mass_edit {
         
@@ -22,7 +90,7 @@ sub mass_edit {
         
         my $templates = $self->getTemplates();
         my $init_data;
-        # initialize datastructure from scv
+        # initialize datastructure from scv or initial load
         if(not defined $template){
               my $csvFile = $self->param('scv');
               my $csvContent = $csvFile->{'asset'}->{'content'} if defined $csvFile->{'asset'}->{'content'};
@@ -49,8 +117,6 @@ sub mass_edit {
                                tmpl_datastructure => $tmpl_datastructure,
                                tmpl_name => $template
                             };
-                          
-        
         }
         $self->stash(init_data => encode_json($init_data));       
         $self->stash(title => 'Mass edit');
