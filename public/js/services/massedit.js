@@ -1,3 +1,4 @@
+// mass edit services
 var myMassEditService = angular.module('massEditService', ['metadataService']);
   
 myMassEditService.factory('Massedit', function($timeout, MetadataService, promiseTracker) {
@@ -37,7 +38,6 @@ myMassEditService.factory('Massedit', function($timeout, MetadataService, promis
                                                                          );
 							        }
 							 }
-							 //return loadingTracker ;
 				       }
 				       this.prepareParseTripl = function (Massedit, responseData) {
 
@@ -120,6 +120,7 @@ myMassEditService.factory('Massedit', function($timeout, MetadataService, promis
 		                              datastructure: [],
 		                              changesFirst: [],
 			                      alerts: [],
+			                      sortOrder: 1,
 			                      // add/update  new field with corresponding value to the datastructure in all records
 		                              dataStructureUpdate: function(fieldvalue, fieldname, datastructure) {
 								     if('undefined' !== typeof fieldname ){
@@ -172,13 +173,9 @@ myMassEditService.factory('Massedit', function($timeout, MetadataService, promis
 										           Massedit.datastructuredisplay.push(Massedit.datastructure[i]);
 		                                                                     }
 	                                                                    }						    
-									  //var loadingTracker;
 									  if(Massedit.titleDisplay){
-										//loadingTracker = self.getTitles(Massedit, newPid);
 										self.getTitles(Massedit, newPid);
-									  }
-									  //return loadingTracker
-									      
+									  }   
 					      }
 				           }
                                    }

@@ -176,3 +176,7 @@ margin-top: 5px;
 .massedit-checkbox-title{
    margin-top: 8px !important; 
 }
+.massedit-id:hover{
+    cursor: pointer;
+}
+

@@ -282,7 +282,6 @@ sub save_changes{
 	$self->render(json => { alerts => [] }, status => 200);
 }
 
-#$self->app->log->info("template77: ".$self->app->dumper($template)) ;   
 
 
 1;

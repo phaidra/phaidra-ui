@@ -129,9 +129,14 @@
 	<table class="table">
 	  <thead>
 	  <tr>
-	  	<th ng-if="current_user"><span class="grey" ng-if="massedit.datastructure.length">{{massedit.datastructure.length}}</span></th>
-	  	<th></th>
-	  	<th>Id</th>
+	  	<th ng-if="1 !== 1" ></th>
+	  	<th ng-if="current_user">
+	  	      <span class="grey" ng-if="massedit.datastructure.length">{{massedit.datastructure.length}}</span>
+	  	</th>
+	  	
+	  	<th>
+	  	      <span class="massedit-id" data-ng-click="sortPID()"  >Id</span>
+	        </th>
 	  	<th ng-if="massedit.titleDisplay" >[Original] Title</th>
 	         <th ng-repeat="field in massedit.changesFirst">
 	           {{field.field}} 
@@ -147,8 +152,8 @@
 	  </thead>
 	  <tbody>
 	  <tr ng-class="{'grey': massedit.selection.indexOf(object.PID) == -1}" ng-repeat="object in massedit.datastructuredisplay ">	  
-	     <td ng-if="current_user">
-	            <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': massedit.selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)">
+	     <td ng-if="1 !== 1"  ng-if="current_user">
+	            <span  class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': massedit.selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)">
 	            </span>
 	     </td>
 	     <td><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.PID}}///60" class="img-thumbnail" width="60" height="60" title="{{object['uw.general.title']}}" alt="{{object['uw.general.title']}}"></td>

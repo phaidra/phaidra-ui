@@ -10,7 +10,8 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
     //$scope.from = 1;
     
     $scope.sort = 'uw.general.title,SCORE';
-    //$scope.reverse = 0;
+
+    $scope.sortOrder = 0 ;
     
     $scope.uwmFields = [];
     
@@ -472,6 +473,33 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
 	      Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
 	 }
     }
+    $scope.sortPID = function() {
+	  
+         //  ascending = 1, descending = 0
+	 //alert($scope.sortOrder);
+	 if($scope.sortOrder == 1){
+    		    Massedit.datastructure.sort($scope.compareRecordsPID);
+		    $scope.sortOrder = 0;
+    	 }else{
+    		    Massedit.datastructure.sort($scope.compareRecordsPID);
+		    Massedit.datastructure.reverse();
+		    $scope.sortOrder = 1;
+    	 }	 
+	 
+	 Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
+	 var currentPage = $scope.currentPage + 2;
+	 $( "ul.pagination li" ).removeClass( "active" );
+	 $( "ul.pagination li:nth-child("+currentPage+")" ).addClass( "active" );
+    };
+    
+    $scope.compareRecordsPID = function(a,b) {
+         
+       if (a.PID < b.PID)  return -1;
+       if (a.PID > b.PID)   return 1;
+       return 0;
+    }
+    
+    
      
 });
 
@@ -728,6 +756,10 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
 	       
 	       Massedit.selection.push($scope.massedit.newPID);
 	       $scope.saveSelection();
+	       // paginator set to first after adding new record
+	       $( "ul.pagination li" ).removeClass( "active" );
+	       $( "ul.pagination li:nth-child(3)" ).addClass( "active" );
+	       $scope.sortOrder = 1; // after adding new record first sort will be always ascending
 	       $modalInstance.close();
 	  }else{
 	       var modalInstance = $modal.open({
@@ -757,11 +789,12 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
 	      		$scope.form_disabled = false;
 	      	}
 	    );
-    }
+    };
      
      $scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
      };
+    
   
   
 }
