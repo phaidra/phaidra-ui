@@ -1,0 +1,98 @@
+
+% layout 'default', title => 'Massedit Agent';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/massedit_agent.js' %>"></script>    
+        
+% end
+
+%= include 'alerts'
+
+
+
+<div class="container" data-ng-controller="MasseditAgentCtrl" data-ng-init="init('<%= $init_data %>')">
+		
+	<div><h3>Massedit Jobs Administration</h3></div>
+
+
+	<div class="container-fluid">
+		         <div class="row">
+	     	                 <div class="col-md-2">
+	        	                  <span class="hits">{{jobs.length}} hits</span>
+	                         </div>
+	                         <div class="col-md-8">
+	                                  <center>
+	                                            <pagination total-items="jobs.length" on-select-page="setPage(page)" page="currentPage" items-per-page="recordsPerPageNum" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages">
+	                                            </pagination>               
+	                                            
+	                                            <div ng-if="jobs.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
+                                                              <div class="dropdown">
+                                                                      <button class="btn btn-default dropdown-toggle massedit-button-recordsperpage" type="button" id="recordsperpage" data-toggle="dropdown">
+                                                                              per page
+                                                                              <span class="caret"></span>
+                                                                      </button>
+                                                                      <ul class="dropdown-menu dropdown-menu-massedit massedit-ul-recordsperpage" role="menu" aria-labelledby="dropdownMenu1"  >
+                                                                                <li role="presentation">
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(10)">10</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(50)">50</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(100)">100</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage(1000)">1000</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="recordsPerPage('All')">All</a>
+                                                                                </li>
+                                                                      </ul>
+                                                               </div>
+                                                    </div>
+	                                  </center>
+	                         </div>
+	                         <div class="col-md-2">
+	        	                   <span class="pages">{{currentPage}} / {{numPages}}</span>
+	                         </div>                          
+    	                </div> 
+	</div> 
+	
+	<table class="table">
+	     <thead>
+	            <tr>
+	                <th>ID</th>
+	                <th>Instance</th>
+	                <th>Job status</th>
+	                <th>Owner</th>
+	                <th>Created(unix epoch)</th>
+	                <th>Created(local time)</th>
+	                <th>Action</th>
+	                <th>Details</th>
+	                <th>
+	                       <a ng-if="jobs.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAll()">All/<i class="glyphicon glyphicon-trash"></i></a>
+	                </th>
+	           </tr>
+	     </thead>
+	     <tbody>
+	           <tr ng-repeat="job in jobsDisplay| orderBy:['start_at']">
+	                <td>{{job.id}}</td>
+	                <td>{{job.instance}}</td>
+	                <td>{{job.job_status}}</td>
+	                <td>{{job.owner}}</td>
+	                <td>{{job.start_at}}</td>
+	                <td>{{toLocal(job.start_at)}}</td>
+	                <td>
+	                        <button type="button" class="btn  btn-info btn-lg massedit-worker-button {{job.color}}" data-ng-click="jobAction(job.id)">
+                                         {{job.action}}
+                                </button> 
+	                </td>
+	                <td>
+	                        <button type="button" class="btn  btn-info btn-lg massedit-worker-view massedit-worker-button" data-ng-click="viewJobs(job.id)">
+                                        View
+                                </button> 
+	                </td>
+	                <td>
+	                     <a role="menuitem" tabindex="-1" href="" data-ng-click="deleteJob(job.id)"><i class="glyphicon glyphicon-trash"></i></a>
+	                </td>
+	           </tr>
+	     </tbody>
+	</table>
+	
+</div>
+
+
+
