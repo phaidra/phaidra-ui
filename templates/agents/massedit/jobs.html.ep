@@ -3,7 +3,7 @@
 
 % content_for header => begin
    
-   <script type="text/javascript" src="<%= url_for '/js/controllers/massedit_agent.js' %>"></script>    
+   <script type="text/javascript" src="<%= url_for '/js/controllers/massedit/jobs.js' %>"></script>    
         
 % end
 
@@ -11,7 +11,7 @@
 
 
 
-<div class="container" data-ng-controller="MasseditAgentCtrl" data-ng-init="init('<%= $init_data %>')">
+<div class="container" data-ng-controller="MasseditJobsCtrl" data-ng-init="init('<%= $init_data %>')">
 		
 	<div><h3>Massedit Jobs Administration</h3></div>
 
@@ -54,29 +54,30 @@
 	<table class="table">
 	     <thead>
 	            <tr>
-	                <th>ID</th>
-	                <th>Instance</th>
-	                <th>Job status</th>
-	                <th>Owner</th>
-	                <th>Created(unix epoch)</th>
-	                <th>Created(local time)</th>
+	                <th><span class="massedit-id" data-ng-click="sortIdClick()" >ID<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th><span class="massedit-id" data-ng-click="sortInstanceClick()" >Instance<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th><span class="massedit-id" data-ng-click="sortJobStatusClick()" >Job status<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th><span class="massedit-id" data-ng-click="sortOwnerClick()" >Owner<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th> <span class="massedit-id" data-ng-click="sortStartAtClick()" >Created(unix epoch)<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span> </th>
+	                <th><span class="massedit-id" data-ng-click="sortStartAtClick()" >Created(local time)<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
 	                <th>Action</th>
 	                <th>Details</th>
 	                <th>
-	                       <a ng-if="jobs.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAll()">All/<i class="glyphicon glyphicon-trash"></i></a>
+	                       <a ng-if="jobs.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAllJobs()">All/<i class="glyphicon glyphicon-trash"></i></a>
 	                </th>
 	           </tr>
 	     </thead>
 	     <tbody>
-	           <tr ng-repeat="job in jobsDisplay| orderBy:['start_at']">
+	           <!-- <tr ng-repeat="job in jobsDisplay| orderBy:['start_at']"> -->
+	           <tr ng-repeat="job in jobsDisplay">
 	                <td>{{job.id}}</td>
 	                <td>{{job.instance}}</td>
-	                <td>{{job.job_status}}</td>
+	                <td> <div class="{{job.status_color}}" >{{job.job_status}}</div></td>
 	                <td>{{job.owner}}</td>
 	                <td>{{job.start_at}}</td>
 	                <td>{{toLocal(job.start_at)}}</td>
 	                <td>
-	                        <button type="button" class="btn  btn-info btn-lg massedit-worker-button {{job.color}}" data-ng-click="jobAction(job.id)">
+	                        <button type="button" class="btn massedit-worker-button {{job.action_color}}" data-ng-click="jobAction(job.id, job.action)">
                                          {{job.action}}
                                 </button> 
 	                </td>

@@ -1,0 +1,91 @@
+
+% layout 'default', title => 'Massedit Agent';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/massedit/jobs_details.js' %>"></script>    
+        
+% end
+
+%= include 'alerts'
+
+
+
+
+<div class="container" data-ng-controller="MasseditJobsDetailsCtrl" data-ng-init="init('<%= $init_data %>')">
+		
+	<div><h3>Massedit Jobs Administration: View Jobs details</h3></div>
+	<div class="container-fluid">
+		         <div class="row">
+	     	                 <div class="col-md-2">
+	        	                  <span class="hits">{{items.length}} hits</span>
+	                         </div>
+	                         <div class="col-md-8">
+	                                  <center>
+	                                            <pagination total-items="items.length" on-select-page="setPage(page)" page="currentPage" items-per-page="itemsPerPageNum" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages">
+	                                            </pagination>               
+	                                            
+	                                            <div ng-if="items.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
+                                                              <div class="dropdown">
+                                                                      <button class="btn btn-default dropdown-toggle massedit-button-recordsperpage" type="button" id="recordsperpage" data-toggle="dropdown">
+                                                                              per page
+                                                                              <span class="caret"></span>
+                                                                      </button>
+                                                                      <ul class="dropdown-menu dropdown-menu-massedit massedit-ul-recordsperpage" role="menu" aria-labelledby="dropdownMenu1"  >
+                                                                                <li role="presentation">
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="itemsPerPage(5)">5</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="itemsPerPage(10)">10</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="itemsPerPage(50)">50</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="itemsPerPage(100)">100</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="itemsPerPage(1000)">1000</a>
+                                                                                         <a role="menuitem" tabindex="-1" href="" data-ng-click="itemsPerPage('All')">All</a>
+                                                                                </li>
+                                                                      </ul>
+                                                               </div>
+
+                                                      </div>
+	                                  </center>
+	                         </div>
+	                         <div class="col-md-2">
+	        	                   <span class="pages">{{currentPage}} / {{numPages}}</span>
+	                         </div>                          
+    	                </div> 
+	</div> 
+
+
+	
+	<table class="table ">
+	     <thead>
+	            <tr>
+	                <th><span class="massedit-id" data-ng-click="sortIdClick()" >ID<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th><span class="massedit-id" data-ng-click="sortTitleClick()" >Title<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th>Alerts</th>
+	                <th>Changes</th>
+	           </tr>
+	     </thead>
+	     <tbody>
+	           <tr ng-repeat="item in itemsDisplay" >
+	                <td> {{item.PID}} </td>
+	                <td>{{item.title}}</td>
+	                <td> 
+	                     <table class="table table-striped table-bordered">
+	                          <tbody>
+	                                 <tr ng-repeat="alert in item.alerts" >
+	                                      <td> Type: {{alert.type}}</td>
+	                                      <td> Message: {{alert.msg}}</td>
+	                                 <tr>
+	                          </tbody>
+	                     </table>
+	                </td>    
+	                <td>
+	                        <button type="button" class="btn  btn-info btn-lg massedit-worker-view massedit-worker-button" data-ng-click="viewChanges(item.PID)">
+                                        View changes
+                                </button> 
+	                </td>
+	           </tr>
+	     </tbody>
+	</table>
+</div>
+
+
+
