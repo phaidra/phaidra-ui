@@ -142,6 +142,9 @@
         </li>
                 
       </ul>
+      <button type="button" class="btn  btn-default massedit-jobs-button" data-ng-click="gotoJobsList()">
+                Massedit Jobs
+      </button> 
       <% } %>
       
       <ul class="nav navbar-right">      

@@ -1,10 +1,11 @@
-app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTracker ) {
+app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTracker, Massedit ) {
   
   $scope.itemsDisplay = [];
   $scope.maxSize = 10; // pages in paginator
   $scope.itemsPerPageNum = 10;
   $scope.sortOrder = 0;
   $scope.currentPageInPaginator = '';
+  $scope.titleDisplay = true;
   
   $scope.init = function (initdata) {
         
@@ -48,6 +49,35 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
                           $scope.itemsDisplay.push($scope.items[i]);
 	       }
         }
+	if($scope.titleDisplay){
+	      $scope.getTitles();
+	}	
+    }
+    
+    $scope.getTitles = function () {
+      	
+	Massedit.titleDisplay = $scope.titleDisplay;
+	Massedit.datastructure = $scope.items;
+	Massedit.updateDataStructureDisplay($scope.currentPageInPaginator, Massedit, $scope.maxSize );
+	for( var i = 0 ; i < $scope.itemsDisplay.length ; i++ ){
+	      for( var j = 0 ; j < Massedit.datastructuredisplay.length ; j++ ){
+		     if($scope.itemsDisplay[i].PID == Massedit.datastructuredisplay[j].PID){
+		           $scope.itemsDisplay[i].title = Massedit.datastructuredisplay[j].title;
+		     }
+	      }
+	} 
+    }
+    
+    $scope.displayTitle = function () { 
+    
+         if($scope.titleDisplay == true){
+    	        $scope.titleDisplay = false;
+         }else{
+    		$scope.titleDisplay = true;
+    	 }
+    	 if($scope.titleDisplay){
+	      $scope.getTitles();
+	 }
     }
     
     $scope.sortIdClick = function() {  

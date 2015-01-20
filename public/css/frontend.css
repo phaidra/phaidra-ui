@@ -114,11 +114,22 @@ margin-top: 5px;
 	height: 100px;
 }
 
+/* mass edit begin*/
+
 .massedit-button{
     padding: 0px 2px;
 }  
 .massedit-aplly-button{
    float:right;
+}
+
+.massedit-jobs-button{
+  font-size: 14px !important;
+  margin-top: 7px;
+}
+
+.massedit-worker-button{
+  font-size: 14px !important;
 }
 
 .dropdown-menu-massedit{
@@ -180,3 +191,45 @@ margin-top: 5px;
     cursor: pointer;
 }
 
+.massedit-white, .massedit-green, .massedit-gray, .massedit-yellow, .massedit-orange, .massedit-red, .massedit-chartreuse, .massedit-worker-view{
+   height: 30px;
+   padding: 4px 8px;
+}
+.massedit-white{
+  background-color: white;
+  color: black;
+}
+.massedit-green{
+  color: white;
+  background-color: green;
+  pointer-events: none;
+  cursor: none; 
+}
+.massedit-gray{
+  background-color: gray;
+  color: white;
+}
+.massedit-yellow{
+  background-color: yellow;
+  color: black;
+}
+.massedit-orange{
+  background-color: orange;
+  color: white;
+}
+.massedit-red{
+  background-color: red;
+}
+.massedit-chartreuse{
+  color: black;
+  background-color: #7FFF00;
+}
+
+.massedit-smal-font{
+  font-size: 12px;
+}
+.massedit-no-hover{
+  pointer-events: none;
+  cursor: none;
+}
+/* mass edit end*/

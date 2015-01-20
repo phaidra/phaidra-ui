@@ -31,33 +31,73 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     };
     
     $scope.selectVisible = function(event){
-    	$scope.selection = [];	
-    	for( var i = 0 ; i < $scope.objects.length ; i++ ){	     			
-	    	$scope.selection.push($scope.objects[i].PID);
-	    }
-    	$scope.saveSelection();
+    	
+          var promise = FrontendService.getSelection();
+	  $scope.loadingTracker.addPromise(promise);
+	  promise.then(
+	     	function(response) { 
+	      		$scope.alerts = response.data.alerts;
+			$scope.selection = response.data.selection;
+			for( var i = 0 ; i < $scope.objects.length ; i++ ){	     			
+			    if( $scope.selection.indexOf($scope.objects[i].PID) == -1 ){
+			         $scope.selection.push($scope.objects[i].PID);
+			    }
+	                 }
+    	                 $scope.saveSelection();
+			$scope.form_disabled = false;
+	      	}
+	      	,function(response) {
+	      		$scope.alerts = response.data.alerts;
+	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+	      		$scope.form_disabled = false;
+	      	}
+	     );
     };
 
     $scope.allGoldEverything = function(event){
-    	var fields = ['PID'];
-	    var promise = SearchService.search($scope.query, $scope.from, 0, $scope.sort, $scope.reverse, fields);
-	    $scope.loadingTracker.addPromise(promise);
-	    promise.then(
-	     	function(response) { 
+    	    
+	    if('undefined' !== typeof $scope.query ){
+	         var fields = ['PID'];
+		 var promise = SearchService.search($scope.query, $scope.from, 0, $scope.sort, $scope.reverse, fields);
+	         $scope.loadingTracker.addPromise(promise);
+	         promise.then(
+	     	    function(response) { 
 	     		$scope.alerts = response.data.alerts;
 	     		$scope.selection = [];
-	     		for( var i = 0 ; i < response.data.objects.length ; i++ ){	     			
+			for( var i = 0 ; i < response.data.objects.length ; i++ ){	     			
 	     			$scope.selection.push(response.data.objects[i].PID);
 	     		}	
 	     		$scope.saveSelection();
 	     		return false;
-	     	}
-	     	,function(response) {
+	     	   }
+	     	   ,function(response) {
 	     		$scope.alerts = response.data.alerts;
 	     		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
 	     		return false;
-	     	}
-	    );   	    	    
+	     	  }
+	       );
+	    }else{
+	        $scope.form_disabled = true;
+                var username = null; // null => using current user
+	        var promise = SearchService.getUserObjects(username, 1, 0, $scope.sort, $scope.reverse);
+                $scope.loadingTracker.addPromise(promise);
+                promise.then(
+      	            function(response) { 
+	                 $scope.alerts = response.data.alerts;
+			 $scope.selection = [];
+			 for( var i = 0 ; i < response.data.objects.length ; i++ ){	     			
+	     			$scope.selection.push(response.data.objects[i].PID);
+	     		 }	
+	     		 $scope.saveSelection();
+      		         $scope.form_disabled = false;
+      	            }
+      	           ,function(response) {
+      		         $scope.alerts = response.data.alerts;
+      		         $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+      		         $scope.form_disabled = false;
+      	           }
+              ); 
+	  }
     }
     
     $scope.saveSelection = function() {
@@ -82,12 +122,10 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 	    promise.then(
 	     	function(response) { 
 	      		$scope.alerts = response.data.alerts;
-	      		
 			//console.log("responsedata: ", response.data);
 			//console.log("responsejson: ", response.json);
 			$scope.selection = response.data.selection;
 	      		$scope.form_disabled = false;
-			//alert('selection:'+$scope.selection);
 	      	}
 	      	,function(response) {
 	      		$scope.alerts = response.data.alerts;
@@ -132,8 +170,6 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
     	}else{
     		$scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user
     	}
-    	//alert('user:'+$scope.current_user);
-	//console.log("$scopecurrent_user: ", $scope.current_user);
     	if($scope.current_user){
     		$scope.loadSelection();
     	}
@@ -142,12 +178,13 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
 
      
  $scope.getUserObjects = function(username, from, limit, sort, reverse) {
-	 $scope.form_disabled = true;
+	 
+     $scope.form_disabled = true;
      var promise = SearchService.getUserObjects(username, from, limit, sort, reverse);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
       	function(response) { 
-      		$scope.alerts = response.data.alerts;
+	        $scope.alerts = response.data.alerts;
       		$scope.objects = response.data.objects;
       		$scope.totalItems = response.data.hits;
       		$scope.form_disabled = false;
@@ -161,12 +198,13 @@ app.controller('ObjectsCtrl',  function($scope, $modal, $location, DirectoryServ
  };   
  
  $scope.search = function(query, from, limit, sort, reverse) {
-		$scope.form_disabled = true;
+            
+            $scope.form_disabled = true;
 	    var promise = SearchService.search(query, from, limit, sort, reverse);
 	    $scope.loadingTracker.addPromise(promise);
 	    promise.then(
 	     	function(response) { 
-	     		$scope.alerts = response.data.alerts;
+		        $scope.alerts = response.data.alerts;
 	     		$scope.objects = response.data.objects;
 	     		$scope.totalItems = response.data.hits;
 	     		$scope.form_disabled = false;

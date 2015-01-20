@@ -184,7 +184,7 @@ var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectSer
     	}
     };
     	
-	$scope.createCollection = function () {
+    $scope.createCollection = function () {
 		
 		$scope.form_disabled = true;
 		
@@ -220,11 +220,11 @@ var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectSer
         );
 		return;
 		
-	};
+     };
 
-	$scope.cancel = function () {
+     $scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
-	};
+     };
 };
 
 app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker,FrontendService) {
@@ -245,6 +245,11 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
 		$scope.current_user = $scope.initdata.current_user;
 		$scope.baseurl = $('head base').attr('href'); 
 		//$scope.initdataTemp = initdataTemp;
+    };
+    
+    $scope.gotoJobsList = function() {
+        
+         window.location = $('head base').attr('href')+'massedit/jobs';
     };
     
     $scope.hitEnterSearch = function(evt){    	

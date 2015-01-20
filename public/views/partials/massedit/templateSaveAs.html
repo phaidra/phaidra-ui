@@ -9,12 +9,11 @@
 				       </h4>
 				   	<data-ng-form name="templateSave" novalidate role="form" > Save As New Massedit Template
 						<fieldset data-ng-disabled="form_disabled">
-							<!--  a-->
 							 <div  class="form-group input-group-lg" ng-class="{true: 'has-error'}[changefield.value.$dirty && changefield.value.$invalid]">
 								<input  ng-model="massedit.templatename"  type="text" class="form-control" name="save" id="value"  ng-keyup="hitEnter($event)" required>
 							</div>
                                                        <label class="control-label" for="value">Overwrite an Existing Massedit Template</label>	
-					                         <div ng-repeat = "template in templates">
+					                          <div ng-repeat = "template in templates">
 							               <input ng-click="setTemplateName(template)" type="radio" name="template" value="template">
 							                  <label class="massedit-saveAsTemplateRadio">{{template}}</label>
 							                  <br>
@@ -22,10 +21,11 @@
 						</fieldset>
 					</data-ng-form>
 				   
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-					<button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="(collform.$dirty && collform.$invalid) || collform.$pristine || form_disabled">Save</button>
-				</div>
-			</div>
-		</div>
+				        <div class="modal-footer">
+					     <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+					     <button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="(collform.$dirty && collform.$invalid) || collform.$pristine || form_disabled">Save</button>
+				       </div>
+			    </div>
+		     </div>
       </div>
+</div>      

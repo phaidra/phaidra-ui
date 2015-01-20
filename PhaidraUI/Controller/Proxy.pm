@@ -587,14 +587,10 @@ sub get_object_tripl{
        
         my $res = { alerts => [], status => 200 };
         my $q;
-        #my $limit;
      
         if(defined($self->param('q'))){
 		$q = $self->param('q');
         } 
-        #if(defined($self->param('limit'))){
-	#	$limit = $self->param('limit');
-        #}
         $q = '<info:fedora/'.$q.'> <http://purl.org/dc/elements/1.1/title> *';
      
      	my $url = Mojo::URL->new;
@@ -603,10 +599,7 @@ sub get_object_tripl{
 	$url->host($base[0]);
 	if(exists($base[1])){
 		$url->path($base[1]."/search/triples");
-		#$self->app->log->info("get_object_tripl path".$base[1]."/search/triples ") ;
 	}else{
-		# $url->path("/collection/$pid/members/$itempid/order/$position");
-		#$self->app->log->info("get_object_tripl2 path /search/triples ") ;
 		$url->path("/search/triples");
 	}
         

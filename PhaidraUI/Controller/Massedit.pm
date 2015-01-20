@@ -8,75 +8,23 @@ use Mojo::JSON qw(encode_json);
 use Mojo::JSON qw(decode_json);
 use base 'Mojolicious::Controller';
 
+use Mojo::IOLoop::ProcBackground;
 
-sub get_object_tripl{
-   
-        my $self = shift;
-        #die('ended!!!!');
-        my $res = { alerts => [], status => 200 };
-        my $q;
-        my $limit;
-     
-        if(defined($self->param('q'))){
-		$q = $self->param('q');
-        } 
-        if(defined($self->param('limit'))){
-		$limit = $self->param('limit');
-        }
-        
-        $q = '%3Cinfo:fedora/o:13681%3E%20%3Chttp://purl.org/dc/elements/1.1/title%3E%20*';
-        $q = '<info:fedora/o:67146> <http://purl.org/dc/elements/1.1/title> *';
-        #$q = '<info:fedora/o:67144> * *';
-        $self->app->log->info("get_object_tripl pram $limit $q ") ;
-     
-     	my $url = Mojo::URL->new;
-	$url->scheme('https');
-	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
-	$url->host($base[0]);
-	if(exists($base[1])){
-		$url->path($base[1]."/search/triples");
-		$self->app->log->info("get_object_tripl path".$base[1]."/search/triples ") ;
-	}else{
-		# $url->path("/collection/$pid/members/$itempid/order/$position");
-		$self->app->log->info("get_object_tripl2 path /search/triples ") ;
-		$url->path("/search/triples");
-	}
-        
-        #$url->query({'q' => $q, 'limit' => $limit});
-        $url->query({'q' => $q});
-      	my $token = $self->load_token;
-	
-  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
-  		my ($ua, $tx) = @_;
-                #$self->app->log->debug("get_object_tripl ua".$self->app->dumper($ua));
-                #$self->app->log->debug("get_object_tripl tx".$self->app->dumper($tx));
-	  	if (my $res = $tx->success) {
-	  		#$self->app->log->info("get_object_tripl success") ;
-	  		$self->app->log->debug("get_object_tripl success".$self->app->dumper($res->json));
-	  		#$self->app->log->debug("get_object_tripl success".$self->app->dumper($res));
-	  		$self->render(json => $res->json, status => 200 );
-	  	}else {
-		 	my ($err, $code) = $tx->error;
-		 	$self->app->log->info("get_object_tripl error") ;
-		 	if($tx->res->json){	  
-			  	if(exists($tx->res->json->{alerts})) {
-				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
-				 }else{
-				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
-				 }
-		        }
-		}	
-  	});
-        
-        #$self->render(json => { alerts => [] }, status => 200);
-       	
-  	
-}
+use FindBin::libs;
+use FindBin '$Bin';
+use lib "$Bin/../lib";
+
+use Data::Dumper;
+$Data::Dumper::Indent= 1;
 
 
 
+=head2 jobs
+ 
+  Display mass edit
 
-#
+=cut 
+
 sub mass_edit {
         
         my $self = shift;
@@ -122,7 +70,7 @@ sub mass_edit {
         $self->stash(title => 'Mass edit');
         $self->render('massedit');
 }
-#
+
 sub save_csv{
 
         my $self = shift;
@@ -156,7 +104,6 @@ sub save_csv{
         $self->render(data => $csv, format => 'dwn'); 
 }
 
-#
 sub getTemplates{
   
     my $self = shift;
@@ -170,10 +117,7 @@ sub getTemplates{
     return \@templatesArr;
 }
 
-
-
-#
-sub save_as_template{
+sub template_save_as{
             
         my $self = shift;
         
@@ -208,8 +152,8 @@ sub save_as_template{
 
 	$self->render('massedit');
 }
-#
-sub delete_template{
+
+sub template_delete{
 
       my $self = shift;
      
@@ -224,12 +168,12 @@ sub delete_template{
       foreach my $template (@{$forDeletion}){
            $self->mango->db->collection('masstemplate')->remove({template_name => "$template" });
       }
-      $self->render(json => { alerts => [] }, status => 200);
       
+      $self->render('massedit');
 }
 
-#
-sub load_template{
+
+sub template_load{
     
     my $self = shift;
     my $username = $self->current_user->{username};
@@ -258,10 +202,14 @@ sub load_template{
 }
 
 
+=head2 save_changes
+ 
+  Save data structure in 'massedit' collection, ready for processing by worker
 
-# save data structure in 'massedit' collection, ready for processing by worker
-#
+=cut  
+
 sub save_changes{
+        
         my $self = shift;
         
         my $username = $self->current_user->{username};
@@ -273,15 +221,242 @@ sub save_changes{
 	
 	my $payload = $self->req->json;
         
-	$self->mango->db->collection('massedit')->insert({ owner    => $payload->{owner},
-	                                                   instance => $self->app->config->{phaidra}->{baseurl},
-	                                                   start_at => time,
-	                                                   items    => $payload->{items}
+	$self->mango->db->collection('massedit')->insert({ owner       => $payload->{owner},
+	                                                   instance    => $self->app->config->{phaidra}->{baseurl},
+	                                                   start_at    => time,
+	                                                   items       => $payload->{items},
+	                                                   job_status  => 'not processed'
 	                                                 });
 	
 	$self->render(json => { alerts => [] }, status => 200);
 }
 
+=head2 jobs
+ 
+  Display jobs
 
+=cut 
+
+sub jobs{ 
+    
+       my $self = shift;
+       
+       
+       my $username = $self->current_user->{username};
+       unless(defined($username)){
+		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot display jobs, current user is missing (the session might be expired)." }] }, status => 500);
+		return;	
+       }
+       
+       my $datasetJobs = $self->mango->db->collection('massedit')->find();
+       my $jobsHash;
+       my @jobsArray;
+       while (my $jobs = $datasetJobs->next) {
+                   
+                   my $job = $jobs->{'_id'};
+                   
+                   $jobsHash->{owner}      = $jobs->{owner};
+                   $jobsHash->{instance}   = $jobs->{instance};
+                   $jobsHash->{start_at}   = $jobs->{start_at};
+                   $jobsHash->{job_status} = $jobs->{job_status};
+                   $jobsHash->{id}         = $jobs->{_id};
+                   push(@jobsArray, $jobsHash);
+                   $jobsHash = {};       
+       }
+       
+       my $init_data;
+       $init_data->{jobsArray} = \@jobsArray;
+       $init_data->{currPageInPaginator} =  $self->cookie('currPageInPaginator');
+     
+       $self->stash(init_data => encode_json($init_data)); 
+       $self->stash(title => 'Mass edit Jobs');
+
+       $self->render('agents/massedit/jobs');
+
+}
+
+=head2 jobs_action
+ 
+  Display jobs details
+
+=cut  
+
+sub jobs_details{
+
+       my($self) = @_;
+       
+       my $username = $self->current_user->{username};
+       unless(defined($username)){
+		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot display jobs details, current user is missing (the session might be expired)." }] }, status => 500);
+		return;	
+       }
+       my $id = {oid => $self->stash('jobid')};
+       no strict 'subs';
+       bless($id, Mango::BSON::ObjectID);
+       use strict 'subs';
+       my $datasetJobs = $self->mango->db->collection('massedit')->find({_id => $id});
+  
+       # /n and ' issues
+       my $myItems;
+       while (my $job = $datasetJobs->next) { 
+              my @parsedItems;
+              foreach my $item (@{$job->{'items'}}){
+                    my @parsedAlerts;
+                    foreach my $alert (@{$item->{alerts}}) {
+                                  $alert->{msg} =~ s/'/myQuotePhaiDra123/g if defined $alert->{msg};
+                                  $alert->{msg} =~ s/\n//g if defined $alert->{msg};
+                                  push(@parsedAlerts, $alert);
+                    } 
+                    my @parsedChanges;
+                    foreach my $change (@{$item->{changes}}) {
+                                  $change->{msg} =~ s/'/myQuotePhaiDra123/g if defined $change->{msg};
+                                  $change->{msg} =~ s/\n//g if defined $change->{msg};
+                                  push(@parsedChanges, $change);
+                    } 
+                    $item->{alerts}  = \@parsedAlerts;
+                    $item->{changes} = \@parsedChanges;
+                    $item->{title}   =~ s/'/myQuotePhaiDra123/g if defined $item->{title};
+                    $item->{title}   =~ s/\n//g if defined $item->{title};
+                    push(@parsedItems, $item);
+              }
+              $myItems = \@parsedItems;
+       }
+         
+       $self->stash(init_data => encode_json($myItems));
+       $self->stash(title => 'Mass edit Jobs detail view');
+       
+       $self->render('agents/massedit/jobs/details');
+       
+}
+
+=head2 jobs_action
+ 
+ Process Job actions.
+ 
+ Status               Action              Color
+ 
+ Not processed         Start processing   white
+ Processed             Done               green
+ Processing            Abort              chartreuse
+ Aborted               Resume             orange
+ Failed                Resume             red
+ Status not available  Resume             gray
+
+=cut  
+  
+sub jobs_action{
+  
+       my($self) = @_;
+       
+      
+       
+       my $payload = $self->req->json;
+       my $jobId               = $payload->{'jobId'};
+       my $currPageInPaginator = $payload->{'currPageInPaginator'};
+       my $jobAction           = $payload->{'jobAction'};       
+        
+       $self->cookie(currPageInPaginator => $payload->{'currPageInPaginator'});
+       
+       my $config_path     = $self->app->config->{massedit_agent}->{config_path};
+       my $agent_location  = $self->app->config->{massedit_agent}->{agent_file_path}.'/'.$self->app->config->{massedit_agent}->{agent_file_name};
+       my $instance        = $self->app->config->{phaidra}->{name};
+       my $username        = $self->current_user->{username};
+       my $jobid           = $payload->{'jobId'};
+       
+       my $proc = Mojo::IOLoop::ProcBackground->new;
+
+       $proc->on(alive => sub {
+              my ($proc) = @_;
+              my $pid = $proc->proc->pid;
+              unless($self->stash->{'_proc_'.$pid}){
+                     $self->stash->{'_proc_'.$pid} = 0;
+              }
+              $self->stash->{'_proc_'.$pid}++;
+              if($self->stash->{'_proc_'.$pid} == 1 || $self->stash->{'_proc_'.$pid} % 100 == 0){
+                     $self->app->log->info("[".$self->current_user->{username}."] Ingest job $pid still running");
+              }
+      });
+      $proc->on(dead => sub {
+              my ($proc) = @_;
+              my $pid = $proc->proc->pid;
+              $self->app->log->info("[".$self->current_user->{username}."] Ingest job $pid terminated");
+              undef $self->stash->{'_proc_'.$pid};
+      });
+ 
+      if($jobAction eq 'Start processing'){
+                 $proc->run( $agent_location." '".$config_path."' '".$username."' '".$instance."' '".$jobid."'" );
+      }
+      if($jobAction eq 'Abort'){
+                my $id = {oid => $jobid};
+                no strict 'subs';
+                bless($id, Mango::BSON::ObjectID);
+                use strict 'subs';
+                $self->mango->db->collection('massedit')->update({"_id" => $id}, {'$set' => { 'job_status' => 'aborted' }});
+      }
+      if($jobAction eq 'Resume'){
+                my $id = {oid => $jobid};
+                no strict 'subs';
+                bless($id, Mango::BSON::ObjectID);
+                use strict 'subs';
+                $self->mango->db->collection('massedit')->update({"_id" => $id}, {'$set' => { 'job_status' => 'resumig' }});
+                $proc->run( $agent_location." '".$config_path."' '".$username."' '".$instance."' '".$jobid."'" );
+      }
+      if($jobAction eq 'Force resume'){
+                my $id = {oid => $jobid};
+                no strict 'subs';
+                bless($id, Mango::BSON::ObjectID);
+                use strict 'subs';
+                $self->mango->db->collection('massedit')->update({"_id" => $id}, {'$set' => { 'job_status' => 'resumig' }});
+                $proc->run( $agent_location." '".$config_path."' '".$username."' '".$instance."' '".$jobid."'" );
+      }
+
+    
+      $self->render(json => { alerts => [] }, status => 200);
+             
+}
+
+sub jobs_delete{
+  
+       my($self) = @_;
+       
+       my $payload = $self->req->json;
+       $self->cookie(currPageInPaginator => $payload->{'currPageInPaginator'});
+       
+       my $id = {oid => $payload->{'jobId'}};
+       no strict 'subs';
+       bless($id, Mango::BSON::ObjectID);
+       use strict 'subs';
+       my $res = $self->mango->db->collection('massedit')->remove({_id => $id }) if defined $payload->{'jobId'};
+       
+       $self->render('agents/massedit/jobs');
+}
+
+
+sub jobs_delete_all {
+    
+       my($self) = @_;
+       
+       my $res = $self->mango->db->collection('massedit')->drop;
+       
+       $self->render('agents/massedit/jobs');
+
+}
+
+sub jobs_refresh_action_button {
+
+     my($self) = @_; 
+     
+     my $datasetJobs = $self->mango->db->collection('massedit')->find(); 
+     my @jobsArray;
+     while (my $job = $datasetJobs->next) { 
+           my $jobHash = {};
+           $jobHash->{id}         = $job->{_id};
+           $jobHash->{job_status} = $job->{job_status};
+           push(@jobsArray, $jobHash);
+     }
+     
+     $self->render(json => { jobsArray => \@jobsArray }, status => 200);
+     #$self->render('agents/massedit/jobs');
+}
 
 1;

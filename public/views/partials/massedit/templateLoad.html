@@ -9,22 +9,23 @@
 				       </h4>
 				   	<data-ng-form name="templateLoad" novalidate role="form" > Please select the template to load:
 						<fieldset data-ng-disabled="form_disabled">
-					                       <div ng-repeat = "template in templates">
+					                          <div ng-repeat = "template in templates">
 							               <input ng-click="setTemplateName(template)" type="radio" name="template" value="template">
 							                  <label class="massedit-saveAsTemplateRadio">{{template}}</label>
 							                  <br>
                                                                 </div>
 						</fieldset>
-					</data-ng-form>
+					 </data-ng-form>
 				   
-				 <div class="modal-footer">
-				         <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-				         <form class="btn  massedit-loadTemplateForm" action="/massedit" method="post" id="loadTemplate" >
-                                                <input class="hidden" name="template" ng-model="massedit.templatename">
-                                                <input ng-click="load.onSubmit($event)" class="massedit-loadTemplateButton" type="submit" value="Load" name="load">
-                                         </form>
+				           <div class="modal-footer">
+				                      <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+				                      <form class="btn  massedit-loadTemplateForm" action="/massedit" method="get" id="loadTemplate" >
+                                                           <input class="hidden" name="template" ng-model="massedit.templatename">
+                                                           <input ng-click="load.onSubmit($event)" class="massedit-loadTemplateButton" type="submit" value="Load" name="load">
+                                                     </form>
                                         
-				</div>
-			</div>
-		</div>
+				          </div>
+			      </div>
+		        </div>
       </div>
+</div>  

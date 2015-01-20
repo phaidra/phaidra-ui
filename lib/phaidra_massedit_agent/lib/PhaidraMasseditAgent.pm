@@ -3,23 +3,22 @@
 package PhaidraMasseditAgent;
 
 use v5.10;
+
 use strict;
 use warnings;
 use Data::Dumper;
 $Data::Dumper::Indent= 1;
-use File::Find;
+
 use Mojo::Util qw(slurp);
 use Mojo::JSON qw(encode_json decode_json);
 use Mojo::Log;
 use Mojo::UserAgent;
 use Mojo::URL;
 use MongoDB;
-use Carp;
 use FindBin;
 use lib $FindBin::Bin;
 use MongoDB::MongoClient;
 use MongoDB::OID;
-use Sys::Hostname;
 
 
 sub new {
@@ -52,6 +51,7 @@ sub new {
 	my $bytes = slurp $configpath;
 	my $json = Mojo::JSON->new;
 	$config = $json->decode($bytes);
+	
 	my $err  = $json->error;
          
 	if($err){
@@ -74,8 +74,7 @@ sub new {
 	
 	$log = Mojo::Log->new(path => $config->{'log'}->{path}, level => $config->{'log'}->{level});
         $self->{'log'} = $log;
-       
-        
+              
 	my $mongoHost = $config->{ingest_instances}->{$ingest_instance}->{paf_mongodb}->{host};
 	my $mongoPort = $config->{ingest_instances}->{$ingest_instance}->{paf_mongodb}->{port}; 
 	my $mongoUser = $config->{ingest_instances}->{$ingest_instance}->{paf_mongodb}->{username}; 
@@ -86,7 +85,6 @@ sub new {
 
 	$self->{mongo} = $mongo;
 	$self->{massedit_agent_db} = $mongo->get_database($mongoDb);
-	#$self->{jobs_coll} = $self->{bagger_massedit_agent_db}->get_collection('jobs');
 	$self->{collection_massedit} = $self->{massedit_agent_db}->get_collection('massedit');
 	$self->{ua} = Mojo::UserAgent->new;
 
@@ -95,90 +93,56 @@ sub new {
 
 sub process_job {
 
-       my($self, $masseditJobId) = @_;
+             my($self, $masseditJobId) = @_;
         
-        # mark Job as processing
-       print "processing...";
-       $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => { 'job_status' =>'processing'}});
-       my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => "$masseditJobId") });
-       print "\n\n\n";
-       print "jobId:", $masseditJobId;
-       print "\n\n\n";
-       while (my $docMassedit = $datasetMassedit->next) 
-       {
-             print "\n---------massedit---------------------------\n";
-             print "owner:  ".$docMassedit->{'owner'}."\n";
-             my $items = $docMassedit->{'items'};
-             foreach my $item (@$items){
-                 print "\n-----item-------------------------------\n";
-                 my $pid = $item->{'PID'};
-                 print "pid:  ".$pid."\n";
-                 $self->markPidUpdateStarted($masseditJobId, $pid);
-                 my $uwm = $self->getUwmetadata($pid);
-                 
-                 print $item->{'PID'},"\n\n\n";
-                 my $changes = $item->{'changes'};
-                 if($pid eq 'o:61858'){
-                     #say "================uwmXml====================================";
-                     #print Dumper($uwm);
-                     open (MYFILE, '>>uwmXml.json');
-                     print MYFILE "uwmXml: \n";
-                     print MYFILE Dumper($uwm);
-                     close MYFILE;
-                     #say "====================================================---";
-                 }
-                 #print Dumper($uwm); #if $pid eq 'o:61858';
-                 #exit if $pid eq 'o:61858';
-                 my $result;
-                 $result = $self->applyChanges($uwm, $changes, $pid) if  defined $uwm->{uwmetadata};
-                 
-                 if(defined $result->{alerts}){
-                       #foreach my $alert (@{$result->{alerts}}){
-                              #if($alert->{type} ne 'success'){
-                                     $self->write_result_alerts($pid, $result, $masseditJobId);
-                                     #last;
-                              #}
-                       #}
-                 }
-                 
-                 print 'Result: ',Dumper($result)."\n\n";
-                 #exit;
-            }
-       }
-       # mark Job as processed
-       print "processed";
-       $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => { 'job_status' =>'processed'}});
-       print Dumper($self->{alerts});
-}
-
-
-#     $r->route('object/:pid/uwmetadata')         ->via('get')      ->to('uwmetadata#get');
-#     $apiauth->route('object/:pid/uwmetadata')   ->via('post')     ->to('uwmetadata#post');
-
-#  5489a0a106b2af2a61010000
-#  548ffd1f06b2af4ddd030000
-#  548ffd1f06b2af4ddd030000
-
-sub markPidUpdateStarted{
- 
-      my($self, $masseditJobId, $pid) = @_;
-
-      my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => "$masseditJobId") });
-      my @myItems;
-      while (my $docMassedit = $datasetMassedit->next) {
-             foreach my $item (values @{$docMassedit->{items}}){
-                   if(defined $item->{PID}){
-                         if($item->{PID} eq $pid){
-                               $item->{status} = 'processing'
-                         }
-                   }
-                   push(@myItems,$item);
+             $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => { 'job_status' =>'processing'}});
+             my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => "$masseditJobId") });
+             while (my $docMassedit = $datasetMassedit->next){
+                    my $items = $docMassedit->{'items'};
+                    foreach my $item (@$items){
+                         my $currentJobStatus = $self->get_job_status($masseditJobId);
+                         if( $currentJobStatus ne 'aborted' ){
+                               if( (not defined $item->{'status'})  || ( (defined $item->{'status'}) && ($item->{'status'} ne 'processed') ) ){
+                                           my $pid = $item->{'PID'};
+                                           my $uwm = $self->getUwmetadata($pid);
+                                           my $changes = $item->{'changes'};
+                                           my $result;
+                                           $result = $self->applyChanges($uwm, $changes, $pid) if  defined $uwm->{uwmetadata};
+                                           if(defined $result){
+                                                   $self->writeAlertsAndStatus($pid, $result, $masseditJobId);
+                                           }else{
+                                                   say "Not getting any result from apllaychanges!";
+                                           }
+                              }
+                        }else{
+                             last;
+                        }
+                  }
+                  
              }
-      }
-      #$self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => {'items' => \@myItems , 'job_status' =>'processing'}});
+             # mark Job as processed
+             my $job_status = $self->get_job_status($masseditJobId);
+             if(defined $job_status){
+                  if($job_status ne 'aborted'){
+                        $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => { 'job_status' =>'processed'}});
+                  }
+             }
 }
 
-sub write_result_alerts{
+sub get_job_status{
+ 
+      my($self, $masseditJobId) = @_;
+      
+      my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => "$masseditJobId") });
+      my $job_status;
+      while (my $docMassedit = $datasetMassedit->next){
+             $job_status = $docMassedit->{'job_status'};
+      }
+      return $job_status;
+}
+
+
+sub writeAlertsAndStatus{
 
       my($self, $pid, $result, $masseditJobId) = @_;
      
@@ -187,20 +151,19 @@ sub write_result_alerts{
       while (my $docMassedit = $datasetMassedit->next) {
              foreach my $item (values @{$docMassedit->{items}}){
                     if($item->{PID} eq $pid){
-                            foreach my $alert (@{$result->{alerts}}){
-                                  print Dumper($alert);
-                                  if($alert->{type} ne 'success'){
-                                        $item->{alerts} =  $result->{alerts};                           
+                           foreach my $alert (@{$result->{alerts}}){
+                                  if( ( defined $alert ) && ( defined $alert->{type} ) ){
+                                       if($alert->{type} ne 'success'){
+                                             push(@{$item->{alerts}}, $alert) ;
+                                       }
+                                       # either success or with errors but it is processed!
+                                       $item->{status} = 'processed';
                                   }
-                                  $item->{status} = 'processed';
-                            }
+                          }
                     }
                     push(@myItems,$item);
-             }
-             
+             }    
       }
-      #print Dumper($masseditJobId);
-      #exit;
       $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => {'items' => \@myItems}});
 }
 
@@ -210,35 +173,20 @@ sub applyChanges {
     my($self, $uwm, $changes, $pid) = @_;
      
     foreach my $change (@$changes){
-           print "\n-----changes-------------------------------\n";
-           print $change->{'value'}, "\n";
-           print $change->{'field'}, "\n";
            my $i = 0;
            foreach my $metadataField (values @{$uwm->{uwmetadata}}){
                        my $xmlname = $metadataField->{xmlname};
                        my $j = 0;
                        foreach my $children (values @{$metadataField->{children}}){
                             if( $children->{xmlname} eq $change->{'field'}){
-                                   #$uwm->{uwmetadata}[$i]->{children}[$j]->{loaded_ui_value} = $change->{'value'};
-                                   #$uwm->{uwmetadata}[$i]->{children}[$j]->{loaded_value}    = $change->{'value'};
-                                   $uwm->{uwmetadata}[$i]->{children}[$j]->{ui_value}        = $change->{'value'};
-                                   say 'value22:', $uwm->{uwmetadata}[$i]->{children}[$j]->{ui_value};
-                                   print "\n\n";
+                                   $uwm->{uwmetadata}[$i]->{children}[$j]->{ui_value} = $change->{'value'};
                             }
                             $j++;
                       } 
                       $i++;
-           }  
-               
+           }    
     } 
-    if($pid eq 'o:62069'){
-                     open (MYFILE, '>>uwmXmlResult62069.json');
-                     print MYFILE "uwmXml: \n";
-                     print MYFILE Dumper($uwm);
-                     close MYFILE;
-    }
    
-    
     my $username = $self->{user_name};
     my $password = $self->{password};
     my $ingest_instance = $self->{ingest_instance};
@@ -254,35 +202,35 @@ sub applyChanges {
 	 $url->path("object/$pid/uwmetadata");
     }
     
-    #print Dumper($uwm);
     my $alerts;
     my $tx = $self->{ua}->post($url => json => $uwm);
 	  	
     if (my $res = $tx->success) {
-	  say 'successfull';
 	  return $res->json;
     }else{
 	  if($tx->res->json){
-		if($tx->res->json->{alerts}){
-		        print 'error json: ', Dumper($tx->res->json->{alerts});
-		        $alerts = { pid => $pid, alerts => $tx->res->json->{alerts} };
-		        push(@{$self->{alerts}}, $alerts);
+		if($tx->res->json->{alerts}){    
+		        foreach my $alert (@{$tx->res->json->{alerts}}){
+		            if(ref($alert) eq 'ARRAY') {
+		                  foreach my $alert2 (@{$alert}){
+		                        push(@{$alerts->{alerts}}, $alert2);
+		                  }
+		            }else{
+		                  push(@{$alerts->{alerts}}, $alert);
+		            }
+		        }
 		        return $alerts;
 		}
 	  }
-	  my @msgs;
 	  my $err = $tx->error;
 	  if ($err->{code}){
-		say 'error code: ', $err->{message} ;
-		push(@msgs, $err->{code}." response: ".$err->{message});
 		$alerts = {pid => $pid, alerts => { type => 'danger',  msg => $err->{code}." response: ".$err->{message} } };
 		push(@{$self->{alerts}}, $alerts);
 	  }else{
-		say 'error Connection: ', $err->{message} ;
-		push(@msgs, "Connection error: ".$err->{message});
 		$alerts = { pid => $pid, alerts => {type => 'danger',  msg=> "Connection error: ".$err->{message} } };
 		push(@{$self->{alerts}}, $alerts);
 	  }
+	  
 	  return $alerts;
    }	
 }
@@ -293,15 +241,7 @@ sub getUwmetadata {
 
     my($self, $pid) = @_;
     
-    
     my $alerts;
-    if($pid eq 'o:61858'){
-        my @msgs;
-        push(@msgs, "Connection error2: "."Dummy error.");
-        $alerts = { pid => $pid, alerts => { type => 'danger4',  msg => "Connection error2: "."Dummy error." } };
-        push(@{$self->{alerts}}, $alerts);
-        return $alerts;
-    }
    
     my $url = Mojo::URL->new;
     $url->scheme('https');
@@ -309,9 +249,6 @@ sub getUwmetadata {
     my $username = $self->{user_name};
     my $password = $self->{password};
     my $ingest_instance = $self->{ingest_instance};
-    
-    say "pid",$pid;
-    say 'username',$username;
     
     $url->userinfo("$username:$password");
     my @base = split('/',$self->{config}->{ingest_instances}->{$ingest_instance}->{apibaseurl});
@@ -322,16 +259,13 @@ sub getUwmetadata {
 	 $url->path("object/$pid/uwmetadata");
     }
  
-   
     my $tx = $self->{ua}->get($url);
     
     if(my $res = $tx->success){
 	  return $res->json;		  		
     }else{
-	  my @msgs;
 	  if($tx->res->json){
 		if($tx->res->json->{alerts}){
-		        say 'error (json exists): ', $tx->res->json->{alerts} ;
 		        $alerts = { pid => $pid, alerts => $tx->res->json->{alerts} };
 		        push(@{$self->{alerts}}, $alerts);
 		        return $alerts;
@@ -339,13 +273,9 @@ sub getUwmetadata {
 	  }
 	  my $err = $tx->error;
 	  if($err->{code}){
-		say 'error (code exists): ', $tx->res->json->{alerts};
-		push(@msgs, $err->{code}."response: ".$err->{message});
 		$alerts = { pid => $pid, alerts =>{ type => 'danger', msg => $err->{code}."response: ".$err->{message} } };
 		push(@{$self->{alerts}}, $alerts);
 	  }else{
-		say 'error (code not exists): ', $tx->res->json->{alerts};
-		push(@msgs, "Connection error: ".$err->{message});
 		$alerts = { pid => $pid, alerts => { type => 'danger', msg => "Connection error: ".$err->{message} } };
 		push(@{$self->{alerts}}, $alerts);
 	  }
@@ -365,7 +295,5 @@ sub getPassword {
      }
      return $password;
 }
-
-
 
 1;

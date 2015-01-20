@@ -1,289 +1,286 @@
 app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, DirectoryService, SearchService, FrontendService, MetadataService, promiseTracker, Massedit) {
-    
+
     $scope.flaged = 1;
-    
+
     $scope.currentPage = 1; // starting page
-    
+
     $scope.maxSize = 10; // pages in paginator
-    
+
     $scope.limit = 10; // records per page
     //$scope.from = 1;
-    
+
     $scope.sort = 'uw.general.title,SCORE';
 
     $scope.sortOrder = 0 ;
-    
+
     $scope.uwmFields = [];
-    
+
     $scope.alerts = [];
-    
+
     // get uwm tree for field list
-    //var tree;
     var promise = FrontendService.getUwmdatatree();
     $scope.loadingTracker.addPromise(promise); 
     promise.then(
-	     	function(response) { 
-	      		$scope.alerts = response.data.alerts;
-			$scope.uwm = response.data;
-	      	}
-	      	,function(response) {
-	      		$scope.alerts = response.data.alerts;
-			//alert('getUwmdataTree'+response.data.alerts);
-	      		if(typeof $scope.alerts  !== 'undefined'){
-			     $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-			}
-	      		$scope.form_disabled = false;
-	      	}
+                 function(response) { 
+                         $scope.alerts = response.data.alerts;
+                         $scope.uwm = response.data;
+                 }
+                ,function(response) {
+                         $scope.alerts = response.data.alerts;
+                         if(typeof $scope.alerts  !== 'undefined'){
+                              $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                         }
+                         $scope.form_disabled = false;
+                 }
     );
     // we will use this to track running ajax requests to show spinner
     $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-	
+
     $scope.alerts = [];
-	
+
     $scope.selection = [];
 
     $scope.objects = [];
-	
+
     $scope.initdata = '';
-    
+
     $scope.current_user = '';
-	
+
     $scope.titleDisplay = true;
-    
+
     $scope.massedit = Massedit;
-	
+
     $scope.saveAsCsv = angular.toJson(Massedit.datastructure);
-	
-    
+
+
     $scope.preparforsaving = function(index) {
-    	$scope.saveAsCsv = angular.toJson(Massedit.datastructure);
+           $scope.saveAsCsv = angular.toJson(Massedit.datastructure);
     };
-    
+
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
-    
+
     $scope.selectNone = function(){
 
-	Massedit.selection = [];
-    	$scope.saveSelection();
+        Massedit.selection = [];
+        $scope.saveSelection();
     };
-    
+
     $scope.selectVisible = function(){
-	for( var i = 0 ; i < Massedit.datastructuredisplay.length ; i++ ){
-	      if(Massedit.selection.indexOf(Massedit.datastructuredisplay[i].PID) == -1){
-		    Massedit.selection.push(Massedit.datastructuredisplay[i].PID);
-	      }
-	}
-	$scope.saveSelection();
+        for( var i = 0 ; i < Massedit.datastructuredisplay.length ; i++ ){
+              if(Massedit.selection.indexOf(Massedit.datastructuredisplay[i].PID) == -1){
+                     Massedit.selection.push(Massedit.datastructuredisplay[i].PID);
+              }
+        }
+        $scope.saveSelection();
     };
 
     $scope.selectAll = function(){
          Massedit.selection = [];
-	 for (var i = 0 ; i < Massedit.datastructure.length  ; i++) {
-		Massedit.selection.push(Massedit.datastructure[i].PID);
-	 }
-	 $scope.saveSelection();
+         for (var i = 0 ; i < Massedit.datastructure.length  ; i++) {
+                 Massedit.selection.push(Massedit.datastructure[i].PID);
+         }
+         $scope.saveSelection();
     }
-    
+
     $scope.saveSelection = function() {
-	var promise = FrontendService.updateSelection(Massedit.selection);
-	    $scope.loadingTracker.addPromise(promise);
-	    promise.then(
-	     	function(response) { 
-	      		$scope.alerts = response.data.alerts;
-	      		$scope.form_disabled = false;
-	      	}
-	      	,function(response) {
-	      		$scope.alerts = response.data.alerts;
-	      		if(typeof $scope.alerts  !== 'undefined'){
-			      $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-			}	
-	      		$scope.form_disabled = false;
-	      	}
-	    );
+         var promise = FrontendService.updateSelection(Massedit.selection);
+         $scope.loadingTracker.addPromise(promise);
+         promise.then(
+                function(response) { 
+                         $scope.alerts = response.data.alerts;
+                         $scope.form_disabled = false;
+                }
+               ,function(response) {
+                         $scope.alerts = response.data.alerts;
+                         if(typeof $scope.alerts  !== 'undefined'){
+                               $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                         }
+                         $scope.form_disabled = false;
+                }
+        );
     }
-    
+
     $scope.loadSelection = function(page) {
-    	var promise = FrontendService.getSelection();
-	    $scope.loadingTracker.addPromise(promise);
-	    promise.then(
-	     	function(response) { 
-	      		$scope.alerts = response.data.alerts;
-			Massedit.selection = response.data.selection;
-			if(!('undefined' === typeof Massedit.selection)){
-			    if(Massedit.selection != null){
-			          Massedit.selection.sort();
-			          for (var j = 0; j < Massedit.selection.length  ; j++) {
-			               var selectedObject = {};
-			               selectedObject.PID = Massedit.selection[j];
-				       Massedit.datastructure.push(selectedObject);
-			         }
-			    }  
-			}
-			Massedit.updateDataStructureDisplay(page, Massedit, $scope.limit);
-	      		$scope.form_disabled = false;
-	      	},
-	      	function(response) {
-	      		$scope.alerts = response.data.alerts;
-	      		if(typeof $scope.alerts  !== 'undefined'){
-			      $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-			}
-	      		$scope.form_disabled = false;
-	      	}
-	    );
+          var promise = FrontendService.getSelection();
+          $scope.loadingTracker.addPromise(promise);
+          promise.then(
+                function(response) { 
+                         $scope.alerts = response.data.alerts;
+                         Massedit.selection = response.data.selection;
+                         if(!('undefined' === typeof Massedit.selection)){
+                             if(Massedit.selection != null){
+                                   Massedit.selection.sort();
+                                   for (var j = 0; j < Massedit.selection.length  ; j++) {
+                                        var selectedObject = {};
+                                        selectedObject.PID = Massedit.selection[j];
+                                        Massedit.datastructure.push(selectedObject);
+                                   }
+                             }
+                         }
+                         Massedit.updateDataStructureDisplay(page, Massedit, $scope.limit);
+                         $scope.form_disabled = false;
+                 },
+                 function(response) {
+                         $scope.alerts = response.data.alerts;
+                         if(typeof $scope.alerts  !== 'undefined'){
+                               $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                         }
+                         $scope.form_disabled = false;
+                 }
+         );
     }
-    
-     
+
     $scope.toggleObject = function(pid) {
-    	if( ('undefined' !== typeof Massedit.selection) && (Massedit.selection != null) ){
-	      var idx = Massedit.selection.indexOf(pid);
-	      if(idx == -1){
-    		     Massedit.selection.push(pid);
-    	      }else{
-    		     Massedit.selection.splice(idx,1); 
-    	      }
-    	      $scope.saveSelection();
-	}
+        if( ('undefined' !== typeof Massedit.selection) && (Massedit.selection != null) ){
+              var idx = Massedit.selection.indexOf(pid);
+              if(idx == -1){
+                     Massedit.selection.push(pid);
+              }else{
+                     Massedit.selection.splice(idx,1); 
+              }
+              $scope.saveSelection();
+        }
 
     };
-    
-    
+
     $scope.setPage = function (page) {
 
             Massedit.updateDataStructureDisplay(page, Massedit, $scope.limit);
-    	    $scope.currentPage = page;
+            $scope.currentPage = page;
     };
 
     $scope.init = function (initdata) {
        try { 
              Massedit.titleDisplay = true;
-	     $scope.initdata = angular.fromJson(initdata);
+             $scope.initdata = angular.fromJson(initdata);
 
-	     $scope.current_user = $scope.initdata.current_user;
-	
-	     Massedit.current_user = $scope.current_user;
-	     Massedit.templates = $scope.initdata.templates;
-    	
-    	     if($scope.current_user){
-		  Massedit.datastructure = [];
-	          if( (typeof $scope.initdata.csv  !== 'undefined') && ($scope.initdata.csv !== 'empty') ){
-		         //reading data from csv 
-		         Massedit.selection = [];
-	                 var csvRows = $scope.initdata.csv.split('#mycsvseparator');
-	                 var columnNames = csvRows[0].split(',');
-	                 for( var i = 1 ; i < csvRows.length - 1 ; i++ ){
-		               var csvRow = csvRows[i].split(',');
-		               var record = {};
-		               record.PID = csvRow[0];
-			       Massedit.selection.push(csvRow[0]);
-			       record.changes = [];
-	                       for( var j = 1 ; j < csvRow.length ; j++ ){
-			             var change = {};
-			             change.field = columnNames[j];
-			             change.value = csvRow[j];
-			             record.changes.push(change);
-	                       }
-	                       Massedit.datastructure.push(record);
-	                }
-	                $scope.saveSelection();
-			Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
-		        // for remove-column row
-		        Massedit.changesFirst = Massedit.datastructure[0].changes;
-		  }else if( (typeof $scope.initdata.tmpl_datastructure  !== 'undefined') && (typeof $scope.initdata.tmpl_selection  !== 'undefined') ){
-		        //massedit template loading
-		        Massedit.datastructure = $scope.initdata.tmpl_datastructure;
-		        Massedit.selection = $scope.initdata.tmpl_selection;
-		        $scope.saveSelection();
-			Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
-		        Massedit.changesFirst = Massedit.datastructure[0].changes;
-		        Massedit.current_template =  $scope.initdata.tmpl_name;
-		  }else{
-		        //initial empty template with selected objects and set datastructuredisplay
-		        $scope.loadSelection(1);
-		  }
-    	      } 
-    	  }
+             $scope.current_user = $scope.initdata.current_user;
+
+             Massedit.current_user = $scope.current_user;
+             Massedit.templates = $scope.initdata.templates;
+
+             if($scope.current_user){
+                   Massedit.datastructure = [];
+                   if( (typeof $scope.initdata.csv  !== 'undefined') && ($scope.initdata.csv !== 'empty') ){
+                         //reading data from csv 
+                         Massedit.selection = [];
+                         var csvRows = $scope.initdata.csv.split('#mycsvseparator');
+                         var columnNames = csvRows[0].split(',');
+                         for( var i = 1 ; i < csvRows.length - 1 ; i++ ){
+                               var csvRow = csvRows[i].split(',');
+                               var record = {};
+                               record.PID = csvRow[0];
+                               Massedit.selection.push(csvRow[0]);
+                               record.changes = [];
+                               for( var j = 1 ; j < csvRow.length ; j++ ){
+                                      var change = {};
+                                      change.field = columnNames[j];
+                                      change.value = csvRow[j];
+                                      record.changes.push(change);
+                               }
+                               Massedit.datastructure.push(record);
+                        }
+                        $scope.saveSelection();
+                        Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
+                        // for remove-column row
+                        Massedit.changesFirst = Massedit.datastructure[0].changes;
+                  }else if( (typeof $scope.initdata.tmpl_datastructure  !== 'undefined') && (typeof $scope.initdata.tmpl_selection  !== 'undefined') ){
+                        //massedit template loading
+                        Massedit.datastructure = $scope.initdata.tmpl_datastructure;
+                        Massedit.selection = $scope.initdata.tmpl_selection;
+                        $scope.saveSelection();
+                        Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
+                        Massedit.changesFirst = Massedit.datastructure[0].changes;
+                        Massedit.current_template =  $scope.initdata.tmpl_name;
+                  }else{
+                       //initial empty template with selected objects and set datastructuredisplay
+                       $scope.loadSelection(1);
+                  }
+              } 
+          }
           catch(err) {
-	     console.log("Loading from csv error: ", err);
-	     var modalInstance = $modal.open({
+             var modalInstance = $modal.open({
                  templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
                  controller: MEAlertsLoadCsvModalCtrl,
                  resolve: {
                            text: function(){
-		                      return 'Csv file format error.\n Plese check your CSV file and try again.';
-		                   }
-	                 }
+                                   return 'Csv file format error.\n Plese check your CSV file and try again.';
+                               }
+                          }
                 });
           }
     };
 
     $scope.deleteRecord = function (pid) {
-       
+
             for (var i = 0 ; i < Massedit.datastructure.length  ; i++) {
-	        if(Massedit.datastructure[i].PID === pid){
-		     Massedit.datastructure.splice(i, 1);
-		     Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
-		}  
-	   }
-	   var idx = Massedit.selection.indexOf(pid);
-	   if(idx !== -1){
-	          Massedit.selection.splice(idx,1);
-	   }
-	  
-	   $scope.saveSelection();
+                 if(Massedit.datastructure[i].PID === pid){
+                      Massedit.datastructure.splice(i, 1);
+                      Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
+                 }
+            }
+            var idx = Massedit.selection.indexOf(pid);
+            if(idx !== -1){
+                  Massedit.selection.splice(idx,1);
+            }
+
+            $scope.saveSelection();
      };
-     
-    
+
     $scope.getDatastructureFlaged = function () {
-         
+
          var datastructureFlaged = [];
-	 for( var i = 0 ; i < Massedit.selection.length ; i++ ){
-	     for( var j = 0 ; j < Massedit.datastructure.length ; j++ ){
-	           if(Massedit.selection[i] === Massedit.datastructure[j].PID){
-	                datastructureFlaged.push(Massedit.datastructure[j]);
-	           }
-	     }
-	 }
-	 if($scope.titleDisplay){
-	      datastructureFlaged = $scope.getAllTitles(datastructureFlaged);
-	 }
-	 console.log("getDatastructureFlaged: ", datastructureFlaged);
-	 return datastructureFlaged;
+         for( var i = 0 ; i < Massedit.selection.length ; i++ ){
+             for( var j = 0 ; j < Massedit.datastructure.length ; j++ ){
+                   if(Massedit.selection[i] === Massedit.datastructure[j].PID){
+                         datastructureFlaged.push(Massedit.datastructure[j]);
+                   }
+             }
+         }
+         if($scope.titleDisplay){
+              //datastructureFlaged = $scope.getAllTitles(datastructureFlaged); // uncomment to save all titles in log
+         }
+
+         // remove titles from datastructureFlaged ! Uncomment this if need to save titles direct in log
+        for( var i = 0 ; i < datastructureFlaged.length ; i++ ){
+              datastructureFlaged[i].title = null;
+        }
+ 
+        return datastructureFlaged;
     };
-  
+
     $scope.getAllTitles = function (datastructureFlaged) {
-        
-        Massedit.datastructuredisplay = datastructureFlaged;     
-	Massedit.updateDataStructureDisplay(1, Massedit, datastructureFlaged.length);
-	datastructureFlaged = Massedit.datastructuredisplay;
-        
-	console.log("getAllTitles: ", datastructureFlaged);
-	
-	return datastructureFlaged;
+
+         Massedit.datastructuredisplay = datastructureFlaged;     
+         Massedit.updateDataStructureDisplay(1, Massedit, datastructureFlaged.length);
+         datastructureFlaged = Massedit.datastructuredisplay;
+
+         return datastructureFlaged;
     }
-    
+
    $scope.apllychanges = function () {
-     
+
           var modalInstance = $modal.open({
                 templateUrl: $('head base').attr('href')+'views/partials/massedit/yesnoMassedit.html',
                 controller: MEyesnoApplyModalCtrl,
                 resolve: {
-                          text: function(){
-		                      return 'Selected changes will be applied. Do you like to continue?';
-		                         },
+                          text:     function(){
+                                         return 'Selected changes will be applied. Do you like to continue?';
+                                              },
                           username: function(){
-		                      return  $scope.current_user.username;
-		                         },
-                          flaged: function(){
-		                      return  $scope.getDatastructureFlaged();
-		                         }
-	                 }
+                                         return  $scope.current_user.username;
+                                              },
+                          flaged:   function(){
+                                         return  $scope.getDatastructureFlaged();
+                                              }
+                        }
           });
   };
-  
+
   $scope.removeField = function (field) {
-    
+
        for (var g = 0; g < Massedit.datastructure.length; g++) {
             for(var k = Massedit.datastructure[g].changes.length - 1; k >= 0; k--){
 	          if(Massedit.datastructure[g].changes[k].field === field){
@@ -292,141 +289,137 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
             }
        }
   };
-  
+
   $scope.getFields = function () {
-	     
-	$scope.uwmFields = [];
-	// seting if undefined when to fast clicking on choose field button
-	if(typeof $scope.uwm  !== 'undefined'){
-	       $scope.getAllUwmFields($scope.uwm.tree);
-	}
-  }; 
-  
+
+        $scope.uwmFields = [];
+        // seting if undefined when to fast clicking on choose field button
+        if(typeof $scope.uwm  !== 'undefined'){
+              $scope.getAllUwmFields($scope.uwm.tree);
+        }
+  };
+
   $scope.getAllUwmFields = function (tree) {  
-        if('undefined' !== typeof tree ){   
-	    for (var i = 0; i < tree.length; i++) {
+       if('undefined' !== typeof tree ){
+           for (var i = 0; i < tree.length; i++) {
                 var child = tree[i];
-	         if('Node' !== child.datatype){
-		    //if($scope.uwmFields.indexOf(child.xmlns) == -1) {
-		          var field = {};
-		          field.xmlname = child.xmlname;
-		          field.xmlns   = child.xmlns;
-			  field.help_id = child.help_id;
-			  if(field.help_id == 'helpmeta_37'){
-			       field.xmlname = field.xmlname+'#rights';
-			  }
-	                 if(field.help_id == 'helpmeta_4'){
-			       field.xmlname = field.xmlname+'#general';
-			  }
-			  $scope.uwmFields.push(field);
-		     //}
-		 }
+                if('Node' !== child.datatype){
+                      //if($scope.uwmFields.indexOf(child.xmlns) == -1) {
+                           var field = {};
+                           field.xmlname = child.xmlname;
+                           field.xmlns   = child.xmlns;
+                           field.help_id = child.help_id;
+                           if(field.help_id == 'helpmeta_37'){
+                                field.xmlname = field.xmlname+'#rights';
+                           }
+                           if(field.help_id == 'helpmeta_4'){
+                                field.xmlname = field.xmlname+'#general';
+                           }
+                           $scope.uwmFields.push(field);
+                     //}
+                }
                 $scope.getAllUwmFields(child.children);
            }
-	}
+      }
   };
-  
+
   $scope.recordsPerPage = function (recordsPerPage) { 
-      
+
        $scope.limit = recordsPerPage;
        Massedit.updateDataStructureDisplay(1, Massedit, $scope.limit);
   }
-  
-  
+
     $scope.addField = function (field) {
 
              $scope.currentField = field;
              Massedit.currentField =  $scope.currentField;
              var modalInstance = $modal.open({
              templateUrl: $('head base').attr('href')+'views/partials/massedit/addfield.html',
-	     controller: MEAddFieldModalCtrl,
+             controller: MEAddFieldModalCtrl,
              resolve: {
-		        current_field: function(){
-			    return $scope.currentField;
-	                }
-	              }
-            });  
+                       current_field: function(){
+                                       return $scope.currentField;
+                                                }
+                      }
+            });
      };
-         
+
      $scope.deleteAll = function () {  
-        
-       	 var modalInstance = $modal.open({
+
+          var modalInstance = $modal.open({
                   templateUrl: $('head base').attr('href')+'views/partials/massedit/yesnoMassedit.html',
                   controller: MEyesnoDelAllModalCtrl,
                   resolve: {
                             text: function(){
-		                      return "Are you sure you want to delete\n all records from template?";
-		                   }
-	                   }
+                                       return "Are you sure you want to delete\n all records from template?";
+                                            }
+                           }
              });
      }
-  
+
      $scope.templateSaveAs = function () {  
-                       
-	    var modalInstance = $modal.open({
+
+            var modalInstance = $modal.open({
                    templateUrl: $('head base').attr('href')+'views/partials/massedit/templateSaveAs.html',
                    controller: METemplateSaveAsModalCtrl,
-	           resolve: {
+                   resolve: {
                             selection: function(){
-			                  return Massedit.selection;
-	                               }
-	           }
+                                            return Massedit.selection;
+                                                 }
+                   }
            }); 
 
      };
-          
+
      $scope.templateLoad = function () {  
-                       
-	    var modalInstance = $modal.open({
+
+            var modalInstance = $modal.open({
                      templateUrl: $('head base').attr('href')+'views/partials/massedit/templateLoad.html',
                      controller: METemplateLoadModalCtrl,
-            }); 
-	   
-
+            });
      };
-     
+
      $scope.addRecord = function (record) {
 
             var modalInstance = $modal.open({
                    templateUrl: $('head base').attr('href')+'views/partials/massedit/addrecord.html',
                    controller: MEAddRecordModalCtrl,
-	           resolve: {
+                   resolve: {
                          recordsPerPage: function(){
-		                             return $scope.limit;
-		                         }
-	                 }
+                                             return $scope.limit;
+                                                   }
+                   }
             }); 
      };
+
      $scope.templateDelete = function () {  
-                       
-            
-	    var modalInstance = $modal.open({
+
+            var modalInstance = $modal.open({
                      templateUrl: $('head base').attr('href')+'views/partials/massedit/templateDelete.html',
                      controller: METemplateDeleteModalCtrl,
-            }); 
-	   
+            });
 
      };
-     
+
      $scope.editRecord = function (PID) {
-       
+
              if('undefined' !== typeof Massedit.datastructure[0].changes){
-		  if(Massedit.datastructure[0].changes.length > 0){
+                   if(Massedit.datastructure[0].changes.length > 0){
                         var modalInstance = $modal.open({
                                templateUrl: $('head base').attr('href')+'views/partials/massedit/editrecord.html',
                                controller: MEEditRecordModalCtrl,
                                resolve: {
                                       PID: function(){
-		                            return PID;
-		                      }
-	                       }
+                                                return PID;
+                                                     }
+                               }
                         }); 
-		  }else{
-		        $scope.popupNoFields();
-		  }
-	    }else{
+                   }else{
+                        $scope.popupNoFields();
+                   }
+            }else{
                   $scope.popupNoFields();
-	    }
+            }
      };
      $scope.popupNoFields = function () {
            var modalInstance = $modal.open({
@@ -434,25 +427,24 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
                  controller: MEAlertsModalCtrl,
                  resolve: {
                            text: function(){
-		                      return 'Add fields first!';
-		                   }
-	                 }
-                }); 
+                                      return 'Add fields first!';
+                                           }
+                          }
+                });
      };
-     
-     
+
      $scope.csvfileselected = {
-        
+
         onSubmit : function(form) {
-	   var csvFile = $( "#fileupload" ).val();
-	   if((csvFile === "") || (csvFile === 'undefined')){
+        var csvFile = $( "#fileupload" ).val();
+              if((csvFile === "") || (csvFile === 'undefined')){
               var modalInstance = $modal.open({
                   templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
                   controller: MEAlertsModalCtrl,
                   resolve: {
                             text: function(){
 	      	                      return 'Please select CSV file first!';
-	      	                   }
+	      	                           }
 	                   }
                   }); 
 	      form.preventDefault();
@@ -509,9 +501,6 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
     	 }	 
 	 
 	 Massedit.updateDataStructureDisplay($scope.currentPage, Massedit, $scope.limit);
-	 //var currentPage = $scope.currentPage + 2;
-	 //$( "ul.pagination li" ).removeClass( "active" );
-	 //$( "ul.pagination li:nth-child("+currentPage+")" ).addClass( "active" );
     };
     
     $scope.sortTitle = function() { 
@@ -544,14 +533,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
        if (a.title > b.title)   return 1;
        return 0;
     };
-    
-    $scope.gotoJobsList = function() {
-        
-         window.location = $('head base').attr('href')+'massedit/jobs';
-    };
-    
-    
-     
+      
 });
 
 
@@ -601,7 +583,7 @@ var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, $location, promis
 	        Massedit.datastructuredisplay = [];
 	        Massedit.changesFirst = [];
 	        $scope.saveSelection();
-		$modalInstance.dismiss('OK');
+	        $modalInstance.dismiss('OK');
             };
      $scope.saveSelection = function() {
            
@@ -642,7 +624,7 @@ var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, $location, promise
           promise.then(
 	     	function(response) { 
 	      		$scope.alerts = response.data.alerts;
-	                //window.location = $('head base').attr('href');  uncomment after developing!!!!!
+	                 window.location = $('head base').attr('href')+'massedit/jobs';
 	      		$scope.form_disabled = false;
 	      	}
 	      	,function(response) {
@@ -793,7 +775,7 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
 	       // alerts from massEditService
 	       Massedit.alerts = [];
 	       
-	       Massedit.updateDataStructureDisplay(1, Massedit ,recordsPerPage, $scope.titleDisplay, $scope.massedit.newPID);
+	       Massedit.updateDataStructureDisplay(1, Massedit ,recordsPerPage, $scope.massedit.newPID);
 	       
 	       $scope.alerts = Massedit.alerts;
 	       

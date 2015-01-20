@@ -1,5 +1,5 @@
 
-% layout 'default', title => 'Massedit Agent';
+% layout 'default', title => 'Massedit Agent Jobs';
 
 % content_for header => begin
    
@@ -58,8 +58,7 @@
 	                <th><span class="massedit-id" data-ng-click="sortInstanceClick()" >Instance<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
 	                <th><span class="massedit-id" data-ng-click="sortJobStatusClick()" >Job status<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
 	                <th><span class="massedit-id" data-ng-click="sortOwnerClick()" >Owner<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
-	                <th> <span class="massedit-id" data-ng-click="sortStartAtClick()" >Created(unix epoch)<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span> </th>
-	                <th><span class="massedit-id" data-ng-click="sortStartAtClick()" >Created(local time)<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span></th>
+	                <th> <span class="massedit-id" data-ng-click="sortStartAtClick()" >Created at<div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div></span> </th>
 	                <th>Action</th>
 	                <th>Details</th>
 	                <th>
@@ -68,14 +67,12 @@
 	           </tr>
 	     </thead>
 	     <tbody>
-	           <!-- <tr ng-repeat="job in jobsDisplay| orderBy:['start_at']"> -->
 	           <tr ng-repeat="job in jobsDisplay">
 	                <td>{{job.id}}</td>
 	                <td>{{job.instance}}</td>
 	                <td> <div class="{{job.status_color}}" >{{job.job_status}}</div></td>
 	                <td>{{job.owner}}</td>
-	                <td>{{job.start_at}}</td>
-	                <td>{{toLocal(job.start_at)}}</td>
+	                <td>{{job.start_at*1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
 	                <td>
 	                        <button type="button" class="btn massedit-worker-button {{job.action_color}}" data-ng-click="jobAction(job.id, job.action)">
                                          {{job.action}}

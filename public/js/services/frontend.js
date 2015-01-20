@@ -24,31 +24,49 @@ angular.module('frontendService', [])
 				data  : { owner: owner, items: items }
 			});	        
 		},
+	        MEagentAction: function(jobId, jobAction, currPageInPaginator){
+		       return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/jobs/action',
+				data  : { jobId: jobId, jobAction: jobAction, currPageInPaginator: currPageInPaginator }
+			});	        
+		},
+	        MEagentDelete: function(jobId, currPageInPaginator){
+		       return $http({
+				method  : 'DELETE',
+				url     : $('head base').attr('href')+'massedit/jobs/delete',
+				data  : { jobId: jobId, currPageInPaginator: currPageInPaginator }
+			});	        
+		},
+	        MEagentDeleteAll: function(){
+		       return $http({
+				method  : 'DELETE',
+				url     : $('head base').attr('href')+'massedit/jobs/delete_all'
+			});	        
+		},
+	        MEagentRefreshActButt: function(){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'massedit/jobs/refresh_action_button'
+			});	        
+		},
 		getUwmdatatree: function(){
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'proxy/get_uwmetadata_tree'
 			});	        
 		},
-	       saveAsMassTemplate: function(user, templatename, selections, datastructure){
+	        saveAsMassTemplate: function(user, templatename, selections, datastructure){
 			return $http({
-				method  : 'POST',
-				url     : $('head base').attr('href')+'massedit/saveastemplate',
+				method  : 'PUT',
+				url     : $('head base').attr('href')+'massedit/template/saveas',
 				data  : { user: user, templatename: templatename, selections: selections, datastructure: datastructure }
 			});	        
 		},
-	        loadMassTemplate: function(owner, template){
-	             alert(template);
-		     return $http({
-				method  : 'POST',
-				url     : $('head base').attr('href')+'massedit/loadtemplate',
-				data  : { owner: owner, template: template }
-			});	        
-		},
-	       deleteMassTemplate: function(owner, fordeletion){
+	        deleteMassTemplate: function(owner, fordeletion){
 			return $http({
-				method  : 'POST',
-				url     : $('head base').attr('href')+'massedit/deletetemplate',
+				method  : 'DELETE',
+				url     : $('head base').attr('href')+'massedit/template/delete',
 				data  : { owner: owner, fordeletion: fordeletion }
 			});	        
 		},

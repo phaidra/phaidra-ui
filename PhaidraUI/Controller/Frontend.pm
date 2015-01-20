@@ -54,7 +54,7 @@ sub get_selection {
 		
 	my $res = $self->mango->db->collection('selections')->find_one({username => $username});
 
-	$self->app->log->info("frontend get_selection: ".$self->app->dumper($res->{selection}));
+	#$self->app->log->info("frontend get_selection: ".$self->app->dumper($res->{selection}));
 	
 	$self->render(json => { selection => $res->{selection} }, status => 200);	
 }

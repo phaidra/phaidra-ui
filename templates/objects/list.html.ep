@@ -43,9 +43,7 @@
 						  </button>
 						  <ul class="dropdown-menu" role="menu">
 						    <li><a href="" data-ng-click="createCollection()">Create collection</a></li>
-						    <!-- <li><a href="" data-ng-click="editCollection()" >Edit</a></li> -->
 						    <li><a href="/massedit/" >Mass edit</a></li>
-						  
 						  </ul>
 			             </div>								   
 		             </div>				  
