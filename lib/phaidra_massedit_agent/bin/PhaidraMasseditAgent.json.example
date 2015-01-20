@@ -1,19 +1,19 @@
 {
     "agent_id": "phaidra-massedit-agent-1",
     "log": {
-        "path": "/var/log/phaidra-massedit/PhaidraMasseditAgent.log",
+        "path": "/path/to/my.log",
         "level": "debug"
     },
     "ingest_instances": {
-        "sandbox": {
-            "baseurl": "phaidra-sandbox.univie.ac.at",
-            "apibaseurl": "services.phaidra-sandbox.univie.ac.at/api",
+        "phaidra-y": {
+            "baseurl": "phaidra-y.example.com",
+            "apibaseurl": "services.phaidra.example.com/api",
             "paf_mongodb": {
-                "host": "stage.phaidra.org",
+                "host": "mongo_host",
                 "port": "27017",
-                "username": "phaidraui-michal",
-                "password": "G92MJM6R5P9RHXM",
-                "database": "phaidraui-michal"
+                "username": "mongo_username",
+                "password": "xxxxxxxxxxxx",
+                "database": "mongo_db_name"
             }
         },
         "phaidra-x": {
@@ -30,8 +30,8 @@
     },
     "accounts": {
 	    "user1": {
-            "username": "folcanm4",
-            "password": "mamaliga11111111" 
+            "username": "user",
+            "password": "xxxxxxxx" 
         }
     }
 }
