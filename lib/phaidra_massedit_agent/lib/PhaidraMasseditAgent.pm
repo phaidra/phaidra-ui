@@ -148,23 +148,33 @@ sub writeAlertsAndStatus{
      
       my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => "$masseditJobId") });
       my @myItems;
+      my $itemsCount = 0;
+      my $processedItemsCount = 0;
       while (my $docMassedit = $datasetMassedit->next) {
              foreach my $item (values @{$docMassedit->{items}}){
+                    $itemsCount++;
                     if($item->{PID} eq $pid){
                            foreach my $alert (@{$result->{alerts}}){
                                   if( ( defined $alert ) && ( defined $alert->{type} ) ){
-                                       if($alert->{type} ne 'success'){
+                                       #if($alert->{type} ne 'success'){
                                              push(@{$item->{alerts}}, $alert) ;
-                                       }
+                                       #}
                                        # either success or with errors but it is processed!
                                        $item->{status} = 'processed';
                                   }
                           }
                     }
                     push(@myItems,$item);
+                    if(( defined $item->{status} ) && ($item->{status} eq 'processed') ){
+                           $processedItemsCount++;
+                    }
              }    
       }
-      $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => {'items' => \@myItems}});
+      my $jobProgress; 
+      $jobProgress = $processedItemsCount/$itemsCount if $itemsCount ne 0;
+      $jobProgress = sprintf "%.2f", $jobProgress;
+      $jobProgress = $jobProgress*100;
+      $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => "$masseditJobId")}, {'$set' => {'items' => \@myItems, 'job_progress' => $jobProgress}});
 }
 
 

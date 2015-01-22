@@ -37,7 +37,8 @@
 						  </ul>						 
 				      </div>
 			      	
-			      	      <div class="btn-group animate-if" ng-if="selection.length" >
+			      	      <!--<div class="btn-group animate-if" ng-if="selection.length" >-->
+			      	      <div class="btn-group animate-if"  >
 						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						    Action <span class="caret"></span>
 						  </button>

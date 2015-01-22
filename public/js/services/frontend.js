@@ -44,10 +44,17 @@ angular.module('frontendService', [])
 				url     : $('head base').attr('href')+'massedit/jobs/delete_all'
 			});	        
 		},
-	        MEagentRefreshActButt: function(){
+	        MEjobsRefreshActButt: function(){
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'massedit/jobs/refresh_action_button'
+			});	        
+		},
+	        MEjobsDetailsRefreshAlerts: function(jobId){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/jobs/detail/refresh_alerts',
+				data  : { jobId: jobId}
 			});	        
 		},
 		getUwmdatatree: function(){
@@ -68,6 +75,13 @@ angular.module('frontendService', [])
 				method  : 'DELETE',
 				url     : $('head base').attr('href')+'massedit/template/delete',
 				data  : { owner: owner, fordeletion: fordeletion }
+			});	        
+		},
+	 	loadMassTemplate: function(template){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'massedit/template/load',
+				data  : { template: template }
 			});	        
 		},
 	}

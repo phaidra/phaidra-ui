@@ -1,11 +1,12 @@
-app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, promiseTracker) {  
+app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, MasseditJobs, FrontendService, promiseTracker) {  
 
       $scope.statusActions = [];
 
-      $scope.jobs = [];
-      $scope.jobsDisplay = [];
+      $scope.masseditjobs = MasseditJobs;
+      MasseditJobs.jobs = [];
+      MasseditJobs.jobsDisplay = [];
       $scope.maxSize = 10; // pages in paginator
-      $scope.recordsPerPageNum = 10;
+      MasseditJobs.recordsPerPageNum = 10;
       $scope.currentPageInPaginator = 1;
       $scope.sortOrder = 0 ;
       $scope.refreshInterval =  7000; // status refresh interval
@@ -22,7 +23,7 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
          $scope.setPage(init_data.currPageInPaginator);
          $scope.currentPageInPaginator = init_data.currPageInPaginator;
 
-         $scope.jobs = init_data.jobsArray;
+         MasseditJobs.jobs = init_data.jobsArray;
          $scope.updateButtonColors();
          $scope.sortStartAt();	
          $scope.setPage(1);
@@ -34,37 +35,37 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
     $scope.updateButtonColors = function () {
 
-           for (var i = 0 ; i < $scope.jobs.length  ; i++) {
-               switch($scope.jobs[i].job_status) {
+           for (var i = 0 ; i < MasseditJobs.jobs.length  ; i++) {
+               switch(MasseditJobs.jobs[i].job_status) {
                    case 'not processed':
-                        $scope.jobs[i].action = 'Start processing';
-                        $scope.jobs[i].action_color  = 'btn-default';
-                        $scope.jobs[i].status_color  = 'massedit-white';
+                        MasseditJobs.jobs[i].action = 'Start processing';
+                        MasseditJobs.jobs[i].action_color  = 'btn-default';
+                        MasseditJobs.jobs[i].status_color  = 'massedit-white';
                         break;
                    case 'processed':
-                        $scope.jobs[i].action = 'Done';
-                        $scope.jobs[i].action_color  = 'massedit-green';
-                        $scope.jobs[i].status_color  = 'massedit-green';
+                        MasseditJobs.jobs[i].action = 'Done';
+                        MasseditJobs.jobs[i].action_color  = 'massedit-green';
+                        MasseditJobs.jobs[i].status_color  = 'massedit-green';
                         break;
                    case 'processing':
-                        $scope.jobs[i].action = 'Abort';
-                        $scope.jobs[i].action_color  = 'btn-warning';
-                        $scope.jobs[i].status_color  = 'massedit-chartreuse';
+                        MasseditJobs.jobs[i].action = 'Abort';
+                        MasseditJobs.jobs[i].action_color  = 'btn-warning';
+                        MasseditJobs.jobs[i].status_color  = 'massedit-chartreuse';
                         break;
                    case 'aborted':
-                        $scope.jobs[i].action = 'Resume';
-                        $scope.jobs[i].action_color  = 'btn-default';
-                        $scope.jobs[i].status_color  = 'massedit-orange';
+                        MasseditJobs.jobs[i].action = 'Resume';
+                        MasseditJobs.jobs[i].action_color  = 'btn-default';
+                        MasseditJobs.jobs[i].status_color  = 'massedit-orange';
                         break;
                    case 'failed':
-                        $scope.jobs[i].action = 'Resume';
-                        $scope.jobs[i].action_color  = 'btn-default';
-                        $scope.jobs[i].status_color  = 'massedit-red';
+                        MasseditJobs.jobs[i].action = 'Resume';
+                        MasseditJobs.jobs[i].action_color  = 'btn-default';
+                        MasseditJobs.jobs[i].status_color  = 'massedit-red';
                         break;
                    default:
-                        $scope.jobs[i].action = 'Force resume';
-                        $scope.jobs[i].action_color  = 'massedit-orange';
-                        $scope.jobs[i].status_color  = 'massedit-gray';
+                        MasseditJobs.jobs[i].action = 'Force resume';
+                        MasseditJobs.jobs[i].action_color  = 'massedit-orange';
+                        MasseditJobs.jobs[i].status_color  = 'massedit-gray';
              }
           }
     }
@@ -73,7 +74,7 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
     $scope.getActionButtonStatus = function () { 
 
-         var promise =  FrontendService.MEagentRefreshActButt();
+         var promise =  FrontendService.MEjobsRefreshActButt();
             $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
             $scope.loadingTracker.addPromise(promise); 
             promise.then(
@@ -94,10 +95,11 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
      $scope.refreshActionButton = function (jobsArray) {
 
-           for (var i = 0 ; i < $scope.jobs.length  ; i++) {
+           for (var i = 0 ; i < MasseditJobs.jobs.length  ; i++) {
               for (var j = 0 ; j <jobsArray.length  ; j++) {
-                    if($scope.jobs[i].id == jobsArray[j].id){
-                         $scope.jobs[i].job_status = jobsArray[j].job_status;
+                    if(MasseditJobs.jobs[i].id == jobsArray[j].id){
+                         MasseditJobs.jobs[i].job_status   = jobsArray[j].job_status;
+			  MasseditJobs.jobs[i].job_progress = jobsArray[j].job_progress;
                     }
               }
           }
@@ -108,7 +110,7 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
     $scope.recordsPerPage = function (recordsPerPage) { 
 
-       $scope.recordsPerPageNum = recordsPerPage;
+       MasseditJobs.recordsPerPageNum = recordsPerPage;
        $scope.setPage(1);
     }
 
@@ -116,7 +118,12 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
     $scope.setPage = function (page) {
 
         $scope.currentPageInPaginator = page;
-        var start  = (page-1)*$scope.recordsPerPageNum ;
+        MasseditJobs.setPage(MasseditJobs, page);
+	
+	
+	/*
+	 $scope.currentPageInPaginator = page;
+	var start  = (page-1)*$scope.recordsPerPageNum ;
         var max = (page-1)*$scope.recordsPerPageNum + $scope.recordsPerPageNum - 1;						      
         $scope.jobsDisplay = [];
         for (var i = start; i <= max  ; i++) {
@@ -124,16 +131,17 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
                           $scope.jobsDisplay.push($scope.jobs[i]);
                }
         }
+        */
     }
 
     $scope.sortStartAt = function() {  
 
          //  ascending = 1, descending = 0
         if($scope.sortOrder == 1){
-                    $scope.jobs.sort($scope.compareRecordsStartAt);
+                    MasseditJobs.jobs.sort($scope.compareRecordsStartAt);
         }else{
-                    $scope.jobs.sort($scope.compareRecordsStartAt);
-                    $scope.jobs.reverse();
+                    MasseditJobs.jobs.sort($scope.compareRecordsStartAt);
+                    MasseditJobs.jobs.reverse();
         } 
         $scope.setPage($scope.currentPageInPaginator);
     };
@@ -142,11 +150,11 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
          //  ascending = 1, descending = 0
         if($scope.sortOrder == 1){
-                     $scope.jobs.sort($scope.compareRecordsStartAt);
+                     MasseditJobs.jobs.sort($scope.compareRecordsStartAt);
                      $scope.sortOrder = 0;
         }else{
-                     $scope.jobs.sort($scope.compareRecordsStartAt);
-                     $scope.jobs.reverse();
+                     MasseditJobs.jobs.sort($scope.compareRecordsStartAt);
+                     MasseditJobs.jobs.reverse();
                      $scope.sortOrder = 1;
         } 
         $scope.setPage($scope.currentPageInPaginator);
@@ -156,11 +164,11 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
          //  ascending = 1, descending = 0
          if($scope.sortOrder == 1){
-                     $scope.jobs.sort($scope.compareRecordsID);
+                     MasseditJobs.jobs.sort($scope.compareRecordsID);
                      $scope.sortOrder = 0;
          }else{
-                     $scope.jobs.sort($scope.compareRecordsID);
-                     $scope.jobs.reverse();
+                     MasseditJobs.jobs.sort($scope.compareRecordsID);
+                     MasseditJobs.jobs.reverse();
                      $scope.sortOrder = 1;
          } 
          $scope.setPage($scope.currentPageInPaginator);
@@ -170,11 +178,11 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
          //  ascending = 1, descending = 0
          if($scope.sortOrder == 1){
-                    $scope.jobs.sort($scope.compareRecordsJobStatus);
+                    MasseditJobs.jobs.sort($scope.compareRecordsJobStatus);
                     $scope.sortOrder = 0;
          }else{
-                    $scope.jobs.sort($scope.compareRecordsJobStatus);
-                    $scope.jobs.reverse();
+                    MasseditJobs.jobs.sort($scope.compareRecordsJobStatus);
+                    MasseditJobs.jobs.reverse();
                     $scope.sortOrder = 1;
          } 
          $scope.setPage($scope.currentPageInPaginator);
@@ -183,11 +191,11 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
          //  ascending = 1, descending = 0
         if($scope.sortOrder == 1){
-                    $scope.jobs.sort($scope.compareRecordsOwner);
+                    MasseditJobs.jobs.sort($scope.compareRecordsOwner);
                     $scope.sortOrder = 0;
         }else{
-                   $scope.jobs.sort($scope.compareRecordsOwner);
-                   $scope.jobs.reverse();
+                   MasseditJobs.jobs.sort($scope.compareRecordsOwner);
+                   MasseditJobs.jobs.reverse();
                    $scope.sortOrder = 1;
         } 
         $scope.setPage($scope.currentPageInPaginator);
@@ -196,11 +204,11 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
          //  ascending = 1, descending = 0
          if($scope.sortOrder == 1){
-                     $scope.jobs.sort($scope.compareRecordsInstance);
+                     MasseditJobs.jobs.sort($scope.compareRecordsInstance);
                      $scope.sortOrder = 0;
          }else{
-                     $scope.jobs.sort($scope.compareRecordsInstance);
-                     $scope.jobs.reverse();
+                     MasseditJobs.jobs.sort($scope.compareRecordsInstance);
+                     MasseditJobs.jobs.reverse();
                      $scope.sortOrder = 1;
          } 
          $scope.setPage($scope.currentPageInPaginator);
@@ -263,24 +271,16 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
     }
 
     $scope.deleteAllJobs = function () {
-            var promise = FrontendService.MEagentDeleteAll();
-            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-            $scope.loadingTracker.addPromise(promise); 
-            promise.then(
-                 function(response) { 
-                        $scope.jobs = [];
-                        $scope.setPage(1);
-                        $scope.alerts = response.data.alerts;
-                        $scope.form_disabled = false;
-                 }
-                ,function(response) {
-                         $scope.alerts = response.data.alerts;
-                         if(typeof($scope.alerts) != "undefined"){
-                               $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-                         }
-                         $scope.form_disabled = false;
-                }
-           ); 
+            
+             var modalInstance = $modal.open({
+                  templateUrl: $('head base').attr('href')+'views/partials/massedit/yesnoMassedit.html',
+                  controller: deleteAllJobsModalCtrl,
+                  resolve: {
+                            text: function(){
+                                       return "You are going to delete\n all jobs in log. Unprocessed jobs will be lost. Do you like to continue?";
+                                            }
+                           }
+             });
     }
 
     $scope.deleteJob= function (jobId) {
@@ -307,9 +307,9 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
 
     $scope.removeJobFromInternalArray = function (jobId) {
 
-          for (var i = 0 ; i < $scope.jobs.length  ; i++) {
-               if($scope.jobs[i].id == jobId){
-                      $scope.jobs.splice(i, 1);
+          for (var i = 0 ; i < MasseditJobs.jobs.length  ; i++) {
+               if(MasseditJobs.jobs[i].id == jobId){
+                      MasseditJobs.jobs.splice(i, 1);
                       break;
                }
           }
@@ -325,3 +325,38 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, FrontendService, 
     }
 
 });
+
+
+var deleteAllJobsModalCtrl = function ($scope, $modalInstance, $location, FrontendService, MasseditJobs,  promiseTracker, text) {
+  
+       $scope.text = text; 
+       
+       $scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+           };
+       
+       $scope.OK = function () {
+	
+	    var promise = FrontendService.MEagentDeleteAll();
+            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+            $scope.loadingTracker.addPromise(promise); 
+            promise.then(
+                 function(response) { 
+                        MasseditJobs.jobs = [];
+			 MasseditJobs.jobsDisplay = [];
+                        MasseditJobs.setPage(1);
+                        $scope.alerts = response.data.alerts;
+                        $scope.form_disabled = false;
+                 }
+                ,function(response) {
+                         $scope.alerts = response.data.alerts;
+                         if(typeof($scope.alerts) != "undefined"){
+                               $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                         }
+                         $scope.form_disabled = false;
+                }
+           );
+	    $modalInstance.dismiss('OK');
+       }
+  
+}

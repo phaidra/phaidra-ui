@@ -34,12 +34,14 @@ sub mass_edit {
 		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot save template, current user is missing (the session might be expired)." }] }, status => 500);
 		return;	
 	}
-        my $template = $self->param('template');
-        
+        #my $template = $self->param('template');
+        ###my $payload = $self->req->json;
+        ###my $template = $payload->{'template'};
+        ###$self->app->log->debug("template5551: ".$self->app->dumper($template));
         my $templates = $self->getTemplates();
         my $init_data;
         # initialize datastructure from scv or initial load
-        if(not defined $template){
+        ###if(not defined $template){
               my $csvFile = $self->param('scv');
               my $csvContent = $csvFile->{'asset'}->{'content'} if defined $csvFile->{'asset'}->{'content'};
               $csvContent = 'empty' if not defined $csvContent;
@@ -49,23 +51,24 @@ sub mass_edit {
                              csv => $csvContent, 
                              templates => $templates 
                            };
-        }else{
-            # initialize datastructure from saved template
-                my $datasetTemplate = $self->mango->db->collection('masstemplate')->find({owner => $username, template_name => $template});
-                my $tmpl_selection;
-                my $tmpl_datastructure;
-                while (my $temp = $datasetTemplate->next) {
-                   $tmpl_datastructure = $temp->{'items'};
-                   $tmpl_selection = $temp->{'selections'};
-                }
-                $init_data = { 
-                               current_user => $self->current_user, 
-                               templates => $templates,
-                               tmpl_selection => $tmpl_selection,
-                               tmpl_datastructure => $tmpl_datastructure,
-                               tmpl_name => $template
-                            };
-        }
+        ###}else{
+        ###    $self->app->log->debug("from saved template5551 ");
+        ###    # initialize datastructure from saved template
+        ###        my $datasetTemplate = $self->mango->db->collection('masstemplate')->find({owner => $username, template_name => $template});
+        ###        my $tmpl_selection;
+        ###        my $tmpl_datastructure;
+        ###        while (my $temp = $datasetTemplate->next) {
+        ###           $tmpl_datastructure = $temp->{'items'};
+        ###           $tmpl_selection = $temp->{'selections'};
+        ###       }
+        ###        $init_data = { 
+        ###                       current_user => $self->current_user, 
+        ###                       templates => $templates,
+        ###                       tmpl_selection => $tmpl_selection,
+        ###                       tmpl_datastructure => $tmpl_datastructure,
+        ###                       tmpl_name => $template
+        ###                    };
+        ###}
         $self->stash(init_data => encode_json($init_data));       
         $self->stash(title => 'Mass edit');
         $self->render('massedit');
@@ -115,6 +118,39 @@ sub getTemplates{
          push(@templatesArr, $template->{'template_name'});
     }
     return \@templatesArr;
+}
+
+sub template_load{
+                
+        my $self = shift;
+        my $username = $self->current_user->{username};
+        unless(defined($username)){
+		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot save template, current user is missing (the session might be expired)." }] }, status => 500);
+		return;	
+        }
+        my $payload = $self->req->json;
+        my $template = $payload->{'template'};
+        
+        my $datasetTemplate = $self->mango->db->collection('masstemplate')->find({owner => $username, template_name => $template});
+        my $tmpl_selection;
+        my $tmpl_datastructure;
+        my $templates = $self->getTemplates();
+        while (my $temp = $datasetTemplate->next) {
+               $tmpl_datastructure = $temp->{'items'};
+               $tmpl_selection = $temp->{'selections'};
+        }
+        my $loaded_template = { 
+                       current_user => $self->current_user, 
+                       templates => $templates,
+                       tmpl_selection => $tmpl_selection,
+                       tmpl_datastructure => $tmpl_datastructure,
+                       tmpl_name => $template
+                             };
+        
+        $self->stash(title => 'Mass edit'); 
+        $self->render(json => { loaded_template => $loaded_template }, status => 200);
+        
+
 }
 
 sub template_save_as{
@@ -171,36 +207,6 @@ sub template_delete{
       
       $self->render('massedit');
 }
-
-
-sub template_load{
-    
-    my $self = shift;
-    my $username = $self->current_user->{username};
-    unless(defined($username)){
-		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot save template, current user is missing (the session might be expired)." }] }, status => 500);
-		return;	
-    }
-    my $payload = $self->req->json;
-    
-    my $datasetTemplates = $self->mango->db->collection('masstemplate')->find({owner => $username, template_name => $payload->{'template'}});
-    
-    my $templateSelections;
-    while (my $template = $datasetTemplates->next) {
-         $templateSelections = $template->{'selections'}
-    }
-    my $templates = $self->getTemplates();
-    my $init_data = { 
-                            current_user => $self->current_user, 
-                            templates => $templates,
-                            template_selections => $templateSelections
-                       };
-    $self->stash(init_data => encode_json($init_data));  
-    
-    $self->stash(title => 'Mass edit');
-    $self->render('massedit');
-}
-
 
 =head2 save_changes
  
@@ -319,6 +325,8 @@ sub jobs_details{
                     $item->{title}   =~ s/\n//g if defined $item->{title};
                     push(@parsedItems, $item);
               }
+              my $jobId->{jobId} = $self->stash('jobid');
+              push(@parsedItems, $jobId);
               $myItems = \@parsedItems;
        }
          
@@ -450,13 +458,35 @@ sub jobs_refresh_action_button {
      my @jobsArray;
      while (my $job = $datasetJobs->next) { 
            my $jobHash = {};
-           $jobHash->{id}         = $job->{_id};
-           $jobHash->{job_status} = $job->{job_status};
+           $jobHash->{id}           = $job->{_id};
+           $jobHash->{job_status}   = $job->{job_status};
+           $jobHash->{job_progress} = $job->{job_progress};
            push(@jobsArray, $jobHash);
      }
      
      $self->render(json => { jobsArray => \@jobsArray }, status => 200);
-     #$self->render('agents/massedit/jobs');
+}
+
+sub jobs_details_refresh_alerts {
+
+     my($self) = @_; 
+     
+     my $payload = $self->req->json;
+     my $id = {oid => $payload->{'jobId'}};
+     no strict 'subs';
+     bless($id, Mango::BSON::ObjectID);
+     use strict 'subs';
+     my $datasetJobs = $self->mango->db->collection('massedit')->find({_id => $id});
+     my @newItems;
+     while (my $job = $datasetJobs->next) { 
+           foreach my $item (@{$job->{items}}){
+                  my $itemHash = {};
+                  $itemHash->{PID}    = $item->{PID};
+                  $itemHash->{alerts} = $item->{alerts};
+                  push(@newItems, $itemHash);
+          }
+     }
+     $self->render(json => { refreshedItems => \@newItems }, status => 200);
 }
 
 1;

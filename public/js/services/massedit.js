@@ -1,7 +1,6 @@
-// mass edit services
-var myMassEditService = angular.module('massEditService', ['metadataService','ajoslin.promise-tracker']);
+var myMassEditService = angular.module('massEditService', ['metadataService', 'frontendService', 'ajoslin.promise-tracker']);
 
-myMassEditService.factory('Massedit', function($timeout, MetadataService, promiseTracker) {
+myMassEditService.factory('Massedit', function( MetadataService,FrontendService , promiseTracker) {
 
                                        var self = this;
                                        this.getTitles = function (Massedit, newPid) {
@@ -120,6 +119,8 @@ myMassEditService.factory('Massedit', function($timeout, MetadataService, promis
                                                alerts: [],
                                                sortOrder: 1,
                                                loadingTracker: function() {},
+                                               limit: "",
+                                               selection: [],
                                                // add/update  new field with corresponding value to the datastructure in all records
                                                dataStructureUpdate: function(fieldvalue, fieldname, datastructure) {
                                                                        if('undefined' !== typeof fieldname ){
@@ -161,9 +162,9 @@ myMassEditService.factory('Massedit', function($timeout, MetadataService, promis
                                                                        }
                                                                        return datastructure;
                                                                   },
-                                              updateDataStructureDisplay: function(page, Massedit, recordsPerPage, newPid) {
-                                                                                var start  = (page-1)*recordsPerPage ;
-                                                                                var max = (page-1)*recordsPerPage + recordsPerPage - 1;
+                                              updateDataStructureDisplay: function(page, Massedit, newPid) {
+                                                                                var start  = (page-1)*Massedit.limit ;
+                                                                                var max = (page-1)*Massedit.limit + Massedit.limit - 1;
                                                                                 Massedit.datastructuredisplay = [];
                                                                                 for (var i = start; i <= max  ; i++) {
                                                                                       if('undefined' !== typeof Massedit.datastructure[i] ){  
@@ -173,8 +174,27 @@ myMassEditService.factory('Massedit', function($timeout, MetadataService, promis
                                                                                 if(Massedit.titleDisplay){
                                                                                       self.getTitles(Massedit, newPid);
                                                                                 }
-                                                                          }
+                                                                          },
+                                              saveSelection: function(Massedit) {
+                                                                  console.log('Masseditselection: ',Massedit.selection);
+						                var promise = FrontendService.updateSelection(Massedit.selection);
+                                                                  var loadingTracker = promiseTracker('loadingTrackerFrontend'); 
+                                                                  loadingTracker.addPromise(promise);
+                                                                  promise.then(
+                                                                         function(response) { 
+                                                                                Massedit.alerts = response.data.alerts;
+                                                                                Massedit.form_disabled = false;
+                                                                         }
+                                                                        ,function(response) {
+                                                                                Massedit.alerts = response.data.alerts;
+                                                                                if(typeof Massedit.alerts  !== 'undefined'){
+                                                                                        Massedit.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                                                                                }
+                                                                                Massedit.form_disabled = false;
+                                                                         }
+                                                                 );
+                                                                 Massedit.loadingTracker = loadingTracker; 	  
+					                  }                             
                                               }
                                    }
                      );
-

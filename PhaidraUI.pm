@@ -217,19 +217,20 @@ sub startup {
     $auth->route('selection') 			->via('get')    ->to('frontend#get_selection');
     $auth->route('username') 			->via('get')    ->to('frontend#get_username');
    
-    $auth->route('massedit') 			       ->via('get')    ->to('massedit#mass_edit'); ###
-    $auth->route('massedit') 			       ->via('post')   ->to('massedit#mass_edit');
-    $auth->route('massedit/savecsv') 	               ->via('post')   ->to('massedit#save_csv');
-    $auth->route('massedit/apllychanges') 	       ->via('post')   ->to('massedit#save_changes');
-    $auth->route('massedit/template/saveas') 	       ->via('put')    ->to('massedit#template_save_as');
-    $auth->route('massedit/template/load') 	       ->via('get')    ->to('massedit#template_load');
-    $auth->route('massedit/template/delete') 	       ->via('delete') ->to('massedit#template_delete');
-    $auth->route('massedit/jobs') 	               ->via('get')    ->to('massedit#jobs');
+    $auth->route('massedit')                             ->via('get')    ->to('massedit#mass_edit'); ###
+    $auth->route('massedit')                             ->via('post')   ->to('massedit#mass_edit');
+    $auth->route('massedit/savecsv')                     ->via('post')   ->to('massedit#save_csv');
+    $auth->route('massedit/apllychanges')                ->via('post')   ->to('massedit#save_changes');
+    $auth->route('massedit/template/saveas')             ->via('put')    ->to('massedit#template_save_as');
+    $auth->route('massedit/template/load')               ->via('post')   ->to('massedit#template_load');
+    $auth->route('massedit/template/delete')             ->via('delete') ->to('massedit#template_delete');
+    $auth->route('massedit/jobs')                        ->via('get')    ->to('massedit#jobs');
     $auth->route('massedit/jobs/details/:jobid')         ->via('get')    ->to('massedit#jobs_details');
     $auth->route('massedit/jobs/action')                 ->via('post')   ->to('massedit#jobs_action');
     $auth->route('massedit/jobs/delete')                 ->via('delete') ->to('massedit#jobs_delete');
     $auth->route('massedit/jobs/delete_all')             ->via('delete') ->to('massedit#jobs_delete_all');
     $auth->route('massedit/jobs/refresh_action_button')  ->via('get')    ->to('massedit#jobs_refresh_action_button');
+    $auth->route('massedit/jobs/detail/refresh_alerts')  ->via('post')   ->to('massedit#jobs_details_refresh_alerts');
     
     $auth->route('uwmetadata_editor/:pid') ->via('get')  ->to('object#uwmetadataeditor');
     

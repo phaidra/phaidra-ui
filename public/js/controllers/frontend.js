@@ -1,15 +1,15 @@
-var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService']);
 
 var SigninModalCtrl = function ($scope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
 		
-	$scope.user = {username: '', password: ''};
-	$scope.alerts = [];		
+    $scope.user = {username: '', password: ''};
+    $scope.alerts = [];		
 	
-	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
+    // we will use this to track running ajax requests to show spinner
+    $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
 
-	$scope.closeAlert = function(index) {
-    	$scope.alerts.splice(index, 1);
+    $scope.closeAlert = function(index) {
+    	       $scope.alerts.splice(index, 1);
     };
     
     $scope.hitEnterSignin = function(evt){
@@ -227,7 +227,7 @@ var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectSer
      };
 };
 
-app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker,FrontendService) {
+app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker, FrontendService, Massedit) {
     
    
     // we will use this to track running ajax requests to show spinner	
@@ -241,7 +241,7 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     $scope.current_user = '';
 			
     $scope.init = function (initdata) {
-                 $scope.initdata = angular.fromJson(initdata);
+                $scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
 		$scope.baseurl = $('head base').attr('href'); 
 		//$scope.initdataTemp = initdataTemp;
@@ -250,6 +250,13 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     $scope.gotoJobsList = function() {
         
          window.location = $('head base').attr('href')+'massedit/jobs';
+    };
+    
+    $scope.gotoMassedit = function() {
+        
+         Massedit.selection = [];
+         Massedit.saveSelection(Massedit);
+         window.location = $('head base').attr('href')+'massedit';
     };
     
     $scope.hitEnterSearch = function(evt){    	

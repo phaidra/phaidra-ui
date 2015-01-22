@@ -64,18 +64,19 @@
 
        </nav>
        <nav>
+                
                 <div class="navbar-form well massedit-well1" >
-	            
+	                 <div class="navbar-form navbar-left" >Load/Save from CSV</div>
 	                 <div class="navbar-form navbar-left">
 	                        <form id="uploadbanner" enctype="multipart/form-data" method="post" action="massedit">
                                        <input class="btn btn-default" id="fileupload" name="scv" type="file" />
-                                       <input ng-click="csvfileselected.onSubmit($event)" class="btn btn-default" type="submit" value="Load from csv" id="submit" />
+                                       <input ng-click="csvfileselected.onSubmit($event)" class="btn btn-default" type="submit" value="Load from CSV" id="submit" />
                                 </form>
                          </div>
                          <div class="navbar-form navbar-left">
                               <form id="download" enctype="multipart/form-data" method="post" action="massedit/savecsv">
                                 <input class="hidden" id="data" name="data"  ng-model="saveAsCsv" />
-                                <input class="btn btn-default" ng-click="preparforsaving()" type="submit" value="Save as csv" id="submit" />
+                                <input class="btn btn-default" ng-click="preparforsaving()" type="submit" value="Save as CSV" id="submit" />
                               </form>
                          </div>
                </div>

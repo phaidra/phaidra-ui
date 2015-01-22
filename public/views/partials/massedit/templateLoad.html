@@ -15,15 +15,13 @@
 							                  <br>
                                                                 </div>
 						</fieldset>
+						
+						
 					 </data-ng-form>
 				   
 				           <div class="modal-footer">
-				                      <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-				                      <form class="btn  massedit-loadTemplateForm" action="/massedit" method="get" id="loadTemplate" >
-                                                           <input class="hidden" name="template" ng-model="massedit.templatename">
-                                                           <input ng-click="load.onSubmit($event)" class="massedit-loadTemplateButton" type="submit" value="Load" name="load">
-                                                     </form>
-                                        
+                                                       <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+                                                       <button type="button" class="btn btn-primary" ng-click="load()" ng-disabled="(collform.$dirty && collform.$invalid) || collform.$pristine || form_disabled">Load</button>       
 				          </div>
 			      </div>
 		        </div>

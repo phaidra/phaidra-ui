@@ -62,15 +62,15 @@
 	                <th>Action</th>
 	                <th>Details</th>
 	                <th>
-	                       <a ng-if="jobs.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAllJobs()">All/<i class="glyphicon glyphicon-trash"></i></a>
+	                       <a ng-if="masseditjobs.jobs.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAllJobs()">All/<i class="glyphicon glyphicon-trash"></i></a>
 	                </th>
 	           </tr>
 	     </thead>
 	     <tbody>
-	           <tr ng-repeat="job in jobsDisplay">
+	           <tr ng-repeat="job in masseditjobs.jobsDisplay">
 	                <td>{{job.id}}</td>
 	                <td>{{job.instance}}</td>
-	                <td> <div class="{{job.status_color}}" >{{job.job_status}}</div></td>
+	                <td> <div class="{{job.status_color}}" >{{job.job_status}} <span ng-if="job.job_status == 'processing' || job.job_status == 'aborted' || job.job_status == 'processed'" >{{job.job_progress}}%<span></div></td>
 	                <td>{{job.owner}}</td>
 	                <td>{{job.start_at*1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
 	                <td>

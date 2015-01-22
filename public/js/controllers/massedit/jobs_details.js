@@ -1,4 +1,4 @@
-app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTracker, Massedit ) {
+app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTracker, FrontendService, Massedit ) {
   
   $scope.itemsDisplay = [];
   $scope.maxSize = 10; // pages in paginator
@@ -6,6 +6,8 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
   $scope.sortOrder = 0;
   $scope.currentPageInPaginator = '';
   $scope.titleDisplay = true;
+  $scope.jobId = '';
+  $scope.refreshInterval = 7000;
   
   $scope.init = function (initdata) {
         
@@ -13,7 +15,15 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
         var items = initdata.replace(re, "'");
 	items = items.replace(/(\r\n|\n|\r)/gm,"");
 	$scope.items = angular.fromJson(items);
+	//get jobId
+	for(var i = $scope.items.length - 1; i >= 0; i--){
+	      if('undefined' !== typeof  $scope.items[i].jobId ){
+		     $scope.jobId = $scope.items[i].jobId;
+		     $scope.items.splice(i, 1);
+	      }  
+	}
 	$scope.setPage(1);
+	setInterval($scope.getNewAlerts, $scope.refreshInterval);
   }
   
   $scope.viewChanges = function (pid) {
@@ -123,7 +133,41 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
        if (parseInt(numberA, 10) > parseInt(numberB, 10))  return 1;
        return 0;
     };
-  
+    
+    $scope.getNewAlerts = function () { 
+      
+            var promise =  FrontendService.MEjobsDetailsRefreshAlerts($scope.jobId);
+            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+            $scope.loadingTracker.addPromise(promise); 
+            promise.then(
+                  function(response) { 
+                         var refreshedItems = response.data.refreshedItems;
+                         $scope.refreshAlerts(refreshedItems);
+			  $scope.alerts = response.data.alerts;
+                         $scope.form_disabled = false;
+                  }
+                  ,function(response) {
+                         $scope.alerts = response.data.alerts;
+                         if(typeof($scope.alerts) != "undefined"){
+                             $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                         }
+                         $scope.form_disabled = false;
+                 }
+           );
+    }
+    
+    $scope.refreshAlerts = function (refreshedItems) { 
+      
+          for( var i = 0 ; i < $scope.items.length ; i++ ){
+	         for( var j = 0 ; j < refreshedItems.length ; j++ ){
+		        if($scope.items[i].PID == refreshedItems[j].PID){
+			      $scope.items[i].alerts = refreshedItems[j].alerts;
+			}
+		 }
+	  }     
+    }
+    
+    
 });
 
 var ViewChangesCtr = function ($scope, $modalInstance, promiseTracker, items, pid) {
