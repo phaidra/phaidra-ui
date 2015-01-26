@@ -1,4 +1,4 @@
-app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, MasseditJobs, FrontendService, promiseTracker) {  
+app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, FrontendService, promiseTracker, MasseditJobs) {  
 
       $scope.statusActions = [];
 

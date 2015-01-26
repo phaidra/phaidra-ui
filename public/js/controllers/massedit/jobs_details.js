@@ -2,7 +2,8 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
   
   $scope.itemsDisplay = [];
   $scope.maxSize = 10; // pages in paginator
-  $scope.itemsPerPageNum = 10;
+  Massedit.limit = 10; // records on page
+  $scope.itemsPerPageNum = 10; // records on page
   $scope.sortOrder = 0;
   $scope.currentPageInPaginator = '';
   $scope.titleDisplay = true;
@@ -45,6 +46,7 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
   $scope.itemsPerPage = function (itemsPerPage) { 
       
        $scope.itemsPerPageNum = itemsPerPage;
+       Massedit.limit = itemsPerPage;
        $scope.setPage(1);
   }
   
@@ -68,7 +70,7 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
       	
 	Massedit.titleDisplay = $scope.titleDisplay;
 	Massedit.datastructure = $scope.items;
-	Massedit.updateDataStructureDisplay($scope.currentPageInPaginator, Massedit, $scope.maxSize );
+	Massedit.updateDataStructureDisplay($scope.currentPageInPaginator, Massedit);
 	for( var i = 0 ; i < $scope.itemsDisplay.length ; i++ ){
 	      for( var j = 0 ; j < Massedit.datastructuredisplay.length ; j++ ){
 		     if($scope.itemsDisplay[i].PID == Massedit.datastructuredisplay[j].PID){

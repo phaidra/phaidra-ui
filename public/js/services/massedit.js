@@ -17,7 +17,9 @@ myMassEditService.factory('Massedit', function( MetadataService,FrontendService 
                                                                                      }
                                                                                     ,function(response) {
                                                                                              Massedit.alerts = response.data.alerts;
-                                                                                             Massedit.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+											  if(typeof Massedit.alerts  !== 'undefined'){   
+                                                                                                    Massedit.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+											  }
                                                                                      }
                                                                               );
                                                                               Massedit.loadingTracker = loadingTracker;  
@@ -33,8 +35,10 @@ myMassEditService.factory('Massedit', function( MetadataService,FrontendService 
                                                                                       }
                                                                                      ,function(response) {
                                                                                               Massedit.alerts = response.data.alerts;
-                                                                                              Massedit.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-                                                                                      }
+                                                                                              if(typeof Massedit.alerts  !== 'undefined'){
+											          Massedit.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+											   }
+									           }
                                                                          );
                                                                          Massedit.loadingTracker = loadingTracker; 
                                                                  }
@@ -176,7 +180,6 @@ myMassEditService.factory('Massedit', function( MetadataService,FrontendService 
                                                                                 }
                                                                           },
                                               saveSelection: function(Massedit) {
-                                                                  console.log('Masseditselection: ',Massedit.selection);
 						                var promise = FrontendService.updateSelection(Massedit.selection);
                                                                   var loadingTracker = promiseTracker('loadingTrackerFrontend'); 
                                                                   loadingTracker.addPromise(promise);

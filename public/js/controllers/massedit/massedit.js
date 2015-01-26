@@ -1,4 +1,4 @@
-app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, DirectoryService, SearchService, FrontendService, MetadataService, promiseTracker, Massedit) {
+app.controller('MasseditCtrl',  function($scope, $modal, FrontendService, promiseTracker, Massedit) {
 
     $scope.flaged = 1;
 
@@ -359,12 +359,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
 
             var modalInstance = $modal.open({
                    templateUrl: $('head base').attr('href')+'views/partials/massedit/addrecord.html',
-                   controller: MEAddRecordModalCtrl,
-                   resolve: {
-                         recordsPerPage: function(){
-                                             return Massedit.limit;
-                                                   }
-                   }
+                   controller: MEAddRecordModalCtrl
             }); 
      };
 
@@ -513,7 +508,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, $location, $timeout, Di
 });
 
 
-var MEAddFieldModalCtrl = function ($scope, $modalInstance, $location, FrontendService, ObjectService, promiseTracker, Massedit, current_field) {
+var MEAddFieldModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectService, promiseTracker, Massedit, current_field) {
 
        $scope.changesFirst = [];
 	
@@ -546,7 +541,7 @@ var MEAddFieldModalCtrl = function ($scope, $modalInstance, $location, FrontendS
        
 }; 
 
-var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, $location, promiseTracker, FrontendService, Massedit, text ) {
+var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, promiseTracker, FrontendService, Massedit, text ) {
 
      $scope.text = text;
      
@@ -565,7 +560,7 @@ var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, $location, promis
 	    
 }
 
-var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, $location, promiseTracker, FrontendService, Massedit, text, username, flaged) {
+var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, promiseTracker, FrontendService, Massedit, text, username, flaged) {
 
      $scope.text = text;
      
@@ -599,7 +594,7 @@ var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, $location, promise
      };    
 }
 
-var METemplateSaveAsModalCtrl = function ($scope, $modalInstance, $location, FrontendService, promiseTracker, Massedit, selection) {
+var METemplateSaveAsModalCtrl = function ($scope, $modalInstance, FrontendService, promiseTracker, Massedit, selection) {
      
      $scope.massedit = Massedit;
      $scope.templates = Massedit.templates;
@@ -652,7 +647,7 @@ var METemplateSaveAsModalCtrl = function ($scope, $modalInstance, $location, Fro
   
 }
 
-var METemplateLoadModalCtrl = function ($scope, $modalInstance, $modal, $location, FrontendService, promiseTracker, Massedit) {
+var METemplateLoadModalCtrl = function ($scope, $modalInstance, $modal, FrontendService, promiseTracker, Massedit) {
   
     $scope.massedit = Massedit;
     $scope.templates = Massedit.templates;
@@ -709,7 +704,7 @@ var METemplateLoadModalCtrl = function ($scope, $modalInstance, $modal, $locatio
     };
 }
 
-var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTracker, FrontendService, $location, Massedit, recordsPerPage ) {
+var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTracker, FrontendService, Massedit ) {
   
       
       $scope.massedit = Massedit;
@@ -744,6 +739,7 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
 	       Massedit.selection.push($scope.massedit.newPID);
 	       Massedit.saveSelection(Massedit);
 	       // paginator set to first after adding new record
+	       
 	       $( "ul.pagination li" ).removeClass( "active" );
 	       $( "ul.pagination li:nth-child(1)" ).addClass( "disabled" );
 	       $( "ul.pagination li:nth-child(2)" ).addClass( "disabled" );
@@ -774,7 +770,7 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
   
 }
 
-var METemplateDeleteModalCtrl = function ($scope, $modalInstance, $location, FrontendService, promiseTracker, Massedit) {
+var METemplateDeleteModalCtrl = function ($scope, $modalInstance, FrontendService, promiseTracker, Massedit) {
      
      $scope.massedit = Massedit;
      $scope.templates = Massedit.templates;
@@ -836,7 +832,7 @@ var METemplateDeleteModalCtrl = function ($scope, $modalInstance, $location, Fro
      };
 }
 
-var MEEditRecordModalCtrl = function ($scope, $modalInstance, $location, Massedit, PID) {
+var MEEditRecordModalCtrl = function ($scope, $modalInstance, Massedit, PID) {
     
      $scope.massedit = Massedit;
      $scope.PID = PID;
@@ -872,7 +868,7 @@ var MEEditRecordModalCtrl = function ($scope, $modalInstance, $location, Massedi
   
 }
 
-var MEAlertsModalCtrl = function ($scope, $modalInstance, $location, FrontendService, text ) {
+var MEAlertsModalCtrl = function ($scope, $modalInstance, FrontendService, text ) {
    
      $scope.text = text;
      
@@ -882,13 +878,13 @@ var MEAlertsModalCtrl = function ($scope, $modalInstance, $location, FrontendSer
      
 }
 
-var MEAlertsLoadCsvModalCtrl = function ($scope, $modalInstance, $location, FrontendService, text ) {
+var MEAlertsLoadCsvModalCtrl = function ($scope, $modalInstance, FrontendService, text ) {
    
      $scope.text = text;
      
      $scope.OK = function () {
 		$modalInstance.dismiss('OK');
-		window.location = window.location;
+		//window.location = window.location;
 	};
      
 }

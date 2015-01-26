@@ -146,26 +146,6 @@ margin-top: 5px;
 .massedit-saveAsTemplateRadio{
     margin-left: 15px;
 }
-.massedit-loadTemplateButton{
-   background-color: #428bca;
-   color: #fff;
-   border: medium none;
-   padding: 5px 12px;
-}
-.massedit-loadTemplateForm{
-   padding: 1px;
-   background-color: #428bca;
-   border-color: #428bca;
-}
-.massedit-loadTemplateButton:hover, .massedit-loadTemplateButton:focus, .massedit-loadTemplateButton:active{
-  border-color: #285e8e !important;
-  color: #fff !important;
-  background-color: #3276b1 !important;
-}
-.massedit-loadTemplateForm:hover, .massedit-loadTemplateForm:focus, .massedit-loadTemplateForm:active{
-    border-color: #285e8e !important;
-    background-color: #3276b1 !important;
-}
 .bold{
    font-weight: bold;
 }
