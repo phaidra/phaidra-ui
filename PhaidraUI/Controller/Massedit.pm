@@ -34,41 +34,20 @@ sub mass_edit {
 		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot save template, current user is missing (the session might be expired)." }] }, status => 500);
 		return;	
 	}
-        #my $template = $self->param('template');
-        ###my $payload = $self->req->json;
-        ###my $template = $payload->{'template'};
         ###$self->app->log->debug("template5551: ".$self->app->dumper($template));
         my $templates = $self->getTemplates();
         my $init_data;
-        # initialize datastructure from scv or initial load
-        ###if(not defined $template){
-              my $csvFile = $self->param('scv');
-              my $csvContent = $csvFile->{'asset'}->{'content'} if defined $csvFile->{'asset'}->{'content'};
-              $csvContent = 'empty' if not defined $csvContent;
-              $csvContent =~ s/\n/#mycsvseparator/g;
-              $init_data = { 
+        
+        my $csvFile = $self->param('scv');
+        my $csvContent = $csvFile->{'asset'}->{'content'} if defined $csvFile->{'asset'}->{'content'};
+        $csvContent = 'empty' if not defined $csvContent;
+        $csvContent =~ s/\n/#mycsvseparator/g;
+        $init_data = { 
                              current_user => $self->current_user, 
                              csv => $csvContent, 
                              templates => $templates 
-                           };
-        ###}else{
-        ###    $self->app->log->debug("from saved template5551 ");
-        ###    # initialize datastructure from saved template
-        ###        my $datasetTemplate = $self->mango->db->collection('masstemplate')->find({owner => $username, template_name => $template});
-        ###        my $tmpl_selection;
-        ###        my $tmpl_datastructure;
-        ###        while (my $temp = $datasetTemplate->next) {
-        ###           $tmpl_datastructure = $temp->{'items'};
-        ###           $tmpl_selection = $temp->{'selections'};
-        ###       }
-        ###        $init_data = { 
-        ###                       current_user => $self->current_user, 
-        ###                       templates => $templates,
-        ###                       tmpl_selection => $tmpl_selection,
-        ###                       tmpl_datastructure => $tmpl_datastructure,
-        ###                       tmpl_name => $template
-        ###                    };
-        ###}
+                     };
+
         $self->stash(init_data => encode_json($init_data));       
         $self->stash(title => 'Mass edit');
         $self->render('massedit');

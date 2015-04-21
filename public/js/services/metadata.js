@@ -10,7 +10,14 @@ angular.module('metadataService', [])
 	         	//headers : are by default application/json
 	         });
 	    },
-	
+	    getModsFromObjectTest: function(pid) {
+	         //return the promise directly.
+	         return $http({
+	             method  : 'GET',
+	             url     : $('head base').attr('href')+'proxy/get_object_mods_test/'+pid
+	         	//headers : are by default application/json
+	         });
+	    },
 	    getUwmetadataTree: function() {
 	        return $http({
 	            method  : 'GET',
@@ -70,12 +77,34 @@ angular.module('metadataService', [])
 			});	        
 	   },
 	   
+	   getGeo: function(bagid) {
+	        return $http({
+	            method  : 'GET',
+	            url     : $('head base').attr('href')+'bag/'+bagid+'/geo'
+	        });
+	   },
+           //delete it
+	   saveGeo: function(bagid, geo){
+			   return $http({
+				   method  : 'POST',
+				   url     : $('head base').attr('href')+'bag/'+bagid+'/geo/',
+				   data    : { geo: geo }
+			   });
+	   },
+	 
 	   get_object_tripl: function(q, limit){
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'proxy/get_object_tripl/',
 				params  : { q: q, limit: limit }
 			});	        
+	   },
+	   getClassifications: function(valueuris) {
+		    return $http({
+		        method  : 'POST',
+		        url     : $('head base').attr('href')+'view/getclassifications',
+		        params  : { valueuris: valueuris }
+		    });
 	   }
 	   
 	}

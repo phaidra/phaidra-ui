@@ -1,4 +1,4 @@
-app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, FrontendService, promiseTracker, MasseditJobs) {  
+app.controller('MasseditJobsCtrl',  function($scope, $rootScope, $timeout, $modal, FrontendService, promiseTracker, MasseditJobs) {  
 
       $scope.statusActions = [];
 
@@ -75,7 +75,9 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, FrontendS
     $scope.getActionButtonStatus = function () { 
 
          var promise =  FrontendService.MEjobsRefreshActButt();
-            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+            //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	    //$scope.loadingTracker = promiseTracker();
+	    $scope.loadingTracker = $rootScope.loadingTracker;
             $scope.loadingTracker.addPromise(promise); 
             promise.then(
                   function(response) { 
@@ -253,8 +255,10 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, FrontendS
     $scope.jobAction = function (jobId, jobAction) {
 
             var promise =  FrontendService.MEagentAction(jobId, jobAction, $scope.currentPageInPaginator);
-            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-            $scope.loadingTracker.addPromise(promise); 
+            //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	    //$scope.loadingTracker = promiseTracker();
+            $scope.loadingTracker = $rootScope.loadingTracker;
+	    $scope.loadingTracker.addPromise(promise); 
             promise.then(
                  function(response) { 
                          $scope.alerts = response.data.alerts;
@@ -286,8 +290,10 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, FrontendS
     $scope.deleteJob= function (jobId) {
 
             var promise = FrontendService.MEagentDelete(jobId, $scope.currentPageInPaginator);
-            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-            $scope.loadingTracker.addPromise(promise); 
+            //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	    //$scope.loadingTracker = promiseTracker();
+            $scope.loadingTracker = $rootScope.loadingTracker;
+	    $scope.loadingTracker.addPromise(promise); 
             promise.then(
                  function(response) { 
                          $scope.removeJobFromInternalArray(jobId);
@@ -327,7 +333,7 @@ app.controller('MasseditJobsCtrl',  function($scope, $timeout, $modal, FrontendS
 });
 
 
-var deleteAllJobsModalCtrl = function ($scope, $modalInstance, $location, FrontendService, MasseditJobs,  promiseTracker, text) {
+var deleteAllJobsModalCtrl = function ($scope, $rootScope, $modalInstance, $location, FrontendService, MasseditJobs,  promiseTracker, text) {
   
        $scope.text = text; 
        
@@ -338,8 +344,10 @@ var deleteAllJobsModalCtrl = function ($scope, $modalInstance, $location, Fronte
        $scope.OK = function () {
 	
 	    var promise = FrontendService.MEagentDeleteAll();
-            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-            $scope.loadingTracker.addPromise(promise); 
+            //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	    //$scope.loadingTracker = promiseTracker();
+            $scope.loadingTracker = $rootScope.loadingTracker;
+	    $scope.loadingTracker.addPromise(promise); 
             promise.then(
                  function(response) { 
                         MasseditJobs.jobs = [];

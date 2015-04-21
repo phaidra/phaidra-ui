@@ -99,7 +99,7 @@ sub startup {
 	    		'log' => $self->log 
 	    	),              
 	    	transport => MojoX::Session::Transport::Cookie->new(name => 'b_'.$config->{installation_id}),
-            expires_delta => $config->{session_expiration}, 
+                expires_delta => $config->{session_expiration}, 
 	    	ip_match      => 1
         }
     );
@@ -192,31 +192,31 @@ sub startup {
     
 
     
-    $r->route('') 			  		->via('get')   ->to('frontend#home');
-    $r->route('signin') 			  	->via('get')   ->to('authentication#signin');
-    $r->route('signout') 			->via('get')   ->to('authentication#signout');
-    $r->route('loginform') 			->via('get')   ->to('authentication#loginform');
+    $r->route('')                                        ->via('get')    ->to('frontend#home');
+    $r->route('signin')                                  ->via('get')    ->to('authentication#signin');
+    $r->route('signout')                                 ->via('get')    ->to('authentication#signout');
+    $r->route('loginform')                               ->via('get')    ->to('authentication#loginform');
     
-    $r->route('search') ->via('get')   ->to('object#search');    
+    $r->route('search')                                  ->via('get')    ->to('object#search');    
   
-    $r->route('proxy/get_uwmetadata_tree') ->via('get')   ->to('proxy#get_uwmetadata_tree');
-    $r->route('proxy/get_uwmetadata_languages') ->via('get')   ->to('proxy#get_uwmetadata_languages');
-    $r->route('proxy/get_help_tooltip') ->via('get')   ->to('proxy#get_help_tooltip');
-    $r->route('proxy/get_directory_get_org_units') ->via('get')   ->to('proxy#get_directory_get_org_units');
-    $r->route('proxy/get_directory_get_study') ->via('get')   ->to('proxy#get_directory_get_study');
-    $r->route('proxy/get_directory_get_study_name') ->via('get')   ->to('proxy#get_directory_get_study_name');        
-    $r->route('proxy/objects') ->via('get')   ->to('proxy#search_owner');
-    $r->route('proxy/objects/:username') ->via('get')   ->to('proxy#search_owner');
-    $r->route('proxy/search') ->via('get')   ->to('proxy#search');
-    $r->route('proxy/object/:pid/related') ->via('get')   ->to('proxy#get_related_objects');
-    
+    $r->route('proxy/get_uwmetadata_tree')               ->via('get')    ->to('proxy#get_uwmetadata_tree');
+    $r->route('proxy/get_uwmetadata_languages')          ->via('get')    ->to('proxy#get_uwmetadata_languages');
+    $r->route('proxy/get_help_tooltip')                  ->via('get')    ->to('proxy#get_help_tooltip');
+    $r->route('proxy/get_directory_get_org_units')       ->via('get')    ->to('proxy#get_directory_get_org_units');
+    $r->route('proxy/get_directory_get_study')           ->via('get')    ->to('proxy#get_directory_get_study');
+    $r->route('proxy/get_directory_get_study_name')      ->via('get')    ->to('proxy#get_directory_get_study_name');        
+    $r->route('proxy/objects')                           ->via('get')    ->to('proxy#search_owner');
+    $r->route('proxy/objects/:username')                 ->via('get')    ->to('proxy#search_owner');
+    $r->route('proxy/search')                            ->via('get')    ->to('proxy#search');
+    $r->route('proxy/object/:pid/related')               ->via('get')    ->to('proxy#get_related_objects');
+
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
-    
-    $auth->route('selection') 			->via('post')   ->to('frontend#post_selection');
-    $auth->route('selection') 			->via('get')    ->to('frontend#get_selection');
-    $auth->route('username') 			->via('get')    ->to('frontend#get_username');
-   
+
+    $auth->route('selection')                            ->via('post')   ->to('frontend#post_selection');
+    $auth->route('selection')                            ->via('get')    ->to('frontend#get_selection');
+    $auth->route('username')                             ->via('get')    ->to('frontend#get_username');
+
     $auth->route('massedit')                             ->via('get')    ->to('massedit#mass_edit'); ###
     $auth->route('massedit')                             ->via('post')   ->to('massedit#mass_edit');
     $auth->route('massedit/savecsv')                     ->via('post')   ->to('massedit#save_csv');
@@ -231,31 +231,45 @@ sub startup {
     $auth->route('massedit/jobs/delete_all')             ->via('delete') ->to('massedit#jobs_delete_all');
     $auth->route('massedit/jobs/refresh_action_button')  ->via('get')    ->to('massedit#jobs_refresh_action_button');
     $auth->route('massedit/jobs/detail/refresh_alerts')  ->via('post')   ->to('massedit#jobs_details_refresh_alerts');
+
+    $auth->route('view/:pid')                            ->via('get')    ->to('object#view');
+    $auth->route('view/getclassifications')              ->via('post')   ->to('object#get_classifications');
+    $auth->route('proxy/get_object_mods_test/:pid')      ->via('get')    ->to('proxy#get_object_mods_test');
+
+    $auth->route('bookmark/create')                      ->via('get')    ->to('bookmark#create');
+    $auth->route('bookmark/get')                         ->via('get')    ->to('bookmark#get');
+    $auth->route('bookmark/addto')                       ->via('post')   ->to('bookmark#add_to');
+    $auth->route('bookmark/edit')                        ->via('get')    ->to('bookmark#edit');
+    $auth->route('bookmark/edit_pid/:bookmarkid')        ->via('get')    ->to('bookmark#edit_pid');
+    $auth->route('bookmark/delete')                      ->via('delete') ->to('bookmark#delete');
+    $auth->route('bookmark/deletepid')                   ->via('delete') ->to('bookmark#deletepid');
+    $auth->route('bookmark/deleteall')                   ->via('delete') ->to('bookmark#delete_all');
+    $auth->route('bookmark/deleteallpid')                ->via('delete') ->to('bookmark#delete_all_pid');
     
-    $auth->route('uwmetadata_editor/:pid') ->via('get')  ->to('object#uwmetadataeditor');
-    
-    $auth->route('uwmetadata_template_editor') ->via('get')  ->to('object#uwmetadata_template_editor');
-    $auth->route('uwmetadata_template_editor/:tid') ->via('get')  ->to('object#uwmetadata_template_editor'); 
-    
-    $auth->route('proxy/get_object_tripl') ->via('get')   ->to('proxy#get_object_tripl');
-    
-    $auth->route('proxy/get_object_uwmetadata/:pid') ->via('get')   ->to('proxy#get_object_uwmetadata');
-    $auth->route('proxy/save_object_uwmetadata/:pid') ->via('post')   ->to('proxy#save_object_uwmetadata');    
-    $auth->route('proxy/collection/create') ->via('post')   ->to('proxy#collection_create');
-    $auth->route('proxy/collection/:pid/members/order') ->via('post')   ->to('proxy#collection_order');
+    $auth->route('uwmetadata_editor/:pid')               ->via('get')    ->to('object#uwmetadataeditor');
+
+    $auth->route('uwmetadata_template_editor')           ->via('get')    ->to('object#uwmetadata_template_editor');
+    $auth->route('uwmetadata_template_editor/:tid')      ->via('get')    ->to('object#uwmetadata_template_editor'); 
+
+    $auth->route('proxy/get_object_tripl')               ->via('get')    ->to('proxy#get_object_tripl');
+
+    $auth->route('proxy/get_object_uwmetadata/:pid')     ->via('get')    ->to('proxy#get_object_uwmetadata');
+    $auth->route('proxy/save_object_uwmetadata/:pid')    ->via('post')   ->to('proxy#save_object_uwmetadata');    
+    $auth->route('proxy/collection/create')              ->via('post')   ->to('proxy#collection_create');
+    $auth->route('proxy/collection/:pid/members/order')  ->via('post')   ->to('proxy#collection_order');
     $auth->route('proxy/collection/:pid/members/:itempid/order/:position') ->via('post')   ->to('proxy#collection_member_order');
-    $auth->route('proxy/collection/:pid/members/:itempid/order/') ->via('post')   ->to('proxy#collection_member_order');
-        
-    $auth->route('template') ->via('put')   ->to('template#create');
-    $auth->route('template/:tid') ->via('post')   ->to('template#save');    
-    $auth->route('template/:tid') ->via('get')   ->to('template#load');
-    $auth->route('template/:tid') ->via('delete')   ->to('template#delete');    
-    
-    $auth->route('templates') ->via('get')   ->to('template#templates');
-    $auth->route('templates/my') ->via('get')   ->to('template#my');
-        
-    $auth->route('collection/:pid') ->via('get')   ->to('collection#view');
-    
+    $auth->route('proxy/collection/:pid/members/:itempid/order/')          ->via('post')   ->to('proxy#collection_member_order');
+
+    $auth->route('template')                             ->via('put')    ->to('template#create');
+    $auth->route('template/:tid')                        ->via('post')   ->to('template#save');    
+    $auth->route('template/:tid')                        ->via('get')    ->to('template#load');
+    $auth->route('template/:tid')                        ->via('delete') ->to('template#delete');    
+
+    $auth->route('templates')                            ->via('get')    ->to('template#templates');
+    $auth->route('templates/my')                         ->via('get')    ->to('template#my');
+
+    $auth->route('collection/:pid')                      ->via('get')    ->to('collection#view');
+
     return $self;
 }
 

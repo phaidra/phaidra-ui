@@ -16,8 +16,8 @@ sub view {
 	my $owner = $object_model->get_owner($self, $pid);
 
 	my $init_data = { current_user => $self->current_user, pid => $pid, owner => $owner };
-    $self->stash(init_data => encode_json($init_data));
-    $self->stash(init_data_perl => $init_data);
+        $self->stash(init_data => encode_json($init_data));
+        $self->stash(init_data_perl => $init_data);
     
 	$self->render('objects/members');
 }

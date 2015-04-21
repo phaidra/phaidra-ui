@@ -1,11 +1,13 @@
 
-app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, promiseTracker) {
+app.controller('UwmetadataeditorCtrl',  function($scope, $rootScope, $modal, $location, DirectoryService, MetadataService, FrontendService, promiseTracker) {
     
 	$scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
 	// use: <input ng-pattern="regex_identifier" ...
 	
 	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	//$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	//$scope.loadingTracker = promiseTracker();
+	$scope.loadingTracker = $rootScope.loadingTracker;
 	
 	$scope.default_helptext = 'Loading tooltip content...';
 	
@@ -607,6 +609,12 @@ $scope.saveTemplateAs = function () {
     	var arr = $scope.getContainingArray(this);
     	// get index of the current element in this array
     	return angular.element.inArray(child, arr);
+    }
+    // hacky bullshit to make the map refresh on geo tab select
+    // this var is watched in geo controller
+    $scope.geoTabActivated = false;
+    $scope.triggerGeoTabActivated = function (){
+    	$scope.geoTabActivated = true;
     }
     
 });

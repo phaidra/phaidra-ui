@@ -23,7 +23,8 @@
   	
   	<!-- jQuery -->
   	<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
-  	<script src="<%= url_for '/js/jquery.min.js' %>"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  	<!-- <script src="<%= url_for '/js/jquery.min.js' %>"></script>-->
   	<script src="<%= url_for '/js/jquery-ui-1.10.4.custom.min.js' %>"></script>
 
   	
@@ -33,10 +34,10 @@
   	<!--<script type="text/javascript" src="<%= url_for '/js/select2.min.js' %>"></script>-->
   	
   	<!-- AngularJS -->
-  	<script src="<%= url_for '/js/angular-1.2.6.min.js' %>"></script>
-  	<script src="<%= url_for '/js/angular-animate-1.2.6.min.js' %>"></script>
-  	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.js"></script>-->
-  	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-animate.js"></script>-->
+  	<!--<script src="<%= url_for '/js/angular-1.2.6.min.js' %>"></script>-->
+  	<!--<script src="<%= url_for '/js/angular-animate-1.2.6.min.js' %>"></script>-->
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-animate.js"></script>
   	<script src="<%= url_for '/js/sortable-angular-1.2.js' %>"></script>
   	
   	<!-- AngularJS Select2 -->
@@ -68,10 +69,15 @@
   	<!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js"></script>-->  	  
   	<script src="<%= url_for '/js/ui-bootstrap-tpls-0.10.0.js' %>"></script>  	
   	
+        <!-- Maps -->
+	<script type="text/javascript" src="<%= url_for '/js/lodash-3.0.0-pre.min.js' %>"></script>
+   	<!--<script type="text/javascript" src="<%= url_for '/js/angular-google-maps-2.0.9.min.js' %>"></script>-->
+  	<script type="text/javascript" src="<%= url_for '/js/angular-google-maps-2.0.17.min.js' %>"></script>
   	<!-- Promise tracker -->
   	<script src="<%= url_for '/js/promise-tracker.min.js' %>"></script>
   	
   	<!-- Custom Phaidra scripts -->
+
   	<script type="text/javascript" src="<%= url_for '/js/services/base64.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/directory.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/metadata.js' %>"></script>
@@ -79,8 +85,10 @@
 	<script type="text/javascript" src="<%= url_for '/js/services/frontend.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/object.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/massedit.js' %>"></script>
-	<script type="text/javascript" src="<%= url_for '/js/services/masseditjobs.js' %>"></script>  
+	<script type="text/javascript" src="<%= url_for '/js/services/masseditjobs.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/bookmark.js' %>"></script>
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
+
   	
   	<!-- Custom Phaidra CSS --> 
   	<link href="<%= url_for '/css/frontend.css' %>" rel="stylesheet">
@@ -143,12 +151,9 @@
         </li>
                 
       </ul>
-      <button type="button" class="btn  btn-default massedit-jobs-button" data-ng-click="gotoMassedit()">
-                Massedit
-      </button> 
-      <button type="button" class="btn  btn-default massedit-jobs-button" data-ng-click="gotoJobsList()">
-                Massedit Jobs
-      </button> 
+      <a href="" id="Massedit" class="Massedit-link" ng-click="gotoMassedit()">Massedit</a> 
+      <a href="" id="MasseditJobs" class="Massedit-link" ng-click="gotoJobsList()">Massedit Jobs</a> 
+
       <% } %>
       
       <ul class="nav navbar-right">      

@@ -1,4 +1,4 @@
-app.controller('MasseditCtrl',  function($scope, $modal, FrontendService, promiseTracker, Massedit) {
+app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendService, promiseTracker, Massedit) {
 
     $scope.flaged = 1;
 
@@ -34,8 +34,10 @@ app.controller('MasseditCtrl',  function($scope, $modal, FrontendService, promis
                  }
     );
     // we will use this to track running ajax requests to show spinner
-    $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-
+    //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+    //$scope.loadingTracker = promiseTracker();
+    $scope.loadingTracker = $rootScope.loadingTracker;
+    
     $scope.alerts = [];
 
     $scope.selection = [];
@@ -363,13 +365,12 @@ app.controller('MasseditCtrl',  function($scope, $modal, FrontendService, promis
             }); 
      };
 
-     $scope.templateDelete = function () {  
+     $scope.templateDelete = function () {
 
             var modalInstance = $modal.open({
                      templateUrl: $('head base').attr('href')+'views/partials/massedit/templateDelete.html',
                      controller: METemplateDeleteModalCtrl,
             });
-
      };
 
      $scope.editRecord = function (PID) {
@@ -426,8 +427,10 @@ app.controller('MasseditCtrl',  function($scope, $modal, FrontendService, promis
      $scope.templateSave = function () { 
      
        	   if('undefined' !== typeof Massedit.current_template){ 
-                 $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-                 var promise = FrontendService.saveAsMassTemplate(Massedit.current_user.username,  Massedit.current_template, Massedit.selection, Massedit.datastructure);
+                  //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+		 //$scope.loadingTracker = promiseTracker();
+                 $scope.loadingTracker = $rootScope.loadingTracker;
+		 var promise = FrontendService.saveAsMassTemplate(Massedit.current_user.username,  Massedit.current_template, Massedit.selection, Massedit.datastructure);
                  $scope.loadingTracker.addPromise(promise); 
                  promise.then(
 	     	      function(response) {
@@ -508,7 +511,7 @@ app.controller('MasseditCtrl',  function($scope, $modal, FrontendService, promis
 });
 
 
-var MEAddFieldModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectService, promiseTracker, Massedit, current_field) {
+var MEAddFieldModalCtrl = function ($scope, $rootScope, $modalInstance, FrontendService, ObjectService, promiseTracker, Massedit, current_field) {
 
        $scope.changesFirst = [];
 	
@@ -519,7 +522,9 @@ var MEAddFieldModalCtrl = function ($scope, $modalInstance, FrontendService, Obj
        $scope.display = {current_field: current_field};
        $scope.massedit = {fieldvalue: ''};
        
-       $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+       //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+       //$scope.loadingTracker = promiseTracker();
+       $scope.loadingTracker = $rootScope.loadingTracker;
        
        $scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
@@ -541,7 +546,7 @@ var MEAddFieldModalCtrl = function ($scope, $modalInstance, FrontendService, Obj
        
 }; 
 
-var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, promiseTracker, FrontendService, Massedit, text ) {
+var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, FrontendService, Massedit, text ) {
 
      $scope.text = text;
      
@@ -560,7 +565,7 @@ var MEyesnoDelAllModalCtrl = function ($scope, $modalInstance, promiseTracker, F
 	    
 }
 
-var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, promiseTracker, FrontendService, Massedit, text, username, flaged) {
+var MEyesnoApplyModalCtrl = function ($scope, $rootScope, $modalInstance, promiseTracker, FrontendService, Massedit, text, username, flaged) {
 
      $scope.text = text;
      
@@ -573,7 +578,9 @@ var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, promiseTracker, Fr
           Massedit.saveSelection(Massedit);
 
 	  var promise = FrontendService.MEapllychanges(username, flaged);
-          $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');// show 'MEapllychanges' tracker even if tracking over Massedit is disabled .....
+          //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');// show 'MEapllychanges' tracker even if tracking over Massedit is disabled .....
+	  //$scope.loadingTracker = promiseTracker();
+	  $scope.loadingTracker = $rootScope.loadingTracker;
 	  $scope.loadingTracker.addPromise(promise); 
           promise.then(
 	     	function(response) { 
@@ -594,7 +601,7 @@ var MEyesnoApplyModalCtrl = function ($scope, $modalInstance, promiseTracker, Fr
      };    
 }
 
-var METemplateSaveAsModalCtrl = function ($scope, $modalInstance, FrontendService, promiseTracker, Massedit, selection) {
+var METemplateSaveAsModalCtrl = function ($scope, $rootScope, $modalInstance, FrontendService, promiseTracker, Massedit, selection) {
      
      $scope.massedit = Massedit;
      $scope.templates = Massedit.templates;
@@ -614,8 +621,10 @@ var METemplateSaveAsModalCtrl = function ($scope, $modalInstance, FrontendServic
 	        Massedit.templates.push($scope.massedit.templatename);
 	  }
 
-	  $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-           var promise = FrontendService.saveAsMassTemplate(Massedit.current_user.username,  $scope.massedit.templatename, selection, Massedit.datastructure);
+	  //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	   //$scope.loadingTracker = promiseTracker();
+           $scope.loadingTracker = $rootScope.loadingTracker;
+	   var promise = FrontendService.saveAsMassTemplate(Massedit.current_user.username,  $scope.massedit.templatename, selection, Massedit.datastructure);
            $scope.loadingTracker.addPromise(promise); 
            promise.then(
 	     	function(response) { 
@@ -647,7 +656,7 @@ var METemplateSaveAsModalCtrl = function ($scope, $modalInstance, FrontendServic
   
 }
 
-var METemplateLoadModalCtrl = function ($scope, $modalInstance, $modal, FrontendService, promiseTracker, Massedit) {
+var METemplateLoadModalCtrl = function ($scope, $rootScope, $modalInstance, $modal, FrontendService, promiseTracker, Massedit) {
   
     $scope.massedit = Massedit;
     $scope.templates = Massedit.templates;
@@ -672,15 +681,17 @@ var METemplateLoadModalCtrl = function ($scope, $modalInstance, $modal, Frontend
 	                        }
                      });  
 	   }else{
-		$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-                 var promise = FrontendService.loadMassTemplate($scope.massedit.templatename);
+		//$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+                 //$scope.loadingTracker = promiseTracker();
+                 $scope.loadingTracker = $rootScope.loadingTracker;
+		 var promise = FrontendService.loadMassTemplate($scope.massedit.templatename);
                  $scope.loadingTracker.addPromise(promise);
                  promise.then(
                         function(response) { 
 			    var loaded_template = response.data.loaded_template; 
                              Massedit.datastructure = loaded_template.tmpl_datastructure;
                              Massedit.selection = loaded_template.tmpl_selection;
-			    Massedit.saveSelection(Massedit); 
+			      Massedit.saveSelection(Massedit); 
                              Massedit.updateDataStructureDisplay(1, Massedit);
                              Massedit.changesFirst = Massedit.datastructure[0].changes;
                              Massedit.current_template =  loaded_template.tmpl_name;    
@@ -704,7 +715,7 @@ var METemplateLoadModalCtrl = function ($scope, $modalInstance, $modal, Frontend
     };
 }
 
-var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTracker, FrontendService, Massedit ) {
+var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, FrontendService, Massedit ) {
   
       
       $scope.massedit = Massedit;
@@ -770,7 +781,7 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, promiseTrac
   
 }
 
-var METemplateDeleteModalCtrl = function ($scope, $modalInstance, FrontendService, promiseTracker, Massedit) {
+var METemplateDeleteModalCtrl = function ($scope, $rootScope, $modalInstance, FrontendService, promiseTracker, Massedit) {
      
      $scope.massedit = Massedit;
      $scope.templates = Massedit.templates;
@@ -805,8 +816,10 @@ var METemplateDeleteModalCtrl = function ($scope, $modalInstance, FrontendServic
 	        }
 	  }
            
-           $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-           var promise = FrontendService.deleteMassTemplate(Massedit.current_user.username, $scope.massedit.forDeletion);
+           //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	   //$scope.loadingTracker = promiseTracker();
+           $scope.loadingTracker = $rootScope.loadingTracker;
+	   var promise = FrontendService.deleteMassTemplate(Massedit.current_user.username, $scope.massedit.forDeletion);
            $scope.loadingTracker.addPromise(promise); 
            promise.then(
 	     	function(response) { 

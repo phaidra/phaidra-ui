@@ -1,0 +1,200 @@
+% layout 'default', title => 'view';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/view.js' %>"></script>
+   <script type="text/javascript" src="<%= url_for '/js/controllers/geo.js' %>"></script>
+   <script type="text/javascript" src="<%= url_for '/js/controllers/members.js' %>"></script>
+        
+% end
+
+%= include 'alerts'
+
+ 
+ <div class="container view-container" data-ng-controller="ViewCtrl" data-ng-init="init('<%= $init_data %>')">
+                 current bookmark: {{BookmarkService.currentBookmarkId}}
+                 <div ng-if="!contentModelCollection" class="btn-view-center">
+                                  Current object pid: {{pid}} 
+                 </div>
+                 <div ng-if="contentModelCollection" class="btn-view-center">
+                                  Current collection pid: {{pid}} 
+                 </div>
+                <div ng-if="!contentModelCollection" class="view-image">
+                     <nav ng-if="current_user" id="control-panel" class="navbar navbar-default list-navbar">
+                           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                              	          <div class="btn-group animate-if" >
+						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						       Action <span class="caret"></span>
+						  </button>
+						  <ul class="dropdown-menu" role="menu">
+						       <li><a href="" data-ng-click="addToCurrentBookmark()">Add to current bookmark</a></li>
+						       <li><a href="" data-ng-click="addToBookmark()">Add to bookmark</a></li>
+						       <li><a href="" data-ng-click="createBookmark()">Create new bookmark</a></li>
+						       <li><a href="" data-ng-click="editBookmark()">Edit bookmarks</a></li>
+						  </ul>							   
+				         </div>
+                           </div>
+                     </nav>	
+                     <img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{pid}}"> </img>
+                </div>
+           
+                <div ng-if="contentModelCollection" class="view-collection" data-ng-controller="MembersCtrl" data-ng-init="initCollection('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/partials/' %>collection.html'" >
+                     
+                </div>
+                <div>
+                         <div class="btn-view-left" data-ng-cloak data-ng-show = 'object == previousPagePid' ng-repeat="object in init_data.pagePids">
+                                 <a class="btn btn-default" data-ng-click="prevPage(object)" data-ng-cloak data-ng-show = 'object == previousPagePid'  class='object-view'>Previous: {{object}} </a> 
+                         </div>  
+
+                         <div class="btn-view-right" data-ng-cloak data-ng-show = 'object == nextPagePid' ng-repeat="object in init_data.pagePids">
+                                  <a  class="btn btn-default" data-ng-click="nextPage(object)" data-ng-cloak data-ng-show = 'object == nextPagePid'   class='object-view'>Next: {{object}} </a>
+                         </div>
+ 
+               </div>
+
+		<div class="well well-view" id="ViewCtrl" >
+		        <form name="form" class="form-horizontal" novalidate role="form">
+		              
+		                         <tabset>
+		                                  <tab>
+		                                       <tab-heading>
+		                                                    <span>Dublincore</span>
+		                                       </tab-heading>
+		                                        <table class="table">
+		                                                 <tbody>
+		                                                         <tr ng-repeat="(key, val) in dublinCore.dc">
+		                                                                 <td bind-once >{{key}} <span ng-if="val.lang"> (language : {{val.lang}}) </span></td>
+		                                                                 <td bind-once >{{val.ui_value}}</td>
+		                                                         </tr>
+		                                                 </tbody>
+		                                        </table>
+		                                  </tab>
+		                                  <tab>
+		                                       <tab-heading data-ng-click="loadUwmeta(pid)">
+		                                                    <span>UWMetadata</span>
+		                                       </tab-heading>
+		                                       <div class="well well-edit">
+		                                            <a  data-ng-click="editUwmeta(pid)" class="btn btn-primary navbar-btn">Edit UWMetadata</a>
+		                                       </div>
+		                                       <fieldset data-ng-cloak data-ng-show = 'uwmetadata' ng-disabled="form_disabled">
+		                                             <tabset>
+		                                                <tab data-ng-repeat="field in uwmetadata | filter:filterHidden" active="field.active" disabled="field.disabled" ng-if="field.labels.en != 'Classification'" >
+				      		
+				      		                       <tab-heading>
+	        					                             <span phaidra-help phaidra-help-id="{{field.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{field.labels.en}}</span>        					
+	      					                       </tab-heading>
+	      					                       	<table class="table">
+		                                                              <tbody>
+		                                                                      <tr ng-repeat="child in field.children" ng-if="child.ui_value">
+		                                                                             <td bind-once >{{child.labels.en}}</td>
+		                                                                             <td bind-once >{{child.ui_value}}</td>
+		                                                                      </tr>
+		                                                              </tbody>
+		                                                      </table>
+	      				                         </tab>	  
+		                                             </tabset>
+		                                        </fieldset>
+		                                 </tab>
+		                                 <tab> 
+		                                       <tab-heading data-ng-click="loadMods(pid)">
+		                                                    <span>MODS</span>
+		                                       </tab-heading>
+		                                       <div class="well well-edit">    
+		                                           <a class="btn btn-primary navbar-btn">Edit MODS</a>
+		                                       </div>    
+		                                       <fieldset data-ng-cloak data-ng-show = 'mods' ng-disabled="form_disabled">
+		                                             <tabset>
+		                                                <tab data-ng-repeat="modsObject in mods.tree">
+				      		
+				      		                       <tab-heading>
+	        					                      <span tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{modsObject.label}}</span>        					
+	      					                       </tab-heading>
+	      					                       	<table class="table">
+		                                                              <tbody>
+		                                                                      <tr data-ng-repeat="modsObjectChild in modsObject.children" ng-if="modsObjectChild.ui_value">
+		                                                                              <td bind-once >{{modsObjectChild.label}}</td>
+		                                                                              <td bind-once >
+		                                                                                    {{modsObjectChild.ui_value}}
+		                                                                                    	<table class="table">
+		                                                                                    	        <tbody>
+		                                                                                    	              <tr data-ng-repeat="modsObjectChild2 in modsObjectChild.children" ng-if="modsObjectChild2.ui_value">
+		                                                                                    	                   <td bind-once >{{modsObjectChild2.label}}</td>
+		                                                                                    	                   <td bind-once >
+		                                                                                    	                        {{modsObjectChild2.ui_value}}
+		                                                                                    	                         <table class="table">
+		                                                                                    	                                   <tbody>
+		                                                                                    	                                           <tr data-ng-repeat="modsObjectChild3 in modsObjectChild2.children" ng-if="modsObjectChild3.ui_value">
+		                                                                                    	                                                  <td bind-once >{{modsObjectChild3.label}}</td>
+		                                                                                    	                                                  <td bind-once >{{modsObjectChild3.ui_value}}</td>
+		                                                                                    	                                           </tr>
+		                                                                                    	                                   </tbody>
+		                                                                                    	                         </table>
+		                                                                                    	                   </td>
+		                                                                                    	              </tr>
+		                                                                                    	        </tbody>
+		                                                                                    	</table>
+		                                                                             </td>
+		                                                                      </tr>
+		                                                              </tbody>
+		                                                      </table>
+	      				                         </tab>	  
+		                                             </tabset>
+		                                        </fieldset>
+		                                 </tab>
+		                                  <tab class="geo" select="triggerGeoTabActivated()">
+		                                       <tab-heading>
+		            	                             <span>Geo</span>
+		                                       </tab-heading>
+		                                      <div class="geo" data-ng-controller="GeoCtrl" data-ng-init="initgeo('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/partials/' %>geo.html'"></div>
+		                                 </tab>
+	
+		                                 <tab>
+		                                       <tab-heading  data-ng-click="loadAllMeta(pid)" >
+		                                                    <span>Classifications</span>
+		                                       </tab-heading>		                                       
+		                                       <!-- <fieldset ng-disabled="form_disabled"> -->
+		                                       <fieldset >
+		                                             <tabset>             
+		                                                   <tab data-ng-cloak data-ng-show = 'uwmetaClassifications'>
+				      		                       <tab-heading>
+	        					                             <span phaidra-help tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>Uwmetadata</span>        					
+	      					                       </tab-heading>
+				      		                       <span > 
+				      		                           <div class="well well-edit">
+				      		                                  <a class="btn btn-primary navbar-btn">Edit Uwmetadata Classifications</a>
+				      		                           </div>
+				      		                           <div class="class-panel" data-ng-repeat="item in uwmetaClassifications">
+			                                                         <div bind-once class="class-panel-header">{{item.classification.en}}</div>
+			                                                                <span class="pull-left">
+				                                                               <strong bind-once  >{{item.labels.en}}</strong> <small bind-once >{{item.upstream_identifier}}</small>
+			                                                                </span>
+			                                                         <div class="clearfix"></div>
+		                                                          </div>
+				      		                        <span>
+		                                                  </tab>
+		                                                  <tab data-ng-cloak data-ng-show = 'modsClassifications'>
+				      		                     <tab-heading>
+	        					                       <span phaidra-help  tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>Mods</span>        					
+	      					                     </tab-heading>
+				      		                     <span> 
+				      		                         <div class="well well-edit">
+				      		                              <a class="btn btn-primary navbar-btn">Edit Mods Classifications</a>
+				      		                         </div>
+				      		                         <div class="class-panel" data-ng-repeat="item in modsClassifications">
+			                                                         <div bind-once class="class-panel-header">{{item.classification.en}}</div>
+			                                                                <span class="pull-left">
+				                                                               <strong bind-once >{{item.labels.en}}</strong> <small bind-once >{{item.upstream_identifier}}</small>
+			                                                                </span>
+			                                                         <div class="clearfix"></div>
+		                                                        </div>
+				      		                     <span>              
+	      				                         </tab>
+		                                             </tabset>
+		                                        </fieldset>
+
+		                                 </tab>
+		                         </tabset>
+		        </form> 
+		        
+             </div>
+</div>

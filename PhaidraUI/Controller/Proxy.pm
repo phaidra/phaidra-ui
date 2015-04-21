@@ -29,21 +29,22 @@ sub get_object_uwmetadata {
 	
 	my $token = $self->load_token;	
 	
-  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub { 	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub {
   		my ($ua, $tx) = @_;
 
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
-	  		$self->app->log->debug('get_object_uwmetadata', $self->app->dumper($res->json));	
+	  		# $self->app->log->debug('get_object_uwmetadata', $self->app->dumper($res->json));
+	  		$self->app->log->debug('get_object_uwmetadata');	
 	  	}else {
-		 	my ($err, $code) = $tx->error;
-		 	if($tx->res->json){	  
-			  	if(exists($tx->res->json->{alerts})) {
-				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
-				 }else{
+			my ($err, $code) = $tx->error;
+			if($tx->res->json){	  
+				if(exists($tx->res->json->{alerts})) {
+					$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+				}else{
 				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
-				 }
-		 	}
+				}
+			}
 		}
 		
   	});
@@ -575,11 +576,11 @@ sub collection_member_order {
 			 	}else{
 			  		$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
 			 	}
-			}		
+			}
   		}
   	);
-
 }
+
  
 sub get_object_tripl{
    
@@ -622,9 +623,38 @@ sub get_object_tripl{
 				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
 				 }
 		        }
-		}	
-  	});  	
+		}
+  	});
 }
+
+#test mf
+sub get_object_mods_test{
+      
+         my $self = shift;
+      
+         my $metadata;
+         my $mango = Mango->new('mongodb://'.'bagger-rastanb'.':'.'l-30H9aS11gLDbW'.'@'.'stage.phaidra.org'.'/'.'bagger-rastanb');
+         my $bagid = $self->stash('bagid');
+         $bagid = 'dummy2';
+         $self->app->log->info("[".$self->current_user->{username}."] Loading bag (get_uwmeta_test) $bagid");
+         my $bag = $mango->db->collection('bags')->find_one({bagid => 'TestProjectDasPortaldesRenierPalastes__DSC0488tif_mods'});
+         unless($bag){
+		$self->app->log->error("[".$self->current_user->{username}."] Error loading bag ".$bagid);
+		$self->render(
+			json => {
+				alerts => [{ type => 'danger', msg => "Error loading bag with id ".$bagid }]
+			},
+		status => 500);
+	}else{
+		#$metadata = $bag->{metadata}->{uwmetadata}->[6]->{children}->[4]->{children}->[3]->{value_labels}->{nonpreferred}->[0]->{labels}->{en};
+		$metadata = $bag->{metadata}->{mods};	
+	}
+	$self->app->log->info("get_object_mods_test metadata: ".$self->app->dumper($metadata));
+	
+	$self->render(json => $metadata, status => 200 );
+
+}
+
 
 
 1;

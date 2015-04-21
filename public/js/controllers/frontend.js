@@ -1,13 +1,39 @@
-var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService', 'bookmarkService', 'uiGmapgoogle-maps']);
 
-var SigninModalCtrl = function ($scope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
+app.run(function($rootScope, promiseTracker) {
+  $rootScope.loadingTracker = promiseTracker();
+});
+
+app.config(function(uiGmapGoogleMapApiProvider) {
+    uiGmapGoogleMapApiProvider.configure({
+  //      key: <%= $config->{google_maps_api_key} %>,
+    	key:'AIzaSyBWE_bAtgkm1RuWkrW7jBrYV1JBiPUZDAs',
+        v: '3.17',
+        libraries: 'weather,geometry,visualization'
+    });
+});
+
+app.directive('bindOnce', function() {
+    return {
+        scope: true,
+        link: function( $scope, $element ) {
+            setTimeout(function() {
+                $scope.$destroy();
+            }, 0);
+        }
+    }
+});
+
+var SigninModalCtrl = function ($scope, $rootScope, $modalInstance, DirectoryService, FrontendService, promiseTracker) {
 		
     $scope.user = {username: '', password: ''};
     $scope.alerts = [];		
 	
     // we will use this to track running ajax requests to show spinner
-    $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
-
+    //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
+    //$scope.loadingTracker = promiseTracker();	
+    $scope.loadingTracker = $rootScope.loadingTracker;
+    
     $scope.closeAlert = function(index) {
     	       $scope.alerts.splice(index, 1);
     };
@@ -54,7 +80,7 @@ var SigninModalCtrl = function ($scope, $modalInstance, DirectoryService, Fronte
 };
 
 
-var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectService, promiseTracker, current_user, selection) {
+var CollModalCtrl = function ($scope, $rootScope, $modalInstance, FrontendService, ObjectService, promiseTracker, current_user, selection) {
 			
 	$scope.alerts = [];
 	$scope.current_user = current_user;
@@ -172,8 +198,10 @@ var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectSer
         }
     ];		
 	
-	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');	
-
+        //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+        //$scope.loadingTracker = promiseTracker();
+        $scope.loadingTracker = $rootScope.loadingTracker;
+	
 	$scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
@@ -227,14 +255,16 @@ var CollModalCtrl = function ($scope, $modalInstance, FrontendService, ObjectSer
      };
 };
 
-app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, promiseTracker, FrontendService, Massedit) {
+app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, DirectoryService, promiseTracker, FrontendService, Massedit) {
     
    
     // we will use this to track running ajax requests to show spinner	
-    $scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
-	
-    $scope.alerts = [];        
-    $scope.query = '';   
+    //$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
+    console.log('promiseTracker:', promiseTracker);
+    //$scope.loadingTracker = promiseTracker.register();
+    $scope.loadingTracker = $rootScope.loadingTracker;
+    $scope.alerts = [];
+    $scope.query = '';
     
     
     $scope.initdata = '';
@@ -283,7 +313,7 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     };
     
     $scope.signin_open = function () {
-
+       console.log('login');
     	var modalInstance = $modal.open({
             templateUrl: $('head base').attr('href')+'views/partials/loginform.html',
             controller: SigninModalCtrl
@@ -291,7 +321,8 @@ app.controller('FrontendCtrl', function($scope, $modal, $log, DirectoryService, 
     };
     
     $scope.init = function () {
-    	if($('#signin').attr('data-open') == 1){
+    	
+        if($('#signin').attr('data-open') == 1){
     		$scope.signin_open();
     	}
 	

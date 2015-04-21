@@ -9,10 +9,12 @@ var ConfirmDeleteModalCtrl = function ($scope, $modalInstance) {
 	};
 };
 
-app.controller('TemplatesCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, promiseTracker) {
+app.controller('TemplatesCtrl',  function($scope, $rootScope, $modal, $location, DirectoryService, MetadataService, promiseTracker) {
     
 	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	//$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	//$scope.loadingTracker = promiseTracker();
+	$scope.loadingTracker = $rootScope.loadingTracker;
 	
 	$scope.alerts = [];
 	

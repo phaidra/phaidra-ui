@@ -4,7 +4,7 @@ angular.module('searchService', [])
 	return {
 		
 		getUserObjects: function(username, from, limit, sort, reverse, fields){
-			var user = username ? username : '';
+		        var user = username ? username : '';
 			return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'proxy/objects/' + user,
@@ -13,7 +13,7 @@ angular.module('searchService', [])
 		},
 		
 		search: function(query, from, limit, sort, reverse, fields){
-			return $http({
+		        return $http({
 				method  : 'GET',
 				url     : $('head base').attr('href')+'proxy/search',
 				params  : { q: query, from: from, limit: limit, sort: sort, reverse: reverse, fields: fields }
@@ -26,7 +26,6 @@ angular.module('searchService', [])
 				url     : $('head base').attr('href')+'proxy/object/'+pid+'/related',
 				params  : {from: from, limit: limit, fields: fields, relation: 'info:fedora/fedora-system:def/relations-external#hasCollectionMember' }
 			});	        
-}	
-
+                },
 	}
 });

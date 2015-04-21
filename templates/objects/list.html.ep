@@ -79,19 +79,20 @@
 	  </thead>
 	  <tbody>
 	  <tr ng-repeat="object in objects | orderBy:'updated'">	  
-	    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)"></span></td>
-	  	<td><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.PID}}///60" class="img-thumbnail" width="60" height="60" title="{{object['uw.general.title']}}" alt="{{object['uw.general.title']}}"></td>
-	  	<td>	  		
+	        <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)"></span></td>
+	  	<td bind-once ><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.PID}}///60" class="img-thumbnail" width="60" height="60" title="{{object['uw.general.title']}}" alt="{{object['uw.general.title']}}"></td>
+	  	<td bind-once >	  		
 	  		<div ng-switch on="object['fgs.contentModel']">
 	  			<div ng-switch-when="cmodel:Collection">
-	  				<a href="/collection/{{object.PID}}" target="_blank">{{object.PID}}</a>	
+	  				<!--<a href="/collection/{{object.PID}}" target="_blank">{{object.PID}}</a>-->
+	  				<a href="/view/{{urlEncodePidExtended(object.pidExtended)}}"  class='object-view'>{{object.PID}} </a> 
 	  			</div>
 	  			<div ng-switch-default>
-	  				{{object.PID}}
+	  				<a href="/view/{{urlEncodePidExtended(object.pidExtended)}}"  class='object-view'>{{object.PID}} </a> 
 	  			</div>
 	  		</div>
 	  	</td>
-	  	<td>	  		
+	  	<td bind-once >
 	  		<div ng-switch on="object['fgs.contentModel']">
 	  			<div ng-switch-when="cmodel:Collection">
 	  				<a href="/collection/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a>	
@@ -100,13 +101,13 @@
 	  				{{object['uw.general.title']}}
 	  			</div>
 	  		</div>
-	  	</td>	    
-	    <td>{{object['fgs.createdDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
-	    <td>{{object['fgs.lastModifiedDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	  	</td>
+	    <td bind-once >{{object['fgs.createdDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+	    <td bind-once >{{object['fgs.lastModifiedDate'] | date:'dd.MM.yyyy HH:mm:ss'}}</td>
 	    <td>
 	      <a href="/uwmetadata_editor/{{object.PID}}"><i class="glyphicon glyphicon-pencil"></i></a>
 	    </td>
-	  </tr>	  
+	  </tr>
 	  </tbody>
 	</table>
 	

@@ -1,14 +1,17 @@
 var myMassEditService = angular.module('massEditService', ['metadataService', 'frontendService', 'ajoslin.promise-tracker']);
 
-myMassEditService.factory('Massedit', function( MetadataService,FrontendService , promiseTracker) {
+myMassEditService.factory('Massedit', function( $rootScope, MetadataService,FrontendService , promiseTracker) {
 
                                        var self = this;
                                        this.getTitles = function (Massedit, newPid) {
                                                            for( var i = 0 ; i < Massedit.datastructuredisplay.length ; i++ ){
                                                                  if(typeof newPid !== 'undefined'){ 
-                                                                         if(Massedit.datastructuredisplay[i].PID == newPid){
-                                                                              var loadingTracker = promiseTracker('loadingTrackerFrontend'); 
-                                                                              var promise = MetadataService.get_object_tripl(newPid, 1);
+                                                                              // get title only for new pid
+								                if(Massedit.datastructuredisplay[i].PID == newPid){
+                                                                              //var loadingTracker = promiseTracker('loadingTrackerFrontend');
+									        //var loadingTracker = promiseTracker(); 
+                                                                              var loadingTracker = $rootScope.loadingTracker; 
+										var promise = MetadataService.get_object_tripl(newPid, 1);
                                                                               loadingTracker.addPromise(promise); 
                                                                               promise.then(
                                                                                      function(response) { 
@@ -25,10 +28,13 @@ myMassEditService.factory('Massedit', function( MetadataService,FrontendService 
                                                                               Massedit.loadingTracker = loadingTracker;  
                                                                         }
                                                                   }else{
-                                                                        var loadingTracker = promiseTracker('loadingTrackerFrontend');
+                                                                        //var loadingTracker = promiseTracker('loadingTrackerFrontend');
+                                                                        //var loadingTracker = promiseTracker();
+									  // get title for all pids
+									  var loadingTracker = $rootScope.loadingTracker;
                                                                         var promise = MetadataService.get_object_tripl(Massedit.datastructuredisplay[i].PID, 1);
                                                                         loadingTracker.addPromise(promise); 
-							              promise.then(
+							                 promise.then(
                                                                                      function(response) { 
                                                                                               Massedit.alerts = response.data.alerts;
                                                                                               self.updatePidTripl(Massedit, response.data);
@@ -181,8 +187,10 @@ myMassEditService.factory('Massedit', function( MetadataService,FrontendService 
                                                                           },
                                               saveSelection: function(Massedit) {
 						                var promise = FrontendService.updateSelection(Massedit.selection);
-                                                                  var loadingTracker = promiseTracker('loadingTrackerFrontend'); 
-                                                                  loadingTracker.addPromise(promise);
+                                                                  //var loadingTracker = promiseTracker('loadingTrackerFrontend'); 
+				                                   //var loadingTracker = promiseTracker(); 
+                                                                  var loadingTracker = $rootScope.loadingTracker;
+								   loadingTracker.addPromise(promise);
                                                                   promise.then(
                                                                          function(response) { 
                                                                                 Massedit.alerts = response.data.alerts;

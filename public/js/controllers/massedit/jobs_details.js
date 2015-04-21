@@ -1,4 +1,4 @@
-app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTracker, FrontendService, Massedit ) {
+app.controller('MasseditJobsDetailsCtrl',  function($scope, $rootScope, $modal, promiseTracker, FrontendService, Massedit ) {
   
   $scope.itemsDisplay = [];
   $scope.maxSize = 10; // pages in paginator
@@ -139,8 +139,10 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
     $scope.getNewAlerts = function () { 
       
             var promise =  FrontendService.MEjobsDetailsRefreshAlerts($scope.jobId);
-            $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-            $scope.loadingTracker.addPromise(promise); 
+            //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+	    //$scope.loadingTracker = promiseTracker();
+            $scope.loadingTracker = $rootScope.loadingTracker;
+	    $scope.loadingTracker.addPromise(promise); 
             promise.then(
                   function(response) { 
                          var refreshedItems = response.data.refreshedItems;
@@ -172,7 +174,7 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $modal, promiseTrack
     
 });
 
-var ViewChangesCtr = function ($scope, $modalInstance, promiseTracker, items, pid) {
+var ViewChangesCtr = function ($scope, $rootScope, $modalInstance, promiseTracker, items, pid) {
 
       $scope.changes = [];
       $scope.PID = pid; 
@@ -182,8 +184,9 @@ var ViewChangesCtr = function ($scope, $modalInstance, promiseTracker, items, pi
 	   }
       }
   
-      $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-       
+      //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
+      //$scope.loadingTracker = promiseTracker();
+      $scope.loadingTracker = $rootScope.loadingTracker;
       $scope.close = function () {
 		$modalInstance.dismiss('cancel');
       };
