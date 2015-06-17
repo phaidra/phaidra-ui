@@ -1,0 +1,30 @@
+<div class="form-group row input-select" ng-class="{ 'input-text-multi': (!is_attribute && !(child.repeatable == 0)) }" >
+
+	<label ng-if="!is_attribute" class="control-label col-sm-2" ng-class="{ 'text-muted': is_attribute }" ng-bind="child.label"><span class="grey" ng-show="child.ordered" ng-bind="child.data_order"></span></label>
+
+    <div class="col-sm-10">
+
+    	<div class="input-group" ng-class="{ 'has-error': child.mandatory && !child.ui_value }">
+
+	    	<select class="form-control" ng-model="child.ui_value" ng-options="option as getVocLabel(option) for option in vocs[vocsmap[fieldid]]" ng-required="{{child.mandatory}}" placeholder="-- please choose --" phaidra-help phaidra-help-id="{{child.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>	    	
+	        	<option value="">-- please choose --</option>
+	        </select>
+
+   			<div ng-if="!is_attribute" class="input-group-btn">
+				<button ng-if="!(child.repeatable == 0)" class="btn btn-default" ng-click="addNewElement(child, parent)"><span class="glyphicon glyphicon-plus"></span></button>
+				<button ng-if="!(child.repeatable == 0) && canDelete(child, parent)" class="btn btn-default" ng-click="deleteElement(child, parent)"><span class="glyphicon glyphicon-minus"></span></button>
+				<button ng-if="!(child.sequence == 1) && canUpElement(child, parent)" class="btn btn-default" ng-click="upElement(child, parent)"><span class="glyphicon glyphicon-chevron-up"></span></button>
+				<button ng-if="!(child.sequence == 1) && canDownElement(child, parent)" class="btn btn-default" ng-click="downElement(child, parent)" ><span class="glyphicon glyphicon-chevron-down"></span></button>
+				<button ng-if="child1.attributes" class="btn btn-default" ng-click="editAttributes(child1, fieldid)"><span class="glyphicon glyphicon-wrench"></span></button>
+			</div>
+	   	</div>
+		
+	   	<div data-ng-if="child.attributes.length">
+		   	<div class="attr-view-div">
+		   		<span class="attr-view" data-ng-repeat="att in child.attributes track by $index" data-ng-if="att.ui_value">{{att.label}}: {{att.ui_value}}</span>
+		   	</div>
+	   	</div>
+
+    </div>
+    
+</div>

@@ -1,0 +1,29 @@
+<div class="modal">
+	<div class="modal-dialog massedit-modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">
+					       <span class="glyphicon glyphicon-asterisk">
+					       </span>  
+					       <img class="load-spinner" ng-show="loadingTracker.active()" src="/img/ajax-loader.gif"> </img>
+				       </h4>
+				   	<data-ng-form name="templateLoad" novalidate role="form" > Please select the template to load:
+						<fieldset data-ng-disabled="form_disabled">
+					                          <div ng-repeat = "template in templates">
+							               <input ng-click="setTemplateName(template)" type="radio" name="template" value="template">
+							                  <label class="massedit-saveAsTemplateRadio">{{template}}</label>
+							                  <br>
+                                                                </div>
+						</fieldset>
+						
+						
+					 </data-ng-form>
+				   
+				           <div class="modal-footer">
+                                                       <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+                                                       <button type="button" class="btn btn-primary" ng-click="load()" ng-disabled="(collform.$dirty && collform.$invalid) || collform.$pristine || form_disabled">Load</button>       
+				          </div>
+			      </div>
+		        </div>
+      </div>
+</div>  

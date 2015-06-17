@@ -1,0 +1,23 @@
+
+<div class="modal modal-overflow-scroll">
+	<div class="modal-dialog edit-attrs-modal-100">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title"></span>{{child_label}} attributes</h4>										
+				</div>
+				<div class="modal-body">
+					
+					<table class="table">
+					  <tbody>
+	  					<tr data-ng-if="att.xmlname != 'lang'" data-ng-repeat="att in child_attributes">
+	  						<td>{{att.label}}</td>
+	  						<td><div data-ng-init="fieldid = fieldid+(fieldid ? '_' : '')+child_xmlname; parent1 = ''; child1 = att; is_attribute = true" data-ng-include="$('head base').attr('href')+'views/partials/mods/field_renderer.html'"></div></td>
+	  					</tr>
+	  				  </tbody>
+	  			    </table>
+							
+				</div>				
+				
+			</div>
+	</div>
+</div>

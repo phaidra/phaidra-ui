@@ -1,0 +1,92 @@
+
+
+
+	<div  class="panel panel-default" ng-repeat="placemark in placemarks" >
+		<div class="panel-heading" id="headingBagGeo{{$index}}">
+			<h3 class="panel-title">
+				<a data-toggle="collapse" href="#collapseBagGeo{{$index}}" aria-controls="collapseBagGeo{{$index}}">
+					<span ng-if="placemark.name">{{placemark.name}}</span>
+					<span ng-if="!placemark.name">
+						<span ng-if="placemark.point">
+							Unnamed placemark
+						</span>
+						<span ng-if="placemark.polygon">
+							Unnamed bounding box
+						</span>
+					</span>
+				</a>
+			</h3>
+			<div class="clearfix"></div>
+		</div>
+		<div id="collapseBagGeo{{$index}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingBagGeo{{$index}}">
+			<div class="panel-body" >
+
+				<span ng-if="placemark.point">
+
+
+					<ui-gmap-google-map control="placemark.map" center="placemark.map.center" zoom="placemark.map.zoom" draggable="true">
+						<ui-gmap-marker style="width: 100%; height: 100%; position: absolute;" coords="placemark.point.coordinates" options="getMarkerOptions(placemark)" events="marker_events" idkey="placemark.id">
+	        			                 </ui-gmap-marker>
+					</ui-gmap-google-map>
+
+
+					<table class="table">
+					  <thead>
+						  <tr>
+						  	<th>Latitude</th>
+						  	<th>Longitude</th>
+						  </tr>
+					  </thead>
+					  <tbody>
+						  <tr>
+						    <td>
+						    	<span> {{placemark.point.coordinates.latitude}}</span>
+							</td>
+						    <td>
+						    	<span> {{placemark.point.coordinates.longitude}}</span>
+						  </tr>
+					  </tbody>
+					</table>
+				</span>
+
+				<span ng-if="placemark.polygon">
+
+					<div class="form-group">
+						<div class="input-text">
+							<label class="control-label">Name</label>
+							<div class="input-group">
+							   	<input class="form-control" type="text" ng-model="placemark.name" value="{{placemark.name}}" ng-required="true">
+							</div>
+						</div>
+
+						<div class="input-textarea placemark-description">
+							<label class="control-label">Description</label>
+							<div class="input-group">
+						    	<textarea class="form-control" type="text" ng-model="placemark.description" value="{{placemark.description}}" ng-required="true"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<table class="table">
+					  <thead>
+						  <tr>
+						  	<th>Latitude</th>
+						  	<th>Longitude</th>
+						  </tr>
+					  </thead>
+					  <tbody>
+						  <tr ng-repeat="coordinate in placemark.polygon.outerboundaryis.linearring.coordinates">
+						    <td>
+						    	<input class="form-control" type="text" ng-model="coordinate.latitude" value="{{coordinate.latitude}}" ng-required="true">
+							</td>
+						    <td>
+						    	<input class="form-control" type="text" ng-model="coordinate.longitude" value="{{coordinate.longitude}}" ng-required="true">
+							</td>
+						  </tr>
+					  </tbody>
+					</table>
+				</span>
+
+			</div>
+		</div>
+	</div>

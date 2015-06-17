@@ -1,0 +1,33 @@
+
+<div class="form-group row" bo-class="{ 'input-text-multi': (!is_attribute && !hasLangAttr(child) && !(child.repeatable == 0)), 'input-text-lang-multi': (hasLangAttr(child) && !(child.repeatable == 0)), 'input-text-lang': !is_attribute && hasLangAttr(child), 'input-text': (is_attribute) }" >
+
+	<label bo-if="!is_attribute" class="control-label col-sm-2" bo-class="{ 'text-muted': is_attribute }" bo-bind="child.label"><span class="grey" bo-show="child.ordered" bo-bind="child.data_order"></span></label>
+
+	<div class="col-sm-10">
+		
+	    <div class="input-group" bo-class="{ 'has-error': child.mandatory && !child.ui_value }">
+		    
+	    	<input class="form-control" type="text" ng-model="child.ui_value" value="{{child.ui_value}}" bo-required="{{child.mandatory}}" phaidra-help phaidra-help-id="{{child.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>
+									
+			<select bo-if="!is_attribute && hasLangAttr(child)" class="form-control" ng-model="child.attributes[getLangAttrNodeIdx(child)].ui_value" ng-options="k as v.en for (k,v) in languages" placeholder="in language">
+				<option value="">-- choose --</option>
+			</select>
+						
+			<div bo-if="!is_attribute" class="input-group-btn">
+				<button bo-if="!(child.repeatable == 0)" class="btn btn-default" ng-click="addNewElement(child, parent)"><span class="glyphicon glyphicon-plus"></span></button>
+				<button ng-if="!(child.repeatable == 0) && canDelete(child, parent)" class="btn btn-default" ng-click="deleteElement(child, parent)"><span class="glyphicon glyphicon-minus"></span></button>
+				<button ng-if="!(child.sequence == 1) && canUpElement(child, parent)" class="btn btn-default" ng-click="upElement(child, parent)"><span class="glyphicon glyphicon-chevron-up"></span></button>
+				<button ng-if="!(child.sequence == 1) && canDownElement(child, parent)" class="btn btn-default" ng-click="downElement(child, parent)" ><span class="glyphicon glyphicon-chevron-down"></span></button>
+				<button bo-if="child1.attributes" class="btn btn-default" ng-click="editAttributes(child1, fieldid)"><span class="glyphicon glyphicon-wrench"></span></button>
+			</div>
+	   	</div>
+	 
+	   	<div bo-if="child.attributes.length">
+		   	<div class="attr-view-div">
+		   		<span class="attr-view" data-ng-repeat="att in child.attributes track by $index" ng-if="att.ui_value && (att.xmlname != 'lang')" >{{att.label}}: {{att.ui_value}}</span>
+		   	</div>
+	   	</div>
+	   	
+   	</div>
+   	 
+</div>        

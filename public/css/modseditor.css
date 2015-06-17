@@ -1,0 +1,302 @@
+.jumbotron-buttons {
+	margin: 15px 0 15px 0;
+}
+
+.modseditor_full {
+	min-height: 580px;	
+}
+
+.modseditor_full #control-panel {
+	margin: 15px 0 15px 0;
+}
+
+.modseditor_full ul {
+	list-style-type: none;
+}
+
+.modseditor_full h4 {
+	margin-left: 5px;
+}
+
+h2 {
+    font-size: 140%;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.modseditor_full .tab-content {
+	margin: 20px 0 0 0;
+}
+	
+.modseditor_full #pid {
+	width: 120px;
+	min-width: 100px;
+}
+
+.phaidra-title {
+	color: #B80007;
+	font-weight: bold;
+}
+
+.load-pid {
+	width: 120px;
+	padding: 0;
+}
+
+#pid.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+}
+
+.max-width-20 {
+	max-width: 20%;
+}
+.min-width-80 {
+	max-width: 80%;
+}
+
+
+.input-text-lang .input-group {
+	min-width: 60%;
+}
+
+.input-text-lang .input-group input {
+	max-width: 80%;
+}
+
+.input-text-lang .input-group select {
+	max-width: 20%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-text-lang-multi .input-group {
+	min-width: 60%;
+}
+
+.input-text-lang-multi .input-group input {
+	max-width: 80%;
+}
+
+.input-text-lang-multi .input-group select {
+	max-width: 20%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-text .input-group {
+	min-width: 60%;
+	max-width: 70%;
+}
+
+.input-text .input-group input {
+	max-width: 80%;
+}
+
+.input-text-multi .input-group {
+	min-width: 60%;
+	max-width: 70%;
+}
+
+.input-text-multi .input-group input {
+	max-width: 100%;
+}
+
+
+.input-select .input-group {
+	min-width: 40%;
+}
+
+.input-select .input-group select {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-select-multi .input-group {
+	min-width: 40%;
+	max-width: 51%;
+}
+
+.input-select-multi .input-group select {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-textarea .input-group {
+	min-width: 60%;
+	max-width: 70%;
+}
+
+.input-textarea .input-group textarea {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-textarea-multi .input-group {
+	min-width: 60%;
+	max-width: 70%;
+}
+
+.input-textarea-multi .input-group textarea {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-textarea-lang .input-group {
+	min-width: 60%;
+	max-width: 70%;
+}
+
+.input-textarea-lang .input-group textarea {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-textarea-lang-multi .input-group {
+	min-width: 60%;
+	max-width: 70%;
+}
+
+.input-textarea-lang-multi textarea {
+	height: 100px;
+}
+
+.input-textarea-lang-multi .input-group select {
+	margin-left: -1px;
+	margin-right: 1px;
+}
+
+.input-datetime {
+	min-width: 60%;
+	
+	/* do not specify max-width, shifts the row to left */
+}
+
+.input-datetime .input-group {
+	max-width: 70%;
+}
+
+.input-datetime .input-group input {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+
+/* 
+disable rounding of corners, 
+it does not work for non-multi datetime
+*/	
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.input-datetime-multi .input-group {
+	min-width: 60%;
+	/* do not specify max-width, shifts the row to left */
+}
+
+.input-datetime-multi .input-group input {
+	max-width: 100%;
+	margin-left: -1px;
+	margin-right: 1px;
+	
+/* 
+reenable disabled radius
+*/	
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.label-tooltip {
+	font-weight: normal;
+}
+
+.grey {
+	color: #aaa;
+}
+
+.duration  {
+ 	display: table;	
+}
+
+.duration input {
+	min-width: 50px !important;
+	max-width: 50px !important;*/
+}
+
+.duration input.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+}
+
+.load-spinner {	
+	margin-left: 10px;
+}
+
+.template-title {
+    font-size: 18px;
+    padding: 5px;
+}
+
+.container {
+	width: 100%;
+}
+
+#control-panel .navbar-text{
+	margin-top: 23px;
+}
+
+/* mods addons */
+
+.modseditor .btn, .modseditor input, .modseditor .well {
+  -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+          border-radius: 0 !important;
+}
+
+.attr-group {
+	/* max-width: 70%; */
+}
+
+.attr-view {
+	margin: 0 10px 0 0;
+}
+
+.attr-view-div {
+	margin: 3px 0 0 0;
+}
+
+.panel-btn-group {
+	
+	text-align: right;
+}
+
+.input-text-lang {
+	max-width: 80%;
+}
+
+.input-text-multi {	
+	max-width: 80%;
+}
+
+.input-datetime {
+	max-width: 80%;
+}
+
+.input-select-multi {
+	max-width: 80%;
+}
+
+.panel-input-group {
+	max-width: 300px;
+}
+
+.attr-view {
+	margin-right: 10px;
+}
+
+.edit-attrs-modal {
+	width: 75%;
+}
