@@ -87,7 +87,7 @@ app.controller('BookmarkEditorCtrl',  function($scope, $modal, $location, Bookma
     $scope.deleteBookmark = function (bookmarkId, bookmarkName) {
 
           var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/bookmark/delete_bookmark.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/bookmark/delete_bookmark.html',
                   controller: DeleteBookmarkCtrl,
                   resolve: {
                             bookmarkId: function(){
@@ -109,7 +109,7 @@ app.controller('BookmarkEditorCtrl',  function($scope, $modal, $location, Bookma
     $scope.deleteAllBookmark = function () {
 
           var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/bookmark/delete_all_bookmark.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/bookmark/delete_all_bookmark.html',
                   controller: DeleteAllBookmarkCtrl,
                   resolve: {
                             text: function(){
@@ -121,7 +121,7 @@ app.controller('BookmarkEditorCtrl',  function($scope, $modal, $location, Bookma
     $scope.createBookmark = function(){
            
           var modalInstance = $modal.open({
-                     templateUrl: $('head base').attr('href')+'views/partials/bookmark/create_bookmark.html',
+                     templateUrl: $('head base').attr('href')+'views/modals/bookmark/create_bookmark.html',
                      controller: CreateBookmarkModalCtrl,
 		     resolve: {
                             page: function(){
@@ -167,7 +167,12 @@ var DeleteBookmarkCtrl = function ($scope, $modalInstance, BookmarkService, book
    $scope.cancel = function () {
          $modalInstance.dismiss('cancel');
    };
-  
+   $scope.hitEnter = function(evt){
+    	   if(angular.equals(evt.keyCode,13)){
+	          $scope.deleteBookmark();
+                  $modalInstance.dismiss('delete');
+	   }
+   };   
 }
 
 var DeleteAllBookmarkCtrl = function ($scope, $modalInstance, BookmarkService, text ) {
@@ -200,13 +205,18 @@ var DeleteAllBookmarkCtrl = function ($scope, $modalInstance, BookmarkService, t
    $scope.cancel = function () {
          $modalInstance.dismiss('cancel');
    };
+      $scope.hitEnter = function(evt){
+    	   if(angular.equals(evt.keyCode,13)){
+	          $scope.deleteAllBookmark();
+                  $modalInstance.dismiss('OK');
+	   }
+   }; 
 }
 
 var CreateBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService, page, limit ) {
    
      $scope.bookmark_name = '';
-     
-     
+            
      
      $scope.OK = function (bookmark_name) {
 	     

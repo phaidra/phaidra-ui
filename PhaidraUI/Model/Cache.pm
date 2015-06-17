@@ -112,8 +112,8 @@ sub get_mods_tree {
 	}else{
 		$url->path("/mods/tree");
 	}
-
-	 my $tx = $self->ua->get($url);
+         #my $tx = $self->ua->get($url);
+	 my $tx = $c->ua->get($url);
 
 		  	if (my $rs = $tx->success) {
 
@@ -197,7 +197,8 @@ sub get_uwmetadata_tree {
 	}
 	$url->query({mfv => $c->app->config->{phaidra}->{metadata_format_version}});
 
-	 my $tx = $self->ua->get($url);
+	 #my $tx = $self->ua->get($url);
+	 my $tx = $c->ua->get($url);
 
 		  	if (my $rs = $tx->success) {
 

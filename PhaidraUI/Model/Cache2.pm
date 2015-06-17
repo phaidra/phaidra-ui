@@ -17,7 +17,7 @@ sub test{
 #used!
 sub get_terms_label {
 	my $self = shift;
-	my $c    = shift;   	
+	my $c    = shift;
 	my $uri  = shift;
 	
 	my $res = { alerts => [], status => 200 };
@@ -58,7 +58,7 @@ sub get_terms_label {
 			my ($err, $code) = $tx->error;
 			if(exists($tx->res->json->{alerts})) {
 				$res->{alerts} = $tx->res->json->{alerts};
-				$res->{status} = $code ? $code : 500;				
+				$res->{status} = $code ? $code : 500;
 			}else{
 				$res->{alerts} = [{ type => 'danger', msg => $err }];
 				$res->{status} = $code ? $code : 500;	

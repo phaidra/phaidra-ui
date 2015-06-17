@@ -65,8 +65,10 @@
 	  </thead>
 	  <tbody>
 	      <tr  ng-repeat="pid in bookmarkService.bookmarkpidsdisplay ">	  
-	          <td>{{pid}}</td>
-	          <td>
+	          <td  >
+	                 <a href="" data-ng-click="viewPid(pid)"  class='object-view'>{{pid}} </a> 
+	          </td>
+	           <td>
 	             <a role="menuitem" tabindex="-1" href="" data-ng-click="deleteBookmarkPid(pid)"><i class="glyphicon glyphicon-trash"></i></a>
 	          </td>
               </tr>

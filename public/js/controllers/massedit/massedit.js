@@ -178,7 +178,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
           }
           catch(err) {
              var modalInstance = $modal.open({
-                 templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
+                 templateUrl: $('head base').attr('href')+'views/modals/massedit/alertMsgMassedit.html',
                  controller: MEAlertsLoadCsvModalCtrl,
                  resolve: {
                            text: function(){
@@ -240,7 +240,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
    $scope.apllychanges = function () {
 
           var modalInstance = $modal.open({
-                templateUrl: $('head base').attr('href')+'views/partials/massedit/yesnoMassedit.html',
+                templateUrl: $('head base').attr('href')+'views/modals/massedit/yesnoMassedit.html',
                 controller: MEyesnoApplyModalCtrl,
                 resolve: {
                           text:     function(){
@@ -312,7 +312,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
              $scope.currentField = field;
              Massedit.currentField =  $scope.currentField;
              var modalInstance = $modal.open({
-             templateUrl: $('head base').attr('href')+'views/partials/massedit/addfield.html',
+             templateUrl: $('head base').attr('href')+'views/modals/massedit/addfield.html',
              controller: MEAddFieldModalCtrl,
              resolve: {
                        current_field: function(){
@@ -325,7 +325,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
      $scope.deleteAll = function () {  
 
           var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/massedit/yesnoMassedit.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/massedit/yesnoMassedit.html',
                   controller: MEyesnoDelAllModalCtrl,
                   resolve: {
                             text: function(){
@@ -338,7 +338,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
      $scope.templateSaveAs = function () {  
 
             var modalInstance = $modal.open({
-                   templateUrl: $('head base').attr('href')+'views/partials/massedit/templateSaveAs.html',
+                   templateUrl: $('head base').attr('href')+'views/modals/massedit/templateSaveAs.html',
                    controller: METemplateSaveAsModalCtrl,
                    resolve: {
                             selection: function(){
@@ -352,7 +352,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
      $scope.templateLoad = function () {  
 
             var modalInstance = $modal.open({
-                     templateUrl: $('head base').attr('href')+'views/partials/massedit/templateLoad.html',
+                     templateUrl: $('head base').attr('href')+'views/modals/massedit/templateLoad.html',
                      controller: METemplateLoadModalCtrl,
             });
      };
@@ -360,7 +360,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
      $scope.addRecord = function (record) {
 
             var modalInstance = $modal.open({
-                   templateUrl: $('head base').attr('href')+'views/partials/massedit/addrecord.html',
+                   templateUrl: $('head base').attr('href')+'views/modals/massedit/addrecord.html',
                    controller: MEAddRecordModalCtrl
             }); 
      };
@@ -368,7 +368,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
      $scope.templateDelete = function () {
 
             var modalInstance = $modal.open({
-                     templateUrl: $('head base').attr('href')+'views/partials/massedit/templateDelete.html',
+                     templateUrl: $('head base').attr('href')+'views/modals/massedit/templateDelete.html',
                      controller: METemplateDeleteModalCtrl,
             });
      };
@@ -378,7 +378,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
              if('undefined' !== typeof Massedit.datastructure[0].changes){
                    if(Massedit.datastructure[0].changes.length > 0){
                         var modalInstance = $modal.open({
-                               templateUrl: $('head base').attr('href')+'views/partials/massedit/editrecord.html',
+                               templateUrl: $('head base').attr('href')+'views/modals/massedit/editrecord.html',
                                controller: MEEditRecordModalCtrl,
                                resolve: {
                                       PID: function(){
@@ -395,7 +395,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
      };
      $scope.popupNoFields = function () {
            var modalInstance = $modal.open({
-                 templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
+                 templateUrl: $('head base').attr('href')+'views/modals/massedit/alertMsgMassedit.html',
                  controller: MEAlertsModalCtrl,
                  resolve: {
                            text: function(){
@@ -411,7 +411,7 @@ app.controller('MasseditCtrl',  function($scope, $rootScope, $modal, FrontendSer
         var csvFile = $( "#fileupload" ).val();
               if((csvFile === "") || (csvFile === 'undefined')){
               var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/massedit/alertMsgMassedit.html',
                   controller: MEAlertsModalCtrl,
                   resolve: {
                             text: function(){
@@ -672,7 +672,7 @@ var METemplateLoadModalCtrl = function ($scope, $rootScope, $modalInstance, $mod
 
 	   if($scope.massedit.templatename == ""){   
 	             var modalInstance = $modal.open({
-                        templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
+                        templateUrl: $('head base').attr('href')+'views/modals/massedit/alertMsgMassedit.html',
                         controller: MEAlertsModalCtrl,
                         resolve: {
                             text: function(){
@@ -762,7 +762,7 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, FrontendSer
 	       $modalInstance.close();
 	  }else{
 	       var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/massedit/alertMsgMassedit.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/massedit/alertMsgMassedit.html',
                   controller: MEAlertsModalCtrl,
                   resolve: {
                             text: function(){

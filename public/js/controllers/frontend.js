@@ -1,4 +1,35 @@
-var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService', 'bookmarkService', 'uiGmapgoogle-maps']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'pasvaz.bindonce', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService', 'bookmarkService', 'vocabularyService', 'uiGmapgoogle-maps','ui.select', 'ngSanitize']);
+
+app.filter('propsFilter', function() {
+  return function(items, props) {
+    var out = [];
+
+    if (angular.isArray(items)) {
+      items.forEach(function(item) {
+        var itemMatches = false;
+
+        var keys = Object.keys(props);
+        for (var i = 0; i < keys.length; i++) {
+          var prop = keys[i];
+          var text = props[prop].toLowerCase();
+          if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+            itemMatches = true;
+            break;
+          }
+        }
+
+        if (itemMatches) {
+          out.push(item);
+        }
+      });
+    } else {
+      // Let the output be the input untouched
+      out = items;
+    }
+
+    return out;
+  }
+});
 
 app.run(function($rootScope, promiseTracker) {
   $rootScope.loadingTracker = promiseTracker();
@@ -260,7 +291,6 @@ app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, Direct
    
     // we will use this to track running ajax requests to show spinner	
     //$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
-    console.log('promiseTracker:', promiseTracker);
     //$scope.loadingTracker = promiseTracker.register();
     $scope.loadingTracker = $rootScope.loadingTracker;
     $scope.alerts = [];
@@ -299,7 +329,6 @@ app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, Direct
     	if(!(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
     		window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
     	}
-    	console.log("FrontendCtrl scope: ", $scope); 
     	//if(!(angular.equals($scope.query,null) || angular.equals($scope.query,''))){
     	//	window.location = $('head base').attr('href')+'search?q='+encodeURIComponent($scope.query);
     	//}
@@ -313,9 +342,8 @@ app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, Direct
     };
     
     $scope.signin_open = function () {
-       console.log('login');
     	var modalInstance = $modal.open({
-            templateUrl: $('head base').attr('href')+'views/partials/loginform.html',
+            templateUrl: $('head base').attr('href')+'views/modals/loginform.html',
             controller: SigninModalCtrl
     	});
     };

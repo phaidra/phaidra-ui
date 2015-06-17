@@ -30,7 +30,7 @@ app.controller('MasseditJobsDetailsCtrl',  function($scope, $rootScope, $modal, 
   $scope.viewChanges = function (pid) {
    
              var modalInstance = $modal.open({
-             templateUrl: $('head base').attr('href')+'views/partials/massedit/agent_details/viewChanges.html',
+             templateUrl: $('head base').attr('href')+'views/modals/massedit/agent_details/viewChanges.html',
 	     controller: ViewChangesCtr,
              resolve: {
 		        pid: function(){

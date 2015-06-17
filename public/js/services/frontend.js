@@ -87,6 +87,33 @@ angular.module('frontendService', [])
 	        getSort: function(){
 			return 'uw.general.title,SCORE';
 		},
-	       
+	 	getClassifications: function(){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'classifications'
+			});
+		},
+	 
+		toggleClassification: function(uri){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'classifications',
+				data    : { uri: uri }
+			});
+		},
+	        viewObject: function(pid, pidExtended){
+			return $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'view/'+pid,
+				data  : { pidExtended: pidExtended }
+			});
+		},
+	        viewObject2: function(pid, pidExtended){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'view/'+pid,
+				params  : { pidExtended: pidExtended }
+			});
+		},
 	}
 });

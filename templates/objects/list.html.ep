@@ -81,13 +81,14 @@
 	  <tr ng-repeat="object in objects | orderBy:'updated'">	  
 	        <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)"></span></td>
 	  	<td bind-once ><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.PID}}///60" class="img-thumbnail" width="60" height="60" title="{{object['uw.general.title']}}" alt="{{object['uw.general.title']}}"></td>
-	  	<td bind-once >	  		
+	  	<td>	  		
 	  		<div ng-switch on="object['fgs.contentModel']">
 	  			<div ng-switch-when="cmodel:Collection">
 	  				<!--<a href="/collection/{{object.PID}}" target="_blank">{{object.PID}}</a>-->
-	  				<a href="/view/{{urlEncodePidExtended(object.pidExtended)}}"  class='object-view'>{{object.PID}} </a> 
+	  				<a href="" data-ng-click="viewObject(object.pidExtended)"  class='object-view'>{{object.PID}}</a>
 	  			</div>
 	  			<div ng-switch-default>
+	  				<a href="" data-ng-click="viewObject(object.pidExtended)"  class='object-view'>{{object.PID}} </a>
 	  				<a href="/view/{{urlEncodePidExtended(object.pidExtended)}}"  class='object-view'>{{object.PID}} </a> 
 	  			</div>
 	  		</div>
@@ -95,7 +96,7 @@
 	  	<td bind-once >
 	  		<div ng-switch on="object['fgs.contentModel']">
 	  			<div ng-switch-when="cmodel:Collection">
-	  				<a href="/collection/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a>	
+	  				<a href="/collection/{{object.PID}}" target="_blank">{{object['uw.general.title']}}</a>
 	  			</div>
 	  			<div ng-switch-default>
 	  				{{object['uw.general.title']}}

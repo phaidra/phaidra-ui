@@ -1,5 +1,5 @@
 
-app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, DirectoryService, SearchService, FrontendService, promiseTracker) {
+app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, $http, DirectoryService, SearchService, FrontendService, promiseTracker) {
     
      // we will use this to track running ajax requests to show spinner
     //$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
@@ -25,14 +25,15 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, D
     $scope.init = function (initdata) {
 		
         $scope.initdata = angular.fromJson(initdata);
-	$scope.current_user = $scope.initdata.current_user;
-    	
+        $scope.current_user = $scope.initdata.current_user;
+        $scope.username = $scope.initdata.current_user.username;
+	
 	console.log('initdata: ', $scope.initdata);
     	$scope.query = $scope.initdata.query;
     	if($scope.query){
-    		$scope.search($scope.query, $scope.from, $scope.limit, $scope.sort, $scope.reverse);
+	        $scope.search($scope.query, $scope.from, $scope.limit, $scope.sort, $scope.reverse);
     	}else{
-    		$scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user
+	        $scope.getUserObjects(null, $scope.from, $scope.limit); // no username -> current_user
     	}
     	if($scope.current_user){
     		$scope.loadSelection();
@@ -187,7 +188,41 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, D
 			
 
  
+   $scope.viewObject = function(pidExtended) {
+
+      console.log('pidExtended', pidExtended);
+
+      //FrontendService.viewObject(pidExtended.pid, $scope.urlEncodePidExtended(pidExtended));
      
+      /*
+      $http({
+				method  : 'POST',
+				url     : $('head base').attr('href')+'view/'+pidExtended.pid,
+				data  : { pidExtended: $scope.urlEncodePidExtended(pidExtended) }
+      });
+      */
+      
+      var promise = FrontendService.viewObject(pidExtended.pid, $scope.urlEncodePidExtended(pidExtended));
+      $scope.loadingTracker.addPromise(promise);
+      promise.then(
+      	 function(response) { 
+	        $scope.alerts = response.data.alerts;
+      		$scope.objects = response.data.objects;
+		console.log(response.data);
+		// next/prev page button
+		//$scope.setPageData(from, limit, sort, reverse, null);
+		
+		//$scope.totalItems = response.data.hits;
+      		$scope.form_disabled = false;
+      	 } 
+      	 ,function(response) {
+      		$scope.alerts = response.data.alerts;
+      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+      		$scope.form_disabled = false;
+      	 }
+     );
+     
+  };
 
  
  
@@ -196,11 +231,10 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, D
       pidExtended = angular.toJson(pidExtended);
       pidExtended = encodeURIComponent(pidExtended);
       return pidExtended;
- }
+ };
  
- $scope.setPageData = function(username, from, limit, sort, reverse, query, objects) {
-        	         
-       console.log('objects2: ',objects);
+ $scope.setPageData = function(from, limit, sort, reverse, query) {
+
        for( var i = 0 ; i < $scope.objects.length ; i++ ){
 	         $scope.objects[i].pidExtended                  = {};
 		 $scope.objects[i].pidExtended.pagePids         = [];
@@ -209,9 +243,11 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, D
 	         $scope.objects[i].pidExtended.from             = from;
 	         $scope.objects[i].pidExtended.limit            = limit;
 	         $scope.objects[i].pidExtended.reverse          = reverse;
-	         $scope.objects[i].pidExtended.username         = username;
+	         //$scope.objects[i].pidExtended.username         = username;
+	         $scope.objects[i].pidExtended.username         = $scope.username;
 	         $scope.objects[i].pidExtended.query            = query;
-		 $scope.objects[i].pidExtended.contentModel     = objects[i]['fgs.contentModel'];
+		 //$scope.objects[i].pidExtended.contentModel     = objects[i]['fgs.contentModel'];
+		 $scope.objects[i].pidExtended.contentModel     = $scope.objects[i]['fgs.contentModel'];
 		 $scope.objects[i].pidExtended.collectionMember = false; //not accessed as collection member
 	}
  };
@@ -226,11 +262,10 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, D
 	        $scope.alerts = response.data.alerts;
       		$scope.objects = response.data.objects;
 		// next/prev page button
-		$scope.setPageData(username, from, limit, sort, reverse, null, $scope.objects);
+		$scope.setPageData(from, limit, sort, reverse, null);
 		
 		$scope.totalItems = response.data.hits;
       		$scope.form_disabled = false;
-		console.log('objectsA',$scope.objects);
       	}
       	,function(response) {
       		$scope.alerts = response.data.alerts;
@@ -251,13 +286,12 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, D
 	     	function(response) { 
 		        $scope.alerts = response.data.alerts;
 	     		$scope.objects = response.data.objects;
+			console.log('objects', $scope.objects);
 			// next/prev page button
-		        var username = null;
-			$scope.setPageData(username, from, limit, sort, reverse, query, $scope.objects);
+			$scope.setPageData(from, limit, sort, reverse, query);
 			
 			$scope.totalItems = response.data.hits;
 	     		$scope.form_disabled = false;
-			console.log('objectsB',$scope.objects);
 	     	}
 	     	,function(response) {
 	     		$scope.alerts = response.data.alerts;

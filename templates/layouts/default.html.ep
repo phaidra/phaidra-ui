@@ -36,8 +36,12 @@
   	<!-- AngularJS -->
   	<!--<script src="<%= url_for '/js/angular-1.2.6.min.js' %>"></script>-->
   	<!--<script src="<%= url_for '/js/angular-animate-1.2.6.min.js' %>"></script>-->
+  	<script src="<%= url_for '/js/angular-1.2.26.min.js' %>"></script>
+  	<script src="<%= url_for '/js/angular-animate-1.2.26.min.js' %>"></script>
+  	<!--
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-animate.js"></script>
+  	-->
   	<script src="<%= url_for '/js/sortable-angular-1.2.js' %>"></script>
   	
   	<!-- AngularJS Select2 -->
@@ -76,6 +80,12 @@
   	<!-- Promise tracker -->
   	<script src="<%= url_for '/js/promise-tracker.min.js' %>"></script>
   	
+  	<!-- angular-ui-select -->
+  	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
+  	<link rel="stylesheet" href="<%= url_for '/css/select-0.11.2.css' %>"> 
+  	<script type="text/javascript"  src="<%= url_for '/js/select-0.11.2.js' %>"></script> 
+  	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+  	
   	<!-- Custom Phaidra scripts -->
 
   	<script type="text/javascript" src="<%= url_for '/js/services/base64.js' %>"></script>
@@ -87,8 +97,13 @@
 	<script type="text/javascript" src="<%= url_for '/js/services/massedit.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/masseditjobs.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/bookmark.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/vocabulary.js' %>"></script>
+	
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
 
+  	
+  	 <!-- Bindonce -->
+  	<script src="/js/bindonce.min.js"></script>
   	
   	<!-- Custom Phaidra CSS --> 
   	<link href="<%= url_for '/css/frontend.css' %>" rel="stylesheet">

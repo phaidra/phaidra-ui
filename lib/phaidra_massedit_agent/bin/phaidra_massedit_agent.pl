@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+use strict;
+
 use FindBin::libs;
 use FindBin '$Bin';
 use lib "$Bin/../lib";

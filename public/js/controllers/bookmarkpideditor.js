@@ -1,4 +1,4 @@
-app.controller('BookmarkPidEditorCtrl',  function($scope, $modal, $location, BookmarkService, promiseTracker){
+app.controller('BookmarkPidEditorCtrl',  function($scope, $modal, $location, BookmarkService, MetadataService, promiseTracker){
   
    $scope.sortOrder = 1;
   
@@ -55,7 +55,7 @@ app.controller('BookmarkPidEditorCtrl',  function($scope, $modal, $location, Boo
    $scope.deleteAllBookmarkPid = function () {
 
           var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/bookmark/delete_all_bookmark.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/bookmark/delete_all_bookmark.html',
                   controller: DeleteAllBookmarkPidCtrl,
 		  resolve: {
                             text: function(){
@@ -112,6 +112,45 @@ app.controller('BookmarkPidEditorCtrl',  function($scope, $modal, $location, Boo
        if (parseInt(numberA, 10) > parseInt(numberB, 10))  return 1;
        return 0;
     };
+    
+  $scope.viewPid = function(pid) {
+   	
+    
+            var promise = MetadataService.getUwmetadataFromObject(pid);
+    	    $scope.loadingTracker.addPromise(promise);
+    	    promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+			console.log(response.data);
+			//MetadataService.bookmarkPids = [];
+			//MetadataService.bookmarkpidsdisplay = [];
+    		}                     
+    		,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   ); 
+       
+    /*
+        console.log('viewPid',$scope.initdata);
+	console.log('viewPid pid',pid);
+        var init_data = {};
+	init_data.pid = pid;
+	init_data.pagePidsData = [];
+	init_data.pagePids = [];
+	init_data.previousPageLastObject = '';
+	init_data.nextPageFirstObject = '';
+	init_data.singleView = 1;
+	//alert(init_data);
+	init_data = angular.toJson(init_data);
+	init_data = encodeURIComponent(init_data);
+	window.location = $('head base').attr('href')+'view/'+init_data; 
+	*/
+  }
+    
 });
 
 var DeleteAllBookmarkPidCtrl = function ($scope, $modalInstance, BookmarkService, bookmarkId, text ) {
@@ -144,4 +183,11 @@ var DeleteAllBookmarkPidCtrl = function ($scope, $modalInstance, BookmarkService
    $scope.cancel = function () {
          $modalInstance.dismiss('cancel');
    };
+   $scope.hitEnter = function(evt){
+    	   if(angular.equals(evt.keyCode,13)){
+	          $scope.deleteAllBookmarkPid();
+                  $modalInstance.dismiss('OK');
+	   }
+   }; 
+   
 }

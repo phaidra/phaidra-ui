@@ -34,7 +34,6 @@ sub mass_edit {
 		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot save template, current user is missing (the session might be expired)." }] }, status => 500);
 		return;	
 	}
-        ###$self->app->log->debug("template5551: ".$self->app->dumper($template));
         my $templates = $self->getTemplates();
         my $init_data;
         
@@ -275,10 +274,7 @@ sub jobs_details{
 		$self->render(json => { alerts => [{ type => 'danger', msg => "Cannot display jobs details, current user is missing (the session might be expired)." }] }, status => 500);
 		return;	
        }
-       my $id = {oid => $self->stash('jobid')};
-       no strict 'subs';
-       bless($id, Mango::BSON::ObjectID);
-       use strict 'subs';
+       my $id = Mango::BSON::ObjectID->new($self->stash('jobid'));
        my $datasetJobs = $self->mango->db->collection('massedit')->find({_id => $id});
   
        # /n and ' issues
@@ -374,25 +370,16 @@ sub jobs_action{
                  $proc->run( $agent_location." '".$config_path."' '".$username."' '".$instance."' '".$jobid."'" );
       }
       if($jobAction eq 'Abort'){
-                my $id = {oid => $jobid};
-                no strict 'subs';
-                bless($id, Mango::BSON::ObjectID);
-                use strict 'subs';
+                my $id = Mango::BSON::ObjectID->new($jobid);
                 $self->mango->db->collection('massedit')->update({"_id" => $id}, {'$set' => { 'job_status' => 'aborted' }});
       }
       if($jobAction eq 'Resume'){
-                my $id = {oid => $jobid};
-                no strict 'subs';
-                bless($id, Mango::BSON::ObjectID);
-                use strict 'subs';
+                my $id = Mango::BSON::ObjectID->new($jobid);
                 $self->mango->db->collection('massedit')->update({"_id" => $id}, {'$set' => { 'job_status' => 'resumig' }});
                 $proc->run( $agent_location." '".$config_path."' '".$username."' '".$instance."' '".$jobid."'" );
       }
       if($jobAction eq 'Force resume'){
-                my $id = {oid => $jobid};
-                no strict 'subs';
-                bless($id, Mango::BSON::ObjectID);
-                use strict 'subs';
+                my $id = Mango::BSON::ObjectID->new($jobid);
                 $self->mango->db->collection('massedit')->update({"_id" => $id}, {'$set' => { 'job_status' => 'resumig' }});
                 $proc->run( $agent_location." '".$config_path."' '".$username."' '".$instance."' '".$jobid."'" );
       }
@@ -409,10 +396,7 @@ sub jobs_delete{
        my $payload = $self->req->json;
        $self->cookie(currPageInPaginator => $payload->{'currPageInPaginator'});
        
-       my $id = {oid => $payload->{'jobId'}};
-       no strict 'subs';
-       bless($id, Mango::BSON::ObjectID);
-       use strict 'subs';
+       my $id = Mango::BSON::ObjectID->new($payload->{'jobId'});
        my $res = $self->mango->db->collection('massedit')->remove({_id => $id }) if defined $payload->{'jobId'};
        
        $self->render('agents/massedit/jobs');
@@ -451,10 +435,7 @@ sub jobs_details_refresh_alerts {
      my($self) = @_; 
      
      my $payload = $self->req->json;
-     my $id = {oid => $payload->{'jobId'}};
-     no strict 'subs';
-     bless($id, Mango::BSON::ObjectID);
-     use strict 'subs';
+     my $id = Mango::BSON::ObjectID->new($payload->{'jobId'});
      my $datasetJobs = $self->mango->db->collection('massedit')->find({_id => $id});
      my @newItems;
      while (my $job = $datasetJobs->next) { 

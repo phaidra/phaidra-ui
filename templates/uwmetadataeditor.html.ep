@@ -67,9 +67,9 @@
 						
 						<tab data-ng-repeat="field in fields | filter:filterHidden" active="field.active" disabled="field.disabled">
 				      		
-				      		<tab-heading>
-	        					<span phaidra-help phaidra-help-id="{{field.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{field.labels.en}}</span>        					
-	      					</tab-heading>
+				      		        <tab-heading>
+	        					                   <span phaidra-help phaidra-help-id="{{field.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{field.labels.en}}</span>        					
+	      					        </tab-heading>
 	      					
 					      		<!-- name of the tab -->
 					      		<!-- {{field.xmlname}} -->
@@ -82,29 +82,29 @@
 					      		
 					      		<script type="text/ng-template" id="field_renderer.html">
 					      		
-									<!-- <span class="muted">{{child.xmlname}} - {{child.input_type}}</span>--> 
+								  <!-- <span class="muted">{{child.xmlname}} - {{child.input_type}}</span>--> 
 									
-									<div ng-switch="child.input_type">
+								  <div ng-switch="child.input_type">
 									
-							          <div ng-switch-when="node">
+							                  <div ng-switch-when="node">
 							          
-								          <div class="panel panel-default">
+								                 <div class="panel panel-default">
 								          
 											  <div class="panel-heading" phaidra-help phaidra-help-id="{{child.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>
-											    <h3 class="panel-title pull-left"><span class="grey" ng-show="child.ordered">{{child.data_order}}. </span>{{child.labels.en}}</h3>
-											    <span class="btn-group pull-right">    
+											        <h3 class="panel-title pull-left"><span class="grey" ng-show="child.ordered">{{child.data_order}}. </span>{{child.labels.en}}</h3>
+											        <span class="btn-group pull-right">    
 												    <button ng-if="child.cardinality === '*' || child.cardinality > '1'" class="btn btn-default" ng-click="addNewElement(child)"><span class="glyphicon glyphicon-plus"></span></button>
 												    <button ng-if="(child.cardinality === '*' || child.cardinality > '1') && canDelete(child)" class="btn btn-default" ng-click="deleteElement(child)"><span class="glyphicon glyphicon-minus"></span></button>
 												    <button class="btn btn-default" ng-click="upElement(child)" ng-if="child.ordered == 1 && canUpElement(child)"><span class="glyphicon glyphicon-chevron-up"></span></button>
 			   										<button class="btn btn-default" ng-click="downElement(child)" ng-if="child.ordered == 1 && canDownElement(child)"><span class="glyphicon glyphicon-chevron-down"></span></button>
-											    </span>
+											        </span>
 											    
-											    <div class="clearfix"></div>
+											         <div class="clearfix"></div>
 											  </div>
 											  
 											  <div class="panel-body">
 
-												<div data-ng-hide="child.hidden" data-ng-include="'/views/partials/' + child.input_type + '.html'"></div>
+												<div data-ng-hide="child.hidden" data-ng-include="'/views/partials/uwmetadata/' + child.input_type + '.html'"></div>
 												
 												<!-- children fields of the field -->
 												<ul data-ng-show="child.children.length">
@@ -116,32 +116,28 @@
 											  
 											  <div class="panel-footer" data-ng-if="child.xmlname == 'curriculum' && child.study_name">{{ child.study_name.en }}</div>
 											  
-										</div>
+								                 </div>
 							          
-							          </div>
+							                  </div>
 							          
-							          <div ng-switch-default>
+							                  <div ng-switch-default>
 							        
-							        	<div data-ng-hide="child.hidden" data-ng-include="'/views/partials/' + child.input_type + '.html'"></div>
+							           	  <div data-ng-hide="child.hidden" data-ng-include="'/views/partials/uwmetadata/' + child.input_type + '.html'"></div>
 										
 										<!-- children fields of the field -->
 										<ul data-ng-show="child.children.length">
 										    <li data-ng-repeat="child in child.children" data-ng-include="'field_renderer.html'"></li>
 										</ul>
 							          
-							          </div>
+							                  </div>
 		      						</div>
-									
-									
-								</script>
-							
-							
-				    	</tab>
+							</script>	
+				    	         </tab>
 					</tabset>
 				</fieldset>
 			</form>
 			
-        </div>
+                 </div>
         
        
 	</div>

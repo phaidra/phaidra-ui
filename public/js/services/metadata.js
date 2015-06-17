@@ -40,15 +40,15 @@ angular.module('metadataService', [])
 		   });	        
 	    },
 
-	    saveTemplateAs: function(title, uwmetadata){
+	    saveUwmetaTemplateAs: function(title, uwmetadata){
 		   return $http({
-			   method  : 'PUT',
+		   method  : 'PUT',
 	           url     : $('head base').attr('href')+'template',
 	           data    : { title: title, uwmetadata: uwmetadata }
 		   });	        
 	    },
 
-	    saveTemplate: function(tid, uwmetadata){
+	    saveUwmetaTemplate: function(tid, uwmetadata){
 	    	return $http({
 	    		method  : 'POST',
 	    		url     : $('head base').attr('href')+'template/'+tid,
@@ -70,28 +70,34 @@ angular.module('metadataService', [])
 			});	        
 	    },
 	    
-	   getMyTemplates: function(){
+	   getAllTemplates: function(){
 			return $http({
 				method  : 'GET',
-				url     : $('head base').attr('href')+'templates/my'
+				url     : $('head base').attr('href')+'templates/get_all'
 			});	        
-	   },
-	   
-	   getGeo: function(bagid) {
+	   },	 
+	   getGeo: function(pid) {
 	        return $http({
 	            method  : 'GET',
-	            url     : $('head base').attr('href')+'bag/'+bagid+'/geo'
+	            url     : $('head base').attr('href')+'object/'+pid+'/geo'
 	        });
 	   },
-           //delete it
-	   saveGeo: function(bagid, geo){
-			   return $http({
-				   method  : 'POST',
-				   url     : $('head base').attr('href')+'bag/'+bagid+'/geo/',
-				   data    : { geo: geo }
-			   });
+	   saveGeoObject: function(pid, geo){
+			        console.log('meta saveGeoObject pid:',pid);
+			        console.log('meta saveGeoObject geo:',geo);
+	                       return $http({
+				       method  : 'POST',
+				      url     : $('head base').attr('href')+'object/'+pid+'/geo/',
+				      data    : { geo: geo }
+			       });
 	   },
-	 
+	   saveGeoTemplate: function(tid, geo){
+		 	return $http({
+		 		method  : 'POST',
+		 		url     : $('head base').attr('href')+'template/'+tid,
+		 		data    : { geo: geo }
+		 	});
+           },
 	   get_object_tripl: function(q, limit){
 			return $http({
 				method  : 'GET',
@@ -102,10 +108,44 @@ angular.module('metadataService', [])
 	   getClassifications: function(valueuris) {
 		    return $http({
 		        method  : 'POST',
-		        url     : $('head base').attr('href')+'view/getclassifications',
+		        url     : $('head base').attr('href')+'view/classifications/get',
 		        params  : { valueuris: valueuris }
 		    });
-	   }
+	   },
+	   get_mods: function(pid){
+			return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'object/'+pid+'/mods/',
+			});	 
+	   },
+	   saveModsTemplateAs: function(title, mods){
+			   return $http({
+				method  : 'PUT',
+		               url     : $('head base').attr('href')+'template',
+		               data    : { title: title, mods: mods }
+			   });
+           },
+	   saveModsTemplate: function(tid, mods){
+		 	return $http({
+		 		method  : 'POST',
+		 		url     : $('head base').attr('href')+'template/'+tid,
+		 		data    : { mods: mods }
+		 	});
+           },
+	   getModsTree: function() {
+	        return $http({
+	            method  : 'GET',
+	            url     : $('head base').attr('href')+'proxy/get_mods_tree'
+	        });
+	   },
+	   getModsClassifications: function(mods) {
+		    return $http({
+		        method  : 'POST',
+		        url     : $('head base').attr('href')+'mods/classifications',
+		        data    : { mods: mods }
+		    });
+	  },
+
 	   
 	}
 });

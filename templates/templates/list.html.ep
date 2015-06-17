@@ -16,19 +16,25 @@
 	  <thead>
 	  <tr>
 	    <th>Title</th>
+	    <th>Metadata types</th>
 	    <th>Created</th>
 	    <th>Updated</th>
-	    <th><a href="/uwmetadata_template_editor/"><i class="glyphicon glyphicon-plus"></i></a></th>
+	    <!--<th><a href="/uwmetadata_template_editor/"><i class="glyphicon glyphicon-plus"></i></a></th>-->
+	    <th data-ng-click="addTemplete()"><a href=""><i class="glyphicon glyphicon-plus"></i></a></th>
 	    <th></th>
 	  </tr>
 	  </thead>
 	  <tbody>
 	  <tr ng-repeat="template in templates| filter:filterinput | orderBy:'updated':true">
 	    <td><a href="/uwmetadata_template_editor/{{template._id}}" target="_blank">{{template.title}}</a></td>
+	    <td >
+	         <span ng-repeat="metadata_type in template.metadata_types">{{metadata_type}}<span ng-if="$index !== template.metadata_types.length - 1">,<span> </span>
+	    </td>
 	    <td>{{template.created | date:'dd.MM.yyyy HH:mm:ss'}}</td>
 	    <td>{{template.updated | date:'dd.MM.yyyy HH:mm:ss'}}</td>
 	    <td>
-	      <a href="/uwmetadata_template_editor/{{template._id}}"><i class="glyphicon glyphicon-pencil"></i></a>
+	        <!--<a href="/uwmetadata_template_editor/{{template._id}}"><i class="glyphicon glyphicon-pencil"></i></a>-->
+	        <a href="" ng-click="editTemplete(template._id)"><i class="glyphicon glyphicon-pencil"></i></a>
 	    </td>
 	    <td>
 	      <a href="" ng-click="deleteTemplate(template._id)"><i class="glyphicon glyphicon-remove"></i></a>

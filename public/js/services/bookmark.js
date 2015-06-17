@@ -15,7 +15,6 @@ angular.module('bookmarkService', ['ajoslin.promise-tracker'])
 			});
 		},
 	 	addToBookmark: function(pid, currentBookmarkId){
-			console.log('addToBookmark service:',currentBookmarkId,'pid: ',pid);
 		        return $http({
 				method  : 'POST',
 				url     : $('head base').attr('href')+'bookmark/addto',
@@ -65,7 +64,6 @@ angular.module('bookmarkService', ['ajoslin.promise-tracker'])
                                                                                             FrontendService.bookmarksdisplay.push(FrontendService.bookmarks[i]);
                                                                                       }
                                                                                  }
-                                                                                 console.log('FrontendService.bookmarksdisplay: ',FrontendService.bookmarksdisplay);
                                                                                },
 	        updateBookmarkPidsDisplay: function(FrontendService, page, limit) {
                                                                                    var start  = (page-1)*limit ;
@@ -78,17 +76,14 @@ angular.module('bookmarkService', ['ajoslin.promise-tracker'])
                                                                                              }
 										        }
                                                                                    }
-                                                                                   console.log('updateBookmarkPidsDisplay: ',FrontendService.bookmarkpidsdisplay);
                                                                                  },
 	        getBookmarks: function(FrontendService) {
-	                                                   console.log('getBookmarks service start');
                                                            var promise = FrontendService.getBookmark();
     	                                                   var loadingTracker = $rootScope.loadingTracker; 
 							    loadingTracker.addPromise(promise);
     	                                                   promise.then(
     		                                                        function(response) {
     			                                                              FrontendService.alerts = response.data.alerts;
-			                                                              console.log('getBookmark service', response.data);
 			                                                              FrontendService.bookmarks = response.data.bookmarks;
     		                                                        }
     		                                                       ,function(response) {

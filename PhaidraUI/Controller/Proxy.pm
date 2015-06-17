@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use v5.10;
 use base 'Mojolicious::Controller';
+use Mojo::JSON qw(encode_json decode_json);
 
 use Data::Dumper;
 $Data::Dumper::Indent= 1; 
@@ -13,7 +14,7 @@ sub get_object_uwmetadata {
 	
 	my $self = shift;  	
 	my $pid = $self->stash('pid');
-	
+	$self->app->log->debug('get_object_uwmetadata pid:',$self->stash('pid'));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -28,15 +29,17 @@ sub get_object_uwmetadata {
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
 	my $token = $self->load_token;	
-	
+	$self->app->log->debug('get_object_uwmetadata00');
   	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub {
   		my ($ua, $tx) = @_;
-
+              $self->app->log->debug('get_object_uwmetadata11');
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
 	  		# $self->app->log->debug('get_object_uwmetadata', $self->app->dumper($res->json));
-	  		$self->app->log->debug('get_object_uwmetadata');	
+	  		$self->app->log->debug('get_object_uwmetadata');
 	  	}else {
+	  	        $self->app->log->error('get_object_uwmetadata error: ', $self->app->dumper($tx->error)) if defined $tx->error;
+	  	        #$self->app->log->debug($self->app->dumper($tx));	
 			my ($err, $code) = $tx->error;
 			if($tx->res->json){	  
 				if(exists($tx->res->json->{alerts})) {
@@ -46,7 +49,6 @@ sub get_object_uwmetadata {
 				}
 			}
 		}
-		
   	});
 
 }
@@ -218,8 +220,17 @@ sub search_owner {
 sub save_object_uwmetadata {
 	
 	my $self = shift;  	
-	my $pid = $self->stash('pid');
 	
+	
+	my $pid = $self->stash('pid');
+	my $payload = $self->req->json;
+        my $uwmetadata = $payload->{'uwmetadata'};
+	
+	
+	
+	
+	
+	$self->app->log->debug("save_object_uwmetadata pid:".$self->app->dumper($pid));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -231,18 +242,24 @@ sub save_object_uwmetadata {
 	}else{
 		$url->path("/object/$pid/uwmetadata");
 	}
-		
+	
+	# my $post = $ua->post($url => { 'Content-Type' => $self->param('mimetype') } => form => { file => { file => $upload->asset }} );
+	# my $put = $ua->post($url => {'Content-Type' => 'text/xml'} => $foxml);
+	
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
 	my $token = $self->load_token;
 	
   	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
-  		json => $self->req->json,
+  		#json => $self->req->json,
+  		metadata => $uwmetadata, #mf ... TODO !!!
+  		#json => $uwmetadata, 
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
 	
 		  	if (my $res = $tx->success) {
 		  		$self->render(json => $res->json, status => 200 );
+		  		$self->app->log->debug("save_object_uwmetadata success123:".$self->app->dumper($res->json));
 		  	}else {
 			 	my ($err, $code) = $tx->error;	 
 			 	if(exists($tx->res->json->{alerts})) {
@@ -298,16 +315,16 @@ sub get_uwmetadata_languages {
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
 	$url->host($base[0]);
 	if(exists($base[1])){
-		$url->path($base[1]."/uwmetadata/languages");
+		$url->path($base[1]."/languages");
 	}else{
-		$url->path("/uwmetadata/languages");
+		$url->path("/languages");
 	}
   	$self->ua->get($url => sub { 	
   		my ($ua, $tx) = @_;
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
 	  	}else {
-		 	my ($err, $code) = $tx->error;	  
+		 	my ($err, $code) = $tx->error;
 		  	if(exists($tx->res->json->{alerts})) {
 			 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 			 }else{
@@ -655,6 +672,165 @@ sub get_object_mods_test{
 
 }
 
+sub get_object_mods{
+      
+	my $self = shift;
 
+	#my $pid = 'o:13690';
+	my $pid = $self->stash('pid');
+	$self->app->log->debug("get_object_mods pid".$self->app->dumper($self->stash('pid')));
+	my $url = Mojo::URL->new;
+	$url->scheme('https');
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/object/$pid/mods");
+	}else{
+		$url->path("/object/$pid/mods");
+	}
+        
+        #$url->query({'q' => $q, 'limit' => $limit});
+      	my $token = $self->load_token;
+	
+  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub {
+  		my ($ua, $tx) = @_;
+	  	#$self->app->log->debug("get_object_mods tx".$self->app->dumper($tx));
+	  	if (my $res = $tx->success) {
+	  		$self->app->log->debug("get_object_mods success".$self->app->dumper($res->json));
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else{
+		 	my ($err, $code) = $tx->error;
+		 	$self->app->log->info("get_object_mods error: $code");
+		 	if($tx->res->json){	  
+			  	 if(exists($tx->res->json->{alerts})){
+				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+				 }else{
+				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+				 }
+		        }
+		}
+  	});
+}
+
+
+sub get_mods_tree {
+    
+    my $self = shift;
+    
+    my $cache_model = PhaidraUI::Model::Cache->new;
+    my $res = $cache_model->get_mods_tree($self);
+    $self->app->log->info("get_uwmetadata_tree: ".$self->app->dumper($res));
+    #my $resJson = decode_json($res) if defined $res;
+    
+    
+    $self->render( json => $res, status => $res->{status});
+}
+
+sub get_taxonpath {
+	my $self = shift;  
+	
+	my $uri = $self->param('uri');
+	
+	my $res = { alerts => [], status => 200 };
+	
+	my $url = Mojo::URL->new;
+	$url->scheme('https');		
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/terms/taxonpath");
+	}else{
+		$url->path("/terms/taxonpath");
+	}
+	
+	$url->query({uri => $uri});
+		
+  	$self->ua->get($url => sub { 	
+  		my ($ua, $tx) = @_;
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;	  
+		  	if(exists($tx->res->json->{alerts})) {
+			 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+			 }else{
+			  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			 }
+		}
+		
+  	});
+}
+
+sub get_search {
+	my $self = shift;  
+	
+	my $q = $self->param('q');
+	
+	my $res = { alerts => [], status => 200 };
+	
+	my $url = Mojo::URL->new;
+	$url->scheme('https');		
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/terms/search");
+	}else{
+		$url->path("/terms/search");
+	}
+	
+	$url->query({q => $q});
+		
+  	$self->ua->get($url => sub { 	
+  		my ($ua, $tx) = @_;
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;	  
+		  	if(exists($tx->res->json->{alerts})) {
+			 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+			 }else{
+			  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			 }
+		}
+		
+  	});
+}
+
+sub get_terms_children {
+	my $self = shift;
+	
+	my $uri = $self->param('uri');
+	
+	$self->app->log->debug('get_terms_children uri', $self->app->dumper($uri));
+	
+	my $res = { alerts => [], status => 200 };
+	
+	my $url = Mojo::URL->new;
+	$url->scheme('https');
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/terms/children");
+	}else{
+		$url->path("/terms/children");
+	}
+	
+	$url->query({uri => $uri});
+		
+  	$self->ua->get($url => sub { 	
+  		my ($ua, $tx) = @_;
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;	  
+		  	if(exists($tx->res->json->{alerts})) {
+			 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+			 }else{
+			  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			 }
+		}
+		
+  	});
+}
 
 1;

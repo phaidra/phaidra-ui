@@ -1,7 +1,29 @@
 
+	<nav id="control-panel" class="navbar navbar-default">
+		<div class="navbar-header">
+		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		      <span class="sr-only">Toggle navigation</span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		    </button>
+	   	</div>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
+		  <div class="navbar-form navbar-left">
+		    <button ng-disabled="form_disabled" data-ng-click="addPoint()" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-plus"></span> Add point</button>
+		    <button ng-disabled="form_disabled" data-ng-click="addBoundingbox()" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-plus"></span> Add bounding box</button>
+		    <!--<button ng-disabled="form.$invalid || form_disabled" data-ng-click="refreshMaps()" class="btn btn-primary navbar-btn">Refresh maps</button>-->
+		  </div>
 
-	<div  class="panel panel-default" ng-repeat="placemark in placemarks" >
+	      <div class="navbar-form navbar-right">
+			<button ng-disabled="form_disabled" data-ng-click="save()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save</button>
+		  </div>
+	   	</div>
+	</nav>
+
+	<div class="panel panel-default" ng-repeat="placemark in placemarks" >
 		<div class="panel-heading" id="headingBagGeo{{$index}}">
 			<h3 class="panel-title">
 				<a data-toggle="collapse" href="#collapseBagGeo{{$index}}" aria-controls="collapseBagGeo{{$index}}">
@@ -15,6 +37,7 @@
 						</span>
 					</span>
 				</a>
+				<button class="btn btn-default pull-right" data-ng-click="placemarks.splice($index,1)"><span class="glyphicon glyphicon-minus"></span></button>
 			</h3>
 			<div class="clearfix"></div>
 		</div>
@@ -25,9 +48,27 @@
 
 
 					<ui-gmap-google-map control="placemark.map" center="placemark.map.center" zoom="placemark.map.zoom" draggable="true">
-						<ui-gmap-marker style="width: 100%; height: 100%; position: absolute;" coords="placemark.point.coordinates" options="getMarkerOptions(placemark)" events="marker_events" idkey="placemark.id">
-	        			                 </ui-gmap-marker>
+						<ui-gmap-marker coords="placemark.point.coordinates" options="getMarkerOptions(placemark)" events="marker_events" idkey="placemark.id">
+	        			                </ui-gmap-marker>
 					</ui-gmap-google-map>
+
+
+					<div class="form-group">
+						<div class="input-text placemark-name">
+							<label class="control-label">Name</label>
+							<div class="input-group">
+									<input class="form-control" type="text" ng-model="placemark.name" value="{{placemark.name}}" ng-required="true">
+							</div>
+						</div>
+
+						<div class="input-textarea placemark-description">
+							<label class="control-label">Description</label>
+							<div class="input-group">
+						    	<textarea class="form-control" type="text" ng-model="placemark.description" value="{{placemark.description}}" ng-required="true"></textarea>
+							</div>
+						</div>
+					</div>
+
 
 
 					<table class="table">
@@ -40,10 +81,11 @@
 					  <tbody>
 						  <tr>
 						    <td>
-						    	<span> {{placemark.point.coordinates.latitude}}</span>
+						    	<input class="form-control" type="text" ng-model="placemark.point.coordinates.latitude" value="{{placemark.point.coordinates.latitude}}" ng-required="true">
 							</td>
 						    <td>
-						    	<span> {{placemark.point.coordinates.longitude}}</span>
+						    	<input class="form-control" type="text" ng-model="placemark.point.coordinates.longitude" value="{{placemark.point.coordinates.longitude}}" ng-required="true">
+							</td>
 						  </tr>
 					  </tbody>
 					</table>
@@ -76,6 +118,7 @@
 					  </thead>
 					  <tbody>
 						  <tr ng-repeat="coordinate in placemark.polygon.outerboundaryis.linearring.coordinates">
+						  <!--<tr ng-repeat="coordinate in placemark.polygon.coordinates">-->
 						    <td>
 						    	<input class="form-control" type="text" ng-model="coordinate.latitude" value="{{coordinate.latitude}}" ng-required="true">
 							</td>

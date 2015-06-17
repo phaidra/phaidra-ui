@@ -277,7 +277,7 @@ app.controller('MasseditJobsCtrl',  function($scope, $rootScope, $timeout, $moda
     $scope.deleteAllJobs = function () {
             
              var modalInstance = $modal.open({
-                  templateUrl: $('head base').attr('href')+'views/partials/massedit/yesnoMassedit.html',
+                  templateUrl: $('head base').attr('href')+'views/modals/massedit/yesnoMassedit.html',
                   controller: deleteAllJobsModalCtrl,
                   resolve: {
                             text: function(){

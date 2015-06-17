@@ -258,21 +258,49 @@ margin-top: 5px;
 }
 .view-image{
    float: left;
+   width: 100%;
 }
 .view-container{
    width: 100%;
 }
+.tab-content{
+  margin-top: 20px
+}
+
+/*
 .view-collection{
   width: 30%;
   margin-right: 30px;
   float: left;
 }
+*/
+/*
 #ViewCtrl{
   margin-top: 34px;
 }
+*/
+
+
+.view-navbar{
+   padding-top: 7px;
+   min-width: 290px;
+}
+
 
 .bookmark-modal{
     height: auto;
     max-height: 400px;
-    overflow-x: hidden;
+   /* overflow-x: hidden;*/
+}
+
+.add-to-bookmark-margin-top{
+  margin-top: 20px;
+}
+/* templates  - modal*/
+.modal-overflow-scroll{
+  overflow: scroll !important;
+}
+
+.edit-attrs-modal-100{
+  width: 100% !important;
 }

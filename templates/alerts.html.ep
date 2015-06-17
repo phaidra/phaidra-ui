@@ -1,6 +1,6 @@
 	<center>
-		<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
-		
+		<alert ng-repeat="alert in alerts track by $index" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+
 		<% if(defined($self->flash('alerts'))){ %>
 			<% my $i = 0; foreach my $alert (@{$self->flash('alerts')}){ %>
 				<% $i++; %>

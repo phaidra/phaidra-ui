@@ -19,7 +19,7 @@
 					
 			      </div>			      
 			      
-			      <p ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}}</p>
+			      <p ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}} - UWMetadata</p>
 			      
 			      <div class="navbar-form navbar-right">
 			      

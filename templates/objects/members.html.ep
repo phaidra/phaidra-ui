@@ -32,9 +32,9 @@
 						    <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.length > 0}" ></span> <span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu" role="menu">
-						    <li><a href="" data-ng-click="allGoldEverything(event);">All</a></li>
-						    <li><a href="" data-ng-click="selectNone()">None</a></li>
-						    <li><a href="" data-ng-click="selectVisible()">Visible</a></li>						    
+						      <li><a href="" data-ng-click="allGoldEverything(event);">All</a></li>
+						      <li><a href="" data-ng-click="selectNone()">None</a></li>
+						      <li><a href="" data-ng-click="selectVisible()">Visible</a></li>						    
 						  </ul>						 
 				      </div>
 			      	

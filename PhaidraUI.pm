@@ -18,8 +18,9 @@ sub startup {
     
      # for download in csv; massedit
      $self->types->type(dwn => 'application/x-download; charset=utf-8');
-    
-    
+
+       
+       
     my $config = $self->plugin( 'JSONConfig' => { file => 'PhaidraUI.json' } );
 	$self->config($config);  
 	$self->mode($config->{mode});     
@@ -75,6 +76,7 @@ sub startup {
 				 	my ($err, $code) = $tx->error;
 				 	$code = 'Not defined code!' if not defined $code;
 				 	$self->app->log->info("Authentication failed for user $username. Error code: $code, Error: $err");
+				 	#$self->app->dumper($err);
 				 	if($tx->res->json && exists($tx->res->json->{alerts})){	  
 						$self->stash({phaidra_auth_result => { alerts => $tx->res->json->{alerts}, status  =>  $code ? $code : 500 }});						 	
 				 	}else{
@@ -198,6 +200,11 @@ sub startup {
     $r->route('loginform')                               ->via('get')    ->to('authentication#loginform');
     
     $r->route('search')                                  ->via('get')    ->to('object#search');    
+    #$r->route('search2')                                 ->via('get')    ->to('object#mods_template_editor'); #->to('object#search');
+  
+  
+  
+    $r->route('proxy/get_mods_tree')                    ->via('get')    ->to('proxy#get_mods_tree');
   
     $r->route('proxy/get_uwmetadata_tree')               ->via('get')    ->to('proxy#get_uwmetadata_tree');
     $r->route('proxy/get_uwmetadata_languages')          ->via('get')    ->to('proxy#get_uwmetadata_languages');
@@ -210,6 +217,12 @@ sub startup {
     $r->route('proxy/search')                            ->via('get')    ->to('proxy#search');
     $r->route('proxy/object/:pid/related')               ->via('get')    ->to('proxy#get_related_objects');
 
+    $r->route('proxy/terms/children')                    ->via('get')     ->to('proxy#get_terms_children');
+    $r->route('proxy/terms/taxonpath')                   ->via('get')     ->to('proxy#get_taxonpath');
+    $r->route('proxy/terms/search')                      ->via('get')     ->to('proxy#get_search');
+    
+    #$r->route('object/:pid/mods')                        ->via('get')     ->to('mods#get');
+    
     # if not authenticated, users will be redirected to login page
     my $auth = $r->bridge->to('authentication#check');
 
@@ -232,8 +245,10 @@ sub startup {
     $auth->route('massedit/jobs/refresh_action_button')  ->via('get')    ->to('massedit#jobs_refresh_action_button');
     $auth->route('massedit/jobs/detail/refresh_alerts')  ->via('post')   ->to('massedit#jobs_details_refresh_alerts');
 
+    $auth->route('view/classifications/get')              ->via('post')   ->to('object#get_classifications');
+    $auth->route('view/:pid')                            ->via('post')   ->to('object#view');
     $auth->route('view/:pid')                            ->via('get')    ->to('object#view');
-    $auth->route('view/getclassifications')              ->via('post')   ->to('object#get_classifications');
+    
     $auth->route('proxy/get_object_mods_test/:pid')      ->via('get')    ->to('proxy#get_object_mods_test');
 
     $auth->route('bookmark/create')                      ->via('get')    ->to('bookmark#create');
@@ -242,15 +257,23 @@ sub startup {
     $auth->route('bookmark/edit')                        ->via('get')    ->to('bookmark#edit');
     $auth->route('bookmark/edit_pid/:bookmarkid')        ->via('get')    ->to('bookmark#edit_pid');
     $auth->route('bookmark/delete')                      ->via('delete') ->to('bookmark#delete');
-    $auth->route('bookmark/deletepid')                   ->via('delete') ->to('bookmark#deletepid');
+    $auth->route('bookmark/deletepid')                   ->via('delete') ->to('bookmark#delete_pid');
     $auth->route('bookmark/deleteall')                   ->via('delete') ->to('bookmark#delete_all');
     $auth->route('bookmark/deleteallpid')                ->via('delete') ->to('bookmark#delete_all_pid');
     
     $auth->route('uwmetadata_editor/:pid')               ->via('get')    ->to('object#uwmetadataeditor');
+    $auth->route('mods_editor/:pid')                     ->via('get')    ->to('object#modseditor');
+    
 
     $auth->route('uwmetadata_template_editor')           ->via('get')    ->to('object#uwmetadata_template_editor');
     $auth->route('uwmetadata_template_editor/:tid')      ->via('get')    ->to('object#uwmetadata_template_editor'); 
-
+    
+    $auth->route('/templates/mods/modseditor')           ->via('get')    ->to('object#mods_template_editor');
+    $auth->route('/templates/mods/modseditor/:tid')      ->via('get')    ->to('object#mods_template_editor');
+    
+    $auth->route('object/:pid/mods')                     ->via('get')    ->to('proxy#get_object_mods');
+    
+    
     $auth->route('proxy/get_object_tripl')               ->via('get')    ->to('proxy#get_object_tripl');
 
     $auth->route('proxy/get_object_uwmetadata/:pid')     ->via('get')    ->to('proxy#get_object_uwmetadata');
@@ -259,16 +282,27 @@ sub startup {
     $auth->route('proxy/collection/:pid/members/order')  ->via('post')   ->to('proxy#collection_order');
     $auth->route('proxy/collection/:pid/members/:itempid/order/:position') ->via('post')   ->to('proxy#collection_member_order');
     $auth->route('proxy/collection/:pid/members/:itempid/order/')          ->via('post')   ->to('proxy#collection_member_order');
-
+  
+    
+    
+  
     $auth->route('template')                             ->via('put')    ->to('template#create');
     $auth->route('template/:tid')                        ->via('post')   ->to('template#save');    
     $auth->route('template/:tid')                        ->via('get')    ->to('template#load');
     $auth->route('template/:tid')                        ->via('delete') ->to('template#delete');    
 
     $auth->route('templates')                            ->via('get')    ->to('template#templates');
-    $auth->route('templates/my')                         ->via('get')    ->to('template#my');
+    $auth->route('templates/get_all')                    ->via('get')    ->to('template#get_all');
 
     $auth->route('collection/:pid')                      ->via('get')    ->to('collection#view');
+    
+    $auth->route('classifications') ->via('post') ->to('frontend#toggle_classification');
+    #$auth->route('classifications') ->via('get') ->to('frontend#get_classifications');
+    
+    $auth->route('mods/classifications')                ->via('post') ->to('frontend#get_mods_classifications');
+    
+    $auth->route('object/:pid/geo')                     ->via('get')    ->to('object#get_geo');
+    $auth->route('object/:pid/geo')                     ->via('post')   ->to('object#post_geo');
 
     return $self;
 }
