@@ -257,7 +257,7 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
 
  $scope.save = function() {
     	$scope.form_disabled = true;
-    	var promise = MetadataService.saveModsToBag($scope.bagid, $scope.fields)      
+    	var promise = MetadataService.saveModsToBag($scope.bagid, $scope.fields)       
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
         	function(response) {
