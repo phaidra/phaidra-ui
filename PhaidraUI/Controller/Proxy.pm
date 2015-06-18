@@ -226,10 +226,7 @@ sub save_object_uwmetadata {
 	my $payload = $self->req->json;
         my $uwmetadata = $payload->{'uwmetadata'};
 	
-	
-	
-	
-	
+
 	$self->app->log->debug("save_object_uwmetadata pid:".$self->app->dumper($pid));
 	my $res = { alerts => [], status => 200 };
 	
@@ -243,17 +240,12 @@ sub save_object_uwmetadata {
 		$url->path("/object/$pid/uwmetadata");
 	}
 	
-	# my $post = $ua->post($url => { 'Content-Type' => $self->param('mimetype') } => form => { file => { file => $upload->asset }} );
-	# my $put = $ua->post($url => {'Content-Type' => 'text/xml'} => $foxml);
-	
-	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
-	
 	my $token = $self->load_token;
-	
+	$self->app->log->debug("save_object_uwmetadata token:".$self->app->dumper($token));
+  	#$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token, 'Content-Type' => 'multipart/form-data'},
+  	#	form => { metadata =>   { content => encode_json($uwmetadata) } }, 
   	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
-  		#json => $self->req->json,
-  		metadata => $uwmetadata, #mf ... TODO !!!
-  		#json => $uwmetadata, 
+  		form => { metadata => encode_json($uwmetadata) }, 
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
 	
@@ -262,6 +254,7 @@ sub save_object_uwmetadata {
 		  		$self->app->log->debug("save_object_uwmetadata success123:".$self->app->dumper($res->json));
 		  	}else {
 			 	my ($err, $code) = $tx->error;	 
+			 	$self->app->log->debug("save_object_uwmetadata error:".$self->app->dumper($tx->error));
 			 	if(exists($tx->res->json->{alerts})) {
 			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 			 	}else{

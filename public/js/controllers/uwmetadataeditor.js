@@ -28,11 +28,13 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 
     $scope.fields = [];
     $scope.languages = [];
-    $scope.geo = [];
-
+    //$scope.geo = [];
+    $scope.geo = {};
+    $scope.placemarks = {};
+    
     $scope.pid = '';
     $scope.alerts = [];
-
+    
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
@@ -439,6 +441,8 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     	
         console.log('pid',$scope.pid);
 	
+	$scope.saveGeo();
+	
         var uwmeta = {};
 	uwmeta.metadata = {};
 	uwmeta.metadata.uwmetadata = $scope.fields;
@@ -478,12 +482,87 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
            		$scope.form_disabled = false;
            	}
         );
-
  };
 
-
+ 
+ 
+ 
+ 
+    $scope.saveGeo = function() {
+        /*
+        var geo = {
+    		    metadata:{
+		           geo:{
+			         kml: {
+    			             document: {
+    				          placemark: $scope.placemarks
+    			             }
+    	                        }  
+		         }
+	           }
+    	   };
+	   */
+        console.log('savegeo!!!');
+        if($scope.mode == 'object'){
+              console.log('save object geo');
+	      $scope.form_disabled = true;
+	
+	      var geo = {
+    		    metadata:{
+		           geo:{
+			         kml: {
+    			             document: {
+    				          placemark: $scope.placemarks
+    			             }
+    	                        }  
+		         }
+	           }
+    	      };
+    	      var promise = MetadataService.saveGeoObject($scope.pid, geo)
+    	      $scope.loadingTracker.addPromise(promise);
+    	      promise.then(
+        	    function(response) {
+        		  $scope.alerts = response.data.alerts;
+        		  $scope.form_disabled = false;
+        	    }
+        	   ,function(response) {
+           		  $scope.alerts = response.data.alerts;
+           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		  $scope.form_disabled = false;
+           	    }
+             );
+	}
+	if($scope.mode == 'template'){
+	      
+	      console.log('save template geo tid:',$scope.tid);
+	      
+	      var geo = {
+	            kml: {
+    			  document: {
+    				     placemark: $scope.placemarks
+    			            }
+    	                 }  
+    	      };
+	      var promise = MetadataService.saveGeoTemplate($scope.tid, geo)
+    	      $scope.loadingTracker.addPromise(promise);
+    	      promise.then(
+        	    function(response) {
+        		  $scope.alerts = response.data.alerts;
+        		  $scope.form_disabled = false;
+        	    }
+        	   ,function(response) {
+           		  $scope.alerts = response.data.alerts;
+           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		  $scope.form_disabled = false;
+           	    }
+             );
+	}
+        
+ };
+ 
  $scope.saveTemplate = function() {
-	 $scope.form_disabled = true;
+     $scope.form_disabled = true;
+     $scope.saveGeo();
      var promise = MetadataService.saveUwmetaTemplate($scope.tid, $scope.fields);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
@@ -500,7 +579,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
  };
 
  $scope.loadTemplateToBag = function() {
-	 $scope.form_disabled = true;
+     $scope.form_disabled = true;
      var promise = MetadataService.loadTemplateToBag(this.selectedtemplate._id);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
@@ -519,7 +598,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
      );
  };
 
-  $scope.loadTemplate = function() {
+     $scope.loadTemplate = function() {
      $scope.form_disabled = true;
      var promise = MetadataService.loadTemplate($scope.tid);
      $scope.loadingTracker.addPromise(promise);
@@ -528,6 +607,13 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
       		console.log('loadTemplate response.data',response.data);
 	        $scope.alerts = response.data.alerts;
       		$scope.fields = response.data.uwmetadata;
+		$scope.geo = response.data.geo;
+		console.log('loadTemplate geo',$scope.geo);
+		if( $scope.geo ){
+		     $scope.placemarks = $scope.geo.kml.document.placemark;
+		     console.log('loadTemplate placemark',$scope.geo.kml.document.placemark);
+		}
+		
       		$scope.templatetitle = response.data.title;
       		$scope.loadLanguages();
       		$scope.form_disabled = false;
@@ -565,6 +651,7 @@ $scope.saveTemplateAs = function () {
        	function(response) {
        		$scope.alerts = response.data.alerts;
        		$scope.tid = response.data.tid;
+		$scope.saveGeo();
        		$scope.form_disabled = false;
        	}
        	,function(response) {

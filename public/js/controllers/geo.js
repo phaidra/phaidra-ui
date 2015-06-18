@@ -107,13 +107,15 @@ app.controller('GeoCtrl', function($scope, $rootScope, $modal, $location, $timeo
 		$scope.placemarks.push(bb);
 	}
 
-    $scope.initgeo = function (initdata) {
+        $scope.initgeo = function (initdata) {
 	
 	$scope.mode = $scope.$parent.mode;   // object/template
         if($scope.mode == 'template'){
 	      $scope.tid = $scope.$parent.tid;
+	      $scope.placemarks = $scope.$parent.placemarks;
 	}
-        
+        console.log('geo init placemarks0:',$scope.$parent);
+        console.log('geo init placemarks1:',$scope.$parent.placemarks);
         console.log('geo init mode:',$scope.edit_mode);
 	
         $scope.initdata = angular.fromJson(initdata);
@@ -140,7 +142,12 @@ app.controller('GeoCtrl', function($scope, $rootScope, $modal, $location, $timeo
 
     $scope.$parent.$watch('geoTabActivated', function(newValue, oldValue) {
     	if(newValue){
+	      //google maps refresh
 	      $scope.refreshMaps();
+	      //also used for upadate(template mode) of placemarks because of delay while reading geo data
+	      if($scope.mode == 'template'){
+	           $scope.placemarks = $scope.$parent.placemarks;
+	      }
     	}
     });
     
@@ -289,83 +296,5 @@ app.controller('GeoCtrl', function($scope, $rootScope, $modal, $location, $timeo
 		  		    
 	
 	*/
-    
-    
-    
-    
-    
-    
-
-    $scope.save = function() {
-        /*
-        var geo = {
-    		    metadata:{
-		           geo:{
-			         kml: {
-    			             document: {
-    				          placemark: $scope.placemarks
-    			             }
-    	                        }  
-		         }
-	           }
-    	   };
-	   */
-
-        if($scope.mode == 'object'){
-              console.log('save object geo');
-	      $scope.form_disabled = true;
-	
-	      var geo = {
-    		    metadata:{
-		           geo:{
-			         kml: {
-    			             document: {
-    				          placemark: $scope.placemarks
-    			             }
-    	                        }  
-		         }
-	           }
-    	      };
-    	      var promise = MetadataService.saveGeoObject($scope.pid, geo)
-    	      $scope.loadingTracker.addPromise(promise);
-    	      promise.then(
-        	    function(response) {
-        		  $scope.alerts = response.data.alerts;
-        		  $scope.form_disabled = false;
-        	    }
-        	   ,function(response) {
-           		  $scope.alerts = response.data.alerts;
-           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		  $scope.form_disabled = false;
-           	    }
-             );
-	}
-	if($scope.mode == 'template'){
-	      
-	      console.log('save template geo tid:',$scope.tid);
-	      
-	      var geo = {
-	            kml: {
-    			  document: {
-    				     placemark: $scope.placemarks
-    			            }
-    	                 }  
-    	      };
-	      var promise = MetadataService.saveGeoTemplate($scope.tid, geo)
-    	      $scope.loadingTracker.addPromise(promise);
-    	      promise.then(
-        	    function(response) {
-        		  $scope.alerts = response.data.alerts;
-        		  $scope.form_disabled = false;
-        	    }
-        	   ,function(response) {
-           		  $scope.alerts = response.data.alerts;
-           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		  $scope.form_disabled = false;
-           	    }
-             );
-	}
-        
- };
 
 });

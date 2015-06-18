@@ -34,18 +34,21 @@ sub load {
 		return;
 	}
         #$self->app->log->info("reset_hide_rec uwmetadata11".$self->app->dumper($doc));
+	my $geo; 
 	if($doc->{geo}){
 		$self->app->log->info("load geo");
-
+                 
 		$self->app->log->info("[".$self->current_user->{username}."] Loaded geo template ".$doc->{title}." [$tid]");
-		$self->render(
-			json => {
-				geo => $doc->{geo},
-				title => $doc->{title},
-			},
-			status => 200
-		);
-		return;
+		$geo = $doc->{geo};
+		
+		#$self->render(
+		#	json => {
+		#		geo => $doc->{geo},
+		#		title => $doc->{title},
+		#	},
+		#	status => 200
+		#);
+		#return;
 	}
 	if($doc->{uwmetadata}){
 		$self->app->log->info("reset_hide_rec uwmetadata");
@@ -55,6 +58,7 @@ sub load {
 		$self->app->log->info("[".$self->current_user->{username}."] Loaded uwmetadata template ".$doc->{title}." [$tid]");
 		$self->render(
 			json => {
+				geo => $geo,
 				uwmetadata => $doc->{uwmetadata},
 				title => $doc->{title},
 			},
@@ -74,6 +78,7 @@ sub load {
 		$self->app->log->info("[".$self->current_user->{username}."] Loaded mods template ".$doc->{title}." [$tid]");
 		$self->render(
 			json => {
+				geo => $geo,
 				mods => $mods_tree,
 				vocabularies => $res->{vocabularies},
 				vocabularies_mapping => $res->{vocabularies_mapping},
@@ -184,7 +189,7 @@ sub delete {
 	
 	my $oid = Mango::BSON::ObjectID->new($tid);
 	
-	my $reply = $self->mango->db->collection('templates.uwmetadata')->remove({_id => $oid});
+	my $reply = $self->mango->db->collection('templates')->remove({_id => $oid});
 		
 	$self->render(json => { alerts => [] }, status => 200);
 }

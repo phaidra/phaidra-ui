@@ -45,7 +45,9 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
 	$scope.selectedtemplate = '';
 	$scope.templatetitle = '';
 	$scope.tid = '';
-
+       
+	
+	
 	$scope.bagid = '';
 	$scope.bag = [];
 	$scope.bag_info;
@@ -58,8 +60,10 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     $scope.vocsmap = [];
     $scope.separateTabs = ["originInfo", "physicalDescription", "subject", "part", "recordInfo", "relatedItem"];
     $scope.languages = [];
-    $scope.geo = [];
-
+    //$scope.geo = [];
+    $scope.geo = {};
+    $scope.placemarks = {};
+    
     $scope.pid = '';
     $scope.alerts = [];
 
@@ -85,7 +89,12 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     			console.log('aaaaa', response.data);
 		        $scope.alerts = response.data.metadata.alerts;
     			//$scope.languages = response.data.languages;
-    			$scope.fields = response.data.metadata.mods;
+    			$scope.geo = response.data.geo;
+			if( $scope.geo ){
+			     $scope.placemarks = $scope.geo.kml.document.placemark;
+			}
+			$scope.fields = response.data.metadata.mods;
+			$scope.placemarks
 			console.log('fields1:', $scope.fields);
     			//$scope.vocs = response.data.vocabularies;
     			//$scope.vocsmap = response.data.vocabularies_mapping;
@@ -255,7 +264,7 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
         		$scope.alerts = response.data.alerts;
         		$scope.form_disabled = false;
         	}
-        	,function(response) {
+               ,function(response) {
            		$scope.alerts = response.data.alerts;
            		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
            		$scope.form_disabled = false;
@@ -267,6 +276,7 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
  $scope.saveTemplate = function() {
 
      $scope.form_disabled = true;
+     $scope.saveGeo();
      var promise = MetadataService.saveModsTemplate($scope.tid, $scope.fields);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
@@ -307,7 +317,8 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
 */
  
   $scope.loadTemplate = function() {
-	 $scope.form_disabled = true;
+
+     $scope.form_disabled = true;
      var promise = MetadataService.loadTemplate($scope.tid);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
@@ -357,6 +368,7 @@ $scope.saveTemplateAs = function () {
        	            function(response) {
        		           $scope.alerts = response.data.alerts;
        		           $scope.tid = response.data.tid;
+			   $scope.saveGeo();
        		           $scope.form_disabled = false;
        	            }
        	           ,function(response) {
@@ -371,6 +383,80 @@ $scope.saveTemplateAs = function () {
   }
   
 };
+
+    $scope.saveGeo = function() {
+        /*
+        var geo = {
+    		    metadata:{
+		           geo:{
+			         kml: {
+    			             document: {
+    				          placemark: $scope.placemarks
+    			             }
+    	                        }  
+		         }
+	           }
+    	   };
+	   */
+        console.log('savegeo!!!');
+        if($scope.mode == 'object'){
+              console.log('save object geo');
+	      $scope.form_disabled = true;
+	
+	      var geo = {
+    		    metadata:{
+		           geo:{
+			         kml: {
+    			             document: {
+    				          placemark: $scope.placemarks
+    			             }
+    	                        }  
+		         }
+	           }
+    	      };
+    	      var promise = MetadataService.saveGeoObject($scope.pid, geo)
+    	      $scope.loadingTracker.addPromise(promise);
+    	      promise.then(
+        	    function(response) {
+        		  $scope.alerts = response.data.alerts;
+        		  $scope.form_disabled = false;
+        	    }
+        	   ,function(response) {
+           		  $scope.alerts = response.data.alerts;
+           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		  $scope.form_disabled = false;
+           	    }
+             );
+	}
+	if($scope.mode == 'template'){
+	      
+	      console.log('save template geo tid:',$scope.tid);
+	      
+	      var geo = {
+	            kml: {
+    			  document: {
+    				     placemark: $scope.placemarks
+    			            }
+    	                 }  
+    	      };
+	      var promise = MetadataService.saveGeoTemplate($scope.tid, geo)
+    	      $scope.loadingTracker.addPromise(promise);
+    	      promise.then(
+        	    function(response) {
+        		  $scope.alerts = response.data.alerts;
+        		  $scope.form_disabled = false;
+        	    }
+        	   ,function(response) {
+           		  $scope.alerts = response.data.alerts;
+           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		  $scope.form_disabled = false;
+           	    }
+             );
+	}
+        
+ };
+
+
 
     // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
     $scope.filterHidden = function(e)
