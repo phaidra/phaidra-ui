@@ -18,8 +18,9 @@
 					</span>
 					
 			      </div>			      
-			      
-			      <p ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}} - UWMetadata</p>
+			   
+			      <p ng-if="edit_mode=='edit_uwmeta'" ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}} - UWMetadata</p>
+			      <p ng-if="edit_mode=='edit_mods'" ng-if="templatetitle" class="navbar-text template-title">{{templatetitle}} - Mods</p>
 			      
 			      <div class="navbar-form navbar-right">
 			      

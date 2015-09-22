@@ -1,7 +1,8 @@
+app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, BookmarkService, promiseTracker) {
 
-app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, promiseTracker) {
-
-     $scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
+    $scope.$parent.disableBookmark = false;  
+  
+    $scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
      // use: <input ng-pattern="regex_identifier" ...
 
     // we will use this to track running ajax requests to show spinner
@@ -14,61 +15,100 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 
     $scope.initdata = '';
     $scope.current_user = '';
-    $scope.current_bags_query = '';
+    //$scope.current_bags_query = '';
 
     $scope.selectedtemplate = '';
     $scope.templatetitle = '';
     $scope.tid = '';
 
-    $scope.bagid = '';
-    $scope.bag = [];
-    $scope.bag_info;
+    //$scope.bag = [];
+    //$scope.bag_info;
 
-    $scope.mode = 'bag';
+    $scope.mode = '';
 
     $scope.fields = [];
     $scope.languages = [];
     //$scope.geo = [];
     $scope.geo = {};
-    $scope.placemarks = {};
+    $scope.placemarks = [];
     
     $scope.pid = '';
     $scope.alerts = [];
+    
+    
+    $scope.testMePlease = function() {
+        console.log('uwmeta testme', $scope.fields);
+    }
     
     $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
     };
 
     $scope.init = function (initdata) {
-    	$scope.edit_mode = 'edit_uwmeta';
+    	
+       
+        $scope.getBookmarks();
+        
+        $scope.edit_mode = 'edit_uwmeta';
         $scope.initdata = angular.fromJson(initdata);
-    	$scope.current_user = $scope.initdata.current_user;
-    	$scope.bagid = $scope.initdata.bagid;
-	$scope.baginfo = $scope.initdata.baginfo;
+    	 $scope.$parent.pid = $scope.initdata.pid;
+	$scope.current_user = $scope.initdata.current_user;
+    	
         console.log('initdata', $scope.initdata);
     	//uwmetadataeditor_mode
 	if($scope.initdata.pid){
-                $scope.mode = 'object';
+                console.log('object123');
+	        $scope.mode = 'object';
 	        $scope.pid = $scope.initdata.pid;
     		$scope.loadObject($scope.pid);
     	}else{
     		if($scope.initdata.tid){
-                        $scope.mode = 'template';
+                        console.log('existingtemplate123');
+		        $scope.mode = 'template';
     			$scope.tid = $scope.initdata.tid;
     			$scope.loadTemplate($scope.tid);
     		}else{
-                       $scope.mode = 'template';
-      	               $scope.getUwmetadataTree();
+                        console.log('emptytemplate123');
+		        $scope.mode = 'template';
+      	                $scope.getUwmetadataTree();
                }
     	}
     };
 
     
+   $scope.saveObject = function() {
+    	$scope.form_disabled = true;
+	//var mods = {};
+	//mods.metadata = {};
+	//mods.metadata.mods = $scope.fields;
+    	
+	var uwmetadata = {};
+	uwmetadata.metadata = {};
+	uwmetadata.metadata.uwmetadata = $scope.fields;
+	console.log('saveObject uwmeta:', uwmetadata);
+
+	var promise = MetadataService.saveUwmetadataObject($scope.pid, uwmetadata);
+    	$scope.loadingTracker.addPromise(promise);
+    	promise.then(
+        	function(response) {
+        		$scope.alerts = response.data.alerts;
+        		$scope.form_disabled = false;
+        	}
+               ,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		$scope.form_disabled = false;
+           	}
+        );
+
+
+ };
+    
    $scope.loadObject = function(pid){
     	
         console.log('1111111');
         $scope.resetEditor();
-	console.log('1111111');
+	console.log('1111111 pid',pid);
     	var promise = MetadataService.getUwmetadataFromObject(pid);
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
@@ -76,8 +116,8 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     			$scope.alerts = response.data.alerts;
     			$scope.languages = response.data.languages;
 			$scope.fields = response.data.metadata.uwmetadata;
-			console.log('data xxx',response.data);
-			console.log('fields zzz',$scope.fields);
+			//console.log('data xxx',response.data);
+			//console.log('fields zzz',$scope.fields);
     			$scope.load_init();
     		}
     		,function(response) {
@@ -101,50 +141,9 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 			return $scope.initdata.restricted_ops.indexOf('set_'+attribute) == -1 || $scope.current_user.role == 'manager';
 		}
                 //mf
-                /*
-		$scope.setAttribute = function (bag, attribute, value) {
-			 
-		         
-		         var promise = BagService.setAttribute(bag.bagid, attribute, value);
-				$scope.loadingTracker.addPromise(promise);
-				promise.then(
-					function(response) {
-						$scope.alerts = response.data.alerts;
-						$scope.baginfo[attribute] = value;
-					}
-					,function(response) {
-						$scope.alerts = response.data.alerts;
-						//$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-					}
-				);
-                       
-		}
-                */
 		$scope.getFieldsCount = function() {
 				return $scope.fields.length;
 		};
-    //mf delete it, not used
-    //$scope.getBack2BagsLink = function (){
-    // 	if($scope.initdata.current_bags_query){
-    //		if($scope.initdata.current_bags_query.filter){
-    //			if($scope.initdata.current_bags_query.filter.folderid){
-    //				//return Url.buildUrl($('head base').attr('href')+'bags/folder/'+$scope.initdata.current_bags_query.filter.folderid, $scope.initdata.current_bags_query);
-    //			}
-    //		}
-    //	}
-    //}
-     //mf delete it, not used
-    //$scope.getPrevBagLink = function (){
-    //	if($scope.initdata.prev_bag){
-    //		//return Url.buildUrl($('head base').attr('href')+'bag/'+$scope.initdata.prev_bag.bagid+'/edit', $scope.initdata.current_bags_query);
-    //	}
-    //}
-     //mf delete it, not used
-    // $scope.getNextBagLink = function (){
-    //	if($scope.initdata.next_bag){
-    //		//return Url.buildUrl($('head base').attr('href')+'bag/'+$scope.initdata.next_bag.bagid+'/edit', $scope.initdata.current_bags_query);
-    //	}
-    //}
 
     $scope.reset_values = function (node, default_value){
     	if(!default_value){
@@ -293,9 +292,9 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     	);
 
 	}
-
+/*
     $scope.faculty_update_handler = function(faculty_node){
-
+        console.log('faculty_update_handler');
     	if(!faculty_node){
     		return;
     	}
@@ -306,33 +305,64 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 				return;
 			}
 		}
-
+                console.log('faculty_node', faculty_node);
+		console.log('fields', $scope.fields);
 		// find the department sibling and update it
 		var orgassignment_node = $scope.get_model_parent(null, $scope.fields, faculty_node);
 		// for orgassignment this is easy:
 		// orgassignment_node.children[0] is faculty;
 		// orgassignment_node.children[1] is department;
+		console.log('orgassignment_node', orgassignment_node);
+		console.log('orgassignment_node1', orgassignment_node.children);
+		console.log('orgassignment_node2', orgassignment_node.children[0]);
+		console.log('orgassignment_node3', orgassignment_node.children[0].ui_value);
+		console.log('orgassignment_node31', orgassignment_node.children[1].ui_value);
 		var faculty_id_uri = orgassignment_node.children[0].ui_value;
+		console.log('faculty_id_uri', faculty_id_uri);
 		var faculty_id_namespace = orgassignment_node.children[0].vocabularies[0].namespace;
+		console.log('faculty_id_namespace', faculty_id_namespace);
 		var department_namespace = orgassignment_node.children[1].vocabularies[0].namespace;
+		console.log('department_namespace', department_namespace);
 		var faculty_id = faculty_id_uri.substring(faculty_id_namespace.length);
-
+                console.log('faculty_id', faculty_id);
 		$scope.reset_values(orgassignment_node.children[1]);
 
 		var promise = DirectoryService.getOrgUnits(faculty_id, department_namespace);
-    	$scope.loadingTracker.addPromise(promise);
-    	promise.then(
-    		function(response) {
-    			$scope.alerts = response.data.alerts;
-    			angular.copy(response.data.terms, orgassignment_node.children[1].vocabularies[0].terms);
-    		}
-    		,function(response) {
-           		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           	}
-    	);
+    	        $scope.loadingTracker.addPromise(promise);
+    	        promise.then(
+    		        function(response) {
+    			       $scope.alerts = response.data.alerts;
+    			       var termsWithLabels = [];
+			       for (i = 0; i < response.data.terms.length; ++i) {
+				    var temp = {};
+				    temp.uri = {};
+				    temp.labels = {};
+				    temp.uri = response.data.terms[i].uri;
+				    temp.labels = response.data.terms[i];
+				    termsWithLabels.push(temp);
+				    
+				    //termsWithLabels[i].labels = {};
+				    //termsWithLabels[i].uri = {};
+				    //termsWithLabels[i].labels = response.data.terms[i];
+				    //termsWithLabels[i].uri = response.data.terms[i].uri;
+			       }
+			       console.log('termsWithLabels', termsWithLabels);
+			       ////angular.copy(response.data.terms, orgassignment_node.children[1].vocabularies[0].terms);
+			      angular.copy(termsWithLabels, orgassignment_node.children[1].vocabularies[0].terms);
+			       
+			       
+			       //angular.copy(response.data.terms, orgassignment_node.children[1].vocabularies[0].terms);
+			       //angular.copy(response.data.terms, orgassignment_node.children[1].vocabularies[0].terms.labels);
+			       console.log('response.data.terms', response.data.terms);
+			        console.log('orgassignment_node2', orgassignment_node);
+    		        }
+    		       ,function(response) {
+           		       $scope.alerts = response.data.alerts;
+           		       $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	        }
+    	        );
 	};
-
+*/
     $scope.watched_faculty_selectboxes = [];
     $scope.watched_curriculum_child_selectboxes = [];
 
@@ -393,9 +423,9 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     }
 
     $scope.resetEditor = function() {
-    	$scope.alerts = [];
-		$scope.languages = [];
-		$scope.fields = [];
+    	  $scope.alerts = [];
+	  $scope.languages = [];
+	  $scope.fields = [];
     };
 
     $scope.getUwmetadataTree = function(){
@@ -407,6 +437,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
     			$scope.alerts = response.data.alerts;
     			$scope.languages = response.data.languages;
     			$scope.fields = response.data.tree;
+			console.log('getUwmetadataTree',response.data.tree);
     			$scope.load_init();
     		}
     		,function(response) {
@@ -415,28 +446,9 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
            	}
     	);
     };
-    //mf
-    /*
-    $scope.loadBag = function(){
-    	$scope.resetEditor();
-        var promise = MetadataService.loadBag($scope.bagid);
-        $scope.loadingTracker.addPromise(promise);
-        promise.then(
-    		function(response) {
-    			$scope.alerts = response.data.alerts;
-    			$scope.languages = response.data.metadata.languages;
-    			$scope.fields = response.data.metadata.uwmetadata;
-    			$scope.bag = response.data;
-    			$scope.load_init();
-    		}
-    		,function(response) {
-           		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           	}
-    	);
-    };
-   */
- 
+
+       
+   /* 
    $scope.save = function() {
     	
         console.log('pid',$scope.pid);
@@ -449,7 +461,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 	console.log('uwmeta',uwmeta);
         
 	$scope.form_disabled = true;
-    	var promise = MetadataService.saveUwmetadataToObject($scope.pid, uwmeta)
+    	var promise = MetadataService.saveUwmetadataObject($scope.pid, uwmeta)
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
         	function(response) { 
@@ -466,76 +478,12 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
            	}
         );    
  };
- 
-  $scope.save2 = function() {
-    	$scope.form_disabled = true;
-    	var promise = MetadataService.saveUwmetadataToBag($scope.bagid, $scope.fields)
-    	$scope.loadingTracker.addPromise(promise);
-    	promise.then(
-        	function(response) {
-        		$scope.alerts = response.data.alerts;
-        		$scope.form_disabled = false;
-        	}
-        	,function(response) {
-           		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		$scope.form_disabled = false;
-           	}
-        );
- };
+ */
+  
 
- 
- 
- 
- 
-    $scope.saveGeo = function() {
-        /*
-        var geo = {
-    		    metadata:{
-		           geo:{
-			         kml: {
-    			             document: {
-    				          placemark: $scope.placemarks
-    			             }
-    	                        }  
-		         }
-	           }
-    	   };
-	   */
-        console.log('savegeo!!!');
-        if($scope.mode == 'object'){
-              console.log('save object geo');
-	      $scope.form_disabled = true;
-	
-	      var geo = {
-    		    metadata:{
-		           geo:{
-			         kml: {
-    			             document: {
-    				          placemark: $scope.placemarks
-    			             }
-    	                        }  
-		         }
-	           }
-    	      };
-    	      var promise = MetadataService.saveGeoObject($scope.pid, geo)
-    	      $scope.loadingTracker.addPromise(promise);
-    	      promise.then(
-        	    function(response) {
-        		  $scope.alerts = response.data.alerts;
-        		  $scope.form_disabled = false;
-        	    }
-        	   ,function(response) {
-           		  $scope.alerts = response.data.alerts;
-           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		  $scope.form_disabled = false;
-           	    }
-             );
-	}
-	if($scope.mode == 'template'){
-	      
-	      console.log('save template geo tid:',$scope.tid);
-	      
+    $scope.saveGeoTemplate = function() {
+    	      
+              console.log('save template geo tid:',$scope.tid); 
 	      var geo = {
 	            kml: {
     			  document: {
@@ -556,14 +504,45 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
            		  $scope.form_disabled = false;
            	    }
              );
-	}
-        
- };
+    }
+    
+    $scope.saveGeoObject_deleteme = function() {
+              
+              console.log('save object geo');
+	      $scope.form_disabled = true;
+	
+	      var geo = {
+    		    metadata:{
+		           geo:{
+			         kml: {
+    			             document: {
+    				          placemark: $scope.placemarks
+    			             }
+    	                        }  
+		         }
+	           }
+    	      };
+    	      console.log('saveGeo:', geo);
+	      var promise = MetadataService.saveGeoObject($scope.pid, geo)
+    	      $scope.loadingTracker.addPromise(promise);
+    	      promise.then(
+        	    function(response) {
+        		  $scope.alerts = response.data.alerts;
+        		  $scope.form_disabled = false;
+        	    }
+        	   ,function(response) {
+           		  $scope.alerts = response.data.alerts;
+           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		  $scope.form_disabled = false;
+           	    }
+             );
+    }
  
- $scope.saveTemplate = function() {
+   
+   $scope.saveTemplate = function() {
      $scope.form_disabled = true;
-     $scope.saveGeo();
-     var promise = MetadataService.saveUwmetaTemplate($scope.tid, $scope.fields);
+     $scope.saveGeoTemplate();
+     var promise = MetadataService.saveUwmetadataTemplate($scope.tid, $scope.fields);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
       	function(response) {
@@ -578,27 +557,7 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
      );
  };
 
- $scope.loadTemplateToBag = function() {
-     $scope.form_disabled = true;
-     var promise = MetadataService.loadTemplateToBag(this.selectedtemplate._id);
-     $scope.loadingTracker.addPromise(promise);
-     promise.then(
-      	function(response) {
-      		$scope.alerts = response.data.alerts;
-      		$scope.fields = response.data.uwmetadata;
-      		$scope.templatetitle = response.data.title;
-      		$scope.loadLanguages();
-      		$scope.form_disabled = false;
-      	}
-      	,function(response) {
-      		$scope.alerts = response.data.alerts;
-      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-      		$scope.form_disabled = false;
-      	}
-     );
- };
-
-     $scope.loadTemplate = function() {
+ $scope.loadTemplate = function() {
      $scope.form_disabled = true;
      var promise = MetadataService.loadTemplate($scope.tid);
      $scope.loadingTracker.addPromise(promise);
@@ -608,14 +567,30 @@ app.controller('UwmetadataeditorCtrl',  function($scope, $modal, $location, Dire
 	        $scope.alerts = response.data.alerts;
       		$scope.fields = response.data.uwmetadata;
 		$scope.geo = response.data.geo;
-		console.log('loadTemplate geo',$scope.geo);
-		if( $scope.geo ){
-		     $scope.placemarks = $scope.geo.kml.document.placemark;
-		     console.log('loadTemplate placemark',$scope.geo.kml.document.placemark);
-		}
+		//console.log('loadTemplate geo',$scope.geo);
+		//console.log('loadTemplate geo',$scope.geo.kml.document.placemark);
 		
+		/*
+		if( typeof $scope.geo.kml.document.placemark !== 'undefined' ){
+		     //console.log('loadTemplate placemark20');
+		     if(typeof $scope.geo.kml.document.placemark[0] !== 'undefined'){
+		           //console.log('loadTemplate placemark21',$scope.geo.kml.document.placemark[0]);
+		           $scope.placemarks = $scope.geo.kml.document.placemark;
+			   //$scope.placemarks = angular.copy($scope.geo.kml.document.placemark);
+			   //console.log('loadTemplate placemark22',$scope.placemark);
+		     //}else{
+		          //$scope.placemarks = [];
+		     }
+		//}else{
+		      //console.log('loadTemplate placemark23');
+		      //$scope.placemarks = [];
+		}
+		*/
+		
+		//console.log('loadTemplate placemark end',$scope.placemarks);
       		$scope.templatetitle = response.data.title;
       		$scope.loadLanguages();
+		$scope.load_init();
       		$scope.form_disabled = false;
       	}
       	,function(response) {
@@ -642,16 +617,16 @@ $scope.saveTemplateAs = function () {
 
     templateModalInstance.result.then(function (title) {
       $scope.templatetitle = title;
-
+      console.log('saveTemplateAs:', $scope.templatetitle, $scope.fields);
       // save template
       $scope.form_disabled = true;
-      var promise = MetadataService.saveUwmetaTemplateAs($scope.templatetitle, $scope.fields);
+      var promise = MetadataService.saveUwmetadataTemplateAs($scope.templatetitle, $scope.fields);
       $scope.loadingTracker.addPromise(promise);
       promise.then(
        	function(response) {
        		$scope.alerts = response.data.alerts;
        		$scope.tid = response.data.tid;
-		$scope.saveGeo();
+		$scope.saveGeoTemplate();
        		$scope.form_disabled = false;
        	}
        	,function(response) {
@@ -829,7 +804,26 @@ $scope.saveTemplateAs = function () {
     	$scope.geoTabActivated = true;
     }
 
+    $scope.getBookmarks = function () {
+            var promise = BookmarkService.getBookmark();
+    	    $scope.loadingTracker.addPromise(promise);
+    	    promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+			BookmarkService.bookmarks = response.data.bookmarks;
+    		}
+    		,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   ); 
+    
+  } 
 
+  
 });
 
 var TemplateModalInstanceCtrl = function ($scope, $modalInstance, currenttitle) {

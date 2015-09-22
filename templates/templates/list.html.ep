@@ -26,7 +26,8 @@
 	  </thead>
 	  <tbody>
 	  <tr ng-repeat="template in templates| filter:filterinput | orderBy:'updated':true">
-	    <td><a href="/uwmetadata_template_editor/{{template._id}}" target="_blank">{{template.title}}</a></td>
+	    <td ng-if="template.uwmetadata"><a href="/uwmetadata_template_editor/{{template._id}}" target="_blank">{{template.title}}</a></td>
+	    <td ng-if="template.mods"><a href="/templates/mods/modseditor/{{template._id}}" target="_blank">{{template.title}}</a></td>
 	    <td >
 	         <span ng-repeat="metadata_type in template.metadata_types">{{metadata_type}}<span ng-if="$index !== template.metadata_types.length - 1">,<span> </span>
 	    </td>

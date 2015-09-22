@@ -8,6 +8,7 @@
    <link href="<%= url_for '/css/uwmetadataeditor.css' %>" rel="stylesheet">
   
     <script type="text/javascript">
+    alert();
             $(document).ready(function(){
                 
 				$('#resetEditor').click(function(){
@@ -42,7 +43,7 @@
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
     </script>
-
+aaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbccccccccccccccccccc
 	<div class="container uwmetadataeditor_full" role="main" data-ng-controller="UwmetadataeditorCtrl" data-ng-init="init('<%= $init_data %>')">
 
 		% if ($uwmetadataeditor_mode eq 'object') {

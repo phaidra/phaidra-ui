@@ -1,6 +1,11 @@
 <div bindonce class="container">
-	<span bo-if="mode == 'edit_uwmeta'">
-		<div class="class-panel" data-ng-repeat="tpath in selectBagClassificationNode().children" ng-if="tpath.xmlname == 'taxonpath' && tpath.children[0].ui_value != ''">
+	<nav ng-if="mode=='object'" id="control-panel" class="navbar navbar-default">
+		<div ng-if="init.owner == init.current_user.username" class="navbar-form">			             
+		          <button ng-disabled="form.$invalid || form_disabled" data-ng-click="saveObject()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Classification to {{pid}}</button>									   
+	        </div>	
+	</nav>
+	<span bo-if="edit_mode == 'edit_uwmeta'">
+		<div class="class-panel" data-ng-repeat="tpath in selectUwmetaClassificationNode().children" ng-if="tpath.xmlname == 'taxonpath' && tpath.children[0].ui_value != ''">
 			
 			<div class="class-panel-header" data-ng-repeat="elm in tpath.children" ng-if="elm.xmlname == 'source'">{{elm.value_labels.en}}</div>
 			<span class="pull-left">
@@ -18,7 +23,7 @@
 			<div class="clearfix"></div>
 		</div>
 	</span>
-	<span bo-if="mode == 'edit_mods'">
+	<span bo-if="edit_mode == 'edit_mods'">
 		<div class="class-panel" data-ng-repeat="item in mods_classes">
 			<div class="class-panel-header">{{item.classification.en}}</div>
 			<span class="pull-left">
@@ -30,7 +35,9 @@
 			<div class="clearfix"></div>
 		</div>
 	</span>
-	<span bo-if="mode == 'edit_uwmeta2'">
+	
+	<!--
+	<span bo-if="edit_mode == 'edit_uwmeta2'">
 		<div class="class-panel" data-ng-repeat="item in uwmeta_classes">
 			<div class="class-panel-header">{{item.classification.en}}</div>
 			<span class="pull-left">
@@ -42,9 +49,8 @@
 			<div class="clearfix"></div>
 		</div>
 	</span>
-	
-
-	<tabset>
+	-->			  
+	<tabset >
 
 		<tab>
 			<tab-heading>

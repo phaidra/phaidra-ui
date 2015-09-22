@@ -17,6 +17,7 @@ angular.module('frontendService', [])
 				url     : $('head base').attr('href')+'selection'
 			});	        
 		},
+	        //TODO move to masseedit service! 
 	        MEapllychanges: function(owner, items){
 			return $http({
 				method  : 'POST',
@@ -53,7 +54,7 @@ angular.module('frontendService', [])
 	        MEjobsDetailsRefreshAlerts: function(jobId){
 			return $http({
 				method  : 'POST',
-				url     : $('head base').attr('href')+'massedit/jobs/detail/refresh_alerts',
+				url     : $('head base').attr('href')+'massedit/jobs/details/refresh_alerts',
 				data    : { jobId: jobId}
 			});	        
 		},
@@ -87,20 +88,6 @@ angular.module('frontendService', [])
 	        getSort: function(){
 			return 'uw.general.title,SCORE';
 		},
-	 	getClassifications: function(){
-			return $http({
-				method  : 'GET',
-				url     : $('head base').attr('href')+'classifications'
-			});
-		},
-	 
-		toggleClassification: function(uri){
-			return $http({
-				method  : 'POST',
-				url     : $('head base').attr('href')+'classifications',
-				data    : { uri: uri }
-			});
-		},
 	        viewObject: function(pid, pidExtended){
 			return $http({
 				method  : 'POST',
@@ -108,6 +95,7 @@ angular.module('frontendService', [])
 				data  : { pidExtended: pidExtended }
 			});
 		},
+	        //?????
 	        viewObject2: function(pid, pidExtended){
 			return $http({
 				method  : 'GET',
@@ -115,5 +103,22 @@ angular.module('frontendService', [])
 				params  : { pidExtended: pidExtended }
 			});
 		},
+	        rightsGetUsers: function(query){
+		  	return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'get_users/',
+				params  : { query: query }
+			});
+		},
+	 	getFacultyIdFromDepatment: function(depatmentId){
+			console.log('abc', depatmentId);
+		        return $http({
+				method  : 'GET',
+				url     : $('head base').attr('href')+'get_faculty_id_from_department',
+				params  : { id: depatmentId }
+			});
+		},
+		
+		
 	}
 });

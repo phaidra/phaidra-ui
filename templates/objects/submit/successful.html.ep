@@ -1,0 +1,14 @@
+ % layout 'default', title => 'Submit';
+
+% content_for header => begin
+   
+   <script type="text/javascript" src="<%= url_for '/js/controllers/submit.js' %>"></script>
+        
+% end
+
+%= include 'alerts'
+
+<div class="container" data-ng-controller="SubmitCtrl"  data-ng-init="init_successful('<%= $init_data %>')">
+     <h1 ng-click="diplay_init()">Object was successfully submited. His id is  {{successful.pid}} .<h1>
+     <button class="btn btn-success" ng-click="addNewObject()" >Add new object</button>
+</div>     

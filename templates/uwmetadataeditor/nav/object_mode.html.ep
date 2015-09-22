@@ -10,17 +10,21 @@
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			     
+	                      <p ng-if="edit_mode=='edit_uwmeta'" class="navbar-text template-title">{{pid}} - UWMetadata</p>
+			      <p ng-if="edit_mode=='edit_mods'"  class="navbar-text template-title">{{pid}} - Mods</p>
 			
-			      <div class="navbar-form input-group load-pid navbar-left">
+			      <div class="navbar-form input-group navbar-right">
 			        <button ng-disabled="form.$invalid || form_disabled" data-ng-click="saveTemplateAs()" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-file"></span> Create template</button>
 			      </div>			      
-			      
+			      <!--
 			      <% if($init_data_perl->{current_user}->{username} eq $init_data_perl->{owner}){ %>
 			      <div class="navbar-form navbar-right">			             
-					<button ng-disabled="form.$invalid || form_disabled" data-ng-click="save()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save to {{pid}}</button>									   
+					<button ng-disabled="form.$invalid || form_disabled" data-ng-click="saveObject()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save to {{pid}}</button>									   
 				  </div>				  
-				  <% } %>
+			      <% } %>
+			      -->
 			      
-	    	</div>
+	    	       </div>
 		
-		</nav>		
+</nav>		

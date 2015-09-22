@@ -304,3 +304,39 @@ margin-top: 5px;
 .edit-attrs-modal-100{
   width: 100% !important;
 }
+
+.star-class {
+    color: #aaa;
+}
+.star-class-fav {
+    color: #b40014;
+}
+.rights-validity{
+  margin-left: -17px;
+}
+.full-max-width{
+  max-width: 100% !important;
+  width: 100%;
+}
+.rights-add-button{
+  margin: 5px;
+}
+.rights-min-height-70{
+  min-height: 70px; 
+}
+
+.rights-users{
+  padding: 1px;
+}
+
+.rights-user-label{
+  width: 220px;
+}
+.rights-smal{
+  font-size: 10px;
+}
+
+.sumbit-title{
+  width:400px;
+}
+

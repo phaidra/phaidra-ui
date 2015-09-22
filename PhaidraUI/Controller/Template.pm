@@ -96,7 +96,7 @@ sub load {
 sub reset_hide_rec {
 	my $self = shift;
 	my $children = shift;
-  $self->app->log->info("reset_hide_rec:".$self->app->dumper($children));
+  #$self->app->log->info("reset_hide_rec:".$self->app->dumper($children));
 	foreach my $n (@{$children}){
 		if($n->{hide}){
 			$n->{hide} = 0;
@@ -240,13 +240,16 @@ sub create {
 
 
 sub templates {
-    my $self = shift;  	 
+        
+        my $self = shift;  	 
 
 	my $init_data = { current_user => $self->current_user };
-    $self->stash(init_data => encode_json($init_data));
+        $self->stash(init_data => encode_json($init_data));
       
 	$self->render('templates/list');
 }
+
+
 
 #sub my {
 sub get_all {

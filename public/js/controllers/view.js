@@ -1,12 +1,15 @@
 app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, BookmarkService, SearchService, promiseTracker) {
   
+   $scope.$parent.disableBookmark = false;
    $scope.bookmark_name = '';
    
    $scope.BookmarkService = BookmarkService;
    
-   
+   console.log('currentBookmarkId789',BookmarkService.currentBookmarkId);
    if(typeof BookmarkService.currentBookmarkId != 'undefined'){
-         $scope.init_data.currentBookmarkId = BookmarkService.currentBookmarkId;
+         if(BookmarkService.currentBookmarkId != ''){
+                  $scope.init_data.currentBookmarkId = BookmarkService.currentBookmarkId;
+	 }
    }
    
    var fields = {};
@@ -23,13 +26,16 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
 
           //TODO  implement it over api when api ready (dublincore)
 	  var dcJson = ' {"dc":{"author":{"ui_value": "Pichler, P. (Philipp)"},"contributor": {"ui_value": " Pichler, P. (Philipp)"},"contributor": {"ui_value": "Pichler, P. (Philipp)"},"title": {"ui_value": " Öşk, Öşk-Kloster","lang": "deu"},"type": {"ui_value": "Image"},"format": {"ui_value":  " image/tiff"}} }';
-          $scope.dublinCore = angular.fromJson(dcJson);
+         
+	  
+	  ////$scope.dublinCore = angular.fromJson(dcJson);
           console.log('dublinCore: ', $scope.dublinCore);
 	  console.log('initdata0: ', initdata);
 	  var init_data = angular.fromJson(initdata);
 	  $scope.init_data = init_data;
 	  console.log('init_data2: ',init_data);
 	  $scope.pid = init_data.pid;
+	  $scope.getDublinCore($scope.pid);
 	  $scope.current_user = init_data.current_user.username;
 	  //$scope.init_data.username = $scope.init_data.current_user.username;
 	  //console.log('currentBookmarkId', $scope.init_data.currentBookmarkId);
@@ -44,7 +50,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
 	        console.log('1:');
 	        if(typeof init_data.query === 'undefined' || init_data.query == null){
                       console.log('1a:');
-		     $scope.getPreviousObjNoQuery(init_data.current_user.username, init_data.from, init_data.limit, $scope.sort, init_data.reverse, init_data.query);
+		      $scope.getPreviousObjNoQuery(init_data.current_user.username, init_data.from, init_data.limit, $scope.sort, init_data.reverse, init_data.query);
                       $scope.getNextObjNoQuery(init_data.current_user.username, init_data.from, init_data.limit, $scope.sort, init_data.reverse, init_data.query);
 	        }else{
 		       console.log('1b:');
@@ -71,7 +77,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
 	  }
 	 
 	  
- }
+  }
    
   $scope.getBookmarks = function () {
             var promise = BookmarkService.getBookmark();
@@ -80,6 +86,27 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
     		function(response) {
     			$scope.alerts = response.data.alerts;
 			BookmarkService.bookmarks = response.data.bookmarks;
+    		}
+    		,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   ); 
+    
+  } 
+   
+   
+  $scope.getDublinCore = function (pid) {
+            var promise = MetadataService.getDublincore(pid);
+    	    $scope.loadingTracker.addPromise(promise);
+    	    promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+			$scope.dublinCore = response.data.metadata;
+			console.log('dublincore', response.data.metadata);
     		}
     		,function(response) {
            		$scope.alerts = response.data.alerts;
@@ -462,7 +489,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
 	  }
   }
    
-  
+  /*
    $scope.createBookmark = function(){
            
           var modalInstance = $modal.open({
@@ -485,12 +512,12 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
    }
    
   $scope.addToCurrentBookmark = function(){
-     
+       console.log('currentBookmarkId345:',BookmarkService.currentBookmarkId);
        if(typeof BookmarkService.currentBookmarkId == 'undefined' ){
 	      var modalInstance = $modal.open({
                    templateUrl: $('head base').attr('href')+'views/modals/popup_alert.html',
                    controller: AddToCurrentBookmarkCtrl,
-		  resolve: {
+		   resolve: {
                             text: function(){
                                        return 'Plese select bookmark first?';
                                            },
@@ -515,13 +542,12 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
     	   );
        }
   }
-   
-   
+
   $scope.editBookmark = function(){
      
      window.location = $('head base').attr('href')+'bookmark/edit';
   }
-   
+  */
    
   //TODO implement it over api when api ready (currently reading mods classification from bag mongodb collection and adding mods here directly as text)
   $scope.loadMods = function(pid){
@@ -530,7 +556,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
          
          
            if(typeof $scope.mods == 'undefined'){
-		 var promise = MetadataService.get_mods(pid);
+		 var promise = MetadataService.getModsFromObject(pid);
                  $scope.loadingTracker.addPromise(promise);
                  promise.then(
     		        function(response) {
@@ -543,7 +569,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
 			              }
 			       }    
 			       //temporary
-			       console.log('get_mods33: ',response.data);
+			       console.log('getModsFromObject33: ',response.data);
 			   
     			       $scope.mods = angular.fromJson($scope.mods);
 			}
@@ -558,7 +584,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
    
    $scope.loadUwmeta = function(pid){
        if(typeof $scope.uwmetadata == 'undefined'){
-    	    
+    	    console.log('loadUwmeta pid',pid);
 	    var promise = MetadataService.getUwmetadataFromObject(pid);
     	    $scope.loadingTracker.addPromise(promise);
     	    promise.then(
@@ -583,7 +609,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
 	}
     };
     
-    
+     
     $scope.getValueURIMods = function(){
         
          var classes = [];
@@ -632,7 +658,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
     $scope.getClass = function(valueURIs, ClassType){
 
 	    valueURIs = angular.toJson(valueURIs);
-            var promise = MetadataService.getClassifications(valueURIs);
+            var promise = MetadataService.getClassificationsFromUris(valueURIs);
     	    $scope.loadingTracker.addPromise(promise);
     	    promise.then(
     		function(response) {
@@ -689,6 +715,10 @@ var METemplateSaveAsModalCtrl = function ($scope, $rootScope, $modalInstance, Fr
   
 }
 */
+
+
+/*
+
 var CreateBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService ) {
    
      $scope.bookmark_name = '';
@@ -732,33 +762,33 @@ var CreateBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService 
 
 var AddToBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService, pid) {
       
-  $scope.disabled = undefined;
-  $scope.enable = function() {
-    $scope.disabled = false;
-  };
-  $scope.disable = function() {
-    $scope.disabled = true;
-  };
-  $scope.clear = function() {
-    $scope.bookmark.selected = undefined;
-  };
+     $scope.disabled = undefined;
+     $scope.enable = function() {
+          $scope.disabled = false;
+     };
+     $scope.disable = function() {
+          $scope.disabled = true;
+     };
+     $scope.clear = function() {
+         $scope.bookmark.selected = undefined;
+     };
   
-  $scope.bookmarks = BookmarkService.bookmarks;
+     $scope.bookmarks = BookmarkService.bookmarks;
   
-  $scope.compareRecordsBookmarkName = function(a,b) {
-         
-       var valueA = a.bookmarkname; 
-       var valueB = b.bookmarkname;
-       if (valueA < valueB)  return -1;
-       if (valueA > valueB)  return 1;
-       return 0;
-    };
+     $scope.compareRecordsBookmarkName = function(a,b) {
+           var valueA = a.bookmarkname; 
+           var valueB = b.bookmarkname;
+           if (valueA < valueB)  return -1;
+           if (valueA > valueB)  return 1;
+           return 0;
+     };
 
-  $scope.bookmarks.sort($scope.compareRecordsBookmarkName);
+     $scope.bookmarks.sort($scope.compareRecordsBookmarkName);
 
-  $scope.addToBookmark = function () {
-
-            var pidJson = angular.toJson(pid);
+     $scope.addToBookmark = function () {
+            BookmarkService.currentBookmarkId = $scope.bookmarks.selected.id;
+            console.log('bookmarkId111:',$scope.bookmarks.selected.id);
+	    var pidJson = angular.toJson(pid);
             var currentBookmarkIdJson = angular.toJson($scope.bookmarks.selected.id);
             var promise = BookmarkService.addToBookmark(pidJson, currentBookmarkIdJson);
             $scope.loadingTracker.addPromise(promise);
@@ -774,22 +804,23 @@ var AddToBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService, 
 			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
            	}
     	   );
-	    
-   }
-   $scope.OK = function () {
-          $scope.addToBookmark();
-	  $modalInstance.dismiss('OK');
-   };
-   $scope.cancel = function () {
-         $modalInstance.dismiss('cancel');
-   };
+       }
    
-   $scope.hitEnter = function(evt){
+       $scope.OK = function () {
+            $scope.addToBookmark();
+	    $modalInstance.dismiss('OK');
+       };
+   
+       $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+       };
+   
+       $scope.hitEnter = function(evt){
     	   if(angular.equals(evt.keyCode,13)){
 	          $scope.addToBookmark();
                   $modalInstance.dismiss('OK');
 	   }
-   };
+       };
   
 }
 
@@ -801,4 +832,5 @@ var AddToCurrentBookmarkCtrl = function ($scope, $modalInstance, text ) {
 	  $modalInstance.dismiss('OK');
    };
 
-  } 
+} 
+*/

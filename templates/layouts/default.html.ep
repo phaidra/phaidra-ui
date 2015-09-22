@@ -55,9 +55,11 @@
     
     <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">-->
   	<!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>-->  	  	
+  	
+  	
   	<script src="<%= url_for '/js/bootstrap.min.js' %>"></script>
   	<link href="<%= url_for '/css/bootstrap.min.css' %>" rel="stylesheet">
-  	
+
   	
   	<!-- Bootstrap datepicker -->
   	<!--<link href="<%= url_for '/css/bootstrap-datepicker.css' %>" rel="stylesheet">-->
@@ -154,20 +156,36 @@
       </div>
       
       <% if (is_user_authenticated) { %>
+      
+      <a href="" id="Submit" class="Massedit-link" ng-click="gotoSubmit()">Submit</a>
+      <a href="" id="Objects" class="Massedit-link" ng-click="gotoObjects()">Objects</a>
+      <a href="" id="Templates" class="Massedit-link" ng-click="gotoTemplates()">Templates</a>
+      
       <ul class="nav navbar-nav">
-        
-        <li class="dropdown">
-          <a href="" class="dropdown-toggle" data-toggle="dropdown">My <b class="caret"></b></a>
+         <li class="dropdown">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown">Bookmarks<b class="caret"></b></a>
           <ul class="dropdown-menu">            
-            <li><a href="/templates/">Templates</a></li>            
-            <li><a href="/search/">Objects</a></li>
-            <li class="disabled"><a href="/settings/">Settings</a></li>
+                <li><a href="" ng-click="createBookmark()" >Create Bookmark</a></li>
+                <li><a href="" ng-click="editBookmark()" >Edit Bookmark</a></li>
+                <li><a ng-if="!disableBookmark" href="" ng-click="addToBookmark()" >Add to Bookmark</a></li>
+                <li><a ng-if="!disableBookmark" href="" ng-click="addToCurrentBookmark()" >Add to current Bookmark</a></li>            
           </ul>
         </li>
-                
       </ul>
-      <a href="" id="Massedit" class="Massedit-link" ng-click="gotoMassedit()">Massedit</a> 
-      <a href="" id="MasseditJobs" class="Massedit-link" ng-click="gotoJobsList()">Massedit Jobs</a> 
+      
+      <ul class="nav navbar-nav">
+         <li class="dropdown">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown">Massedit<b class="caret"></b></a>
+          <ul class="dropdown-menu">            
+               <li><a href="" ng-click="gotoMassedit()" >Create</a></li>            
+               <li><a href="" ng-click="gotoJobsList()" >Jobs</a></li>
+          </ul>
+        </li>
+      </ul>
+      
+      <a href="/settings/" class="Massedit-link">Settings</a>
+  
+     
 
       <% } %>
       

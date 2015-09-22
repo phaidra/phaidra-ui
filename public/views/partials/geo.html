@@ -1,4 +1,13 @@
 
+	<center>
+		<alert ng-repeat="alert in alerts track by $index" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+
+	</center>
+	
+	
+	
+	
+	
 	<nav id="control-panel" class="navbar navbar-default">
 		<div class="navbar-header">
 		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -11,14 +20,17 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-		  <div class="navbar-form navbar-left">
+		  <div class="navbar-form ">
 		    <button ng-disabled="form_disabled" data-ng-click="addPoint()" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-plus"></span> Add point</button>
 		    <button ng-disabled="form_disabled" data-ng-click="addBoundingbox()" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-plus"></span> Add bounding box</button>
+		    <button ng-if="mode=='object'" ng-disabled="form_disabled" data-ng-click="saveGeoObject()" class="btn navbar-right btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Geo to {{pid}}</button>
+		     <!--<button ng-if="mode=='object'" ng-disabled="form.$invalid || form_disabled" data-ng-click="saveGeoObject()" class="btn navbar-right btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Geo to {{pid}}</button>-->
 		    <!--<button ng-disabled="form.$invalid || form_disabled" data-ng-click="refreshMaps()" class="btn btn-primary navbar-btn">Refresh maps</button>-->
 		  </div>
 
 
 	   	</div>
+
 	</nav>
 
 	<div class="panel panel-default" ng-repeat="placemark in placemarks" >

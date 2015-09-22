@@ -8,31 +8,35 @@ use Mojolicious::Plugin::I18N;
 use Mojolicious::Plugin::Authentication;
 use Mojolicious::Plugin::Session;
 use Mojo::Loader;
+use Mojo::Loader qw(load_class);
 use lib "lib/phaidra_directory";
 use lib "lib/phaidra_binding";
 use PhaidraUI::Model::Session::Store::Mongo;
+
+#use Mango; #mf
+#use Class::Load ':all'; #mf
+#use DBI; #mf
+#use CHI; #mf
 
 # This method will run once at server start
 sub startup {
     my $self = shift;
     
-     # for download in csv; massedit
-     $self->types->type(dwn => 'application/x-download; charset=utf-8');
+    # for download in csv; massedit
+    $self->types->type(dwn => 'application/x-download; charset=utf-8');
 
-       
-       
     my $config = $self->plugin( 'JSONConfig' => { file => 'PhaidraUI.json' } );
-	$self->config($config);  
-	$self->mode($config->{mode});     
+    $self->config($config);  
+    $self->mode($config->{mode});     
     $self->secrets([$config->{secret}]);
-    
-    # init log	
-  	$self->log(Mojo::Log->new(path => $config->{log_path}, level => $config->{log_level}));
 
-	my $directory_impl = $config->{directory_class};
-	my $e = Mojo::Loader->new->load($directory_impl);    
+    # init log	
+    $self->log(Mojo::Log->new(path => $config->{log_path}, level => $config->{log_level}));
+
+    my $directory_impl = $config->{directory_class};
+    my $e = load_class $directory_impl;
     my $directory = $directory_impl->new($self, $config);
- 
+        
     $self->helper( directory => sub { return $directory; } );
     
     # init auth
@@ -204,8 +208,10 @@ sub startup {
   
   
   
-    $r->route('proxy/get_mods_tree')                    ->via('get')    ->to('proxy#get_mods_tree');
+    $r->route('proxy/get_mods_tree')                     ->via('get')    ->to('proxy#get_mods_tree');
   
+    $r->route('get_licenses')                            ->via('get')    ->to('proxy#get_licenses');
+    
     $r->route('proxy/get_uwmetadata_tree')               ->via('get')    ->to('proxy#get_uwmetadata_tree');
     $r->route('proxy/get_uwmetadata_languages')          ->via('get')    ->to('proxy#get_uwmetadata_languages');
     $r->route('proxy/get_help_tooltip')                  ->via('get')    ->to('proxy#get_help_tooltip');
@@ -217,14 +223,14 @@ sub startup {
     $r->route('proxy/search')                            ->via('get')    ->to('proxy#search');
     $r->route('proxy/object/:pid/related')               ->via('get')    ->to('proxy#get_related_objects');
 
-    $r->route('proxy/terms/children')                    ->via('get')     ->to('proxy#get_terms_children');
-    $r->route('proxy/terms/taxonpath')                   ->via('get')     ->to('proxy#get_taxonpath');
-    $r->route('proxy/terms/search')                      ->via('get')     ->to('proxy#get_search');
+    $r->route('proxy/terms/children')                    ->via('get')    ->to('proxy#get_terms_children');
+    $r->route('proxy/terms/taxonpath')                   ->via('get')    ->to('proxy#get_taxonpath');
+    $r->route('proxy/terms/search')                      ->via('get')    ->to('proxy#get_search');
     
     #$r->route('object/:pid/mods')                        ->via('get')     ->to('mods#get');
     
     # if not authenticated, users will be redirected to login page
-    my $auth = $r->bridge->to('authentication#check');
+    my $auth = $r->under('/')->to('authentication#check');
 
     $auth->route('selection')                            ->via('post')   ->to('frontend#post_selection');
     $auth->route('selection')                            ->via('get')    ->to('frontend#get_selection');
@@ -239,17 +245,16 @@ sub startup {
     $auth->route('massedit/template/delete')             ->via('delete') ->to('massedit#template_delete');
     $auth->route('massedit/jobs')                        ->via('get')    ->to('massedit#jobs');
     $auth->route('massedit/jobs/details/:jobid')         ->via('get')    ->to('massedit#jobs_details');
+    $auth->route('massedit/jobs/details/refresh_alerts') ->via('post')   ->to('massedit#jobs_details_refresh_alerts');
     $auth->route('massedit/jobs/action')                 ->via('post')   ->to('massedit#jobs_action');
     $auth->route('massedit/jobs/delete')                 ->via('delete') ->to('massedit#jobs_delete');
     $auth->route('massedit/jobs/delete_all')             ->via('delete') ->to('massedit#jobs_delete_all');
     $auth->route('massedit/jobs/refresh_action_button')  ->via('get')    ->to('massedit#jobs_refresh_action_button');
-    $auth->route('massedit/jobs/detail/refresh_alerts')  ->via('post')   ->to('massedit#jobs_details_refresh_alerts');
+   
 
-    $auth->route('view/classifications/get')              ->via('post')   ->to('object#get_classifications');
+    
     $auth->route('view/:pid')                            ->via('post')   ->to('object#view');
     $auth->route('view/:pid')                            ->via('get')    ->to('object#view');
-    
-    $auth->route('proxy/get_object_mods_test/:pid')      ->via('get')    ->to('proxy#get_object_mods_test');
 
     $auth->route('bookmark/create')                      ->via('get')    ->to('bookmark#create');
     $auth->route('bookmark/get')                         ->via('get')    ->to('bookmark#get');
@@ -268,41 +273,59 @@ sub startup {
     $auth->route('uwmetadata_template_editor')           ->via('get')    ->to('object#uwmetadata_template_editor');
     $auth->route('uwmetadata_template_editor/:tid')      ->via('get')    ->to('object#uwmetadata_template_editor'); 
     
-    $auth->route('/templates/mods/modseditor')           ->via('get')    ->to('object#mods_template_editor');
-    $auth->route('/templates/mods/modseditor/:tid')      ->via('get')    ->to('object#mods_template_editor');
+    $auth->route('templates/mods/modseditor')           ->via('get')    ->to('object#mods_template_editor');
+    $auth->route('templates/mods/modseditor/:tid')      ->via('get')    ->to('object#mods_template_editor');
     
-    $auth->route('object/:pid/mods')                     ->via('get')    ->to('proxy#get_object_mods');
+
+    $auth->route('object/:pid/mods')                     ->via('get')    ->to('object#get_object_mods');
+    $auth->route('object/:pid/mods')                     ->via('post')   ->to('object#save_object_mods');
+    $auth->route('object/:pid/uwmetadata')               ->via('get')    ->to('object#get_object_uwmetadata');   
+    $auth->route('object/:pid/uwmetadata')               ->via('post')   ->to('object#save_object_uwmetadata');       
     
     
     $auth->route('proxy/get_object_tripl')               ->via('get')    ->to('proxy#get_object_tripl');
-
-    $auth->route('proxy/get_object_uwmetadata/:pid')     ->via('get')    ->to('proxy#get_object_uwmetadata');
-    $auth->route('proxy/save_object_uwmetadata/:pid')    ->via('post')   ->to('proxy#save_object_uwmetadata');    
+    
     $auth->route('proxy/collection/create')              ->via('post')   ->to('proxy#collection_create');
     $auth->route('proxy/collection/:pid/members/order')  ->via('post')   ->to('proxy#collection_order');
     $auth->route('proxy/collection/:pid/members/:itempid/order/:position') ->via('post')   ->to('proxy#collection_member_order');
     $auth->route('proxy/collection/:pid/members/:itempid/order/')          ->via('post')   ->to('proxy#collection_member_order');
   
+    $auth->route('collection/:pid')                      ->via('get')    ->to('collection#view');
     
+    $auth->route('templates')                            ->via('get')    ->to('template#templates');
+    
+    $auth->route('submit')                               ->via('get')    ->to('object#submit');
+    $auth->route('submit/new/:object_type')              ->via('get')    ->to('object#submit_new_object');
+    $auth->route('submit/create')                        ->via('post')   ->to('object#submit_create_object');
     
   
-    $auth->route('template')                             ->via('put')    ->to('template#create');
+    $auth->route('template/create')                      ->via('put')    ->to('template#create');
+    $auth->route('template/get/all')                     ->via('get')    ->to('template#get_all'); 
     $auth->route('template/:tid')                        ->via('post')   ->to('template#save');    
     $auth->route('template/:tid')                        ->via('get')    ->to('template#load');
     $auth->route('template/:tid')                        ->via('delete') ->to('template#delete');    
+    
+    #$auth->route('template/:tid/geo')                    ->via('get')    ->to('template#get_geo');
+    #$auth->route('template/:tid/geo')                    ->via('post')   ->to('template#post_geo');
+    
 
-    $auth->route('templates')                            ->via('get')    ->to('template#templates');
-    $auth->route('templates/get_all')                    ->via('get')    ->to('template#get_all');
+    
+    $auth->route('classification/get_user_classif')      ->via('get')    ->to('classification#get_user_classif');
+    $auth->route('classification/toggle_classif')        ->via('post')   ->to('classification#toggle_classif');
+    $auth->route('classification/mods')                  ->via('post')   ->to('classification#get_mods_classif');
+    $auth->route('classification/get_classif_from_uris') ->via('post')   ->to('classification#get_classif_from_uris');
+    
+    $auth->route('object/:pid/geo')                      ->via('get')    ->to('object#get_geo');
+    $auth->route('object/:pid/geo')                      ->via('post')   ->to('object#post_geo');
+    
+    $auth->route('object/:pid/rights')                    ->via('get')    ->to('object#get_rights');
+    $auth->route('object/:pid/rights')                    ->via('post')   ->to('object#post_rights');
+    
+    $auth->route('dublincore/:pid')                       ->via('get')    ->to('object#get_dublincore');
+    
+    $auth->route('get_users')                             ->via('get')    ->to('frontend#get_users');
+    $auth->route('get_faculty_id_from_department')        ->via('get')    ->to('frontend#get_faculty_id_from_department');
 
-    $auth->route('collection/:pid')                      ->via('get')    ->to('collection#view');
-    
-    $auth->route('classifications') ->via('post') ->to('frontend#toggle_classification');
-    #$auth->route('classifications') ->via('get') ->to('frontend#get_classifications');
-    
-    $auth->route('mods/classifications')                ->via('post') ->to('frontend#get_mods_classifications');
-    
-    $auth->route('object/:pid/geo')                     ->via('get')    ->to('object#get_geo');
-    $auth->route('object/:pid/geo')                     ->via('post')   ->to('object#post_geo');
 
     return $self;
 }

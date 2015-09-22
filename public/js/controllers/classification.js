@@ -12,17 +12,20 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	$scope.init = function (initdata) {
 	//$scope.init = function (initdata, mode) {
 		//$scope.mode = mode;
-		$scope.mode = $scope.$parent.edit_mode;
+		//$scope.mode = $scope.$parent.edit_mode;
+		$scope.edit_mode = $scope.$parent.edit_mode; //edit_mods/edit_uwmeta
+		$scope.mode = $scope.$parent.mode;  //template/object
 		console.log('parent.mode',$scope.$parent.edit_mode);
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
 		$scope.getClassifications();
-		//$scope.getMyClassifications();  project.settings and user.classifications in mongoDb, delete it?
-		if($scope.mode == 'edit_mods'){
+		$scope.getMyClassifications();  //project.settings in mongoDb, delete it?
+		if($scope.edit_mode == 'edit_mods'){
+		//if($scope.mode == 'edit_mods'){
 		    $timeout( function(){ $scope.getModsClassifications(); }, 1000); // $scope.$parent.fields is otherwise empty on intialization
 		    console.log('edit_modsxxxxxxxxxxxx');
 		}
-		console.log('selectBagClassificationNode:',$scope.selectBagClassificationNode());
+		console.log('classificationInit:',$scope.initdata);
 		
     };
     
@@ -106,7 +109,7 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	     promise.then(
 	      	function(response) {
 	      		$scope.alerts = response.data.alerts;
-						$scope.class_roots_all = [];
+			$scope.class_roots_all = [];
 	      		// filter and order
 	      		$scope.class_roots = [];
 	      		for (var i = 0; i < response.data.terms.length; ++i) {
@@ -125,13 +128,15 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 
 							$scope.class_roots_all.push(term);
 	      		}
-                        console.log('class_roots:',$scope.class_roots);
-			console.log('class_roots_all:',$scope.class_roots_all);
+                        //console.log('class_roots:',$scope.class_roots);
+			//console.log('class_roots_all:',$scope.class_roots_all);
 	      		$scope.form_disabled = false;
 	      	}
 	      	,function(response) {
 	      		$scope.alerts = response.data.alerts;
-	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+	      		if(typeof $scope.alerts !== 'undefined'){
+			    $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+			}
 	      		$scope.form_disabled = false;
 	      	}
 	     );
@@ -206,7 +211,8 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 
 	 $scope.removeClassFromObject = function(index){
 		 
-		 if($scope.mode == 'edit_mods'){
+		 if($scope.edit_mode == 'edit_mods'){
+		 //if($scope.mode == 'edit_mods'){
 		         console.log('removeClassFromObject mods');
 			 var uri = $scope.mods_classes[index].uri;
 			 var node2remove_idx = -1;
@@ -233,15 +239,18 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 			 if(node2remove_idx >= 0){
 				 $scope.$parent.fields.splice(node2remove_idx, 1);
 			 }
+			 
 			 $scope.save(); //todo !
-			 if($scope.mode == 'edit_mods'){
+			 
+			 //if($scope.edid_mode == 'edit_mods'){
 			          $scope.getModsClassifications(); 
-			 }
+			 //}
 			 return
 		 }
 		 
-		 if($scope.mode == 'edit_uwmeta '){
-			 $scope.selectBagClassificationNode().children.splice(index,1);
+		 if($scope.edit_mode == 'edit_uwmeta '){
+		 //if($scope.mode == 'edit_uwmeta '){
+		         $scope.selectUwmetaClassificationNode().children.splice(index,1);
 			 $scope.save();
 		 }
 	 };
@@ -249,7 +258,9 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	 $scope.save = function(){
 		 ////$scope.$parent.save();
 		 // make a differance between saving of objects and templates
-		 
+	         // no needed for templates because saving of the templates will be on one button for whole template
+		   
+	   
 		 //$scope.$parent.saveTemplate();
 	 };
 
@@ -265,7 +276,7 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		 }
 
 		 $scope.form_disabled = true;
-	     var promise = FrontendService.toggleClassification(uri);
+	     var promise = MetadataService.toggleClassification(uri);
 	     $scope.loadingTracker.addPromise(promise);
 	     promise.then(
 	      	function(response) {
@@ -298,7 +309,8 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 
         $scope.addClassToObject = function(classif){
 	       $scope.addClassToObjectFromTaxon($scope.lastSelectedTaxons[classif.uri].uri);
-	       if($scope.mode == 'edit_mods'){
+	       if($scope.edit_mode == 'edit_mods'){
+	       //if($scope.mode == 'edit_mods'){
 	              $scope.getModsClassifications();
 	       }
 	       console.log('mods_classes: ',$scope.mods_classes);
@@ -306,9 +318,10 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	}
 	 	 
 	 $scope.addClassToObjectFromTaxon = function(uri){
-		 console.log('mode22',$scope.mode);
-		 if($scope.mode == 'edit_mods'){
-			 console.log('mode',$scope.mode);
+		 console.log('edit_mode22',$scope.edit_mode);
+		 if($scope.edit_mode == 'edit_mods'){
+		 //if($scope.mode == 'edit_mods'){
+			 console.log('edit_mode',$scope.edit_mode);
 		         var idx = $scope.selectLastModsClassNodeIdx();
 			 		 
 			 var newnode = {
@@ -377,17 +390,18 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 			 
 			 //$scope.save(); //TODO
 			
-			 if($scope.mode == 'edit_mods'){
+			 if($scope.edit_mode == 'edit_mods'){
+			 //if($scope.mode == 'edit_mods'){
 			         $scope.getModsClassifications();
 			 }
 			 console.log(' parent.fields:', $scope.$parent.fields);
 			 return;
 		 }
 		 
-		 
-		 if($scope.mode == 'edit_uwmeta'){
+		 if($scope.edit_mode == 'edit_uwmeta'){
+		 //if($scope.mode == 'edit_uwmeta'){
 		     
-		     console.log('mode22',$scope.mode);
+		     console.log('edit_mode22',$scope.edit_mode);
 		     $scope.form_disabled = true;
 		     var promise = VocabularyService.getTaxonPath(uri);
 		     $scope.loadingTracker.addPromise(promise);
@@ -442,7 +456,7 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 						 taxonpath.children.push(t);
 		      		}
 	
-		      		var ch = $scope.selectBagClassificationNode().children;
+		      		var ch = $scope.selectUwmetaClassificationNode().children;
 					// -2 because the last two are not taxonpaths but description and keywords
 					ch.splice(ch.length-2,0,taxonpath);
 					$scope.save(); //TODO
@@ -468,17 +482,21 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	 }
 
 	 $scope.getMyClassifications = function() {
+	     //console.log('getMyClassifications');
 	     $scope.form_disabled = true;
-	     var promise = FrontendService.getClassifications();
+	     var promise = MetadataService.getClassifications();
 	     $scope.loadingTracker.addPromise(promise);
 	     promise.then(
 	      	function(response) {
 	      		$scope.alerts = response.data.alerts;
-	      		$scope.myclasses = response.data.classifications;
+	      		console.log('getMyClassifications',response.data);
+			$scope.myclasses = response.data.classifications;
+			//console.log('myclasses',$scope.myclasses);
 	      		$scope.form_disabled = false;
 	      	}
 	      	,function(response) {
-	      		$scope.alerts = response.data.alerts;
+	      	 	console.log('getMyClassifications errors:',response.data.alerts);
+		        $scope.alerts = response.data.alerts;
 	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
 	      		$scope.form_disabled = false;
 	      	}
@@ -536,16 +554,16 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	     );
 	 };
 
-
-	 $scope.selectBagClassificationNode = function() {
-		//console.log('selectBagClassificationNode', $scope.$parent.fields[6]); 
+        
+	 $scope.selectUwmetaClassificationNode = function() {
+		//console.log('selectUwmetaClassificationNode', $scope.$parent); 
 	        return $scope.$parent.fields[6];
 	 }
 
 	 $scope.isMyClass = function(uri) {
 		 for (var i = 0; i < $scope.myclasses.length; ++i) {
-			 if($scope.myclasses[i].uri == uri){
-				 return true;
+		         if($scope.myclasses[i].uri == uri){
+			        return true;
 			 }
 		 }
 		 return false;

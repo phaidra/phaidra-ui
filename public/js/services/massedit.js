@@ -6,14 +6,14 @@ myMassEditService.factory('Massedit', function( $rootScope, MetadataService,Fron
                                        this.getTitles = function (Massedit, newPid) {
                                                            for( var i = 0 ; i < Massedit.datastructuredisplay.length ; i++ ){
                                                                  if(typeof newPid !== 'undefined'){ 
-                                                                              // get title only for new pid
-								                if(Massedit.datastructuredisplay[i].PID == newPid){
-                                                                              //var loadingTracker = promiseTracker('loadingTrackerFrontend');
-									        //var loadingTracker = promiseTracker(); 
-                                                                              var loadingTracker = $rootScope.loadingTracker; 
-										var promise = MetadataService.get_object_tripl(newPid, 1);
-                                                                              loadingTracker.addPromise(promise); 
-                                                                              promise.then(
+                                                                             // get title only for new pid
+								             if(Massedit.datastructuredisplay[i].PID == newPid){
+                                                                             //var loadingTracker = promiseTracker('loadingTrackerFrontend');
+									     //var loadingTracker = promiseTracker(); 
+                                                                             var loadingTracker = $rootScope.loadingTracker; 
+								             var promise = MetadataService.get_object_tripl(newPid, 1);
+                                                                             loadingTracker.addPromise(promise); 
+                                                                             promise.then(
                                                                                      function(response) { 
                                                                                               Massedit.alerts = response.data.alerts;
                                                                                               self.updatePidTripl(Massedit, response.data);
@@ -30,11 +30,11 @@ myMassEditService.factory('Massedit', function( $rootScope, MetadataService,Fron
                                                                   }else{
                                                                         //var loadingTracker = promiseTracker('loadingTrackerFrontend');
                                                                         //var loadingTracker = promiseTracker();
-									  // get title for all pids
-									  var loadingTracker = $rootScope.loadingTracker;
+									// get title for all pids
+									var loadingTracker = $rootScope.loadingTracker;
                                                                         var promise = MetadataService.get_object_tripl(Massedit.datastructuredisplay[i].PID, 1);
                                                                         loadingTracker.addPromise(promise); 
-							                 promise.then(
+							                promise.then(
                                                                                      function(response) { 
                                                                                               Massedit.alerts = response.data.alerts;
                                                                                               self.updatePidTripl(Massedit, response.data);

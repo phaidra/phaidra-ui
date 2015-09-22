@@ -48,7 +48,8 @@ angular.module('bookmarkService', ['ajoslin.promise-tracker'])
 				data    : { bookmarkId: bookmarkId },
 			});
 		},
-	        currentBookmark: "",
+	        //currentBookmark: "",
+	        currentBookmarkId:"",
 	        bookmarks: [],
 	        bookmarksWithId: [],
 	        bookmarksdisplay: [],

@@ -14,6 +14,8 @@ sub get_owner {
     my $pid = shift;
     my $owner;
 
+    $c->app->log->debug("get_owner pid:".$c->app->dumper($pid));
+    
 	# get the owner from triplestore
 	my $url = Mojo::URL->new;
 	$url->scheme('https');		
@@ -24,15 +26,17 @@ sub get_owner {
 	}else{
 		$url->path("/search/triples");
 	}
+	
 	$url->query({q => "<info:fedora/$pid> <info:fedora/fedora-system:def/model#ownerId> *"});
 	
 	my $ua = Mojo::UserAgent->new;
   	my $get = $ua->get($url);  	
   	if (my $r = $get->success) {
+  		$c->app->log->debug("get_owner result:".$c->app->dumper($r->json->{result}));
   		my @res = $r->json->{result};
   		# result -> first triple -> object
   		$owner = $res[0][0][2];  
-  		$owner = substr($owner, 1, -1);  		
+  		$owner = substr($owner, 1, -1);
   	}
 	else {
 	  my ($err, $code) = $get->error;
@@ -80,6 +84,8 @@ sub get_geo {
 
 }
 
+
+#delete it
 sub post_geo {
 	my $self = shift;
 	my $c = shift;

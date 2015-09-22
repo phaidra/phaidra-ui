@@ -3,8 +3,9 @@
 % content_for header => begin
    
    <script type="text/javascript" src="<%= url_for '/js/controllers/view.js' %>"></script>
-   <script type="text/javascript" src="<%= url_for '/js/controllers/geo.js' %>"></script>
    <script type="text/javascript" src="<%= url_for '/js/controllers/members.js' %>"></script>
+   <script type="text/javascript" src="<%= url_for '/js/controllers/geo.js' %>"></script>
+   <script type="text/javascript" src="<%= url_for '/js/controllers/rights.js' %>"></script>
         
 % end
 
@@ -95,10 +96,10 @@
 	      					                       </tab-heading>
 	      					                       	<table class="table">
 		                                                              <tbody>
-		                                                                      <tr ng-repeat="child in field.children" ng-if="child.ui_value">
-		                                                                             <td bind-once >{{child.labels.en}}</td>
-		                                                                             <td bind-once >{{child.ui_value}}</td>
-		                                                                      </tr>
+		                                                                       <div data-ng-if="field.children.length">
+	                                                                                       <div  data-ng-repeat="ch in field.children" data-ng-init="child1 = ch" data-ng-include="$('head base').attr('href')+'views/partials/uwmetadata/display_renderer.html'">
+	                                                                                       </div>
+	                                                                               </div>
 		                                                              </tbody>
 		                                                      </table>
 	      				                         </tab>	  
@@ -121,6 +122,29 @@
 	      					                       </tab-heading>
 	      					                       	<table class="table">
 		                                                              <tbody>
+		                                                                   
+		                                                                      <div class="well" data-ng-if="modsObject.ui_value != undefined">
+                                                                                                       <label> {{modsObject.label}}:</label>
+                                                                                                       <span>{{modsObject.ui_value}}</span>
+                                                                                       </div>
+		                                                                     
+		                                                                      <div data-ng-if="modsObject.children.length">
+	                                                                                       <div  data-ng-repeat="ch in modsObject.children" data-ng-init="ch1 = ch" data-ng-include="$('head base').attr('href')+'views/partials/mods/display_renderer.html'">
+	                                                                                      
+	                                                                                       </div>
+	                                                                              </div>
+	                                                                              
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                      
+		                                                                     <!--
 		                                                                      <tr data-ng-repeat="modsObjectChild in modsObject.children" ng-if="modsObjectChild.ui_value">
 		                                                                              <td bind-once >{{modsObjectChild.label}}</td>
 		                                                                              <td bind-once >
@@ -145,6 +169,10 @@
 		                                                                                    	</table>
 		                                                                             </td>
 		                                                                      </tr>
+		                                                                      -->
+		                                                                     
+		                                                                     
+		                                                                     
 		                                                              </tbody>
 		                                                      </table>
 	      				                         </tab>	  
@@ -155,7 +183,16 @@
 		                                       <tab-heading>
 		            	                             <span>Geo</span>
 		                                       </tab-heading>
-		                                      <div class="geo" data-ng-controller="GeoCtrl" data-ng-init="initgeo('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/' %>geo.html'"></div>
+		                                      
+		                                      <div class="geo" data-ng-controller="GeoCtrl" data-ng-init="initgeo('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/partials/' %>geo.html'"></div>
+		                                 </tab>
+	
+	                                         <tab class="geo" select="triggerRightsTabActivated()">
+		                                       <tab-heading>
+		            	                             <span>Rights</span>
+		                                       </tab-heading>
+		                                      
+		                                       <div data-ng-controller="RightsCtrl" data-ng-init="initRights('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/partials/' %>rights.html'"></div>
 		                                 </tab>
 	
 		                                 <tab>

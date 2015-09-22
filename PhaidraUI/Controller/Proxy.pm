@@ -10,49 +10,6 @@ use Data::Dumper;
 $Data::Dumper::Indent= 1; 
 
 
-sub get_object_uwmetadata {
-	
-	my $self = shift;  	
-	my $pid = $self->stash('pid');
-	$self->app->log->debug('get_object_uwmetadata pid:',$self->stash('pid'));
-	my $res = { alerts => [], status => 200 };
-	
-	my $url = Mojo::URL->new;
-	$url->scheme('https');		
-	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
-	$url->host($base[0]);
-	if(exists($base[1])){
-		$url->path($base[1]."/object/$pid/uwmetadata");
-	}else{
-		$url->path("/object/$pid/uwmetadata");
-	}
-	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
-	
-	my $token = $self->load_token;	
-	$self->app->log->debug('get_object_uwmetadata00');
-  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub {
-  		my ($ua, $tx) = @_;
-              $self->app->log->debug('get_object_uwmetadata11');
-	  	if (my $res = $tx->success) {
-	  		$self->render(json => $res->json, status => 200 );
-	  		# $self->app->log->debug('get_object_uwmetadata', $self->app->dumper($res->json));
-	  		$self->app->log->debug('get_object_uwmetadata');
-	  	}else {
-	  	        $self->app->log->error('get_object_uwmetadata error: ', $self->app->dumper($tx->error)) if defined $tx->error;
-	  	        #$self->app->log->debug($self->app->dumper($tx));	
-			my ($err, $code) = $tx->error;
-			if($tx->res->json){	  
-				if(exists($tx->res->json->{alerts})) {
-					$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
-				}else{
-				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
-				}
-			}
-		}
-  	});
-
-}
-
 sub search {
     my $self = shift;  	     
     
@@ -217,54 +174,6 @@ sub search_owner {
     
 }
 
-sub save_object_uwmetadata {
-	
-	my $self = shift;  	
-	
-	
-	my $pid = $self->stash('pid');
-	my $payload = $self->req->json;
-        my $uwmetadata = $payload->{'uwmetadata'};
-	
-
-	$self->app->log->debug("save_object_uwmetadata pid:".$self->app->dumper($pid));
-	my $res = { alerts => [], status => 200 };
-	
-	my $url = Mojo::URL->new;
-	$url->scheme('https');
-	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
-	$url->host($base[0]);
-	if(exists($base[1])){
-		$url->path($base[1]."/object/$pid/uwmetadata");
-	}else{
-		$url->path("/object/$pid/uwmetadata");
-	}
-	
-	my $token = $self->load_token;
-	$self->app->log->debug("save_object_uwmetadata token:".$self->app->dumper($token));
-  	#$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token, 'Content-Type' => 'multipart/form-data'},
-  	#	form => { metadata =>   { content => encode_json($uwmetadata) } }, 
-  	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
-  		form => { metadata => encode_json($uwmetadata) }, 
-  	 	sub { 	
-	  		my ($ua, $tx) = @_;
-	
-		  	if (my $res = $tx->success) {
-		  		$self->render(json => $res->json, status => 200 );
-		  		$self->app->log->debug("save_object_uwmetadata success123:".$self->app->dumper($res->json));
-		  	}else {
-			 	my ($err, $code) = $tx->error;	 
-			 	$self->app->log->debug("save_object_uwmetadata error:".$self->app->dumper($tx->error));
-			 	if(exists($tx->res->json->{alerts})) {
-			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
-			 	}else{
-			  		$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
-			 	}
-			}		
-  		}
-  	);
-
-}
 
 
 sub get_uwmetadata_tree {
@@ -380,9 +289,11 @@ sub get_directory_get_org_units {
 	}else{
 		$url->path("/directory/get_org_units");
 	}
+	$self->app->log->debug("get_directory_get_org_units parent_id".$self->app->dumper($parent_id));
+	$self->app->log->debug("get_directory_get_org_units values_namespace".$self->app->dumper($values_namespace));
 	$url->query({parent_id => $parent_id, values_namespace => $values_namespace});
 		
-  	$self->ua->get($url => sub { 	
+  	$self->ua->get($url => sub {
   		my ($ua, $tx) = @_;
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
@@ -637,75 +548,6 @@ sub get_object_tripl{
   	});
 }
 
-#test mf
-sub get_object_mods_test{
-      
-         my $self = shift;
-      
-         my $metadata;
-         my $mango = Mango->new('mongodb://'.'bagger-rastanb'.':'.'l-30H9aS11gLDbW'.'@'.'stage.phaidra.org'.'/'.'bagger-rastanb');
-         my $bagid = $self->stash('bagid');
-         $bagid = 'dummy2';
-         $self->app->log->info("[".$self->current_user->{username}."] Loading bag (get_uwmeta_test) $bagid");
-         my $bag = $mango->db->collection('bags')->find_one({bagid => 'TestProjectDasPortaldesRenierPalastes__DSC0488tif_mods'});
-         unless($bag){
-		$self->app->log->error("[".$self->current_user->{username}."] Error loading bag ".$bagid);
-		$self->render(
-			json => {
-				alerts => [{ type => 'danger', msg => "Error loading bag with id ".$bagid }]
-			},
-		status => 500);
-	}else{
-		#$metadata = $bag->{metadata}->{uwmetadata}->[6]->{children}->[4]->{children}->[3]->{value_labels}->{nonpreferred}->[0]->{labels}->{en};
-		$metadata = $bag->{metadata}->{mods};	
-	}
-	$self->app->log->info("get_object_mods_test metadata: ".$self->app->dumper($metadata));
-	
-	$self->render(json => $metadata, status => 200 );
-
-}
-
-sub get_object_mods{
-      
-	my $self = shift;
-
-	#my $pid = 'o:13690';
-	my $pid = $self->stash('pid');
-	$self->app->log->debug("get_object_mods pid".$self->app->dumper($self->stash('pid')));
-	my $url = Mojo::URL->new;
-	$url->scheme('https');
-	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
-	$url->host($base[0]);
-	if(exists($base[1])){
-		$url->path($base[1]."/object/$pid/mods");
-	}else{
-		$url->path("/object/$pid/mods");
-	}
-        
-        #$url->query({'q' => $q, 'limit' => $limit});
-      	my $token = $self->load_token;
-	
-  	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub {
-  		my ($ua, $tx) = @_;
-	  	#$self->app->log->debug("get_object_mods tx".$self->app->dumper($tx));
-	  	if (my $res = $tx->success) {
-	  		$self->app->log->debug("get_object_mods success".$self->app->dumper($res->json));
-	  		$self->render(json => $res->json, status => 200 );
-	  	}else{
-		 	my ($err, $code) = $tx->error;
-		 	$self->app->log->info("get_object_mods error: $code");
-		 	if($tx->res->json){	  
-			  	 if(exists($tx->res->json->{alerts})){
-				 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
-				 }else{
-				  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
-				 }
-		        }
-		}
-  	});
-}
-
-
 sub get_mods_tree {
     
     my $self = shift;
@@ -790,6 +632,7 @@ sub get_search {
 }
 
 sub get_terms_children {
+	
 	my $self = shift;
 	
 	my $uri = $self->param('uri');
@@ -825,5 +668,40 @@ sub get_terms_children {
 		
   	});
 }
+
+sub get_licenses {
+
+        my $self = shift;
+
+	
+	my $url = Mojo::URL->new;
+	$url->scheme('https');
+	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+	$url->host($base[0]);
+	if(exists($base[1])){
+		$url->path($base[1]."/licenses");
+	}else{
+		$url->path("/licenses");
+	}
+	
+		
+  	$self->ua->get($url => sub {
+  		my ($ua, $tx) = @_;
+	  	if (my $res = $tx->success) {
+	  		$self->render(json => $res->json, status => 200 );
+	  	}else {
+		 	my ($err, $code) = $tx->error;	  
+		  	if(exists($tx->res->json->{alerts})) {
+			 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+			 }else{
+			  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			 }
+		}
+		
+  	});
+    
+    
+}
+
 
 1;

@@ -1,17 +1,20 @@
 
-app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, promiseTracker ) {
+app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, BookmarkService, promiseTracker ) {
 
+    $scope.$parent.disableBookmark = false;  
   
-      $scope.testShowFields = function() {
+    $scope.testShowFields = function() {
     	console.log('fields:', $scope.fields);
     };
   
     
     
-     $scope.test2 = function (data) {
-       console.log('data2:',data);    
+    $scope.test2 = function (data) {
+         console.log('data2:',data);    
     }
+    
     $scope.array = [];
+    
     for (var i = 0; i <10; ++i) {
 
          var hash = {};
@@ -19,17 +22,18 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
 	 hash.value2 = "blaB"+i;
          $scope.array[i] = hash;
     }
-     $scope.test1 = function (data) {
-       console.log('data1:',data);    
+    
+    $scope.test1 = function (data) {
+          console.log('data1:',data);    
     }
     
-         $scope.test3 = function (data) {
+    $scope.test3 = function (data) {
         console.log('test3:',data);    
 	   return data;    
     }
     
-    
-    
+        $scope.geo = {};
+        $scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
 	// we will use this to track running ajax requests to show spinner
 	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
 
@@ -52,7 +56,7 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
 	$scope.bag = [];
 	$scope.bag_info;
 
-	$scope.mode = 'bag';
+	$scope.mode = '';
 	
 
     $scope.fields = [];
@@ -62,7 +66,8 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     $scope.languages = [];
     //$scope.geo = [];
     $scope.geo = {};
-    $scope.placemarks = {};
+    //$scope.placemarks = {};
+    $scope.placemarks = [];
     
     $scope.pid = '';
     $scope.alerts = [];
@@ -72,17 +77,23 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     };
 
     $scope.init = function (initdata) {
-    	$scope.initdata = angular.fromJson(initdata);
-    	console.log('initdata', $scope.initdata);
-	$scope.current_user = $scope.initdata.current_user;
-    	$scope.bagid = $scope.initdata.bagid; //delete it
-        $scope.edit_mode = 'edit_mods';
     	
+        $scope.getBookmarks();
+	
+	
+        $scope.initdata = angular.fromJson(initdata);
+    	$scope.$parent.pid = $scope.initdata.pid;
+	console.log('initdata', $scope.initdata);
+	$scope.current_user = $scope.initdata.current_user;
+    	//$scope.bagid = $scope.initdata.bagid; //delete it
+        $scope.edit_mode = 'edit_mods';
+    	$scope.pid = $scope.initdata.pid;
 	//if($scope.initdata.bagid){
         if($scope.initdata.mods_mode == 'object'){
-                 console.log('1');
+                $scope.mode = 'object'; 
+	        console.log('1');
 		
-		var promise = MetadataService.get_mods($scope.initdata.pid);
+		var promise = MetadataService.getModsFromObject($scope.initdata.pid);
                  $scope.loadingTracker.addPromise(promise);
                  promise.then(
     	 	    function(response) {
@@ -102,7 +113,9 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     		   }
     		   ,function(response) {
            		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           		if(typeof $scope.alerts !== 'undefined'){
+			    $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+			}
            	   }
     	        );
 		
@@ -255,9 +268,13 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     	);
     };
 
- $scope.save = function() {
+ $scope.saveObject = function() {
     	$scope.form_disabled = true;
-    	var promise = MetadataService.saveModsToBag($scope.bagid, $scope.fields)       
+	var mods = {};
+	mods.metadata = {};
+	mods.metadata.mods = $scope.fields;
+    	console.log('saveObject mods:', mods)
+	var promise = MetadataService.saveModsObject($scope.pid, mods);
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
         	function(response) {
@@ -266,8 +283,10 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
         	}
                ,function(response) {
            		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		$scope.form_disabled = false;
+           		if(typeof $scope.alerts !== 'undefined'){
+			     $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+			}
+			$scope.form_disabled = false;
            	}
         );
 
@@ -276,7 +295,7 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
  $scope.saveTemplate = function() {
 
      $scope.form_disabled = true;
-     $scope.saveGeo();
+     $scope.saveGeoTemplate();
      var promise = MetadataService.saveModsTemplate($scope.tid, $scope.fields);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
@@ -332,6 +351,12 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
       		$scope.form_disabled = false;
 		console.log('response.data2:', response.data);
 		console.log('fields2:', $scope.fields);
+		$scope.geo = response.data.geo;
+		if( typeof $scope.geo.kml.document.placemark !== 'undefined' ){
+		     if(typeof $scope.geo.kml.document.placemark[0] !== 'undefined'){
+		           $scope.placemarks = $scope.geo.kml.document.placemark;
+		     }
+		}
       	}
       	,function(response) {
       		$scope.alerts = response.data.alerts;
@@ -368,7 +393,7 @@ $scope.saveTemplateAs = function () {
        	            function(response) {
        		           $scope.alerts = response.data.alerts;
        		           $scope.tid = response.data.tid;
-			   $scope.saveGeo();
+			   $scope.saveGeoTemplate();
        		           $scope.form_disabled = false;
        	            }
        	           ,function(response) {
@@ -383,23 +408,8 @@ $scope.saveTemplateAs = function () {
   }
   
 };
-
-    $scope.saveGeo = function() {
-        /*
-        var geo = {
-    		    metadata:{
-		           geo:{
-			         kml: {
-    			             document: {
-    				          placemark: $scope.placemarks
-    			             }
-    	                        }  
-		         }
-	           }
-    	   };
-	   */
-        console.log('savegeo!!!');
-        if($scope.mode == 'object'){
+  $scope.saveGeoObject = function() {
+    
               console.log('save object geo');
 	      $scope.form_disabled = true;
 	
@@ -427,10 +437,12 @@ $scope.saveTemplateAs = function () {
            		  $scope.form_disabled = false;
            	    }
              );
-	}
-	if($scope.mode == 'template'){
-	      
-	      console.log('save template geo tid:',$scope.tid);
+    
+  };
+   
+   $scope.saveGeoTemplate = function() {
+     	      
+              console.log('save template geo tid:',$scope.tid);
 	      
 	      var geo = {
 	            kml: {
@@ -452,11 +464,8 @@ $scope.saveTemplateAs = function () {
            		  $scope.form_disabled = false;
            	    }
              );
-	}
-        
- };
-
-
+   }; 
+  
 
     // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
     $scope.filterHidden = function(e)
@@ -674,7 +683,25 @@ $scope.saveTemplateAs = function () {
 	    });
 
 	}
-
+  
+    $scope.getBookmarks = function () {
+            var promise = BookmarkService.getBookmark();
+    	    $scope.loadingTracker.addPromise(promise);
+    	    promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+			BookmarkService.bookmarks = response.data.bookmarks;
+    		}
+    		,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   ); 
+    
+  } 
 
 });
 

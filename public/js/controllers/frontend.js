@@ -286,24 +286,26 @@ var CollModalCtrl = function ($scope, $rootScope, $modalInstance, FrontendServic
      };
 };
 
-app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, DirectoryService, promiseTracker, FrontendService, Massedit) {
+app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, DirectoryService, promiseTracker, FrontendService, Massedit, BookmarkService) {
     
    
     // we will use this to track running ajax requests to show spinner	
     //$scope.loadingTracker = promiseTracker.register('loadingTrackerFrontend');
     //$scope.loadingTracker = promiseTracker.register();
+    $scope.disableBookmark = true;
     $scope.loadingTracker = $rootScope.loadingTracker;
     $scope.alerts = [];
     $scope.query = '';
-    
+    $scope.pid = '';
     
     $scope.initdata = '';
     $scope.current_user = '';
 			
     $scope.init = function (initdata) {
                 $scope.initdata = angular.fromJson(initdata);
+		
 		$scope.current_user = $scope.initdata.current_user;
-		$scope.baseurl = $('head base').attr('href'); 
+		$scope.baseurl = $('head base').attr('href');
 		//$scope.initdataTemp = initdataTemp;
     };
     
@@ -356,6 +358,188 @@ app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, Direct
 	
     };
     
+    $scope.editBookmark = function(){
+          window.location = $('head base').attr('href')+'bookmark/edit';
+    }
+    $scope.createBookmark = function(){
+           
+          var modalInstance = $modal.open({
+                     templateUrl: $('head base').attr('href')+'views/modals/bookmark/create_bookmark.html',
+                     controller: CreateBookmarkModalCtrl,                     
+          });
+   }
+   $scope.addToBookmark = function(){
+          console.log('addToBookmark pid:',$scope.pid);
+          var modalInstance = $modal.open({
+                     templateUrl: $('head base').attr('href')+'views/modals/bookmark/add_to_bookmark.html',
+                     controller: AddToBookmarkModalCtrl,
+		     resolve: {	  
+                           pid: function(){
+                                         return $scope.pid;
+                                           },	  
+                           }
+		     
+          });
+   }
+   
+   $scope.addToCurrentBookmark = function(){
+       console.log('currentBookmarkId345:',BookmarkService.currentBookmarkId);
+       if(typeof BookmarkService.currentBookmarkId == 'undefined' || BookmarkService.currentBookmarkId == ''){
+	      var modalInstance = $modal.open({
+                   templateUrl: $('head base').attr('href')+'views/modals/popup_alert.html',
+                   controller: AddToCurrentBookmarkCtrl,
+		   resolve: {
+                            text: function(){
+                                       return 'Plese select bookmark first?';
+                                           },
+                             },
+             });
+       }else{
+            var pidJson = angular.toJson($scope.pid);
+            var currentBookmarkIdJson = angular.toJson(BookmarkService.currentBookmarkId);
+            var promise = BookmarkService.addToBookmark(pidJson, currentBookmarkIdJson);
+            $scope.loadingTracker.addPromise(promise);
+            promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+    		}
+    	       ,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   );
+       }
+   }
+   
+   $scope.gotoObjects = function(){
+         window.location = $('head base').attr('href')+'search';
+   }
+   
+   $scope.gotoTemplates = function(){
+         window.location = $('head base').attr('href')+'templates';
+   }
+   
+   $scope.gotoSubmit = function(){
+         window.location = $('head base').attr('href')+'submit';
+   }
+   
     
 });
 
+var CreateBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService ) {
+   
+     $scope.bookmark_name = '';
+     
+     $scope.OK = function (bookmark_name) {
+             $scope.createBookmark(bookmark_name);
+	     $modalInstance.dismiss('OK');
+     };
+     $scope.cancel = function () {
+         $modalInstance.dismiss('cancel');
+     };
+ 
+     $scope.createBookmark = function (bookmark_name) {
+            
+	    var promise = BookmarkService.createBookmark(bookmark_name);
+    	    $scope.loadingTracker.addPromise(promise);
+    	    promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+			BookmarkService.getBookmarks(BookmarkService);
+    		}
+    		,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   ); 
+     }
+     
+     $scope.hitEnter = function(evt, bookmark_name){
+           if(angular.equals(evt.keyCode,13)){
+                  $scope.createBookmark(bookmark_name);
+                  $modalInstance.dismiss('OK');
+           }
+     };
+     
+}
+
+
+var AddToBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService, pid) {
+      
+     $scope.disabled = undefined;
+     $scope.enable = function() {
+          $scope.disabled = false;
+     };
+     $scope.disable = function() {
+          $scope.disabled = true;
+     };
+     $scope.clear = function() {
+         $scope.bookmark.selected = undefined;
+     };
+  
+     $scope.bookmarks = BookmarkService.bookmarks;
+  
+     $scope.compareRecordsBookmarkName = function(a,b) {
+           var valueA = a.bookmarkname; 
+           var valueB = b.bookmarkname;
+           if (valueA < valueB)  return -1;
+           if (valueA > valueB)  return 1;
+           return 0;
+     };
+
+     $scope.bookmarks.sort($scope.compareRecordsBookmarkName);
+
+     $scope.addToBookmark = function () {
+            BookmarkService.currentBookmarkId = $scope.bookmarks.selected.id;
+            console.log('bookmarkId111:',$scope.bookmarks.selected.id);
+	    var pidJson = angular.toJson(pid);
+            var currentBookmarkIdJson = angular.toJson($scope.bookmarks.selected.id);
+            var promise = BookmarkService.addToBookmark(pidJson, currentBookmarkIdJson);
+            $scope.loadingTracker.addPromise(promise);
+            promise.then(
+    		function(response) {
+    			$scope.alerts = response.data.alerts;
+    		}
+    	       ,function(response) {
+           		$scope.alerts = response.data.alerts;
+           		if(typeof $scope.alerts == 'undefined'){
+			    $scope.alerts = [];
+			}
+			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+           	}
+    	   );
+       }
+   
+       $scope.OK = function () {
+            $scope.addToBookmark();
+	    $modalInstance.dismiss('OK');
+       };
+   
+       $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+       };
+   
+       $scope.hitEnter = function(evt){
+    	   if(angular.equals(evt.keyCode,13)){
+	          $scope.addToBookmark();
+                  $modalInstance.dismiss('OK');
+	   }
+       };
+  
+}
+
+var AddToCurrentBookmarkCtrl = function ($scope, $modalInstance, text ) {
+  
+   $scope.text = text;    
+  
+   $scope.OK = function () {
+	  $modalInstance.dismiss('OK');
+   };
+
+} 
