@@ -1,0 +1,8 @@
+<div class="well" data-ng-if="child1.ui_value != ''">
+      <label> {{child1.labels.en}}:</label>
+      <span>{{child1.ui_value}}</span>
+</div>
+<div  data-ng-if="child1.children.length">
+         <div data-ng-repeat="ch in child1.children" data-ng-init="child1 = ch" data-ng-include="$('head base').attr('href')+'views/partials/uwmetadata/display_renderer.html'">
+         </div>
+</div> 

@@ -1,0 +1,8 @@
+<div class="well" data-ng-if="ch1.ui_value">
+      <label> {{ch1.label}}:</label>
+      <span>{{ch1.ui_value}}</span>
+</div>
+<div  data-ng-if="ch1.children.length">
+         <div data-ng-repeat="ch in ch1.children" data-ng-init="ch1 = ch" data-ng-include="$('head base').attr('href')+'views/partials/mods/display_renderer.html'">
+         </div>
+</div>
