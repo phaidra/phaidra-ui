@@ -1,226 +1,81 @@
-
 app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryService, MetadataService, FrontendService, BookmarkService, promiseTracker ) {
 
     $scope.$parent.disableBookmark = false;  
-  
-    $scope.testShowFields = function() {
-    	console.log('fields:', $scope.fields);
-    };
-  
-    
-    
-    $scope.test2 = function (data) {
-         console.log('data2:',data);    
-    }
-    
-    $scope.array = [];
-    
-    for (var i = 0; i <10; ++i) {
-
-         var hash = {};
-	 hash.value1 = "blaA"+i;
-	 hash.value2 = "blaB"+i;
-         $scope.array[i] = hash;
-    }
-    
-    $scope.test1 = function (data) {
-          console.log('data1:',data);    
-    }
-    
-    $scope.test3 = function (data) {
-        console.log('test3:',data);    
-	   return data;    
-    }
-    
-        $scope.geo = {};
-        $scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
-	// we will use this to track running ajax requests to show spinner
-	$scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
-
-	$scope.default_helptext = 'Loading tooltip content...';
-
-	// used to disable the form and it's controls on save
-	$scope.form_disabled = false;
-
-	$scope.initdata = '';
-	$scope.current_user = '';
-	$scope.current_bags_query = '';
-
-	$scope.selectedtemplate = '';
-	$scope.templatetitle = '';
-	$scope.tid = '';
-       
+      
+    $scope.regex_pid = /^[a-zA-Z\-]+:[0-9]+$/;
 	
-	
-	$scope.bagid = '';
-	$scope.bag = [];
-	$scope.bag_info;
+    //we will use this to track running ajax requests to show spinner
+    $scope.loadingTracker = promiseTracker('loadingTrackerFrontend');
 
-	$scope.mode = '';
-	
+    $scope.default_helptext = 'Loading tooltip content...';
 
+    // used to disable the form and it's controls on save
+    $scope.form_disabled = false;
+
+    $scope.initdata = '';
+    $scope.current_user = '';
+
+    $scope.selectedtemplate = '';
+    $scope.templatetitle = '';
+    $scope.tid = '';
+
+    $scope.mode = '';
+	
     $scope.fields = [];
     $scope.vocs = [];
     $scope.vocsmap = [];
     $scope.separateTabs = ["originInfo", "physicalDescription", "subject", "part", "recordInfo", "relatedItem"];
     $scope.languages = [];
-    //$scope.geo = [];
-    $scope.geo = {};
-    //$scope.placemarks = {};
+    $scope.newTemplate = 0;
+    
     $scope.placemarks = [];
     
     $scope.pid = '';
     $scope.alerts = [];
 
-    $scope.closeAlert = function(index) {
+    $scope.loadedClassification = [];
+    
+  $scope.closeAlert = function(index) {
     	$scope.alerts.splice(index, 1);
-    };
+  };
 
-    $scope.init = function (initdata) {
+
+  
+  $scope.init = function (initdata) {
     	
         $scope.getBookmarks();
-	
 	
         $scope.initdata = angular.fromJson(initdata);
     	$scope.$parent.pid = $scope.initdata.pid;
 	console.log('initdata', $scope.initdata);
 	$scope.current_user = $scope.initdata.current_user;
-    	//$scope.bagid = $scope.initdata.bagid; //delete it
         $scope.edit_mode = 'edit_mods';
     	$scope.pid = $scope.initdata.pid;
-	//if($scope.initdata.bagid){
-        if($scope.initdata.mods_mode == 'object'){
+        $scope.getModsLangAndVoc();
+	if($scope.initdata.mods_mode == 'object'){
                 $scope.mode = 'object'; 
-	        console.log('1');
-		
-		var promise = MetadataService.getModsFromObject($scope.initdata.pid);
-                 $scope.loadingTracker.addPromise(promise);
-                 promise.then(
-    	 	    function(response) {
-    			console.log('aaaaa', response.data);
-		        $scope.alerts = response.data.metadata.alerts;
-    			//$scope.languages = response.data.languages;
-    			$scope.geo = response.data.geo;
-			if( $scope.geo ){
-			     $scope.placemarks = $scope.geo.kml.document.placemark;
-			}
-			$scope.fields = response.data.metadata.mods;
-			$scope.placemarks
-			console.log('fields1:', $scope.fields);
-    			//$scope.vocs = response.data.vocabularies;
-    			//$scope.vocsmap = response.data.vocabularies_mapping;
-    			//$scope.load_init();
-    		   }
-    		   ,function(response) {
-           		$scope.alerts = response.data.alerts;
-           		if(typeof $scope.alerts !== 'undefined'){
-			    $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-			}
-           	   }
-    	        );
-		
-		
-		//$scope.templatetitle = response.data.title;
-	        
-		//$scope.mode = 'bag';
-    		//$scope.bagid = $scope.initdata.bagid;
-    		//$scope.loadBag();
-		 
+                $scope.loadObjectService($scope.pid);  
     	}else{
     		if($scope.initdata.tid){
-    			console.log('2');
 		        $scope.mode = 'template';
     			$scope.tid = $scope.initdata.tid;
     			$scope.loadTemplate($scope.tid);
     		}else{
-    			console.log('3');//check what it does...
 		        $scope.mode = 'template';
-    			$scope.getModsTree();
+                        $scope.getModsEmptyTree();
     		}
     	}
-    };
+  };
 
-		$scope.getMemberDisplayname = function (username) {
-			for( var i = 0 ; i < $scope.initdata.members.length ; i++ ){
-				if($scope.initdata.members[i].username == username){
-					return $scope.initdata.members[i].displayname;
-				}
-			}
-		}
-
-		$scope.canSetAttribute = function (attribute) {
-			return $scope.initdata.restricted_ops.indexOf('set_'+attribute) == -1 || $scope.current_user.role == 'manager';
-		}
-
-		/*
-		$scope.setAttribute = function (bag, attribute, value) {
-			var promise = BagService.setAttribute(bag.bagid, attribute, value);
-				$scope.loadingTracker.addPromise(promise);
-				promise.then(
-					function(response) {
-						$scope.alerts = response.data.alerts;
-						$scope.baginfo[attribute] = value;
-					}
-					,function(response) {
-						$scope.alerts = response.data.alerts;
-						//$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-					}
-				);
-		}
-               */
-		
-		$scope.getFieldsCount = function() {
-				return $scope.fields.length;
-		};
-
-    /*
-    $scope.getBack2BagsLink = function (){
-    	if($scope.initdata.current_bags_query){
-    		if($scope.initdata.current_bags_query.filter){
-    			if($scope.initdata.current_bags_query.filter.folderid){
-    				return Url.buildUrl($('head base').attr('href')+'bags/folder/'+$scope.initdata.current_bags_query.filter.folderid, $scope.initdata.current_bags_query);
-    			}
-    		}
-    	}
-    }
-    
-    $scope.getPrevBagLink = function (){
-    	if($scope.initdata.prev_bag){
-    		return Url.buildUrl($('head base').attr('href')+'bag/'+$scope.initdata.prev_bag.bagid+'/edit', $scope.initdata.current_bags_query);
-    	}
-    }
-
-    $scope.getNextBagLink = function (){
-    	if($scope.initdata.next_bag){
-    		return Url.buildUrl($('head base').attr('href')+'bag/'+$scope.initdata.next_bag.bagid+'/edit', $scope.initdata.current_bags_query);
-    	}
-    }
-
-    */
-    
-    $scope.reset_values = function (node, default_value){
-    	if(!default_value){
-    		default_value = '';
-    	}
-    	node.ui_value = default_value;
-    	node.loaded_ui_value = default_value;
-    	node.value = default_value;
-    	node.loaded_value = default_value;
-    }
-
-    $scope.load_init = function(){
-
-
-    };
-
-    $scope.resetEditor = function() {
+  $scope.resetEditor = function() {
     	$scope.alerts = [];
-		$scope.languages = [];
-		$scope.fields = [];
-    };
+	$scope.languages = [];
+	$scope.fields = [];
+	$scope.vocs = {};
+	$scope.vocsmap = {};
+  };
 
-       
-    $scope.getModsTree = function(){
+  $scope.getModsLangAndVoc = function(){
     	
         $scope.resetEditor();
         var promise = MetadataService.getModsTree();
@@ -229,14 +84,8 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
     		function(response) {
     			$scope.alerts = response.data.alerts;
     			$scope.languages = response.data.languages;
-    			$scope.fields = response.data.tree;
     			$scope.vocs = response.data.vocabularies;
     			$scope.vocsmap = response.data.vocabularies_mapping;
-    			$scope.load_init();
-			////here
-			console.log('fields3:', $scope.fields);
-			console.log('getModsTree.tree:',response.data.tree);
-			console.log('getModsTree:',response.data);
     		}
     		,function(response) {
            		$scope.alerts = response.data.alerts;
@@ -244,37 +93,33 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
            	}
     	);
         
-    };
-   
-    
-    $scope.loadBag = function(){
-    	$scope.resetEditor();
-        var promise = MetadataService.loadBag($scope.bagid);
+  };
+  $scope.getModsEmptyTree = function(){
+        
+        $scope.resetEditor();
+        var promise = MetadataService.getModsTree();
         $scope.loadingTracker.addPromise(promise);
         promise.then(
-    		function(response) {
-    			$scope.alerts = response.data.alerts;
-    			$scope.languages = response.data.metadata.languages;
-    			$scope.fields = response.data.metadata.mods;
-    			$scope.vocs = response.data.metadata.vocabularies;
-    			$scope.vocsmap = response.data.metadata.vocabularies_mapping;
-    			$scope.bag = response.data;
-    			$scope.load_init();
-    		}
-    		,function(response) {
-           		$scope.alerts = response.data.alerts;
-           		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           	}
-    	);
-    };
+                function(response) {
+                        $scope.alerts = response.data.alerts;
+                        $scope.fields = response.data.tree;
+                }
+                ,function(response) {
+                        $scope.alerts = response.data.alerts;
+                        $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                }
+        );
+        
+  };  
 
+  
+ 
  $scope.saveObject = function() {
     	$scope.form_disabled = true;
 	var mods = {};
 	mods.metadata = {};
 	mods.metadata.mods = $scope.fields;
-    	console.log('saveObject mods:', mods)
-	var promise = MetadataService.saveModsObject($scope.pid, mods);
+        var promise = MetadataService.saveModsObject($scope.pid, mods);
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
         	function(response) {
@@ -292,10 +137,11 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
 
  };
 
+
+ 
  $scope.saveTemplate = function() {
 
      $scope.form_disabled = true;
-     $scope.saveGeoTemplate();
      var promise = MetadataService.saveModsTemplate($scope.tid, $scope.fields);
      $scope.loadingTracker.addPromise(promise);
      promise.then(
@@ -310,171 +156,114 @@ app.controller('ModseditorCtrl',  function($scope, $modal, $location, DirectoryS
       	}
      );
  };
-
- /*
- $scope.loadTemplateToBag = function() {
-	 $scope.form_disabled = true;
-     var promise = MetadataService.loadTemplateToBag(this.selectedtemplate._id);
-     $scope.loadingTracker.addPromise(promise);
-     promise.then(
-      	function(response) {
-      		$scope.alerts = response.data.alerts;
-      		$scope.fields = response.data.mods;
-      		$scope.templatetitle = response.data.title;
-      		$scope.languages = response.data.languages;
-			$scope.vocs = response.data.vocabularies;
-			$scope.vocsmap = response.data.vocabularies_mapping;
-      		$scope.form_disabled = false;
-      	}
-      	,function(response) {
-      		$scope.alerts = response.data.alerts;
-      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-      		$scope.form_disabled = false;
-      	}
-     );
- };
-*/
  
-  $scope.loadTemplate = function() {
+ 
+   $scope.addClassifOnLoad = function(){
+           $scope.$broadcast('classifLoadMods');   
+   } 
+ 
+    $scope.getClassifLabels = function(){
+           $scope.$broadcast('getClassifLabelsMods');   
+    } 
+ 
+   $scope.loadTemplate = function() {
 
-     $scope.form_disabled = true;
-     var promise = MetadataService.loadTemplate($scope.tid);
-     $scope.loadingTracker.addPromise(promise);
-     promise.then(
-      	function(response) {
-      		$scope.alerts = response.data.alerts;
+      $scope.form_disabled = true;
+      var promise = MetadataService.loadTemplate($scope.tid);
+      $scope.loadingTracker.addPromise(promise);
+      promise.then(
+      	  function(response) {
+                $scope.alerts = response.data.alerts;
       		$scope.fields = response.data.mods;
       		$scope.templatetitle = response.data.title;
       		$scope.languages = response.data.languages;
 		$scope.vocs = response.data.vocabularies;
 		$scope.vocsmap = response.data.vocabularies_mapping;
+                $scope.loadedClassification = response.data.classification;
       		$scope.form_disabled = false;
-		console.log('response.data2:', response.data);
-		console.log('fields2:', $scope.fields);
-		$scope.geo = response.data.geo;
-		if( typeof $scope.geo.kml.document.placemark !== 'undefined' ){
-		     if(typeof $scope.geo.kml.document.placemark[0] !== 'undefined'){
-		           $scope.placemarks = $scope.geo.kml.document.placemark;
-		     }
-		}
-      	}
-      	,function(response) {
+                $scope.addClassifOnLoad();
+                $scope.getClassifLabels();
+                //$scope.addClassToObject('http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/classification/cls_7/169269');
+      	  }
+      	 ,function(response) {
       		$scope.alerts = response.data.alerts;
       		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
       		$scope.form_disabled = false;
-      	}
+      	  }
      );
  };
 
 
-$scope.saveTemplateAs = function () {
+ $scope.saveTemplateAs = function () {
 
-   if($scope.initdata.mods_mode !== 'object'){ 
-        var templateModalInstance = $modal.open({
-        //templateUrl: 'save_template_modal.html',
-        templateUrl: $('head base').attr('href')+'views/modals/save_template_modal.html',
-        controller: TemplateModalInstanceCtrl,
-        resolve: {
-                 currenttitle: function () {
-                         return $scope.templatetitle;
-                                           }
-                }
-        });
+          var templateModalInstance = $modal.open({
+                  templateUrl: $('head base').attr('href')+'views/modals/save_template_modal.html',
+                  controller: TemplateModalInstanceCtrl,
+                  resolve: {
+                           currenttitle: function () {
+                                              return $scope.templatetitle;
+                                         }
+                           }
+          });
 
-        templateModalInstance.result.then(function (title) {
+          templateModalInstance.result.then(function (title) {
       
-             $scope.templatetitle = title;
-
-             // save template
-             $scope.form_disabled = true;
-             var promise = MetadataService.saveModsTemplateAs($scope.templatetitle, $scope.fields);
-             $scope.loadingTracker.addPromise(promise);
-             promise.then(
-       	            function(response) {
-       		           $scope.alerts = response.data.alerts;
-       		           $scope.tid = response.data.tid;
-			   $scope.saveGeoTemplate();
-       		           $scope.form_disabled = false;
-       	            }
-       	           ,function(response) {
-       		           $scope.alerts = response.data.alerts;
-       		           $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-       		           $scope.form_disabled = false;
-       	           }
-            );
-      });
-  }else{
-      console.log('saved mods:', $scope.fields );
-  }
+                  $scope.templatetitle = title;
+                  // save template
+                  $scope.form_disabled = true;
+                  var promise = MetadataService.saveModsTemplateAs($scope.templatetitle, $scope.fields);
+                  $scope.loadingTracker.addPromise(promise);
+                  promise.then(
+       	                 function(response) {
+       		                $scope.alerts = response.data.alerts;
+       		                $scope.tid = response.data.tid;
+       		                $scope.form_disabled = false;
+       	                 }
+       	                ,function(response) {
+       		                $scope.alerts = response.data.alerts;
+       		                $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+       		                $scope.form_disabled = false;
+       	                 }
+                  );
+          });
+ };
   
-};
-  $scope.saveGeoObject = function() {
-    
-              console.log('save object geo');
-	      $scope.form_disabled = true;
-	
-	      var geo = {
-    		    metadata:{
-		           geo:{
-			         kml: {
-    			             document: {
-    				          placemark: $scope.placemarks
-    			             }
-    	                        }  
-		         }
-	           }
-    	      };
-    	      var promise = MetadataService.saveGeoObject($scope.pid, geo)
-    	      $scope.loadingTracker.addPromise(promise);
-    	      promise.then(
-        	    function(response) {
-        		  $scope.alerts = response.data.alerts;
-        		  $scope.form_disabled = false;
-        	    }
-        	   ,function(response) {
-           		  $scope.alerts = response.data.alerts;
-           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		  $scope.form_disabled = false;
-           	    }
-             );
-    
-  };
+   $scope.loadObjectService = function(pid){
    
-   $scope.saveGeoTemplate = function() {
-     	      
-              console.log('save template geo tid:',$scope.tid);
-	      
-	      var geo = {
-	            kml: {
-    			  document: {
-    				     placemark: $scope.placemarks
-    			            }
-    	                 }  
-    	      };
-	      var promise = MetadataService.saveGeoTemplate($scope.tid, geo)
-    	      $scope.loadingTracker.addPromise(promise);
-    	      promise.then(
-        	    function(response) {
-        		  $scope.alerts = response.data.alerts;
-        		  $scope.form_disabled = false;
-        	    }
-        	   ,function(response) {
-           		  $scope.alerts = response.data.alerts;
-           		  $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           		  $scope.form_disabled = false;
-           	    }
-             );
-   }; 
-  
-
-    // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
-    $scope.filterHidden = function(e)
-    {
+                var promise = MetadataService.getModsFromObject(pid);
+                $scope.loadingTracker.addPromise(promise);
+                promise.then(
+                    function(response) {
+                        $scope.alerts = response.data.metadata.alerts;
+                        $scope.fields = response.data.metadata.mods;
+                        $scope.addClassifOnLoad();
+                        $scope.getClassifLabels();
+                   }
+                   ,function(response) {
+                        $scope.alerts = response.data.alerts;
+                        if(typeof $scope.alerts !== 'undefined'){
+                            $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                        }
+                   }
+                );
+   }
+   
+   
+   $scope.loadObject = function(pid){
+         
+           $scope.loadObjectService(pid);  
+   }
+ 
+ 
+ 
+ 
+  // used to filter array of elements: if 'hidden' is set, the field will not be included in the array
+  $scope.filterHidden = function(e){
         return $scope.mode == 'template' ? !e.hidden : !e.hidden && !e.hide;
-    };
+  };
 
 
-    $scope.canDelete = function(child, parent){
+  $scope.canDelete = function(child, parent){
     	var a = [];
     	if(parent){
     		a = parent.children;
@@ -489,12 +278,10 @@ $scope.saveTemplateAs = function () {
     		}
     	}
     	return cnt > 1;
-    }
+  }
 
-    $scope.addNewElement = function(child, parent){
+  $scope.addNewElement = function(child, parent){
     	// array of elements to which we are going to insert
-    	console.log('addNewElement...');
-    	console.log('child:',child, 'parent:',parent);
     	var arr = [];
     	if(parent){
     		arr = parent.children;
@@ -510,7 +297,6 @@ $scope.saveTemplateAs = function () {
     	// and also all the next elements
     	// but only if the elements are actually ordered
 	if(child.ordered){
-    		console.log('Child is odredered.');
 	        tobesistr.data_order++;
     		var i;
              	for (i = idx+1; i < arr.length; ++i) {
@@ -524,11 +310,10 @@ $scope.saveTemplateAs = function () {
     	// insert into array at specified index, angular will sort the rest out
     	arr.splice(idx+1, 0, tobesistr);
 	//arr.splice(arr.length, 0, tobesistr);
-	console.log('arr:',arr);
 
-    }
+  }
 
-    $scope.deleteElement = function(child, parent){
+  $scope.deleteElement = function(child, parent){
     	// array of elements where we are going to delete
     	var arr = [];
     	if(parent){
@@ -550,13 +335,13 @@ $scope.saveTemplateAs = function () {
     	}
     	// delete
     	arr.splice(idx, 1);
-    }
+  }
 
-    Array.prototype.move = function(from, to) {
+  Array.prototype.move = function(from, to) {
         this.splice(to, 0, this.splice(from, 1)[0]);
-    };
+  };
 
-    $scope.upElement = function(child, parent){
+  $scope.upElement = function(child, parent){
     	// array of elements which we are going to rearrange
     	var arr = [];
     	if(parent){
@@ -581,9 +366,9 @@ $scope.saveTemplateAs = function () {
     	if(idx > 0){
     		arr.move(idx, idx-1);
     	}
-    }
+  }
 
-    $scope.downElement = function(child, parent){
+  $scope.downElement = function(child, parent){
     	// array of elements which we are going to rearrange
     	var arr = [];
     	if(parent){
@@ -606,13 +391,13 @@ $scope.saveTemplateAs = function () {
 
     	// move to index++
     	arr.move(idx, idx+1);
-    }
+  }
 
-    $scope.canUpElement = function(child, parent){
+  $scope.canUpElement = function(child, parent){
     	return child.ordered && (child.data_order > 0);
-    }
+  }
 
-    $scope.canDownElement = function(child, parent){
+  $scope.canDownElement = function(child, parent){
 
     	if(!child.ordered){ return false; }
 
@@ -635,20 +420,14 @@ $scope.saveTemplateAs = function () {
 
 	    return false;
 
-    }
+  }
 
-    // hacky bullshit to make the map refresh on geo tab select
-    // this var is watched in geo controller
-    $scope.geoTabActivated = false;
-    $scope.triggerGeoTabActivated = function (){
-    	$scope.geoTabActivated = true;
-    }
 
-    $scope.hasLangAttr = function(child){
+  $scope.hasLangAttr = function(child){
     	return $scope.getLangAttrNodeIdx == -1 ? false : true;
-    }
+  }
 
-    $scope.getLangAttrNodeIdx = function(child){
+  $scope.getLangAttrNodeIdx = function(child){
     	if(child.attributes){
     		for (var i = 0; i < child.attributes.length; ++i) {
     			if(child.attributes[i].xmlname == 'lang'){
@@ -657,34 +436,34 @@ $scope.saveTemplateAs = function () {
     		}
     	}
     	return -1;
-    }
+  }
 
-    $scope.getVocLabel = function(value){
-    	return value;
+  $scope.getVocLabel = function(value){
+    	//TODO
+        return value;
     	//return value.charAt(0).toUpperCase() + value.slice(1);
-    }
+  }
 
-    $scope.editAttributes = function(child, fieldid){
+  $scope.editAttributes = function(child, fieldid){
 
-	    var attrsModalInstance = $modal.open({
-	      templateUrl: $('head base').attr('href')+'views/modals/mods_edit_attributes.html',
-	      controller: EditAttributesModalInstanceCtrl,
-	      scope: $scope,
-	      resolve: {
-	        params: function () {
-	          return {
-	        	  attributes: child.attributes,
-	        	  xmlname: child.xmlname,
-	        	  label: child.label,
-	        	  fieldid: fieldid
-	          }
-	        }
+	 var attrsModalInstance = $modal.open({
+	       templateUrl: $('head base').attr('href')+'views/modals/mods_edit_attributes.html',
+	       controller: EditAttributesModalInstanceCtrl,
+	       scope: $scope,
+	       resolve: {
+	                params: function () {
+	                             return {
+	        	                   attributes: child.attributes,
+	        	                   xmlname: child.xmlname,
+	        	                   label: child.label,
+	        	                   fieldid: fieldid
+	                              }
+	               }
 	      }
-	    });
-
-	}
+	});
+  }
   
-    $scope.getBookmarks = function () {
+  $scope.getBookmarks = function () {
             var promise = BookmarkService.getBookmark();
     	    $scope.loadingTracker.addPromise(promise);
     	    promise.then(
@@ -700,36 +479,35 @@ $scope.saveTemplateAs = function () {
 			$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
            	}
     	   ); 
-    
   } 
 
 });
 
 var EditAttributesModalInstanceCtrl = function ($scope, $modalInstance, params) {
 
-  $scope.child_attributes = params.attributes;
-  $scope.child_xmlname = params.xmlname;
-  $scope.child_label = params.label;
-  $scope.child_fieldid = params.fieldid;
+      $scope.child_attributes = params.attributes;
+      $scope.child_xmlname = params.xmlname;
+      $scope.child_label = params.label;
+      $scope.child_fieldid = params.fieldid;
 
-  $scope.cancel = function () {
+      $scope.cancel = function () {
 	  $modalInstance.dismiss('cancel');
-  };
+      };
 };
 
 var TemplateModalInstanceCtrl = function ($scope, $modalInstance, currenttitle) {
 
-  $scope.currenttitle = currenttitle;
+      $scope.currenttitle = currenttitle;
 
-  $scope.newtemplatetitle = { value: currenttitle };
+      $scope.newtemplatetitle = { value: currenttitle };
 
-  $scope.ok = function () {
+      $scope.ok = function () {
 	  $modalInstance.close($scope.newtemplatetitle.value);
-  };
+      };
 
-  $scope.cancel = function () {
+      $scope.cancel = function () {
 	  $modalInstance.dismiss('cancel');
-  };
+      };
 };
 
 

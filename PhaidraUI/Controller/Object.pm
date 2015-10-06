@@ -16,9 +16,8 @@ sub get_object_mods{
       
 	my $self = shift;
 
-	#my $pid = 'o:13690';
+
 	my $pid = $self->stash('pid');
-	$self->app->log->debug("o get_object_mods pid".$self->app->dumper($self->stash('pid')));
 	my $url = Mojo::URL->new;
 	$url->scheme('https');
 	my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
@@ -36,7 +35,6 @@ sub get_object_mods{
   		my ($ua, $tx) = @_;
 	  	#$self->app->log->debug("get_object_mods tx".$self->app->dumper($tx));
 	  	if (my $res = $tx->success) {
-	  		#$self->app->log->debug("get_object_mods success".$self->app->dumper($res->json));
 	  		$self->render(json => $res->json, status => 200 );
 	  	}else{
 		 	my ($err, $code) = $tx->error;
@@ -60,7 +58,6 @@ sub save_object_mods{
 	my $payload = $self->req->json;
         my $mods = $payload->{'mods'};
 	
-	$self->app->log->debug("mods pid:".$self->app->dumper($pid));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -74,25 +71,22 @@ sub save_object_mods{
 	}
 	
 	my $token = $self->load_token;
-	$self->app->log->debug("save_object_mods mods:".$self->app->dumper(encode_json($mods)));
-	$self->app->log->debug("save_object_mods token:".$self->app->dumper($token));
+
   	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
-  		form => { metadata => encode_json($mods) }, 
+  		form => { metadata => encode_json($mods) },
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
 	
 		  	if (my $res = $tx->success) {
 		  		$self->render(json => $res->json, status => 200 );
-		  		$self->app->log->debug("save_object_mods success123:".$self->app->dumper($res->json));
 		  	}else {
 			 	my ($err, $code) = $tx->error;	 
-			 	$self->app->log->debug("save_object_mods error:".$self->app->dumper($tx->error));
 			 	if(exists($tx->res->json->{alerts})) {
 			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 			 	}else{
 			  		$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
 			 	}
-			}		
+			}
   		}
   	);
       
@@ -103,7 +97,6 @@ sub get_object_uwmetadata {
 	
 	my $self = shift;  	
 	my $pid = $self->stash('pid');
-	$self->app->log->debug('get_object_uwmetadata pid:',$self->stash('pid'));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -118,17 +111,12 @@ sub get_object_uwmetadata {
 	$url->query({mfv => $self->app->config->{phaidra}->{metadata_format_version}});
 	
 	my $token = $self->load_token;	
-	$self->app->log->debug('get_object_uwmetadata00');
   	$self->ua->get($url => {$self->app->config->{authentication}->{token_header} => $token} => sub {
   		my ($ua, $tx) = @_;
-              $self->app->log->debug('get_object_uwmetadata11');
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
-	  		# $self->app->log->debug('get_object_uwmetadata', $self->app->dumper($res->json));
-	  		$self->app->log->debug('get_object_uwmetadata');
 	  	}else {
-	  	        $self->app->log->error('get_object_uwmetadata error: ', $self->app->dumper($tx->error)) if defined $tx->error;
-	  	        #$self->app->log->debug($self->app->dumper($tx));	
+	  	        $self->app->log->error('get_object_uwmetadata error: ', $self->app->dumper($tx->error)) if defined $tx->error;	
 			my ($err, $code) = $tx->error;
 			if($tx->res->json){	  
 				if(exists($tx->res->json->{alerts})) {
@@ -151,8 +139,6 @@ sub save_object_uwmetadata {
 	my $payload = $self->req->json;
         my $uwmetadata = $payload->{'uwmetadata'};
 	
-
-	$self->app->log->debug("save_object_uwmetadata pid:".$self->app->dumper($pid));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -166,9 +152,7 @@ sub save_object_uwmetadata {
 	}
 	
 	my $token = $self->load_token;
-	$self->app->log->debug("save_object_uwmetadata token:".$self->app->dumper($token));
-  	#$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token, 'Content-Type' => 'multipart/form-data'},
-  	#	form => { metadata =>   { content => encode_json($uwmetadata) } }, 
+
   	$self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
   		form => { metadata => encode_json($uwmetadata) }, 
   	 	sub { 	
@@ -176,10 +160,8 @@ sub save_object_uwmetadata {
 	
 		  	if (my $res = $tx->success) {
 		  		$self->render(json => $res->json, status => 200 );
-		  		$self->app->log->debug("save_object_uwmetadata success123:".$self->app->dumper($res->json));
 		  	}else {
 			 	my ($err, $code) = $tx->error;	 
-			 	$self->app->log->debug("save_object_uwmetadata error:".$self->app->dumper($tx->error));
 			 	if(exists($tx->res->json->{alerts})) {
 			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 			 	}else{
@@ -192,24 +174,23 @@ sub save_object_uwmetadata {
 }
 
 sub uwmetadataeditor {
-    my $self = shift;  	
-    $self->stash(uwmetadataeditor_mode => 'object');
     
-     $self->app->log->info("uwmetadata_template_editor owner pid: ".$self->app->dumper($self->stash('pid')));
+    my $self = shift;  	
+    
+    $self->stash(uwmetadataeditor_mode => 'object');
     
     my $object_model = PhaidraUI::Model::Object->new;	
     my $owner = $object_model->get_owner($self, $self->stash('pid'));
-    $self->app->log->info("uwmetadata_template_editor owner: ".$self->app->dumper($owner));
     my $init_data = { pid => $self->stash('pid'), current_user => $self->current_user, owner => $owner, uwmetadataeditor_mode => 'object' };
     $self->stash(init_data => encode_json($init_data));
     $self->stash(init_data_perl => $init_data);
-    #$self->app->log->info("uwmetadata_template_editor: ".$self->app->dumper($init_data));
+
     $self->render('uwmetadataeditor/uwmetadataeditor');
-    #$self->render('templates/uwmetadata/uwmetadataeditor_experiment');
-    #$self->render('uwmetadataeditor');
+
 }
 
 sub uwmetadata_template_editor {
+    
     my $self = shift;
     
     my $object_model = PhaidraUI::Model::Object->new;
@@ -221,6 +202,7 @@ sub uwmetadata_template_editor {
     #$self->render('uwmetadataeditor');
     $self->render('uwmetadataeditor/uwmetadataeditor');	
 }
+
 sub modseditor {
      my $self = shift;
      $self->stash(mods_mode => 'object');
@@ -244,19 +226,10 @@ sub mods_template_editor {
     $self->stash(mods_mode => 'template');
     
     my $object_model = PhaidraUI::Model::Object->new;
-    
-    #my $init_data = { tid => $self->stash('tid'), current_user => $self->current_user };
-    #$self->stash(init_data => encode_json($init_data));  	 
-    
-    ###my $cache_model = PhaidraUI::Model::Cache->new;
-    ###my $res = $cache_model->get_mods_tree($self);
-    #$self->app->log->info("mods_template_editor: ".$self->app->dumper($res));
-    #my $resJson = decode_json($res) if defined $res;
+
     my $init_data = { tid => $self->stash('tid'), current_user => $self->current_user, mods_mode => 'template' };
     $self->stash(init_data => encode_json($init_data)); 
     $self->stash(init_data_perl => $init_data);
-    
-    ###$self->stash(init_data => encode_json($res));
     
     $self->render('modseditor/modseditor');	
 }
@@ -281,11 +254,11 @@ sub search {
 sub view {
       
       my $self = shift;
-      #my $int = {pid => $self->stash('pid')}; #get
-      #my $int = {pid => $self->param('pid')};  #post
       
       my $payload = $self->req->json;
-      #my $template = $payload->{'pidExtended'};  
+
+      
+=head1 test      
       
       ############################## start test ############################
       ######################################################################
@@ -308,17 +281,15 @@ sub view {
       
       ############################## end test ###############################
       #######################################################################
-      #my $pid = $data->{pid};
-      #my $pid = decode_json($self->param('pid')) if defined $self->param('pid');
+      
+=cut      
+      
       my $pid;
       $pid = $self->param('pid') if defined $self->param('pid');
       if(not defined $pid){
            $pid = $self->stash('pid') if defined $self->stash('pid');
       }
-      #$data->{pidExtended} = decode_json($pid);
-      $self->app->log->info("view data9999: ".$pid);
-      $data = decode_json($pid);
-      
+      my $data = decode_json($pid);
       
       my $object_model = PhaidraUI::Model::Object->new;	
       my $owner = $object_model->get_owner($self, $data->{pid});
@@ -343,7 +314,6 @@ sub get_rights{
 	my $pid = $self->stash('pid');
 
 	
-	$self->app->log->debug("get_rights pid:".$self->app->dumper($pid));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -359,12 +329,10 @@ sub get_rights{
   	my $get = $self->ua->get($url);  	
   	if (my $r = $get->success) {
   		$rights = $r->json;
-  		$self->app->log->debug("get_rights result:".$self->app->dumper($rights));
   		$self->render(json => $r->json, status => 200 );
   	}
 	else {
 	      my ($err, $code) = $get->error;
-	      $self->app->log->error("Cannot get rights data. Errorcode: $code, Error:".$self->app->dumper($err));
 	      if(exists($get->res->json->{alerts})) {
 		     $self->render(json => { alerts => $get->res->json->{alerts} }, status =>  $code ? $code : 500);
 	      }else{
@@ -398,17 +366,20 @@ sub post_rights{
     my $token = $self->load_token;
 
     $self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
-  		form => {metadata => $rights}, #mf ... TODO !!!
+  		form => {metadata => $rights},
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
-	                $self->app->log->debug("save_object_rights xxx:".$self->app->dumper($rights));
 		  	if (my $res = $tx->success) {
+		  		my $successful;
+		  		$successful->{"msg"}  = "Rights for $pid saved successfuly";
+		  		$successful->{"type"} = "success";
+		  		$res->json->{"alerts"} = [];
+		  		push($res->json->{"alerts"},$successful); 
+		  		#$self->flash(alerts => \@arr);
 		  		$self->render(json => $res->json, status => 200 );
-		  		$self->app->log->debug("save_object_rights success345:".$self->app->dumper($res->json));
+		  		
 		  	}else {
-			 	$self->app->log->debug("save_object_rights fail1:");
 			 	my ($err, $code) = $tx->error;
-			 	$self->app->log->debug("save_object_rights err:",$self->app->dumper($err),"code:", $code);
 			 	if(exists($tx->res->json->{alerts})) {
 			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 			 	}else{
@@ -421,18 +392,38 @@ sub post_rights{
     
 }
 
+sub get_geo {
+        
+        my $self = shift;
+        my $pid = $self->stash('pid');
 
-#TODO bring it back to controler because of 'status'
-sub get_geo{
-    
-    my $self = shift;
-    
-    my $object_model = PhaidraUI::Model::Object->new;	
-    my $geo = $object_model->get_geo($self, $self->stash('pid'));
-    
-    $self->render(json =>  $geo , status => 200);
-    
+        my $res = { alerts => [], status => 200 };
+        
+        my $url = Mojo::URL->new;
+        $url->scheme('https');
+        my @base = split('/',$self->app->config->{phaidra}->{apibaseurl});
+        $url->host($base[0]);
+        if(exists($base[1])){
+                $url->path($base[1]."/object/$pid/geo");
+        }else{
+                $url->path("/object/$pid/geo");
+        }
+        my $geo;
+        my $get = $self->ua->get($url);    
+        if (my $r = $get->success) {
+                $geo = $r->json;
+                $self->render(json =>  $geo , status => 200);
+        }
+        else {
+              my ($err, $code) = $get->error;
+              if(exists($get->res->json->{alerts})) {
+                     $self->render(json => { alerts => $get->res->json->{alerts} }, status =>  $code ? $code : 500);
+              }else{
+                     $self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+              }
+        }
 }
+
 
 sub post_geo{
    
@@ -441,20 +432,6 @@ sub post_geo{
     my $payload = $self->req->json;
     my $geo = $payload->{'geo'};
     my $pid = $self->stash('pid');
-    
-    #my $object_model = PhaidraUI::Model::Object->new;	
-    #$geo = $object_model->post_geo($self, $pid, $geo);
-    
-    #$self->render(json => { geo => $geo }, status => 200);
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     my $url = Mojo::URL->new;
@@ -470,30 +447,21 @@ sub post_geo{
     my $token = $self->load_token;
 
     $self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
-  		form => {metadata => $geo}, #mf ... TODO !!!
+  		form => {metadata => $geo}, 
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
-	                $self->app->log->debug("save_object_geo xxx:");
 		  	if (my $res = $tx->success) {
 		  		$self->render(json => $res->json, status => 200 );
-		  		$self->app->log->debug("save_object_geo success345:".$self->app->dumper($res->json));
 		  	}else {
-			 	$self->app->log->debug("save_object_geo fail1:");
 			 	my ($err, $code) = $tx->error;
-			 	$self->app->log->debug("save_object_geo err:",$self->app->dumper($err),"code:", $code);
-			 	if(exists($tx->res->json->{alerts})) {
-			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
-			 	}else{
-			  		$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
-			 	}
-			 	
+                                if(exists($tx->res->json->{alerts})) {
+                                          $self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+                                }else{
+                                          $self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+                                }
 			}		
   		}
-  	);
-    
-    
-    
-    
+  	); 
 }
 
 sub get_dublincore{
@@ -501,8 +469,6 @@ sub get_dublincore{
    	my $self = shift;
 	my $pid = $self->stash('pid');
 
-	
-	$self->app->log->debug("get_dublincore pid:".$self->app->dumper($pid));
 	my $res = { alerts => [], status => 200 };
 	
 	my $url = Mojo::URL->new;
@@ -518,7 +484,6 @@ sub get_dublincore{
   	my $get = $self->ua->get($url);  	
   	if (my $r = $get->success) {
   		$dc = $r->json;
-  		$self->app->log->debug("get_rights result:".$self->app->dumper($dc));
   		$self->render(json => $r->json, status => 200 );
   	}
 	else {
@@ -551,7 +516,6 @@ sub submit_new_object{
      my $self = shift;
      
      my $object_type = $self->stash('object_type');
-     $self->app->log->debug("submit_new_object:",$self->app->dumper($object_type));
      
      my $init_data = { current_user => $self->current_user, object_type => $object_type };
      $self->stash(init_data => encode_json($init_data));
@@ -576,7 +540,6 @@ sub submit_create_object{
     my $upload;
     if($object_type eq 'picture'){
          $upload = $self->req->upload('img');
-         $self->app->log->debug("new_picture3333 upload:",$self->app->dumper($upload)  );
          if(exists($base[1])){
     	       $url->path($base[1]."/picture/create");
          }else{
@@ -607,22 +570,17 @@ sub submit_create_object{
     	       $url->path("/document/create");
          }
     }
-    #$self->app->log->debug("new_picture2 uwmetadata:",$self->app->dumper(decode_json($uwmetadata))  );
-    #$self->app->log->debug("new_picture2 upload:",$self->app->dumper($upload)  );
+
     my $token = $self->load_token;
     $self->ua->post($url => {$self->app->config->{authentication}->{token_header} => $token},
   		form => {file => {file=> $upload->asset}, metadata => $uwmetadata},
   	 	sub { 	
 	  		my ($ua, $tx) = @_;
-	                $self->app->log->debug("new_picture2 xxx:");
 		  	if (my $res = $tx->success) {
 		  		$self->stash(init_data => encode_json($res->json));
 		  		$self->render('objects/submit/successful');
-		  		#$self->app->log->debug("new_picture2 success345:".$self->app->dumper(encode_json($res->json)));
 		  	}else {
-			 	#$self->app->log->debug("new_picture2 fail1:");
 			 	my ($err, $code) = $tx->error;
-			 	#$self->app->log->debug("new_picture2 err:",$self->app->dumper($err),"code:", $code);
 			 	if(exists($tx->res->json->{alerts})) {
 			 		$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
 			 	}else{

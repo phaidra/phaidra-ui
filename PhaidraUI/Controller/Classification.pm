@@ -4,11 +4,10 @@ use strict;
 use warnings;
 use v5.10;
 use Mojo::JSON qw(encode_json decode_json);
-#use Mojo::Util;
 use base 'Mojolicious::Controller';
 use PhaidraUI;
 use PhaidraUI::Model::Cache;
-#use PhaidraUI::Model::Session::Store::Mongo;
+
 
 use Data::Dumper;
 
@@ -39,21 +38,16 @@ sub toggle_classif {
 	}else{
 		$self->mango->db->collection('user.classifications')->update({username => $username}, { '$set' => {username => $username}, '$addToSet' => { classifications => $uri } }, {upsert => 1});
 	}
-       $self->app->log->info("toggle_classification");
 	$self->render(json => { alerts => [] }, status => 200);
 
 }
 
-sub get_mods_classif {
+sub get_mods_classif_labels {
 	my $self = shift;
 	
-
-	
-
 	my $payload = $self->req->json;
         my $mods = $payload->{'mods'};  
         $mods = decode_json($mods);
-        #$self->app->log->info("mods555".$self->app->dumper($mods));
         
         unless(defined($mods) || $mods eq ''){
 		$self->render(json => { classifications => [] }, status => 200);
@@ -78,6 +72,7 @@ sub get_mods_classif {
 					$valueuri = $a->{ui_value} if defined $a->{ui_value};
 				}
 			}
+			
 			if($authuri eq 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/classification' && $valueuri ne ''){
 				push @classes, $valueuri;
 			}
@@ -91,24 +86,27 @@ sub get_mods_classif {
 		my $class = $cache_model->resolve_class_uri($self, $uri);
 		push @clss, $class;
 	}
-
 	$self->render(json => { classifications => \@clss }, status => 200);
 }
 
 sub get_classif_from_uris{
-
+      
         my $self = shift;
-    
+        
+
         my $valueURIs = $self->param('valueuris');
         $valueURIs  = decode_json $valueURIs;
     
     	my $cache_model = PhaidraUI::Model::Cache->new;	
-
+	
 	my @clss;
+	my $i = 1;
 	foreach my $uri (@$valueURIs){
 		my $class = $cache_model->resolve_class_uri($self, $uri);
+		$i++;
 		push @clss, $class;
 	}
+	
 	$self->render(json => { classifications => \@clss }, status => 200);
 }
 
@@ -134,13 +132,14 @@ sub get_user_classif {
 	#}
 
 	# user defined classification
+	
+	# use user.settings instead of user.classifications ?
 	my $r = $self->mango->db->collection('user.classifications')->find_one({username => $username});
 	foreach my $uri (@{$r->{classifications}}){
 		my $class = $cache_model->resolve_class_uri($self, $uri);
 		$class->{type} = 'user';
 		push @clss, $class;
 	}
-	#$self->app->log->debug( 'get_classifications11122233'.$self->app->dumper(\@clss));
 	$self->render(json => { classifications => \@clss }, status => 200);
 }
 

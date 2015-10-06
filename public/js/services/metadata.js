@@ -149,10 +149,10 @@ angular.module('metadataService', [])
 		    });
 	   },
 	  //get clasificiation data from mods 
-	  getModsClassifications: function(mods) {
+	  getModsClassifiLabes: function(mods) {
 		    return $http({
 		        method  : 'post',
-		        url     : $('head base').attr('href')+'classification/mods',
+		        url     : $('head base').attr('href')+'classification/mods/labels',
 		        data    : { mods: mods }
 		    });
 	  },

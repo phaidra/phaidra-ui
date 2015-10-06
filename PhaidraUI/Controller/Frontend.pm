@@ -109,7 +109,7 @@ sub get_users {
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
 	  	}else {
-	  	        $self->app->log->error('get_users: ', $self->app->dumper($tx->error)) if defined $tx->error;	
+	  	        $self->app->log->error('error get_users: ', $self->app->dumper($tx->error)) if defined $tx->error;	
 			my ($err, $code) = $tx->error;
 			if($tx->res->json){	  
 				if(exists($tx->res->json->{alerts})) {
@@ -130,10 +130,6 @@ sub get_faculty_id_from_department {
        
         my $id = $self->param('id');
         
-        
-        $self->app->log->debug("get_faculty_id_from_department id:".$self->param('id'));
-
-        
         my $token = $self->load_token;
 	
 	my $url = Mojo::URL->new;
@@ -152,8 +148,7 @@ sub get_faculty_id_from_department {
   	      my ($ua, $tx) = @_;
 	  	if (my $res = $tx->success) {
 	  		$self->render(json => $res->json, status => 200 );
-	  	}else {
-	  	        $self->app->log->error('get_faculty_id_from_department: ', $self->app->dumper($tx->error)) if defined $tx->error;	
+	  	}else {	
 			my ($err, $code) = $tx->error;
 			if($tx->res->json){	  
 				if(exists($tx->res->json->{alerts})) {
@@ -165,12 +160,5 @@ sub get_faculty_id_from_department {
 		}
   	});
 }
-
-
-
-
-
-
-
 
 1;

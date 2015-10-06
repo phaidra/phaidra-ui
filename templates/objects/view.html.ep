@@ -116,14 +116,14 @@
 		                                       <fieldset data-ng-cloak data-ng-show = 'mods' ng-disabled="form_disabled">
 		                                             <tabset>
 		                                                <!--<tab data-ng-repeat="modsObject in mods.tree">-->
-		                                                <tab data-ng-repeat="modsObject in mods.metadata.mods">
+		                                                <tab data-ng-repeat="modsObject in mods.metadata.mods" data-ng-if="modsObject.xmlname != 'classification'">
 				      		                       <tab-heading>
 	        					                      <span tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{modsObject.label}}</span>        					
 	      					                       </tab-heading>
 	      					                       	<table class="table">
 		                                                              <tbody>
 		                                                                   
-		                                                                      <div class="well" data-ng-if="modsObject.ui_value != undefined">
+		                                                                      <div  class="well" data-ng-if="modsObject.ui_value != undefined">
                                                                                                        <label> {{modsObject.label}}:</label>
                                                                                                        <span>{{modsObject.ui_value}}</span>
                                                                                        </div>
@@ -132,47 +132,7 @@
 	                                                                                       <div  data-ng-repeat="ch in modsObject.children" data-ng-init="ch1 = ch" data-ng-include="$('head base').attr('href')+'views/partials/mods/display_renderer.html'">
 	                                                                                      
 	                                                                                       </div>
-	                                                                              </div>
-	                                                                              
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                      
-		                                                                     <!--
-		                                                                      <tr data-ng-repeat="modsObjectChild in modsObject.children" ng-if="modsObjectChild.ui_value">
-		                                                                              <td bind-once >{{modsObjectChild.label}}</td>
-		                                                                              <td bind-once >
-		                                                                                    {{modsObjectChild.ui_value}}
-		                                                                                    	<table class="table">
-		                                                                                    	        <tbody>
-		                                                                                    	              <tr data-ng-repeat="modsObjectChild2 in modsObjectChild.children" ng-if="modsObjectChild2.ui_value">
-		                                                                                    	                   <td bind-once >{{modsObjectChild2.label}}</td>
-		                                                                                    	                   <td bind-once >
-		                                                                                    	                        {{modsObjectChild2.ui_value}}
-		                                                                                    	                         <table class="table">
-		                                                                                    	                                   <tbody>
-		                                                                                    	                                           <tr data-ng-repeat="modsObjectChild3 in modsObjectChild2.children" ng-if="modsObjectChild3.ui_value">
-		                                                                                    	                                                  <td bind-once >{{modsObjectChild3.label}}</td>
-		                                                                                    	                                                  <td bind-once >{{modsObjectChild3.ui_value}}</td>
-		                                                                                    	                                           </tr>
-		                                                                                    	                                   </tbody>
-		                                                                                    	                         </table>
-		                                                                                    	                   </td>
-		                                                                                    	              </tr>
-		                                                                                    	        </tbody>
-		                                                                                    	</table>
-		                                                                             </td>
-		                                                                      </tr>
-		                                                                      -->
-		                                                                     
-		                                                                     
-		                                                                     
+	                                                                              </div>		                                                                     
 		                                                              </tbody>
 		                                                      </table>
 	      				                         </tab>	  
@@ -207,7 +167,7 @@
 	        					                             <span phaidra-help tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>Uwmetadata</span>        					
 	      					                       </tab-heading>
 				      		                       <span > 
-				      		                           <div ng-if="uwmetaClassifications" class="well navbar-form">
+				      		                           <div ng-if="uwmetaClassifications" data-ng-click="editUwmeta(pid)" class="well navbar-form">
 				      		                                  <a class="btn btn-primary navbar-btn">Edit Uwmetadata Classifications</a>
 				      		                           </div>
 				      		                           <div class="class-panel" data-ng-repeat="item in uwmetaClassifications">
@@ -224,7 +184,7 @@
 	        					                       <span phaidra-help  tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>Mods</span>        					
 	      					                     </tab-heading>
 				      		                     <span> 
-				      		                         <div ng-if="modsClassifications" class="well navbar-form">
+				      		                         <div ng-if="modsClassifications" data-ng-click="editMods(pid)" class="well navbar-form">
 				      		                              <a class="btn btn-primary navbar-btn">Edit Mods Classifications</a>
 				      		                         </div>
 				      		                         <div class="class-panel" data-ng-repeat="item in modsClassifications">
@@ -233,7 +193,7 @@
 				                                                               <strong bind-once >{{item.labels.en}}</strong> <small bind-once >{{item.upstream_identifier}}</small>
 			                                                                </span>
 			                                                         <div class="clearfix"></div>
-		                                                        </div>
+		                                                         </div>
 				      		                     <span>              
 	      				                         </tab>
 		                                             </tabset>

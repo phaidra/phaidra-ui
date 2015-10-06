@@ -9,10 +9,7 @@
 %= include 'alerts'
 
 <div class="container" data-ng-controller="SubmitCtrl"  data-ng-init="init('<%= $init_data %>')">
-     <h1 ng-click="testMeta()" >Create {{object_type}}</h1>
-     <div ng-click="testme()">test</div>
-     <div ng-click="testMeta2()">testMeta2 bbb</div>
-     
+     <h1>Create {{object_type}}</h1>
      <form class="well" action="submit/create" enctype="multipart/form-data" method="post">
           <table  class="table">
                 <tbody>
@@ -79,10 +76,12 @@
                     <tr ng-if="metadata != null" data-ng-repeat="role in selectedRoles track by $index">
                               <th>
                                    <select ng-if="metadata == 'mods'" ng-model="role.URI" >
+                                        <option value="">Please choose</option>
                                         <option ng-if="role.URI == ro.label"  selected data-ng-repeat="ro  in roles | orderBy:'label'" value="{{ro.id}}">{{ro.label}}</option>
                                         <option ng-if="role.URI != ro.label"  data-ng-repeat="ro  in roles | orderBy:'label'" value="{{ro.id}}">{{ro.label}}</option>
                                    </select>
                                    <select ng-if="metadata == 'uwmetadata'" ng-model="role.URI" >
+                                        <option value="">Please choose</option>
                                         <option ng-if="role.URI == ro.labels.en"  selected data-ng-repeat="ro  in uwmetadataTree[1].children[4].children[0].vocabularies[0].terms | orderBy:'labels.en'" value="{{ro.uri}}">{{ro.labels.en}}</option>
                                         <option ng-if="role.URI != ro.labels.en"  data-ng-repeat="ro  in uwmetadataTree[1].children[4].children[0].vocabularies[0].terms | orderBy:'labels.en'" value="{{ro.uri}}">{{ro.labels.en}}</option>
                                    </select>

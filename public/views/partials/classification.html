@@ -17,8 +17,9 @@
 				</span>
 			</span>
 			<span class="btn-group pull-right class-panel-buttons">
-			    <button class="btn btn-default" ng-click="toggleClassification(tpath.children[tpath.children.length-1].ui_value)"><span class="glyphicon glyphicon-star star-class" ng-class="{'star-class-fav': isMyClass(tpath.children[tpath.children.length-1].ui_value)}"></span></button>
-			    <button class="btn btn-primary" ng-click="removeClassFromObject($index)"><span class="glyphicon glyphicon-minus-sign"></span></button>
+			     <button class="btn btn-default" ng-click="toggleClassification(tpath.children[tpath.children.length-1].ui_value)"><span class="glyphicon glyphicon-star star-class" ng-class="{'star-class-fav': isMyClass(tpath.children[tpath.children.length-1].ui_value)}"></span></button>
+			     <button class="btn btn-primary" ng-click="removeClassFromObject($index)"><span class="glyphicon glyphicon-minus-sign"></span></button>
+			     <button class="btn btn-primary" ng-click="removeClassFromObject($index)"><span class="glyphicon glyphicon-minus-sign"></span> Remove and save</button>
 			</span>
 			<div class="clearfix"></div>
 		</div>
@@ -30,7 +31,8 @@
 				<strong>{{item.labels.en}}</strong> <small>{{item.upstream_identifier}}</small>
 			</span>
 			<span class="btn-group pull-right class-panel-buttons">
-			  <button class="btn btn-primary" ng-click="removeClassFromObject($index)"><span class="glyphicon glyphicon-minus-sign"></span> Remove and save</button>
+			      <button class="btn btn-default" ng-click="toggleClassification(tpath.children[tpath.children.length-1].ui_value)"><span class="glyphicon glyphicon-star star-class" ng-class="{'star-class-fav': isMyClass(tpath.children[tpath.children.length-1].ui_value)}"></span></button>
+                              <button class="btn btn-primary" ng-click="removeClassFromObject($index)"><span class="glyphicon glyphicon-minus-sign"></span></button>
 			</span>
 			<div class="clearfix"></div>
 		</div>
@@ -91,7 +93,7 @@
 		   		<span>Browse</span>
 		   	</tab-heading>
 
-
+                       
 			<accordion close-others="false">
 				<accordion-group heading="{{class.labels.en}}" data-ng-repeat="class in class_roots" data-ng-click="browse_class_opened(class)">
 

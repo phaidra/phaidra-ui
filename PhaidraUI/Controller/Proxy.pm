@@ -5,6 +5,7 @@ use warnings;
 use v5.10;
 use base 'Mojolicious::Controller';
 use Mojo::JSON qw(encode_json decode_json);
+use PhaidraUI::Model::Cache;
 
 use Data::Dumper;
 $Data::Dumper::Indent= 1; 
@@ -554,7 +555,7 @@ sub get_mods_tree {
     
     my $cache_model = PhaidraUI::Model::Cache->new;
     my $res = $cache_model->get_mods_tree($self);
-    $self->app->log->info("get_uwmetadata_tree: ".$self->app->dumper($res));
+    #$self->app->log->info("get_uwmetadata_tree: ".$self->app->dumper($res));
     #my $resJson = decode_json($res) if defined $res;
     
     
@@ -599,7 +600,7 @@ sub get_taxonpath {
 sub get_search {
 	my $self = shift;  
 	
-	my $q = $self->param('q');
+	my $query = $self->param('q');
 	
 	my $res = { alerts => [], status => 200 };
 	
@@ -613,7 +614,7 @@ sub get_search {
 		$url->path("/terms/search");
 	}
 	
-	$url->query({q => $q});
+	$url->query({"q" => $query});
 		
   	$self->ua->get($url => sub { 	
   		my ($ua, $tx) = @_;
@@ -637,7 +638,7 @@ sub get_terms_children {
 	
 	my $uri = $self->param('uri');
 	
-	$self->app->log->debug('get_terms_children uri', $self->app->dumper($uri));
+	$self->app->log->debug('get_terms_children uri:'.$uri);
 	
 	my $res = { alerts => [], status => 200 };
 	
@@ -656,13 +657,23 @@ sub get_terms_children {
   	$self->ua->get($url => sub { 	
   		my ($ua, $tx) = @_;
 	  	if (my $res = $tx->success) {
+	  	        $self->app->log->debug('get_terms_children success');
 	  		$self->render(json => $res->json, status => 200 );
 	  	}else {
-		 	my ($err, $code) = $tx->error;	  
-		  	if(exists($tx->res->json->{alerts})) {
-			 	$self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+		 	 my ($err, $code) = $tx->error;	  
+		  	 #$self->app->log->debug('get_terms_children tx', $self->app->dumper($tx));
+		  	 $self->app->log->debug('get_terms_children tx->res1', $self->app->dumper($tx->res));
+		  	 # http://127.0.0.1:3000/proxy/terms/children?uri=http:%2F%2Fphaidra.univie.ac.at%2FXML%2Fmetadata%2Flom%2FV1.0%2Fclassification%2Fcls_6%2F78739
+		  	 #$self->app->log->debug('get_terms_children tx->res->json', $self->app->dumper($tx->res->json));
+		  	 $self->app->log->debug('get_terms_children tx->res2', $self->app->dumper($tx->res));
+		  	 if( $tx->res){
+		  	     if(exists($tx->res->json->{alerts})) {
+			 	    $self->render(json => { alerts => $tx->res->json->{alerts} }, status =>  $code ? $code : 500);
+			     }else{
+			  	    $self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			     }
 			 }else{
-			  	$self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
+			        $self->render(json => { alerts => [{ type => 'danger', msg => $err }] }, status =>  $code ? $code : 500);
 			 }
 		}
 		

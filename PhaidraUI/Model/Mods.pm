@@ -8,6 +8,7 @@ use Storable qw(dclone);
 use base qw/Mojo::Base/;
 
 sub mods_fill_tree {
+
 	my $self = shift;
 	my $c = shift;
 	# what was saved in db
@@ -19,12 +20,12 @@ sub mods_fill_tree {
 	my $tree_copy = dclone($tree);
 
 	$self->create_mods_nodes_hash($c, $tree_copy, \%mods_nodes_hash, '');
-
+       
 	# remove the relatedItem node from the empty tree
 	$self->remove_relatedItem_node($c, $tree);
 
 	$self->mods_fill_tree_rec($c, $mods, $tree, \%mods_nodes_hash, '');
-
+        #$c->app->log->info("mods567890:".$c->app->dumper($tree));
 	$self->unset_used_node_flag($c, $tree);
 
 }
@@ -43,9 +44,10 @@ sub remove_relatedItem_node {
 sub mods_fill_tree_rec {
 	my $self = shift;
 	my $c = shift;
-	my $read_children = shift;
-	my $mods_tree = shift;
-	my $mods_nodes_hash = shift;
+	my $read_children = shift; # this is input from mongoDb
+	#$c->app->log->info("mods_abc:".$c->app->dumper($read_children));
+	my $ mods_tree = shift; #this is result
+	my $mods_nodes_hash = shift; 
 	my $path = shift;
 
 	my $i = 0;
@@ -87,7 +89,8 @@ sub mods_fill_tree_rec {
 			}
 
 			if(defined($n->{ui_value}) && $n->{ui_value} ne ''){
-				$current_mods_tree_node->{ui_value} = $n->{ui_value};
+				   #$c->app->log->info("mods_abc:".$c->app->dumper($n->{ui_value}));
+				   $current_mods_tree_node->{ui_value} = $n->{ui_value};
 			}
 
 			# copy attribute values
@@ -95,6 +98,7 @@ sub mods_fill_tree_rec {
 				if(defined($n_a->{ui_value}) && $n_a->{ui_value} ne ''){
 					foreach my $c_a (@{$current_mods_tree_node->{attributes}}){
 						if($n_a->{xmlname} eq $c_a->{xmlname}){
+                                                        $c->app->log->info("mods_def1:".$c->app->dumper($n_a->{ui_value}));
 							$c_a->{ui_value} = $n_a->{ui_value};
 						}
 					}
@@ -109,6 +113,7 @@ sub mods_fill_tree_rec {
 			if($current_mods_tree_node->{input_type} eq 'node'){
 				$current_mods_tree_node->{used_node} = 1;
 			}
+			#$c->app->log->info("mods_ghk:".$c->app->dumper($current_mods_tree_node));
 		}
 
 	}

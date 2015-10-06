@@ -30,6 +30,7 @@ app.controller('TemplatesCtrl',  function($scope, $rootScope, $modal, $location,
     $scope.init = function (initdata) {
 		
         $scope.initdata = angular.fromJson(initdata);
+        console.log('initdata template',$scope.initdata);
         $scope.current_user = $scope.initdata.current_user;		
         $scope.getAllTemplates();    	
     };
@@ -62,33 +63,7 @@ app.controller('TemplatesCtrl',  function($scope, $rootScope, $modal, $location,
             );
 	    });
     };	
-	
-    /*
-    $scope.deleteTemplate = function(tid){
-    	$scope.form_disabled = true;
-        var promise = MetadataService.deleteTemplate(tid);
-        $scope.loadingTracker.addPromise(promise);
-        promise.then(
-         	function(response) { 
-         		$scope.alerts = response.data.alerts;
-         		for(var i = 0 ; i < $scope.templates.length; i++){
-         			if($scope.templates[i]._id == tid){
-         				$scope.templates.splice(i,1);
-         			}
-         			
-         		}
-         		
-         		$scope.form_disabled = false;
-         	}
-         	,function(response) {
-         		$scope.alerts = response.data.alerts;
-         		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-         		$scope.form_disabled = false;
-         	}
-        );
-    };
-    */
-     
+	     
  $scope.getAllTemplates = function() {
      $scope.form_disabled = true;
      
@@ -98,8 +73,6 @@ app.controller('TemplatesCtrl',  function($scope, $rootScope, $modal, $location,
       	function(response) { 
       		$scope.alerts = response.data.alerts;
       		$scope.templates = response.data.templates;
-      		console.log('response.data.templates:', response.data.templates);
-		//console.log('response.data:', response.data);
 		$scope.form_disabled = false;
       	}
       	,function(response) {
@@ -118,7 +91,6 @@ app.controller('TemplatesCtrl',  function($scope, $rootScope, $modal, $location,
      promise.then(
       	function(response) { 
       		$scope.alerts = response.data.alerts;
-      		console.log('response.data.loadTemplate:', response.data);
 		if(typeof response.data.mods !== 'undefined' ){
 		    window.location = $('head base').attr('href')+'templates/mods/modseditor/'+tid;
 		}

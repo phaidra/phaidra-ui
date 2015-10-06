@@ -305,14 +305,11 @@ sub startup {
     $auth->route('template/:tid')                        ->via('get')    ->to('template#load');
     $auth->route('template/:tid')                        ->via('delete') ->to('template#delete');    
     
-    #$auth->route('template/:tid/geo')                    ->via('get')    ->to('template#get_geo');
-    #$auth->route('template/:tid/geo')                    ->via('post')   ->to('template#post_geo');
-    
 
     
     $auth->route('classification/get_user_classif')      ->via('get')    ->to('classification#get_user_classif');
     $auth->route('classification/toggle_classif')        ->via('post')   ->to('classification#toggle_classif');
-    $auth->route('classification/mods')                  ->via('post')   ->to('classification#get_mods_classif');
+    $auth->route('classification/mods/labels')           ->via('post')   ->to('classification#get_mods_classif_labels');
     $auth->route('classification/get_classif_from_uris') ->via('post')   ->to('classification#get_classif_from_uris');
     
     $auth->route('object/:pid/geo')                      ->via('get')    ->to('object#get_geo');

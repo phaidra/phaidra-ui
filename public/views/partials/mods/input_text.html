@@ -1,5 +1,5 @@
 
-<div class="form-group row" bo-class="{ 'input-text-multi': (!is_attribute && !hasLangAttr(child) && !(child.repeatable == 0)), 'input-text-lang-multi': (hasLangAttr(child) && !(child.repeatable == 0)), 'input-text-lang': !is_attribute && hasLangAttr(child), 'input-text': (is_attribute) }" >
+<div bindonce class="form-group row" bo-class="{ 'input-text-multi': (!is_attribute && !hasLangAttr(child) && !(child.repeatable == 0)), 'input-text-lang-multi': (hasLangAttr(child) && !(child.repeatable == 0)), 'input-text-lang': !is_attribute && hasLangAttr(child), 'input-text': (is_attribute) }" >
 
 	<label bo-if="!is_attribute" class="control-label col-sm-2" bo-class="{ 'text-muted': is_attribute }" bo-bind="child.label"><span class="grey" bo-show="child.ordered" bo-bind="child.data_order"></span></label>
 

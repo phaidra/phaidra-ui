@@ -11,7 +11,6 @@ use PhaidraUI::Model::Session::Store::Mongo;
 
 use Data::Dumper;
 
-#my $oid = Mango::BSON::ObjectID->new($tid);
 
 sub create{
             
@@ -72,7 +71,8 @@ sub add_to{
      while (my $bookmark = $datasetBookmarks->next) {
            $bookmarkPids = $bookmark->{'bookmarkPids'};
      }
-     if( !($pid ~~ @$bookmarkPids)  ){
+     #if( !($pid ~~ @$bookmarkPids)  ){ 
+     if( grep $_ eq $pid, @$bookmarkPids ) {
 	       push(@$bookmarkPids, $pid);
 	       $self->mango->db->collection('bookmarks')->update({"username" => $username, _id => $id},
 	                                                            {'$set' => { 

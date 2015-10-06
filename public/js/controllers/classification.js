@@ -8,83 +8,48 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	$scope.initdata = '';
 	$scope.current_user = '';
 
-	
+	$scope.clsns = 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/classification';
+
+        $scope.lastSelectedTaxons = {};
+
+        $scope.selectedmyclass = {};
+
+        $scope.myclasses = [];
+
+        $scope.searchclasses = [];
+        $scope.class_search = {query: ''};
+
+        $scope.class_roots = [];
+        $scope.class_roots_all = [];
+        
+        $scope.mods_classes = [];
+        $scope.uwmeta_classes = [];
+        
+  
+        
 	$scope.init = function (initdata) {
-	//$scope.init = function (initdata, mode) {
-		//$scope.mode = mode;
-		//$scope.mode = $scope.$parent.edit_mode;
-		$scope.edit_mode = $scope.$parent.edit_mode; //edit_mods/edit_uwmeta
+		
+                $scope.edit_mode = $scope.$parent.edit_mode; //edit_mods/edit_uwmeta
 		$scope.mode = $scope.$parent.mode;  //template/object
-		console.log('parent.mode',$scope.$parent.edit_mode);
+		
 		$scope.initdata = angular.fromJson(initdata);
 		$scope.current_user = $scope.initdata.current_user;
-		$scope.getClassifications();
-		$scope.getMyClassifications();  //project.settings in mongoDb, delete it?
-		if($scope.edit_mode == 'edit_mods'){
-		//if($scope.mode == 'edit_mods'){
-		    $timeout( function(){ $scope.getModsClassifications(); }, 1000); // $scope.$parent.fields is otherwise empty on intialization
-		    console.log('edit_modsxxxxxxxxxxxx');
-		}
+		$scope.getClassificationsList(); //list of classification that we support(Uni Vienna)(in drop down menu of classif.)
+		$scope.getMyClassifications();  //project.settings in mongoDb,favorite classification of the user
+                
+                console.log('edit_mode:',$scope.edit_mode,'mode:',$scope.mode);
 		console.log('classificationInit:',$scope.initdata);
 		
-    };
-    
-    
-    
-    $scope.clsns = 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/classification';
+        };
 
-    $scope.lastSelectedTaxons = {};
-
-    $scope.selectedmyclass = {};
-
-    $scope.myclasses = [];
-
-    $scope.searchclasses = [];
-    $scope.class_search = {query: ''};
-
-    $scope.class_roots = [];
-    $scope.class_roots_all = [];
-	
-    $scope.mods_classes = [];
-    $scope.uwmeta_classes = [];
-    //mf
-    /*
-    $scope.getUwmetaClassifications = function() {
-                 console.log('uwmeta21:', $scope.$parent.fields);
-                var uwmeta = angular.toJson($scope.$parent.fields);
-      		 var promise = MetadataService.getUwmetaClassifications(uwmeta);
-                 $scope.loadingTracker.addPromise(promise);
-                 promise.then(
-    		        function(response) {
-	                      console.log('getUwmetaClassifications22:', response.data);
-			       $scope.form_disabled = false;
-	                      $scope.uwmeta_classes = [];
-	                      for (var i = 0; i < response.data.classifications.length; ++i) {
-	        	            $scope.uwmeta_classes.push(response.data.classifications[i]);
-	                      }
-	                      //console.log('uwmeta_classes',$scope.uwmeta_classes);
-	                      $scope.alerts = response.data.alerts;
-			}
-    		        ,function(response) {
-           		       $scope.alerts = response.data.alerts;
-           		       if(typeof  $scope.alerts !== 'undefined'){
-			           $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-			       }
-           	        }
-                );
-      
-    }
-    */
-    //mf
-    $scope.getModsClassifications = function() {
-                 console.log('mods21:', $scope.$parent.fields);
+        //get labels for clasifications and also add this into mods_classes  array (temporary array of classif. for mods only)
+        $scope.getModsClassifiLabels = function() {
+                 
                  var mods = angular.toJson($scope.$parent.fields);
-		 //console.log('mods22:', mods);
-      		 var promise = MetadataService.getModsClassifications(mods);
+      		 var promise = MetadataService.getModsClassifiLabes(mods);
                  $scope.loadingTracker.addPromise(promise);
                  promise.then(
     		        function(response) {
-	                      console.log('getModsClassifications22:', response.data);
 			      $scope.form_disabled = false;
 	                      $scope.mods_classes = [];
 	                      for (var i = 0; i < response.data.classifications.length; ++i) {
@@ -99,37 +64,39 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 			       }
            	        }
                 );
-    }
+        }
     
 
-    $scope.getClassifications = function() {
-		 $scope.form_disabled = true;
-	     var promise = VocabularyService.getClassifications();
-	     $scope.loadingTracker.addPromise(promise);
-	     promise.then(
+        // list of classification that we support(Uni Vienna)
+        $scope.getClassificationsList = function() {
+
+            $scope.form_disabled = true;
+            var promise = VocabularyService.getClassifications();
+	    $scope.loadingTracker.addPromise(promise);
+	    promise.then(
 	      	function(response) {
 	      		$scope.alerts = response.data.alerts;
 			$scope.class_roots_all = [];
 	      		// filter and order
 	      		$scope.class_roots = [];
-	      		for (var i = 0; i < response.data.terms.length; ++i) {
-							var term = response.data.terms[i];
-							term.current_path = [];
-
-							if($scope.initdata['included_classifications']){
-								for (var j = 0; j < $scope.initdata.included_classifications.length; ++j) {
-										if($scope.initdata.included_classifications[j] == response.data.terms[i].uri){
-												$scope.class_roots.push(term);
-										}
-								}
-							}else{
-								$scope.class_roots.push(term);
-							}
-
-							$scope.class_roots_all.push(term);
+                        for (var i = 0; i < response.data.terms.length; ++i) {
+				var term = response.data.terms[i];
+				term.current_path = [];
+				//TODO add 'included_classifications' on init -> classifi. that are defined in project.settings MongoDB collection.
+                                // project can be limited there to this set of classification.
+                                // init in uwmetadataeditor js-controler & modseditor js-controler
+                                if($scope.initdata['included_classifications']){
+					for (var j = 0; j < $scope.initdata.included_classifications.length; ++j) {
+						if($scope.initdata.included_classifications[j] == response.data.terms[i].uri){
+							$scope.class_roots.push(term);
+						}
+					}
+				}else{
+					$scope.class_roots.push(term);
+				}
+				$scope.class_roots_all.push(term);
+                                
 	      		}
-                        //console.log('class_roots:',$scope.class_roots);
-			//console.log('class_roots_all:',$scope.class_roots_all);
 	      		$scope.form_disabled = false;
 	      	}
 	      	,function(response) {
@@ -139,14 +106,35 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 			}
 	      		$scope.form_disabled = false;
 	      	}
-	     );
-	 };
-
+	    );
+        };
+        
+        //favorite classification (collection user.classifications)
+        $scope.getMyClassifications = function() {
+           
+             $scope.form_disabled = true;
+             var promise = MetadataService.getClassifications();
+             $scope.loadingTracker.addPromise(promise);
+             promise.then(
+                function(response) {
+                        $scope.alerts = response.data.alerts;
+                        //favorite classification
+                        $scope.myclasses = response.data.classifications;
+                        $scope.form_disabled = false;
+                }
+                ,function(response) {
+                        $scope.alerts = response.data.alerts;
+                        $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                        $scope.form_disabled = false;
+                }
+             );
+         };
+    
 	 $scope.browse_class_opened = function(classif){
 
 		 if(classif.current_path.length == 0){
-			 // init the classification
-			 classif.current_path = [];
+	             // init the classification
+	             classif.current_path = [];
 		     var promise = VocabularyService.getChildren(classif.uri);
 		     $scope.loadingTracker.addPromise(promise);
 		     promise.then(
@@ -179,10 +167,9 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		  			classif.current_path.push({terms: response.data.terms});
 		  		}
 		  		$scope.lastSelectedTaxons[classif.uri] = $scope.findLastSelectedTaxon(classif);
-		  		$scope.form_disabled = false;
+                                $scope.form_disabled = false;
 		  	}
 		  	,function(response) {
-		  		console.log('response',response);
 			        $scope.alerts = response.data.alerts;
 		  		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
 		   		$scope.form_disabled = false;
@@ -210,10 +197,7 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	 };
 
 	 $scope.removeClassFromObject = function(index){
-		 
 		 if($scope.edit_mode == 'edit_mods'){
-		 //if($scope.mode == 'edit_mods'){
-		         console.log('removeClassFromObject mods');
 			 var uri = $scope.mods_classes[index].uri;
 			 var node2remove_idx = -1;
 			 for (var i = 0; i < $scope.$parent.fields.length; ++i) {			 
@@ -229,7 +213,6 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 							 valueuri = cls.attributes[j].ui_value; 
 						 }
 					 }
-					 //if(authuri == 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/classification' && valueuri == uri){
 					 if(authuri == $scope.clsns && valueuri == uri){	 
 					   node2remove_idx = i;
 						 break;
@@ -238,32 +221,17 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 			 }
 			 if(node2remove_idx >= 0){
 				 $scope.$parent.fields.splice(node2remove_idx, 1);
-			 }
-			 
-			 $scope.save(); //todo !
-			 
-			 //if($scope.edid_mode == 'edit_mods'){
-			          $scope.getModsClassifications(); 
-			 //}
-			 return
+			 } 
+			 $scope.getModsClassifiLabels(); 
+
+			 return;
 		 }
 		 
-		 if($scope.edit_mode == 'edit_uwmeta '){
-		 //if($scope.mode == 'edit_uwmeta '){
+		 if($scope.edit_mode == 'edit_uwmeta'){
 		         $scope.selectUwmetaClassificationNode().children.splice(index,1);
-			 $scope.save();
 		 }
 	 };
-
-	 $scope.save = function(){
-		 ////$scope.$parent.save();
-		 // make a differance between saving of objects and templates
-	         // no needed for templates because saving of the templates will be on one button for whole template
-		   
-	   
-		 //$scope.$parent.saveTemplate();
-	 };
-
+                  
 	 $scope.toggleClassification = function(uri){
 		 if(typeof uri == 'undefined'){
 			 return;
@@ -276,19 +244,19 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		 }
 
 		 $scope.form_disabled = true;
-	     var promise = MetadataService.toggleClassification(uri);
-	     $scope.loadingTracker.addPromise(promise);
-	     promise.then(
-	      	function(response) {
+	         var promise = MetadataService.toggleClassification(uri);
+	         $scope.loadingTracker.addPromise(promise);
+	         promise.then(
+	      	     function(response) {
 	      		$scope.alerts = response.data.alerts;
 	      		$scope.getMyClassifications();
 	      		$scope.form_disabled = false;
-	      	}
-	      	,function(response) {
+	      	    }
+	      	   ,function(response) {
 	      		$scope.alerts = response.data.alerts;
 	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
 	      		$scope.form_disabled = false;
-	      	}
+	      	   }
 	     );
 	 };
 
@@ -307,23 +275,57 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		 return last_idx;
 	 }
 
+	$scope.$on('getClassifLabelsMods', function(e) {  
+                      $scope.getModsClassifiLabels();
+        });   
+	 
+        $scope.$on('classifLoadMods', function(e) {  
+                $scope.addClassifOnLoadMods();
+        });
+	 
+        $scope.addClassifOnLoadMods = function(){
+                for (var i = 0; i < $scope.$parent.loadedClassification.length; ++i) {
+                        for (var j = 0; j < $scope.$parent.loadedClassification[i].attributes.length; ++j) {
+                                if($scope.$parent.loadedClassification[i].attributes[j].xmlname == 'valueURI'){
+                                      var uri = $scope.$parent.loadedClassification[i].attributes[j].ui_value;
+                                      if(!$scope.classifAlreadyAdded(uri)){
+                                              $scope.addClassToObjectFromTaxon(uri);
+                                      }
+                                }
+                        }
+                }
+                return;
+        }
+        
+        $scope.classifAlreadyAdded = function(uri){
+               
+                for (var i = 0; i < $scope.$parent.fields.length; ++i) {
+                        if($scope.$parent.fields[i].xmlname == 'classification'){
+                                for (var j = 0; j < $scope.$parent.fields[i].attributes.length; ++j) {
+                                       if($scope.$parent.fields[i].attributes[j].xmlname == 'valueURI'){
+                                                if($scope.$parent.fields[i].attributes[j].ui_value == uri){
+                                                        return true;      
+                                                }
+                                       }
+                                }
+                        }
+                }
+                return false;
+        }
+        
         $scope.addClassToObject = function(classif){
-	       $scope.addClassToObjectFromTaxon($scope.lastSelectedTaxons[classif.uri].uri);
-	       if($scope.edit_mode == 'edit_mods'){
-	       //if($scope.mode == 'edit_mods'){
-	              $scope.getModsClassifications();
-	       }
-	       console.log('mods_classes: ',$scope.mods_classes);
-	       return;
+	        
+                $scope.addClassToObjectFromTaxon($scope.lastSelectedTaxons[classif.uri].uri);
+	        if($scope.edit_mode == 'edit_mods'){
+                        $scope.getModsClassifiLabels();
+	        } 
+
+	        return;
 	}
 	 	 
 	 $scope.addClassToObjectFromTaxon = function(uri){
-		 console.log('edit_mode22',$scope.edit_mode);
 		 if($scope.edit_mode == 'edit_mods'){
-		 //if($scope.mode == 'edit_mods'){
-			 console.log('edit_mode',$scope.edit_mode);
-		         var idx = $scope.selectLastModsClassNodeIdx();
-			 		 
+		         var idx = $scope.selectLastModsClassNodeIdx();		 
 			 var newnode = {
 		            "xmlname":"classification",
 		            "input_type":"input_text",
@@ -353,7 +355,6 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		                    "xmlname":"authorityURI",
 		                    "input_type":"input_text",
 		                    "label":"Authority URI",
-		                    //"ui_value": 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/classification'
 				    "ui_value":  $scope.clsns
 				   
 		                },
@@ -388,20 +389,11 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 				 
 			 $scope.$parent.fields.splice(idx+1,0,newnode);
 			 
-			 //$scope.save(); //TODO
-			
-			 if($scope.edit_mode == 'edit_mods'){
-			 //if($scope.mode == 'edit_mods'){
-			         $scope.getModsClassifications();
-			 }
-			 console.log(' parent.fields:', $scope.$parent.fields);
 			 return;
 		 }
 		 
 		 if($scope.edit_mode == 'edit_uwmeta'){
-		 //if($scope.mode == 'edit_uwmeta'){
 		     
-		     console.log('edit_mode22',$scope.edit_mode);
 		     $scope.form_disabled = true;
 		     var promise = VocabularyService.getTaxonPath(uri);
 		     $scope.loadingTracker.addPromise(promise);
@@ -433,7 +425,7 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 						     xmlname: "taxon",
 						     datatype: "Taxon",
 						     ordered: 1,
-		      				 data_order: i-1,
+		      				     data_order: i-1,
 						 	 ui_value: taxondata.uri,
 						 	 value_labels: {
 							 	labels: taxondata.labels,
@@ -443,7 +435,7 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	
 						 };
 	
-		      			 // copy nonpreferred array
+		      			         // copy nonpreferred array
 						 if(typeof taxondata.nonpreferred != 'undefined'){
 							 if(taxondata.nonpreferred.length > 0){
 								 t.value_labels['nonpreferred'] = [];
@@ -457,9 +449,8 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		      		}
 	
 		      		var ch = $scope.selectUwmetaClassificationNode().children;
-					// -2 because the last two are not taxonpaths but description and keywords
-					ch.splice(ch.length-2,0,taxonpath);
-					$scope.save(); //TODO
+				// -2 because the last two are not taxonpaths but description and keywords
+				ch.splice(ch.length-2,0,taxonpath);
 	
 		      		$scope.form_disabled = false;
 		      	}
@@ -481,40 +472,20 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 		 return $scope.$parent.fields;
 	 }
 
-	 $scope.getMyClassifications = function() {
-	     //console.log('getMyClassifications');
-	     $scope.form_disabled = true;
-	     var promise = MetadataService.getClassifications();
-	     $scope.loadingTracker.addPromise(promise);
-	     promise.then(
-	      	function(response) {
-	      		$scope.alerts = response.data.alerts;
-	      		console.log('getMyClassifications',response.data);
-			$scope.myclasses = response.data.classifications;
-			//console.log('myclasses',$scope.myclasses);
-	      		$scope.form_disabled = false;
-	      	}
-	      	,function(response) {
-	      	 	console.log('getMyClassifications errors:',response.data.alerts);
-		        $scope.alerts = response.data.alerts;
-	      		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-	      		$scope.form_disabled = false;
-	      	}
-	     );
-	 };
+
 
 	 $scope.hitEnterSearch = function(evt){
-    	if(angular.equals(evt.keyCode, 13) && !(angular.equals($scope.class_search.query, null) || angular.equals($scope.class_search.query, ''))){
-    		$scope.search($scope.class_search.query);
-    	}
-     };
+    	        if(angular.equals(evt.keyCode, 13) && !(angular.equals($scope.class_search.query, null) || angular.equals($scope.class_search.query, ''))){
+    		       $scope.search($scope.class_search.query);
+    	        }
+         };
 
 	 $scope.search = function(query) {
 		 $scope.form_disabled = true;
-	     var promise = VocabularyService.searchClassifications(query);
-	     $scope.loadingTracker.addPromise(promise);
-	     promise.then(
-	      	function(response) {
+	         var promise = VocabularyService.searchClassifications(query);
+	         $scope.loadingTracker.addPromise(promise);
+	         promise.then(
+	      	 function(response) {
 	      		$scope.alerts = response.data.alerts;
 
 	      		// filter and order
@@ -532,7 +503,8 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 	      				$scope.searchclasses[pos-1].current_path = [];
 	      			}
 	      			*/
-	      			if($scope.initdata['included_classifications']){
+	      			// TODO included_classifications: read this value from mongoDb settings collection on init
+                                if($scope.initdata['included_classifications']){
 						for (var j = 0; j < $scope.initdata.included_classifications.length; ++j) {
 							if($scope.initdata.included_classifications[j] == response.data.terms[i].uri){
 								$scope.searchclasses.push(term);
@@ -556,7 +528,6 @@ app.controller('ClassificationCtrl', function($scope, $modal, $location, $timeou
 
         
 	 $scope.selectUwmetaClassificationNode = function() {
-		//console.log('selectUwmetaClassificationNode', $scope.$parent); 
 	        return $scope.$parent.fields[6];
 	 }
 

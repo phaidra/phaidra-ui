@@ -1,4 +1,4 @@
-<div class="form-group row input-text" bo-class="{ 'input-text-multi': !(child.repeatable == 0) }" >
+<div bindonce class="form-group row input-text" bo-class="{ 'input-text-multi': !(child.repeatable == 0) }" >
 
 	<label bo-if="!is_attribute" class="control-label col-sm-2" bo-class="{ 'text-muted': is_attribute }" bo-bind="child.label"><span class="grey" bo-show="child.ordered" bo-bind="child.data_order"></span></label>
 

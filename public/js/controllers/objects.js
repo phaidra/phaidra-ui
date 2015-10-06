@@ -188,20 +188,26 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, $
 			
 
  
+   
+    /*
+      $http({
+                                method  : 'POST',
+                                url     : $('head base').attr('href')+'view/'+pidExtended.pid,
+                                data  : { pidExtended: $scope.urlEncodePidExtended(pidExtended) }
+      });
+   */
+   
+    
+    // new - objects not browsed over url .... not finished
+   /*
    $scope.viewObject = function(pidExtended) {
 
       console.log('pidExtended', pidExtended);
 
       //FrontendService.viewObject(pidExtended.pid, $scope.urlEncodePidExtended(pidExtended));
      
-      /*
-      $http({
-				method  : 'POST',
-				url     : $('head base').attr('href')+'view/'+pidExtended.pid,
-				data  : { pidExtended: $scope.urlEncodePidExtended(pidExtended) }
-      });
-      */
-      
+
+      console.log('viewObject123');
       var promise = FrontendService.viewObject(pidExtended.pid, $scope.urlEncodePidExtended(pidExtended));
       $scope.loadingTracker.addPromise(promise);
       promise.then(
@@ -223,7 +229,7 @@ app.controller('ObjectsCtrl',  function($scope, $rootScope, $modal, $location, $
      );
      
   };
-
+  */
  
  
  $scope.urlEncodePidExtended = function(pidExtended) {

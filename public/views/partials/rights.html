@@ -1,18 +1,19 @@
+<alert ng-repeat="alert in alerts track by $index" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+
 <div bindonce class="container">
-	<nav ng-if="mode=='object'" id="control-panel" class="navbar navbar-default">
+	<nav id="control-panel" class="navbar navbar-default">
 		<div ng-if="init.owner == init.current_user.username" class="navbar-form">			             
-		          form.$invalid:{{form.$invalid}} form_disabled{{form_disabled}}
+		          <!--form.$invalid:{{form.$invalid}} form_disabled{{form_disabled}}-->
 		          <!-- <button ng-disabled="form.$invalid || form_disabled" data-ng-click="saveRights()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Rights to {{pid}}</button> --> 
-		          <button ng-disabled="form_disabled" data-ng-click="saveRights()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Rights to {{pid}}</button>									   
+		          <button ng-disabled="form_disabled" data-ng-click="saveRights()" class="btn btn-success navbar-btn navbar-right"><span class="glyphicon glyphicon-save"></span> Save Rights to {{pid}}</button>									   
 	        </div>	
 	</nav>
 
 <div>
-       
 
 </br></hr>   
   <form name="form" class="form-horizontal" novalidate role="form">
-                <div data-ng-click="test()">
+                <div>
                                 <label>RESTRICT ACCESS RIGHTS TO PARTICULAR PERSONS:</label>
                 </div>
                 
@@ -33,7 +34,7 @@
         
         	    	   <div class="input-group full-max-width">
                                    <input ng-model="rightsQuery" type="input" > 
-                                   <button  class="btn btn-default" ng-click="getUsers2(rightsQuery)"><span class="glyphicon glyphicon-search"></span></button>
+                                   <button  class="btn btn-default" ng-click="getUsers(rightsQuery)"><span class="glyphicon glyphicon-search"></span></button>
                            </div>
                            
                     	   <select ng-model="RUser" class="form-control full-max-width">
@@ -50,12 +51,12 @@
 	          
 	                  
                           
-                                     <button ng-click="addNewUser2(RUser, rights_date_end)" class="btn btn-default right margin-top-35"><span class="glyphicon glyphicon-plus"></span></button>
+                                     <button ng-click="addNewUser(RUser, rights_date_end)" class="btn btn-default right margin-top-35"><span class="glyphicon glyphicon-plus"></span></button>
                          
               </div>
         
         
-              <div data-ng-click="faculties_array_test()">
+              <div>
                          <label>RESTRICT ACCESS RIGHTS TO ORGANISATIONAL UNTITS/SUBUNITS:</label>
               </div>
   

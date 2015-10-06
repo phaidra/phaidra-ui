@@ -84,11 +84,13 @@
 	  	<td>	  		
 	  		<div ng-switch on="object['fgs.contentModel']">
 	  			<div ng-switch-when="cmodel:Collection">
+	  				<a href="/view/{{urlEncodePidExtended(object.pidExtended)}}"  class='object-view'>{{object.PID}} </a> 
+	  				
 	  				<!--<a href="/collection/{{object.PID}}" target="_blank">{{object.PID}}</a>-->
-	  				<a href="" data-ng-click="viewObject(object.pidExtended)"  class='object-view'>{{object.PID}}</a>
+	  				<!--<a href="" data-ng-click="viewObject(object.pidExtended)"  class='object-view'>{{object.PID}}</a>-->
 	  			</div>
 	  			<div ng-switch-default>
-	  				<a href="" data-ng-click="viewObject(object.pidExtended)"  class='object-view'>{{object.PID}} </a>
+	  				<!--<a href="" data-ng-click="viewObject(object.pidExtended)"  class='object-view'>{{object.PID}} </a>-->
 	  				<a href="/view/{{urlEncodePidExtended(object.pidExtended)}}"  class='object-view'>{{object.PID}} </a> 
 	  			</div>
 	  		</div>

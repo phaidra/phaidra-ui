@@ -44,7 +44,6 @@
 			<div class="col-md-12">
 
 			%= include 'alerts'
-
 				<tabset>
 					<tab>
 						<tab-heading>
@@ -56,60 +55,43 @@
 	                                                  </div>	
         		                        </nav>
 						<div class="well modseditor" id="ModseditorCtrl" data-ng-show="fields" data-ng-cloak >
-
 							<form name="form" class="form-horizontal" novalidate role="form">
-
 								<fieldset ng-disabled="form_disabled">
-
 									<tabset>
-									
 										<!-- All nodes except those which have separate tabs -->
 										<tab>
-							                           <tab-heading>
-							                	        <span>General</span>
-							                           </tab-heading>							                
+							                                <tab-heading>
+							                	                <span>General</span>
+							                                </tab-heading>							                
 											<!--<span data-ng-repeat="child_lvl_1 in fields track by $index | filter:filterHidden" active="child_lvl_1.active" disabled="child_lvl_1.disabled">-->
 											<span data-ng-repeat="child_lvl_1 in fields | filter:filterHidden" active="child_lvl_1.active" disabled="child_lvl_1.disabled">
-
 												<span data-ng-if="separateTabs.indexOf(child_lvl_1.xmlname) == -1">				                								                		
 									                  	    <ul>
 									                      	          <li  data-ng-init="child1 = child_lvl_1; parent1 = null; collapse_id = $id; fieldid = ''" data-ng-include="'<%= url_for '/views/partials/mods/' %>field_renderer.html'" class="form-li"></li>
-									                           </ul>								                    
+									                            </ul>								                    
 												</span>
-										
 											</span>
-										
 										</tab>
-										
 										<!-- Nodes on separate tabs -->						                
-						                              <!--<tab  data-ng-if="separateTabs.indexOf(child_lvl_1.xmlname) != -1" data-ng-repeat="child_lvl_1 in fields track by $index | filter:filterHidden" active="child_lvl_1.active" disabled="child_lvl_1.disabled">-->
-						                              <tab  data-ng-if="separateTabs.indexOf(child_lvl_1.xmlname) != -1" data-ng-repeat="child_lvl_1 in fields | filter:filterHidden" active="child_lvl_1.active" disabled="child_lvl_1.disabled">
-						                	             <tab-heading>
-						                		             <span phaidra-help phaidra-help-id="{{child_lvl_1.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{child_lvl_1.label}}</span>
-						                	             </tab-heading>
-						                			
-						                	           <ul>
-								        		
-								        		<li  data-ng-init="child1 = child_lvl_1; parent1 = null; collapse_id = $id; fieldid = ''" data-ng-include="'<%= url_for '/views/partials/mods/' %>field_renderer.html'" class="form-li"></li>
-								        	   </ul>
-						                			
-						                            </tab>
-						                
+						                                <!--<tab  data-ng-if="separateTabs.indexOf(child_lvl_1.xmlname) != -1" data-ng-repeat="child_lvl_1 in fields track by $index | filter:filterHidden" active="child_lvl_1.active" disabled="child_lvl_1.disabled">-->
+						                                <tab  data-ng-if="separateTabs.indexOf(child_lvl_1.xmlname) != -1" data-ng-repeat="child_lvl_1 in fields | filter:filterHidden" active="child_lvl_1.active" disabled="child_lvl_1.disabled">
+						                	                <tab-heading>
+						                		                 <span phaidra-help phaidra-help-id="{{child_lvl_1.help_id}}" tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>{{child_lvl_1.label}}</span>
+						                	                </tab-heading>
+						                	                 <ul>
+								        		         <li  data-ng-init="child1 = child_lvl_1; parent1 = null; collapse_id = $id; fieldid = ''" data-ng-include="'<%= url_for '/views/partials/mods/' %>field_renderer.html'" class="form-li"></li>
+								        	         </ul>
+						                                </tab>
 									</tabset>
-									
 								</fieldset>
-								
 							</form>
-							
-				        </div>
-
-		        	</tab>			
-		
+				                </div>
+		        	        </tab>			
 					<tab>
 						<tab-heading>
 				       		       <span>Classification</span>
 				   		</tab-heading>
-				   		    <div data-ng-controller="ClassificationCtrl" data-ng-init="init('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/partials/classification.html' %>'"></div>
+				   		<div data-ng-controller="ClassificationCtrl" data-ng-init="init('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/partials/classification.html' %>'"></div>
 					</tab>
 				</tabset>
 

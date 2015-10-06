@@ -134,21 +134,6 @@ app.controller('BookmarkPidEditorCtrl',  function($scope, $modal, $location, Boo
            	}
     	   ); 
        
-    /*
-        console.log('viewPid',$scope.initdata);
-	console.log('viewPid pid',pid);
-        var init_data = {};
-	init_data.pid = pid;
-	init_data.pagePidsData = [];
-	init_data.pagePids = [];
-	init_data.previousPageLastObject = '';
-	init_data.nextPageFirstObject = '';
-	init_data.singleView = 1;
-	//alert(init_data);
-	init_data = angular.toJson(init_data);
-	init_data = encodeURIComponent(init_data);
-	window.location = $('head base').attr('href')+'view/'+init_data; 
-	*/
   }
     
 });

@@ -35,16 +35,16 @@ sub get_terms_label {
 		}else{
 			$url->path("/terms/label");
 		}
-		
+		$c->app->log->debug("Cache get_terms_label uri: ".$uri);
 		$url->query({uri => $uri});
 		
   		my $tx = $c->ua->get($url);
   		
   		if (my $r = $tx->success) {
   			my $cacheval = $tx->res->json->{labels};  		
-	    	$c->app->chi->set($cachekey, $cacheval, '1 day');    
-	    	# serialization check
-	    	$cacheval = $c->app->chi->get($cachekey);
+                        $c->app->chi->set($cachekey, $cacheval, '1 day');    
+                        # serialization check
+                        $cacheval = $c->app->chi->get($cachekey);
   			$res->{labels} = $cacheval;  
   			return $res;
   		} else {
@@ -112,7 +112,6 @@ sub get_mods_tree {
 	}else{
 		$url->path("/mods/tree");
 	}
-         #my $tx = $self->ua->get($url);
 	 my $tx = $c->ua->get($url);
 
 		  	if (my $rs = $tx->success) {
@@ -197,7 +196,6 @@ sub get_uwmetadata_tree {
 	}
 	$url->query({mfv => $c->app->config->{phaidra}->{metadata_format_version}});
 
-	 #my $tx = $self->ua->get($url);
 	 my $tx = $c->ua->get($url);
 
 		  	if (my $rs = $tx->success) {
@@ -239,13 +237,12 @@ sub resolve_class_uri {
 		my $uri = shift;
 
 		my $class;
-
+		
 		# get taxon labels
 		my $res = $self->get_terms_label($c, $uri);
 		if($res->{status} eq 200){
 			$class = $res->{labels};
 		}else{
-			#$c->app->log->error("Cannot get taxon labels: ".$self->app->dumper($res));
 			$c->app->log->error("Cannot get taxon labels: ");
 		}
 
@@ -256,7 +253,6 @@ sub resolve_class_uri {
 		if($res->{status} eq 200){
 			$class->{classification} = $res->{labels};
 		}else{
-			#$c->app->log->error("Cannot get classification labels: ".$c->app->dumper($res));
 			$c->app->log->error("Cannot get classification labels: ");
 		}
 		$class->{uri} = $uri;
