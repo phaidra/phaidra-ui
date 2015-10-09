@@ -163,9 +163,12 @@ sub process_job
                                            my $result2= $self->uploadUwmetadata($uwm, $pid);
                                            # TODO: now there are three results
 
-                                           if(defined $result2){
+                                           if (defined $result2)
+                                           {
                                                    $self->writeAlertsAndStatus($pid, $result2, $current_job_id);
-                                           }else{
+                                           }
+                                           else
+                                           {
                                              # TODO: think about what needs to be done now
                                            }
                               }
@@ -179,11 +182,11 @@ sub process_job
              }
 }
 
-sub get_job_status{
-
+sub get_job_status
+{
       my($self, $masseditJobId) = @_;
 
-      my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => $masseditJobId) });
+      my $datasetMassedit =  $self->{collection_massedit}->find({ _id => $masseditJobId });
       my $job_status;
       while (my $docMassedit = $datasetMassedit->next){
              $job_status = $docMassedit->{'job_status'};
@@ -192,11 +195,11 @@ sub get_job_status{
 }
 
 
-sub writeAlertsAndStatus{
-
+sub writeAlertsAndStatus
+{
       my($self, $pid, $result, $masseditJobId) = @_;
 
-      my $datasetMassedit =  $self->{collection_massedit}->find({ _id => MongoDB::OID->new(value => $masseditJobId) });
+      my $datasetMassedit =  $self->{collection_massedit}->find({ _id => $masseditJobId });
       my @myItems;
       my $itemsCount = 0;
       my $processedItemsCount = 0;
@@ -223,7 +226,8 @@ sub writeAlertsAndStatus{
 
       my $jobProgress= ($itemsCount > 0) ? int($processedItemsCount/$itemsCount*100) : 100;
 
-      $self->{collection_massedit}->update({"_id" => MongoDB::OID->new(value => $masseditJobId)}, {'$set' => {'items' => \@myItems, 'job_progress' => $jobProgress}});
+      $self->{collection_massedit}->update({_id => $masseditJobId},
+          {'$set' => {'items' => \@myItems, 'job_progress' => $jobProgress}});
 }
 
 
