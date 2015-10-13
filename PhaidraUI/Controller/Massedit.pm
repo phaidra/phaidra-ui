@@ -144,8 +144,8 @@ sub template_save_as{
 	my $payload = $self->req->json;
 	
 	my @existingTemplates = $self->getTemplates();
-	
-	if(  $payload->{templatename} ~~ @existingTemplates  ){
+	if( grep $_ eq $payload->{templatename}, @existingTemplates ) {
+	#if(  $payload->{templatename} ~~ @existingTemplates  ){
 	       $self->mango->db->collection('masstemplate')->update({"template_name" => $payload->{'templatename'}}, {'$set' => { 
                                                         'owner'      => $username,
                                                         'instance'   => $self->app->config->{phaidra}->{baseurl},

@@ -11,7 +11,7 @@
 	
 <div class="container" data-ng-controller="MembersCtrl" data-ng-init="init('<%= $init_data %>')">
 
-	<nav ng-if="totalItems && current_user" id="control-panel" class="navbar navbar-default list-navbar">
+	<nav data-ng-if="totalItems && current_user" id="control-panel" class="navbar navbar-default list-navbar">
 	
 			<div class="navbar-header">
 			    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -29,7 +29,7 @@
 			      
 				      <div class="btn-group">
 						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						    <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.length > 0}" ></span> <span class="caret"></span>
+						    <span class="glyphicon glyphicon-flag flag" data-ng-class="{'flag-selected': selection.length > 0}" ></span> <span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu" role="menu">
 						      <li><a href="" data-ng-click="allGoldEverything(event);">All</a></li>
@@ -38,7 +38,7 @@
 						  </ul>						 
 				      </div>
 			      	
-			      	  <div class="btn-group animate-if" ng-if="selection.length" >
+			      	  <div class="btn-group animate-if" data-ng-if="selection.length" >
 						  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						    Action <span class="caret"></span>
 						  </button>
@@ -67,7 +67,7 @@
 	<table class="table">
 	  <thead>
 		    <tr>
-		  	<th ng-if="current_user"><span class="grey" ng-if="selection.length">{{selection.length}}</span></th>
+		  	<th data-ng-if="current_user"><span class="grey" data-ng-if="selection.length">{{selection.length}}</span></th>
 		  	<th>#</th>
 		  	<th></th>
 		  	<th>Id</th>
@@ -76,26 +76,26 @@
 		  </tr>
 	  </thead>
 	  <tbody <% if($init_data_perl->{current_user}->{username} eq $init_data_perl->{owner}){ %> ui-sortable="sortableOptions" ng-model="objects" <% } %>>
-		  <tr class="object-list" ng-repeat="object in objects">
-		    <td ng-if="current_user"><span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>		  
+		  <tr class="object-list" data-ng-repeat="object in objects">
+		    <td data-ng-if="current_user"><span class="glyphicon glyphicon-flag flag" data-ng-class="{'flag-selected': selection.indexOf(object.pid) != -1}" data-ng-click="toggleObject(object.pid)"></span></td>		  
 		  	<td><a href="" class="position-editable" data-url="{{baseurl}}/proxy/collection/{{pid}}/members/{{object.pid}}/order/" data-value="" data-name="position" data-type="text" data-pk="{{object.pid}}" data-title="New position">{{object.pos}}</a></td>
 		  	<td><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.pid}}///60" class="img-thumbnail" width="60" height="60" title="{{object.title}}" alt="{{object['uw.general.title']}}"></td>
 		  	<td>
-	  		     <div ng-switch on="object.cmodel">
-	  			    <div ng-switch-when="cmodel:Collection">
+	  		     <div data-ng-switch on="object.cmodel">
+	  			    <div data-ng-switch-when="cmodel:Collection">
 	  				<a href="/collection/{{object.pid}}" target="_blank">{{object.pid}}</a>	
 	  			    </div>
-	  			    <div ng-switch-default>
+	  			    <div data-ng-switch-default>
 	  				{{object.pid}}
 	  			    </div>
 	  		    </div>
 	  	        </td>
-	  	        <td>	  		
-	  		      <div ng-switch on="object.cmodel">
-	  			    <div ng-switch-when="cmodel:Collection">
+	  	        <td>
+	  		      <div data-ng-switch on="object.cmodel">
+	  			    <div data-ng-switch-when="cmodel:Collection">
 	  				<a href="/collection/{{object.pid}}" target="_blank">{{object.title}}</a>	
 	  			    </div>
-	  		            <div ng-switch-default>
+	  		            <div data-ng-switch-default>
 	  				{{object.title}}
 	  		            </div>
 	  		     </div>

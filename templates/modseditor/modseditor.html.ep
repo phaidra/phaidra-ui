@@ -25,8 +25,8 @@
 			<div class="clearfix"></div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" data-ng-click="ok()">OK</button>
+            <button class="btn btn-warning" data-ng-click="cancel()">Cancel</button>
         </div>
     </script>
 
@@ -49,14 +49,14 @@
 						<tab-heading>
 				       		           <span>Metadata</span>
 				   		</tab-heading>
-			                        <nav ng-if="mode=='object'" ng-if="fields" id="control-panel" class="navbar navbar-default">
-        	                                          <div ng-if="init.owner == init.current_user.username" class="navbar-form">			             
-		                                                   <button ng-disabled="form.$invalid || form_disabled" data-ng-click="saveObject()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Metadata to {{pid}}</button>									   
+			                        <nav data-ng-if="mode=='object'" data-ng-if="fields" id="control-panel" class="navbar navbar-default">
+        	                                          <div data-ng-if="init.owner == init.current_user.username" class="navbar-form">			             
+		                                                   <button data-ng-disabled="form.$invalid || form_disabled" data-ng-click="saveObject()" class="btn btn-success navbar-btn"><span class="glyphicon glyphicon-save"></span> Save Metadata to {{pid}}</button>									   
 	                                                  </div>	
         		                        </nav>
 						<div class="well modseditor" id="ModseditorCtrl" data-ng-show="fields" data-ng-cloak >
 							<form name="form" class="form-horizontal" novalidate role="form">
-								<fieldset ng-disabled="form_disabled">
+								<fieldset data-ng-disabled="form_disabled">
 									<tabset>
 										<!-- All nodes except those which have separate tabs -->
 										<tab>

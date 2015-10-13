@@ -92,6 +92,7 @@ app.controller('ViewCtrl',  function($scope, $modal, $location, DirectoryService
     		function(response) {
     			$scope.alerts = response.data.alerts;
 			$scope.dublinCore = response.data.metadata;
+                        console.log('dublinCore:',$scope.dublinCore);
     		}
     		,function(response) {
            		$scope.alerts = response.data.alerts;

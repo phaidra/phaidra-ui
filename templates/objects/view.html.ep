@@ -15,29 +15,29 @@
  <div class="container view-container" data-ng-controller="ViewCtrl" data-ng-init="init('<%= $init_data %>')">
       <div class="row">            
            <div class="col-md-4"> 
-                 <div ng-if="!contentModelCollection" class="btn-view-center">
+                 <div data-ng-if="!contentModelCollection" class="btn-view-center">
                                   Current object pid: {{pid}} 
                  </div>
                  <!--
                  current bookmark: {{BookmarkService.currentBookmarkId}}
 
-                 <div ng-if="contentModelCollection" class="btn-view-center">
+                 <div data-ng-if="contentModelCollection" class="btn-view-center">
                                   Current collection pid: {{pid}} 
                  </div>
                 
-                  <div ng-if="init_data.parentCollPid" class="btn-view-center">
+                  <div data-ng-if="init_data.parentCollPid" class="btn-view-center">
                                   Parent pid: {{init_data.parentCollPid}} 
                   </div>
                 -->
 
-                <div ng-if="!contentModelCollection" class="view-image">
+                <div data-ng-if="!contentModelCollection" class="view-image">
                      
                      
-                     <nav ng-if="current_user" id="control-panel" class="navbar navbar-default navbar-form list-navbar view-navbar">
-                           <div ng-if="previousPagePid" class="btn-view-left">
+                     <nav data-ng-if="current_user" id="control-panel" class="navbar navbar-default navbar-form list-navbar view-navbar">
+                           <div data-ng-if="previousPagePid" class="btn-view-left">
                                  <a class="btn btn-default" data-ng-click="prevPage()" class='object-view'><span class="glyphicon glyphicon-arrow-left" ></span></a>
                            </div>  
-                           <div ng-if="nextPagePid" class="btn-view-right" >
+                           <div data-ng-if="nextPagePid" class="btn-view-right" >
                                   <a  class="btn btn-default" data-ng-click="nextPage()"  class='object-view'><span class="glyphicon glyphicon-arrow-right" ></span></a>
                            </div>
                            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -57,7 +57,7 @@
                      <img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{pid}}"> </img>
                 </div>
            
-                <div ng-if="contentModelCollection" class="view-collection" data-ng-controller="MembersCtrl" data-ng-init="initCollection('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/' %>collection.html'" >
+                <div data-ng-if="contentModelCollection" class="view-collection" data-ng-controller="MembersCtrl" data-ng-init="initCollection('<%= $init_data %>')" data-ng-include="'<%= url_for '/views/' %>collection.html'" >
                      
                 </div>
 
@@ -73,8 +73,8 @@
 		                                       </tab-heading>
 		                                        <table class="table">
 		                                                 <tbody>
-		                                                         <tr ng-repeat="(key, val) in dublinCore.dc">
-		                                                                 <td bind-once >{{key}} <span ng-if="val.lang"> (language : {{val.lang}}) </span></td>
+		                                                         <tr data-ng-repeat="(key, val) in dublinCore.dc">
+		                                                                 <td bind-once ><label>{{val.xmlname}} </label><span ng-if="val.lang"> (language : {{val.lang}}) </span></td>
 		                                                                 <td bind-once >{{val.ui_value}}</td>
 		                                                         </tr>
 		                                                 </tbody>
@@ -87,7 +87,7 @@
 		                                       <div class="well navbar-form">
 		                                            <a  data-ng-click="editUwmeta(pid)" class="btn btn-primary navbar-btn">Edit UWMetadata</a>
 		                                       </div>
-		                                       <fieldset data-ng-cloak data-ng-show = 'uwmetadata' ng-disabled="form_disabled">
+		                                       <fieldset data-ng-cloak data-ng-show = 'uwmetadata' data-ng-disabled="form_disabled">
 		                                             <tabset>
 		                                                <tab data-ng-repeat="field in uwmetadata | filter:filterHidden" active="field.active" disabled="field.disabled" ng-if="field.labels.en != 'Classification'" >
 				      		
@@ -113,7 +113,7 @@
 		                                       <div class="well navbar-form">
 		                                           <a  data-ng-click="editMods(pid)"  class="btn btn-primary navbar-btn">Edit MODS</a>
 		                                       </div>    
-		                                       <fieldset data-ng-cloak data-ng-show = 'mods' ng-disabled="form_disabled">
+		                                       <fieldset data-ng-cloak data-ng-show = 'mods' data-ng-disabled="form_disabled">
 		                                             <tabset>
 		                                                <!--<tab data-ng-repeat="modsObject in mods.tree">-->
 		                                                <tab data-ng-repeat="modsObject in mods.metadata.mods" data-ng-if="modsObject.xmlname != 'classification'">
@@ -159,7 +159,7 @@
 		                                       <tab-heading  data-ng-click="loadAllMeta(pid)" >
 		                                                    <span>Classifications</span>
 		                                       </tab-heading>		                                       
-		                                       <!-- <fieldset ng-disabled="form_disabled"> -->
+		                                       <!-- <fieldset data-ng-disabled="form_disabled"> -->
 		                                       <fieldset >
 		                                             <tabset>             
 		                                                   <tab data-ng-cloak data-ng-show = 'uwmetaClassifications'>
@@ -167,7 +167,7 @@
 	        					                             <span phaidra-help tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>Uwmetadata</span>        					
 	      					                       </tab-heading>
 				      		                       <span > 
-				      		                           <div ng-if="uwmetaClassifications" data-ng-click="editUwmeta(pid)" class="well navbar-form">
+				      		                           <div data-ng-if="uwmetaClassifications" data-ng-click="editUwmeta(pid)" class="well navbar-form">
 				      		                                  <a class="btn btn-primary navbar-btn">Edit Uwmetadata Classifications</a>
 				      		                           </div>
 				      		                           <div class="class-panel" data-ng-repeat="item in uwmetaClassifications">
@@ -184,7 +184,7 @@
 	        					                       <span phaidra-help  tooltip-placement="left" tooltip-popup-delay='1500' tooltip-html-unsafe='{{default_helptext}}'>Mods</span>        					
 	      					                     </tab-heading>
 				      		                     <span> 
-				      		                         <div ng-if="modsClassifications" data-ng-click="editMods(pid)" class="well navbar-form">
+				      		                         <div data-ng-if="modsClassifications" data-ng-click="editMods(pid)" class="well navbar-form">
 				      		                              <a class="btn btn-primary navbar-btn">Edit Mods Classifications</a>
 				      		                         </div>
 				      		                         <div class="class-panel" data-ng-repeat="item in modsClassifications">

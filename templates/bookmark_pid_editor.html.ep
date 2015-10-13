@@ -23,7 +23,7 @@
 	                                            <pagination total-items="bookmarkService.bookmarkPids.length" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages">
 	                                            </pagination>               
 
-	                                            <div ng-if="bookmarkService.bookmarkPids.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
+	                                            <div data-ng-if="bookmarkService.bookmarkPids.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
                                                               <div class="dropdown">
                                                                       <button class="btn btn-default dropdown-toggle massedit-button-recordsperpage" type="button" id="recordsperpage" data-toggle="dropdown">
                                                                               per page
@@ -54,7 +54,7 @@
 	  	<th>
 	               <span class="massedit-id" data-ng-click="sort()"  >
 	  	              PID 
-	  	              <div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div>
+	  	              <div data-ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div>
 	  	      </span>
 	         
 	         </th>
@@ -64,7 +64,7 @@
 	     </tr>
 	  </thead>
 	  <tbody>
-	      <tr  ng-repeat="pid in bookmarkService.bookmarkpidsdisplay ">	  
+	      <tr  data-ng-repeat="pid in bookmarkService.bookmarkpidsdisplay ">	  
 	          <td  >
 	                 <a href="" data-ng-click="viewPid(pid)"  class='object-view'>{{pid}} </a> 
 	          </td>

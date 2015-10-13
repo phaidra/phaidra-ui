@@ -1,4 +1,4 @@
-var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'pasvaz.bindonce', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService', 'bookmarkService', 'vocabularyService', 'uiGmapgoogle-maps','ui.select', 'ngSanitize']);
+var app = angular.module('frontendApp', ['ngAnimate', 'ui.bootstrap', 'ui.bootstrap.modal', 'ui.sortable', 'ajoslin.promise-tracker', 'pasvaz.bindonce', 'directoryService', 'metadataService', 'searchService', 'frontendService', 'objectService', 'massEditService', 'massEditJobsService', 'bookmarkService', 'vocabularyService', 'submitService', 'groupsService', 'uiGmapgoogle-maps','ui.select', 'ngSanitize']);
 
 app.filter('propsFilter', function() {
   return function(items, props) {
@@ -362,7 +362,7 @@ app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, Direct
           window.location = $('head base').attr('href')+'bookmark/edit';
     }
     $scope.createBookmark = function(){
-           
+           console.log('createBookmark fronted');
           var modalInstance = $modal.open({
                      templateUrl: $('head base').attr('href')+'views/modals/bookmark/create_bookmark.html',
                      controller: CreateBookmarkModalCtrl,                     
@@ -424,6 +424,10 @@ app.controller('FrontendCtrl', function($scope, $rootScope, $modal, $log, Direct
    
    $scope.gotoSubmit = function(){
          window.location = $('head base').attr('href')+'submit';
+   }
+   
+   $scope.gotoGroups = function(){
+         window.location = $('head base').attr('href')+'groups/display';
    }
    
     

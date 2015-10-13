@@ -9,6 +9,6 @@
 %= include 'alerts'
 
 <div class="container" data-ng-controller="SubmitCtrl"  data-ng-init="init_successful('<%= $init_data %>')">
-     <h1 ng-click="diplay_init()">Object was successfully submited. His id is  {{successful.pid}} .<h1>
-     <button class="btn btn-success" ng-click="addNewObject()" >Add new object</button>
+     <h1 data-ng-click="diplay_init()">Object was successfully submited. His id is  {{successful.pid}} .<h1>
+     <button class="btn btn-success" data-ng-click="addNewObject()" >Add new object</button>
 </div>     

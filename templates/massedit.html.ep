@@ -16,9 +16,9 @@
 		
 	<nav class="navbar navbar-default list-navbar">
                 <div class="navbar-form navbar-left">			      
-		          <div ng-if="1 !== 1" class="btn-group">
+		          <div data-ng-if="1 !== 1" class="btn-group">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						    <span class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': massedit.selection.length > 0}" ></span> <span class="caret"></span>
+						    <span class="glyphicon glyphicon-flag flag" data-ng-class="{'flag-selected': massedit.selection.length > 0}" ></span> <span class="caret"></span>
 					</button>
 						  <ul class="dropdown-menu" role="menu">
 						    <li><a href="" data-ng-click="selectAll()">All</a></li>
@@ -39,14 +39,14 @@
 			  </div>    	
 
 
- 			  <div ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical" > 
+ 			  <div data-ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical" > 
                                   <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="fildToEdit" data-toggle="dropdown" data-ng-click="getFields()">
                                                  Add field to be mass edited
                                                  <span class="caret"></span>
                                          </button>
                                          <ul class="dropdown-menu dropdown-menu-massedit" role="menu" aria-labelledby="dropdownMenu1"  >
-                                               <li role="presentation" ng-repeat="field in uwmFields | orderBy:['xmlns','xmlname']">
+                                               <li role="presentation" data-ng-repeat="field in uwmFields | orderBy:['xmlns','xmlname']">
                                                       <a role="menuitem" tabindex="-1" href="" data-ng-click="addField(field.xmlname)">{{field.xmlns}} : {{field.xmlname}}</a>
                                                 </li>
                                          </ul>
@@ -55,7 +55,7 @@
                          </div>
                          <div class="checkbox navbar-form massedit-checkbox-title">
                               <label>
-                                  <input ng-model="titleDisplay" data-ng-click="displayTitle()" type="checkbox" checked > Display original Title
+                                  <input data-ng-model="titleDisplay" data-ng-click="displayTitle()" type="checkbox" checked > Display original Title
                               </label>
                          </div>
                
@@ -70,13 +70,13 @@
 	                 <div class="navbar-form navbar-left">
 	                        <form id="uploadbanner" enctype="multipart/form-data" method="post" action="massedit">
                                        <input class="btn btn-default" id="fileupload" name="scv" type="file" />
-                                       <input ng-click="csvfileselected.onSubmit($event)" class="btn btn-default" type="submit" value="Load from CSV" id="submit" />
+                                       <input data-ng-click="csvfileselected.onSubmit($event)" class="btn btn-default" type="submit" value="Load from CSV" id="submit" />
                                 </form>
                          </div>
                          <div class="navbar-form navbar-left">
                               <form id="download" enctype="multipart/form-data" method="post" action="massedit/savecsv">
-                                <input class="hidden" id="data" name="data"  ng-model="saveAsCsv" />
-                                <input class="btn btn-default" ng-click="preparforsaving()" type="submit" value="Save as CSV" id="submit" />
+                                <input class="hidden" id="data" name="data"  data-ng-model="saveAsCsv" />
+                                <input class="btn btn-default" data-ng-click="preparforsaving()" type="submit" value="Save as CSV" id="submit" />
                               </form>
                          </div>
                </div>
@@ -95,7 +95,7 @@
 	                                            <pagination total-items="massedit.datastructure.length" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages">
 	                                            </pagination>               
 	                                            
-	                                            <div ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
+	                                            <div data-ng-if="massedit.selection.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
                                                               <div class="dropdown">
                                                                       <button class="btn btn-default dropdown-toggle massedit-button-recordsperpage" type="button" id="recordsperpage" data-toggle="dropdown">
                                                                               per page
@@ -120,28 +120,28 @@
     	                </div> 
 	</div> 
 	
-	<div ng-if="massedit.current_template" class="bold" >Template name: {{massedit.current_template}} </div>
+	<div data-ng-if="massedit.current_template" class="bold" >Template name: {{massedit.current_template}} </div>
 	<table class="table">
 	  <thead>
 	  <tr>
-	  	<th ng-if="1 !== 1" ></th>
-	  	<th ng-if="current_user">
-	  	      <span class="grey" ng-if="massedit.datastructure.length">{{massedit.datastructure.length}}</span>
+	  	<th data-ng-if="1 !== 1" ></th>
+	  	<th data-ng-if="current_user">
+	  	      <span class="grey" data-ng-if="massedit.datastructure.length">{{massedit.datastructure.length}}</span>
 	  	</th>
 	  	
 	  	<th>
 	  	      <span class="massedit-id" data-ng-click="sortPID()"  >
 	  	              Id 
-	  	              <div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div>
+	  	              <div data-ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div>
 	  	      </span>
 	        </th>
-	  	<th ng-if="massedit.titleDisplay" >
+	  	<th data-ng-if="massedit.titleDisplay" >
 	  	      <span class="massedit-id" data-ng-click="sortTitle()"  >
 	  	                [Original] Title 
-	  	                <div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div> 
+	  	                <div data-ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div> 
 	  	     </span> 
 	  	</th>
-	         <th ng-repeat="field in massedit.changesFirst"> 
+	         <th data-ng-repeat="field in massedit.changesFirst"> 
 	           {{field.field}} 
 	           <button type="button" class="btn btn-default btn-lg massedit-button" data-ng-click="removeField(field.field)">remove</button>
 	         </th>
@@ -149,31 +149,31 @@
 	        <a role="menuitem" tabindex="-1" href="" data-ng-click="addRecord()"><i class="glyphicon glyphicon-plus"></i></a>
 	    </th>
 	    <th>
-	         <a ng-if="massedit.selection.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAll()">All/<i class="glyphicon glyphicon-trash"></i></a>
+	         <a data-ng-if="massedit.selection.length" role="menuitem" tabindex="-1" href="" data-ng-click="deleteAll()">All/<i class="glyphicon glyphicon-trash"></i></a>
 	    </th>
 	  </tr>
 	  </thead>
 	  <tbody>
-	  <tr ng-class="{'grey': massedit.selection.indexOf(object.PID) == -1}" ng-repeat="object in massedit.datastructuredisplay ">	  
-	     <td ng-if="1 !== 1"  ng-if="current_user">
-	            <span  class="glyphicon glyphicon-flag flag" ng-class="{'flag-selected': massedit.selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)">
+	  <tr data-ng-class="{'grey': massedit.selection.indexOf(object.PID) == -1}" data-ng-repeat="object in massedit.datastructuredisplay ">	  
+	     <td data-ng-if="1 !== 1"  data-ng-if="current_user">
+	            <span  class="glyphicon glyphicon-flag flag" data-ng-class="{'flag-selected': massedit.selection.indexOf(object.PID) != -1}" data-ng-click="toggleObject(object.PID)">
 	            </span>
 	     </td>
 	     <td><img src="https://<%= $config->{phaidra}->{baseurl} %>/preview/{{object.PID}}///60" class="img-thumbnail" width="60" height="60" title="{{object['uw.general.title']}}" alt="{{object['uw.general.title']}}"></td>
 	  	    <td>	  		
-	  	 	<div ng-switch on="object['fgs.contentModel']">
-	  			<div ng-switch-when="cmodel:Collection">
+	  	 	<div data-ng-switch on="object['fgs.contentModel']">
+	  			<div data-ng-switch-when="cmodel:Collection">
 	  				<a href="/collection/{{object.PID}}" target="_blank">{{object.PID}}</a>	
 	  			</div>
-	  			<div ng-switch-default>
+	  			<div data-ng-switch-default>
 	  				{{object.PID}}
 	  		        </div>
 	  	        </div>
 	     </td>
-	     <td ng-if="massedit.titleDisplay" >
+	     <td data-ng-if="massedit.titleDisplay" >
 	         {{object.title}}
 	     </td>
-	     <td ng-repeat="field in object.changes">
+	     <td data-ng-repeat="field in object.changes">
 	            {{field.value}}
 	     </td>
 	     <td>

@@ -8,15 +8,15 @@
         </div>
         <div class="modal-body">
             <ul>
-                <li ng-repeat="item in items">
+                <li data-ng-repeat="item in items">
                     
                 </li>
             </ul>
             
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">Sign in</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" data-ng-click="ok()">Sign in</button>
+            <button class="btn btn-warning" data-ng-click="cancel()">Cancel</button>
         </div>
     </script>
     

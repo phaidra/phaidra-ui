@@ -118,8 +118,10 @@ app.controller('BookmarkEditorCtrl',  function($scope, $modal, $location, Bookma
                            },
              });
      }
-    $scope.createBookmark = function(){
-           
+    // delete it? already in frontend controler!
+    $scope.createBookmark2 = function(){
+          console.log('createBookmark123');
+       
           var modalInstance = $modal.open({
                      templateUrl: $('head base').attr('href')+'views/modals/bookmark/create_bookmark.html',
                      controller: CreateBookmarkModalCtrl,
@@ -132,6 +134,7 @@ app.controller('BookmarkEditorCtrl',  function($scope, $modal, $location, Bookma
                                              }
                              },
           });
+        
    }  
   
 
@@ -213,7 +216,9 @@ var DeleteAllBookmarkCtrl = function ($scope, $modalInstance, BookmarkService, t
    }; 
 }
 
-var CreateBookmarkModalCtrl = function ($scope, $modalInstance, BookmarkService, page, limit ) {
+
+// delete it? already in frontend controler!
+var CreateBookmarkModalCtrl2 = function ($scope, $modalInstance, BookmarkService, page, limit ) {
    
      $scope.bookmark_name = '';
             

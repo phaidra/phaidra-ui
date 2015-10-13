@@ -19,11 +19,10 @@
 	                         </div>
 	                         <div class="col-md-8">
 	                                  <center>
-	                                            length {{bookmarkService.bookmarks.length}}
 	                                            <pagination total-items="bookmarkService.bookmarks.length" on-select-page="setPage(page)" page="currentPage" items-per-page="limit" max-size="maxSize" boundary-links="true" rotate="false" num-pages="numPages">
 	                                            </pagination>               
 
-	                                            <div ng-if="bookmarkService.bookmarks.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
+	                                            <div data-ng-if="bookmarkService.bookmarks.length" class="btn-group animate-if btn-group-vertical massedit-recordsperpage" > 
                                                               <div class="dropdown">
                                                                       <button class="btn btn-default dropdown-toggle massedit-button-recordsperpage" type="button" id="recordsperpage" data-toggle="dropdown">
                                                                               per page
@@ -54,7 +53,7 @@
 	  	<th>
 	               <span class="massedit-id" data-ng-click="sort()"  >
 	  	              Bookmark name 
-	  	              <div ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div>
+	  	              <div data-ng-class="{'glyphicon glyphicon-arrow-up': sortOrder == 0,'glyphicon glyphicon-arrow-down': sortOrder == 1}" ></div>
 	  	      </span>
 	         
 	         </th>
@@ -67,7 +66,7 @@
 	     </tr>
 	  </thead>
 	  <tbody>
-	      <tr  ng-repeat="bookmark in bookmarkService.bookmarksdisplay ">	  
+	      <tr  data-ng-repeat="bookmark in bookmarkService.bookmarksdisplay ">	  
 	          <td>{{bookmark.bookmarkname}}</td>
 	          <td>
 	              <a role="menuitem" tabindex="-1" href="" data-ng-click="edit_pid(bookmark.id)"><i class="glyphicon glyphicon-pencil"></i></a>

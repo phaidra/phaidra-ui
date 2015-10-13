@@ -298,7 +298,9 @@ sub startup {
     $auth->route('submit/new/:object_type')              ->via('get')    ->to('object#submit_new_object');
     $auth->route('submit/create')                        ->via('post')   ->to('object#submit_create_object');
     
-  
+    $auth->route('groups/display')                        ->via('get')    ->to('group#display');
+    $auth->route('groups/add')                            ->via('post')   ->to('group#add');
+    
     $auth->route('template/create')                      ->via('put')    ->to('template#create');
     $auth->route('template/get/all')                     ->via('get')    ->to('template#get_all'); 
     $auth->route('template/:tid')                        ->via('post')   ->to('template#save');    

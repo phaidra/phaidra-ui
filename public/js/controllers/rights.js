@@ -21,6 +21,7 @@ app.controller('RightsCtrl', function($scope, $rootScope, $modal, $location, $ti
       $scope.validation_date = {};
 
       
+      
     $scope.initRights = function (initdata) {
 	     
              $scope.resetEditor();
@@ -40,7 +41,7 @@ app.controller('RightsCtrl', function($scope, $rootScope, $modal, $location, $ti
     		 ,function(response) {
            		$scope.alerts = response.data.alerts;
            		$scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
-           	 }
+           	  }
     	     );
       
              $scope.initdata = angular.fromJson(initdata);
@@ -84,16 +85,17 @@ app.controller('RightsCtrl', function($scope, $rootScope, $modal, $location, $ti
     
     $scope.faculty_update_handler = function(faculty_node){
 	
-    	if(!faculty_node){
-	    return;
+        if(!faculty_node){
+               return;
     	}
 
-	// we don't want to update select-boxes when they are only being rendered
-	if($scope.form){
-		if($scope.form.$pristine){	
-			return;
-		}
-	}
+	// no/off: update select-boxes when they are only being rendered
+	// we have to render it because we load data and we need handler to find deparments 
+	//if($scope.form){
+	//	if($scope.form.$pristine){	
+        //                return;
+	//	}
+	//}
                      
         //orgassignment  faculty_node
         var faculty_parent = $scope.get_namespace_parent(null, $scope.tree, 'faculty');   
@@ -107,13 +109,13 @@ app.controller('RightsCtrl', function($scope, $rootScope, $modal, $location, $ti
 	          department_namespace = faculty_parent.children[i].vocabularies[0].namespace;
 	     }
 	}  
-	
+
 	var faculty_id = faculty_node.substring(faculty_namespace.length);
 	var promise = DirectoryService.getOrgUnits(faculty_id, department_namespace);
     	$scope.loadingTracker.addPromise(promise);
     	promise.then(
     		     function(response) {
-			       $scope.alerts = response.data.alerts;
+                             $scope.alerts = response.data.alerts;
     			       var termsWithLabels = [];
 			       for (i = 0; i < response.data.terms.length; ++i) {
 				    var temp = {};
@@ -126,7 +128,7 @@ app.controller('RightsCtrl', function($scope, $rootScope, $modal, $location, $ti
 			       for (i = 0; i < $scope.faculties_array.length; ++i) {
 				   if($scope.faculties_array[i].faculty == faculty_node){
 				        $scope.faculties_array[i].departments = [];
-				        angular.copy(termsWithLabels, $scope.faculties_array[i].departments);
+                                        angular.copy(termsWithLabels, $scope.faculties_array[i].departments);
 					
 				   }
 			       }

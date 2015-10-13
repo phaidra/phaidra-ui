@@ -100,6 +100,8 @@
 	<script type="text/javascript" src="<%= url_for '/js/services/masseditjobs.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/bookmark.js' %>"></script>
 	<script type="text/javascript" src="<%= url_for '/js/services/vocabulary.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/submit.js' %>"></script>
+	<script type="text/javascript" src="<%= url_for '/js/services/group.js' %>"></script>
 	
   	<script type="text/javascript" src="<%= url_for '/js/controllers/frontend.js' %>"></script>
 
@@ -145,9 +147,9 @@
 
 	       	       
 	        <div class="input-group">
-	          <input type="text" class="form-control" ng-model="query" placeholder="Search in title" ng-keyup="hitEnterSearch($event)">
+	          <input type="text" class="form-control" data-ng-model="query" placeholder="Search in title" data-ng-keyup="hitEnterSearch($event)">
 	          <div class="input-group-btn">
-	        	<button class="btn btn-default" type="submit" ng-click="search()"><i class="glyphicon glyphicon-search"></i></button>
+	        	<button class="btn btn-default" type="submit" data-ng-click="search()"><i class="glyphicon glyphicon-search"></i></button>
 	          </div>
 	        </div>
 	        
@@ -157,18 +159,19 @@
       
       <% if (is_user_authenticated) { %>
       
-      <a href="" id="Submit" class="Massedit-link" ng-click="gotoSubmit()">Submit</a>
-      <a href="" id="Objects" class="Massedit-link" ng-click="gotoObjects()">Objects</a>
-      <a href="" id="Templates" class="Massedit-link" ng-click="gotoTemplates()">Templates</a>
+      <a href="" id="Submit" class="Massedit-link" data-ng-click="gotoSubmit()">Submit</a>
+      <a href="" id="Objects" class="Massedit-link" data-ng-click="gotoObjects()">Objects</a>
+      <a href="" id="Templates" class="Massedit-link" data-ng-click="gotoTemplates()">Templates</a>
+      <a href="" id="Groups" class="Massedit-link" data-ng-click="gotoGroups()">Groups</a>
       
       <ul class="nav navbar-nav">
          <li class="dropdown">
           <a href="" class="dropdown-toggle" data-toggle="dropdown">Bookmarks<b class="caret"></b></a>
           <ul class="dropdown-menu">            
-                <li><a href="" ng-click="createBookmark()" >Create Bookmark</a></li>
-                <li><a href="" ng-click="editBookmark()" >Edit Bookmark</a></li>
-                <li><a ng-if="!disableBookmark" href="" ng-click="addToBookmark()" >Add to Bookmark</a></li>
-                <li><a ng-if="!disableBookmark" href="" ng-click="addToCurrentBookmark()" >Add to current Bookmark</a></li>            
+                <li><a href="" data-ng-click="createBookmark()" >Create Bookmark</a></li>
+                <li><a href="" data-ng-click="editBookmark()" >Edit Bookmark</a></li>
+                <li><a data-ng-if="!disableBookmark" href="" data-ng-click="addToBookmark()" >Add to Bookmark</a></li>
+                <li><a data-ng-if="!disableBookmark" href="" data-ng-click="addToCurrentBookmark()" >Add to current Bookmark</a></li>            
           </ul>
         </li>
       </ul>
@@ -177,8 +180,8 @@
          <li class="dropdown">
           <a href="" class="dropdown-toggle" data-toggle="dropdown">Massedit<b class="caret"></b></a>
           <ul class="dropdown-menu">            
-               <li><a href="" ng-click="gotoMassedit()" >Create</a></li>            
-               <li><a href="" ng-click="gotoJobsList()" >Jobs</a></li>
+               <li><a href="" data-ng-click="gotoMassedit()" >Create</a></li>            
+               <li><a href="" data-ng-click="gotoJobsList()" >Jobs</a></li>
           </ul>
         </li>
       </ul>
@@ -191,7 +194,7 @@
       
       <ul class="nav navbar-right">      
       	<% if (is_user_authenticated) { %>
-      		<a href="/signout" id="signout" class="btn btn-default navbar-btn signin-btn" ng-click="sign_out()">Sign out</a>      		
+      		<a href="/signout" id="signout" class="btn btn-default navbar-btn signin-btn" data-ng-click="sign_out()">Sign out</a>      		
       	<% }else{ %>
       		<button type="button" id="signin" data-redirect="<%= flash 'redirect_to' %>" data-open="<%= flash 'opensignin' %>" class="btn btn-default navbar-btn signin-btn" ng-click="signin_open()">Sign in</button>
       	<% } %>
@@ -202,7 +205,7 @@
       </ul>
       <% } %>
       <ul class="nav navbar-right">
-      <img class="load-spinner" ng-show="loadingTracker.active()" src="../img/ajax-loader.gif">
+      <img class="load-spinner" data-ng-show="loadingTracker.active()" src="../img/ajax-loader.gif">
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -215,7 +218,7 @@
   	<%# ############################ %> 
 
   	
-  	<footer class="footer" ng-cloak>  	
+  	<footer class="footer" data-ng-cloak>  	
   		<div class="container-fluid">
                   <div class="row">
                           <div class="col-md-3">

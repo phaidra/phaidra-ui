@@ -1,0 +1,34 @@
+<div class="modal ">
+        <div class="modal-dialog bookmark-modal">
+                        <div class="modal-content">
+                                  <h4 class="modal-title">
+                                         <div>      
+                                               <span class="glyphicon glyphicon-asterisk">
+                                               </span> 
+                                         </div>      
+                                </h4>
+                                <div class="modal-header">
+                                        <center>
+                                               <h4 class="modal-title">
+                                                      Select template:
+                                               </h4>
+                                        </center>
+                                       
+                                        <ui-select class="add-to-bookmark-margin-top" ng-model="templates.selected" theme="select2"  style="min-width: 300px;">
+                                                          <ui-select-match placeholder="Please select a template from template list:">{{$select.selected.title}}</ui-select-match>
+                                                                   <ui-select-choices repeat="template in templates | propsFilter: {title: $select.search, created: $select.search}">
+                                                                   <div ng-bind-html="template.title | highlight: $select.search"></div>
+                                                                          <small>
+                                                                             
+                                                                          </small>
+                                                           </ui-select-choices>
+                                        </ui-select>
+              
+                                       <div class="add-to-bookmark-margin-top">
+                                             <button type="button" class="btn btn-default" ng-click="cancel()"  >Cancel</button>
+                                             <button type="button" class="btn btn-default" ng-click="OK()"  >OK</button>
+                                       </div>
+                                 </div>
+                        </div>
+      </div>
+</div>

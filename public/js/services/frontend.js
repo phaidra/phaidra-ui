@@ -118,6 +118,12 @@ angular.module('frontendService', [])
 				params  : { id: depatmentId }
 			});
 		},
+                submit_metadata: '',
+                submit_language: '',
+                submit_title: '',
+                submit_description: '',
+                submit_licence: '',
+                submit_selectedRoles: []
 		
 		
 	}

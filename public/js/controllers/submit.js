@@ -1,6 +1,8 @@
-app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendService, MetadataService, promiseTracker) {
+app.controller('SubmitCtrl',  function($scope, $modal, $location, MetadataService, SubmitService, promiseTracker) {
    
-        
+   $scope.submitService = SubmitService; 
+    
+   
    $scope.uw_uri = 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/voc_21/';
    $scope.initdata = {};
    $scope.username = '';
@@ -11,20 +13,20 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
    $scope.object_type = '';
    
    $scope.uwmetalanguages = {};
+   $scope.uwmetalanguagesArray = [];
    $scope.uwmetadataTree = [];
-   $scope.licenses = [];
+   //$scope.licenses = [];
    $scope.licensesUri = [];
    $scope.licensesUriUwmeta = [];
    $scope.licensesUriMods = [];
-    
-   $scope.language; 
-   $scope.title;
-   $scope.description;
-   $scope.licence;
 
    $scope.roles;
-   $scope.selectedRoles = [];
-      
+     
+   $scope.pid_mods = '';
+   $scope.pid_uwmeta = '';
+   $scope.object_mods = {};
+   $scope.object_uwmeta = {};
+   
    $scope.init = function (initdata) {
    	
         console.log('SubmitCtrl init',initdata);
@@ -39,6 +41,90 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 	$scope.getUwmetadataTree();
    }
    
+   
+
+   $scope.test1 = function () {
+           //console.log('metadata1:',$scope.metadata);
+           //console.log('SubmitService.submit_metadata',SubmitService.submit_metadata);
+           //console.log('SubmitService.submit_title',SubmitService.submit_title);
+           console.log('SubmitService.submit_licence',SubmitService.submit_licence);
+           //console.log('submit_selectedRoles',SubmitService.submit_selectedRoles);
+           //console.log('uwmetalanguages:',$scope.uwmetalanguages);
+           //console.log('submit_language:',SubmitService.submit_language);
+           // console.log('uwmetalanguagesArray:',$scope.uwmetalanguagesArray);
+           
+           console.log('licensesUri:',$scope.licensesUri);
+           console.log('object_uwmeta:',$scope.object_uwmeta);
+           console.log('object_mods:',$scope.object_mods);
+           
+           
+           
+           //$scope.metadata = SubmitService.submit_metadata;
+   }
+
+   
+   
+   $scope.loadFromPidMods = function (pid) {
+          console.log('pid ',pid );     
+          var promise = MetadataService.getModsFromObject(pid);
+          $scope.loadingTracker.addPromise(promise);
+          promise.then(
+                    function(response) {
+                        $scope.alerts = response.data.metadata.alerts;
+                        if(response.data.metadata.mods){
+                                $scope.object_mods = response.data.metadata.mods;
+                                SubmitService.submit_metadata = 'mods';
+                                SubmitService.submit_language = SubmitService.getLanguageMods($scope.object_mods);
+                                SubmitService.submit_title = SubmitService.getTitleMods($scope.object_mods);
+                                SubmitService.submit_description = SubmitService.getDescriptionMods($scope.object_mods);
+                                SubmitService.submit_licence = SubmitService.getLicenceMods($scope.object_mods);
+                                SubmitService.submit_selectedRoles = SubmitService.getRolesMods($scope.object_mods);
+                        }else{
+                                $scope.loadFromPidUwmeta(pid); 
+                        }
+                        
+                   }
+                   ,function(response) {
+                        $scope.alerts = response.data.alerts;
+                        if(typeof $scope.alerts !== 'undefined'){
+                              $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                        }
+                   }
+         );  
+   }
+   
+   //$scope.loadFromPidUwmeta = function (pid) {
+   $scope.loadFromPidUwmeta = function (pid) {  
+           
+        var promise = MetadataService.getUwmetadataFromObject(pid);
+        $scope.loadingTracker.addPromise(promise);
+        promise.then(
+                function(response) {
+                        $scope.alerts = response.data.alerts;
+                        $scope.object_uwmeta = response.data.metadata.uwmetadata;
+                        SubmitService.submit_metadata = 'uwmetadata';
+                        SubmitService.submit_title = SubmitService.getTitleUwmeta($scope.object_uwmeta);
+                        SubmitService.submit_description = SubmitService.getDescriptionUwmeta($scope.object_uwmeta);
+                        SubmitService.submit_language = SubmitService.getLanguageUwmeta($scope.object_uwmeta);
+                        SubmitService.submit_licence = SubmitService.getLicenceUwmeta($scope.object_uwmeta);
+                        SubmitService.submit_selectedRoles = SubmitService.getRolesUwmeta($scope.object_uwmeta);
+                }
+                ,function(response) {
+                        $scope.alerts = response.data.alerts;
+                        if(typeof $scope.alerts !== 'undefined'){
+                              $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                        }
+                }
+        ); 
+   }
+   
+   $scope.loadFromTemplate = function () {
+           
+              var modalInstance = $modal.open({
+                     templateUrl: $('head base').attr('href')+'views/modals/submit/load_from_template.html',
+                     controller: LoadFromTemplateModalCtrl,                     
+              });
+   }
    
    $scope.new_object = function (object_type) {
         
@@ -61,12 +147,12 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 
 	newRole.firstname = '';
 	newRole.lastname  = '';
-        $scope.selectedRoles.push(newRole);
+        SubmitService.submit_selectedRoles.push(newRole);
    }
    
    $scope.deleteRole = function (index) {
        
-        $scope.selectedRoles.splice(index, 1);
+        SubmitService.submit_selectedRoles.splice(index, 1);
    }
    
    
@@ -79,6 +165,14 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 		        $scope.alerts = response.data.alerts;
     			
 			$scope.uwmetalanguages = response.data.languages;
+                        
+                        $scope.uwmetalanguagesArray = [];
+                        for (var key in $scope.uwmetalanguages) {
+                              var language = {};
+                              language.id = key;
+                              language.label = $scope.uwmetalanguages[key];
+                              $scope.uwmetalanguagesArray.push(language);  
+                        }
     		}
     		,function(response) {
            		$scope.alerts = response.data.alerts;
@@ -95,8 +189,7 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
     	    promise.then(
     		function(response) {
 		        $scope.alerts = response.data.alerts;
-			$scope.licenses = response.data.licenses;
-			$scope.getLicensesUriMods();
+			$scope.getLicensesUriMods(response.data.licenses);
     		}
     		,function(response) {
            		$scope.alerts = response.data.alerts;
@@ -105,10 +198,10 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
     	   );
    }
    
-   $scope.getLicensesUriMods = function () {
+   $scope.getLicensesUriMods = function (licenses) {
         
-        for (i = 0; i < $scope.licenses.length; ++i) {
-	     if($scope.licenses[i].lid == 1){
+        for (i = 0; i < licenses.length; ++i) {
+	     if(licenses[i].lid == 1){
 	                var license = {}; 
 			license.id = 1;
 			license.label = 'All rights reserved';
@@ -117,9 +210,9 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 			continue; 
              }
 	     var  licensesUri = {};
-	     license.id = $scope.licenses[i].lid;
-	     licensesUri.uri   = $scope.licenses[i].link_uri;
-	     licensesUri.label = $scope.licenses[i].labels.en;
+	     license.id = licenses[i].lid;
+	     licensesUri.uri   = licenses[i].link_uri;
+	     licensesUri.label = licenses[i].labels.en;
 	     $scope.licensesUriMods.push(licensesUri);
 	}
    }
@@ -131,13 +224,14 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
     	    promise.then(
     		function(response) {
 		        $scope.alerts = response.data.alerts;
-			$scope.licenses = response.data.licenses;
+			//$scope.licenses = response.data.licenses;
+                        var licenses = response.data.licenses;
 			//$scope.getUwmetadataTree();
 			//var uw_uri = 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/voc_21/';
-	                for (i = 0; i < $scope.licenses.length; ++i) {
+	                for (i = 0; i < licenses.length; ++i) {
 			    var license = {};
-			    license.label = $scope.licenses[i].labels.en;;
-			    license.uri = $scope.uw_uri+$scope.licenses[i].lid;
+			    license.label = licenses[i].labels.en;;
+			    license.uri = $scope.uw_uri+licenses[i].lid;
 		            $scope.licensesUriUwmeta.push(license);
 		        }
 	  	
@@ -156,7 +250,6 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
     	    $scope.loadingTracker.addPromise(promise);
     	    promise.then(
     		function(response) {
-    			//console.log('getUwmetadataTree',response.data);
 		        $scope.alerts = response.data.alerts;
     			$scope.uwmetadataTree = response.data.tree;
     		}
@@ -167,13 +260,14 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
     	    );
    }
      
-   $scope.$watch('metadata', function(newValue, oldValue) {
+   $scope.$watch('submitService.submit_metadata', function(newValue, oldValue) {
     	if(newValue){
 	      $scope.licensesUri = [];
-	      if($scope.metadata == 'mods'){
+              console.log('watch metadata',SubmitService.submit_metadata)
+              if(SubmitService.submit_metadata == 'mods'){
 		   $scope.licensesUri = $scope.licensesUriMods;
 	      }
-	      if($scope.metadata == 'uwmetadata'){
+              if(SubmitService.submit_metadata == 'uwmetadata'){
 	           $scope.licensesUri = $scope.licensesUriUwmeta;
 	      }
     	}
@@ -182,7 +276,9 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 
   $scope.setMeta = function () {
  
-    if($scope.metadata == 'uwmetadata'){
+    //if($scope.metadata == 'uwmetadata'){
+    if(SubmitService.submit_metadata == 'uwmetadata'){
+            
       //roles
       var contribute = {
                     "xmlns": "http://phaidra.univie.ac.at/XML/metadata/lom/V1.0",
@@ -220,10 +316,10 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
                 };
         
       var contributeArray = [];
-      for (i = 0; i < $scope.selectedRoles.length; ++i) {
-	     contribute.children[0].ui_value             = $scope.selectedRoles[i].URI;
-	     contribute.children[1].children[0].ui_value = $scope.selectedRoles[i].firstname;
-	     contribute.children[1].children[1].ui_value = $scope.selectedRoles[i].lastname;
+      for (i = 0; i < SubmitService.submit_selectedRoles.length; ++i) {
+	     contribute.children[0].ui_value             = SubmitService.submit_selectedRoles[i].URI;
+	     contribute.children[1].children[0].ui_value = SubmitService.submit_selectedRoles[i].firstname;
+	     contribute.children[1].children[1].ui_value = SubmitService.submit_selectedRoles[i].lastname;
 	     var newContribute = angular.copy(contribute);
 	     contributeArray.push(newContribute);
       }
@@ -291,19 +387,20 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 	   $scope.uwmetadata.metadata.uwmetadata[1].children.push(contributeArray[i]);
        }
        //title
-       $scope.uwmetadata.metadata.uwmetadata[0].children[1].ui_value = $scope.title;
+       $scope.uwmetadata.metadata.uwmetadata[0].children[1].ui_value = SubmitService.submit_title;
        //language
-       $scope.uwmetadata.metadata.uwmetadata[0].children[2].ui_value = $scope.language;
+       $scope.uwmetadata.metadata.uwmetadata[0].children[2].ui_value = SubmitService.submit_language;
        //description
-       $scope.uwmetadata.metadata.uwmetadata[0].children[3].ui_value = $scope.description;
+       $scope.uwmetadata.metadata.uwmetadata[0].children[3].ui_value = SubmitService.submit_description;
        //license
-       $scope.uwmetadata.metadata.uwmetadata[2].children[0].ui_value = $scope.licence;
+       $scope.uwmetadata.metadata.uwmetadata[2].children[0].ui_value = SubmitService.submit_licence;
        
        $scope.metadata_to_send = $scope.uwmetadata;
      
     };
     
-    if($scope.metadata == 'mods'){
+    //if($scope.metadata == 'mods'){
+    if(SubmitService.submit_metadata == 'mods'){
            
       $scope.mods =
            {"metadata":  
@@ -314,7 +411,7 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
                               "label": "Title info",
                               "children": [
                                             {
-                                              "ui_value": "Makedonien, Altserbien und Albanien",
+                                              "ui_value": "",
                                               "xmlname": "title",
                                               "input_type": "input_text",
                                               "label": "Title",
@@ -369,13 +466,14 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 		 
 	                     },
 	                     {
-			       "ui_value": "blablabla222333",
+			       "ui_value": "",
                                "xmlname": "note",
                                "input_type": "input_text",
                                "label": "Note",
 			     },
 	                     {
-			       "ui_value": "http:\\/\\/creativecommons.org\\/licenses\\/by-nc-sa\\/2.0\\/",
+			       //"ui_value": "http:\\/\\/creativecommons.org\\/licenses\\/by-nc-sa\\/2.0\\/",
+                               "ui_value": "",
                                "xmlname": "accessCondition",
                                "extensible": 1,
                                "input_type": "input_text",
@@ -400,7 +498,7 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
                                "label": "Name",
                                "children": [
                                              {
-                                                 "ui_value": "Peucker, Karl5123437",
+                                                 "ui_value": "",
                                                  "xmlname": "namePart",
                                                  "input_type": "input_text",
                                                  "mandatory": 1,
@@ -465,18 +563,19 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
 			     
 			     
 	   var contributeArray = [];
-           for (i = 0; i < $scope.selectedRoles.length; ++i) {
-	         var name =  $scope.selectedRoles[i].lastname+', '+$scope.selectedRoles[i].firstname; // user input
+           for (i = 0; i < SubmitService.submit_selectedRoles.length; ++i) {
+	         var name =  SubmitService.submit_selectedRoles[i].lastname+', '+SubmitService.submit_selectedRoles[i].firstname; // user input
 	         contribute.children[0].ui_value             = name;
-	         contribute.children[1].children[0].ui_value = $scope.selectedRoles[i].URI;  //label but uri
+	         contribute.children[1].children[0].ui_value = SubmitService.submit_selectedRoles[i].URI; //'uri' is just name acronim in mods
+	         
 	         var newContribute = angular.copy(contribute);
 	         contributeArray.push(newContribute);
            }
            
-	   $scope.mods.metadata.mods[0].children[0].ui_value = $scope.title;
-	   $scope.mods.metadata.mods[1].children[0].ui_value = $scope.language;
-	   $scope.mods.metadata.mods[2].ui_value             = $scope.description;
-           $scope.mods.metadata.mods[3].ui_value             = $scope.licence;
+	   $scope.mods.metadata.mods[0].children[0].ui_value = SubmitService.submit_title;
+	   $scope.mods.metadata.mods[1].children[0].ui_value = SubmitService.submit_language;
+	   $scope.mods.metadata.mods[2].ui_value             = SubmitService.submit_description;
+           $scope.mods.metadata.mods[3].ui_value             = SubmitService.submit_licence;
            
 	   for (i = 0; i < contributeArray.length; ++i) {
 	        $scope.mods.metadata.mods.push(contributeArray[i]);
@@ -1758,3 +1857,292 @@ app.controller('SubmitCtrl',  function($scope, $modal, $location, FrontendServic
  } 
   
 });
+
+var LoadFromTemplateModalCtrl = function ($scope, $modalInstance, MetadataService, SubmitService) {
+     
+     
+  
+    $scope.templates = [];
+    
+     
+     
+     $scope.getAllTemplates = function() {
+          
+          var promise = MetadataService.getAllTemplates();
+          $scope.loadingTracker.addPromise(promise);
+          promise.then(
+                function(response) { 
+                       $scope.alerts = response.data.alerts;
+                       $scope.templates = response.data.templates;
+                       $scope.form_disabled = false;
+                }
+               ,function(response) {
+                       $scope.alerts = response.data.alerts;
+                       $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                       $scope.form_disabled = false;
+               }
+         );
+    };   
+       
+    $scope.getAllTemplates();
+    
+    $scope.loadDataFromTemplate = function (tid) {
+             var promise = MetadataService.loadTemplate(tid);
+             $scope.loadingTracker.addPromise(promise);
+             promise.then(
+                    function(response) { 
+                           $scope.alerts = response.data.alerts;
+                           if(typeof response.data.mods !== 'undefined' ){
+                                   SubmitService.submit_metadata = 'mods';
+                                   SubmitService.submit_language = SubmitService.getLanguageMods(response.data.mods);
+                                   SubmitService.submit_title = SubmitService.getTitleMods(response.data.mods);
+                                   SubmitService.submit_description = SubmitService.getDescriptionMods(response.data.mods);
+                                   SubmitService.submit_licence = SubmitService.getLicenceMods(response.data.mods);
+                                   SubmitService.submit_selectedRoles = SubmitService.getRolesMods(response.data.mods);
+                           }
+                           if(typeof response.data.uwmetadata !== 'undefined' ){
+                                   SubmitService.submit_metadata = 'uwmetadata';
+                                   SubmitService.submit_title = SubmitService.getTitleUwmeta(response.data.uwmetadata);
+                                   SubmitService.submit_description = SubmitService.getDescriptionUwmeta(response.data.uwmetadata);
+                                   SubmitService.submit_language = SubmitService.getLanguageUwmeta(response.data.uwmetadata);
+                                   SubmitService.submit_licence = SubmitService.getLicenceUwmeta(response.data.uwmetadata);
+                                   SubmitService.submit_selectedRoles = SubmitService.getRolesUwmeta(response.data.uwmetadata);
+                           }
+                           $scope.form_disabled = false;
+                   }
+                  ,function(response) {
+                           $scope.alerts = response.data.alerts;
+                           $scope.alerts.unshift({type: 'danger', msg: "Error code "+response.status});
+                           $scope.form_disabled = false;
+                   }
+             );
+      }
+
+      /*
+      $scope.getTitleMods = function (mods) {
+      
+            var title = "";
+            for (i = 0; i < mods.length; ++i) {
+                  if(mods[i].xmlname == "titleInfo"){
+                        if(mods[i].children){
+                               for (j = 0; j < mods[i].children.length; ++j) {
+                                      if(mods[i].children[j].xmlname == "title"){
+                                            title = mods[i].children[j].ui_value; 
+                                      }     
+                               }
+                        }
+                  }   
+            }
+            return title; 
+      }
+      
+      $scope.getLanguageMods = function (mods) {
+      
+            var language = "";
+            for (i = 0; i < mods.length; ++i) {
+                  if(mods[i].xmlname == "language"){
+                        if(mods[i].children){
+                               for (j = 0; j < mods[i].children.length; ++j) {
+                                      if(mods[i].children[j].xmlname == "languageTerm"){
+                                            language = mods[i].children[j].ui_value; 
+                                      }     
+                               }
+                        }
+                  }   
+            }
+            return language; 
+      }
+      
+      
+      $scope.getDescriptionMods = function (mods) {
+      
+            var description = "";
+            for (i = 0; i < mods.length; ++i) {
+                  if(mods[i].xmlname == "note"){
+                        description = mods[i].ui_value;   
+                  }   
+            }
+            return description; 
+      }
+      
+      $scope.getLicenceMods = function (mods) {
+      
+            var licence = "";
+            for (i = 0; i < mods.length; ++i) {
+                  if(mods[i].xmlname == "accessCondition"){
+                        licence = mods[i].ui_value;   
+                  }   
+            }
+            return licence; 
+      }
+      
+      $scope.getRolesMods = function (mods) {
+            var selectedRoles =  [];
+            var namePart = '';
+            var roleTerm = '';
+            for (i = 0; i < mods.length; ++i) {
+                  if(mods[i].xmlname == "name"){
+                          if(mods[i].children){
+                               namePart = '';
+                               roleTerm = '';
+                               for (j = 0; j < mods[i].children.length; ++j) {
+                                      if(mods[i].children[j].xmlname == "namePart"){
+                                              namePart = mods[i].children[j].ui_value; 
+                                      } 
+                                      if(mods[i].children[j].xmlname == "role"){
+                                             if(mods[i].children[j].children){
+                                                     for (k = 0; k < mods[i].children[j].children.length; ++k) {
+                                                             if(mods[i].children[j].children[k].xmlname == "roleTerm"){
+                                                                     roleTerm = mods[i].children[j].children[k].ui_value;
+                                                             }
+                                                     }  
+                                             }
+                                      }
+                               }
+                               if(roleTerm != '' && namePart != ''){
+                                       var newRole = {};
+                                       newRole.URI = roleTerm;
+                                       var namePartsArray = namePart.split(",");
+                                       newRole.firstname = namePartsArray[0];
+                                       newRole.lastname = namePartsArray[1].trim();
+                                       selectedRoles.push(newRole);
+                               }
+                        }
+                  }   
+            }
+            return selectedRoles; 
+      } 
+      
+      $scope.getTitleUwmeta = function (uwmeta) {
+            
+            var title = "";
+            for (i = 0; i < uwmeta.length; ++i) {
+                  if(uwmeta[i].xmlname == "general"){
+                        if(uwmeta[i].children){
+                               for (j = 0; j < uwmeta[i].children.length; ++j) {
+                                      if(uwmeta[i].children[j].xmlname == "title"){
+                                            title = uwmeta[i].children[j].ui_value; 
+                                      }     
+                               }
+                        }
+                  }   
+            }
+            return title;       
+      }
+      
+      $scope.getDescriptionUwmeta = function (uwmeta) {
+            
+            var description = "";
+            for (i = 0; i < uwmeta.length; ++i) {
+                  if(uwmeta[i].xmlname == "general"){
+                        if(uwmeta[i].children){
+                               for (j = 0; j < uwmeta[i].children.length; ++j) {
+                                      if(uwmeta[i].children[j].xmlname == "description"){
+                                            description = uwmeta[i].children[j].ui_value; 
+                                      }     
+                               }
+                        }
+                  }   
+            }
+            return description;       
+      }
+      
+      $scope.getLanguageUwmeta = function (uwmeta) {
+            
+            var language = "";
+            for (i = 0; i < uwmeta.length; ++i) {
+                  if(uwmeta[i].xmlname == "general"){
+                        if(uwmeta[i].children){
+                               for (j = 0; j < uwmeta[i].children.length; ++j) {
+                                      if(uwmeta[i].children[j].xmlname == "language"){
+                                            language = uwmeta[i].children[j].ui_value; 
+                                      }     
+                               }
+                        }
+                  }   
+            }
+            return language;       
+      }
+      
+      $scope.getLicenceUwmeta = function (uwmeta) {
+            
+            var license = "";
+            for (i = 0; i < uwmeta.length; ++i) {
+                  if(uwmeta[i].xmlname == "rights"){
+                        if(uwmeta[i].children){
+                               for (j = 0; j < uwmeta[i].children.length; ++j) {
+                                      if(uwmeta[i].children[j].xmlname == "license"){
+                                            license = uwmeta[i].children[j].ui_value; 
+                                      }     
+                               }
+                        }
+                  }   
+            }
+            return license;       
+      }
+      
+      $scope.getRolesUwmeta = function (uwmeta) {
+            var selectedRoles =  [];
+            var firstname = '';
+            var lastname = '';
+            var roleTerm = '';
+            for (i = 0; i < uwmeta.length; ++i) {
+                  if(uwmeta[i].xmlname == "lifecycle"){
+                          if(uwmeta[i].children){
+                                 for (j = 0; j < uwmeta[i].children.length; ++j) {
+                                       if(uwmeta[i].children[j].xmlname == "contribute"){
+                                               firstname = '';
+                                               lastname = '';
+                                               roleTerm = ''; 
+                                               if(uwmeta[i].children[j].children){
+                                                      for (k = 0; k < uwmeta[i].children[j].children.length; ++k) {  
+                                                             if(uwmeta[i].children[j].children[k].xmlname == "entity"){
+                                                                    if(uwmeta[i].children[j].children[k].children){
+                                                                          for (l = 0; l < uwmeta[i].children[j].children[k].children.length; ++l) {
+                                                                                  if(uwmeta[i].children[j].children[k].children[l].xmlname == "firstname"){
+                                                                                        firstname = uwmeta[i].children[j].children[k].children[l].ui_value;
+                                                                                  }
+                                                                                  if(uwmeta[i].children[j].children[k].children[l].xmlname == "lastname"){
+                                                                                        lastname = uwmeta[i].children[j].children[k].children[l].ui_value;
+                                                                                  }
+                                                                          }
+                                                                    } 
+                                                             }
+                                                             if(uwmeta[i].children[j].children[k].xmlname == "role"){
+                                                                    roleTerm = uwmeta[i].children[j].children[k].ui_value;
+                                                             }
+                                                      } 
+                                               }
+                                               if(roleTerm != '' && lastname != '' && firstname != ''){
+                                                     var newRole = {};
+                                                     newRole.URI = roleTerm;
+                                                     newRole.firstname = firstname;
+                                                     newRole.lastname = lastname;
+                                                     selectedRoles.push(newRole);
+                                              }
+                                       } 
+                                 }
+                        }
+                  }   
+            }
+            return selectedRoles; 
+      } 
+      */
+      
+      $scope.OK = function () {
+            $scope.loadDataFromTemplate($scope.templates.selected._id);
+            $modalInstance.dismiss('OK');
+      };
+   
+       $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+       };
+   
+       $scope.hitEnter = function(evt){
+           if(angular.equals(evt.keyCode,13)){
+                  $scope.loadDataFromTemplate($scope.templates.selected._id);
+                  $modalInstance.dismiss('OK');
+           }
+       };
+    
+}

@@ -73,6 +73,7 @@ app.controller('TemplatesCtrl',  function($scope, $rootScope, $modal, $location,
       	function(response) { 
       		$scope.alerts = response.data.alerts;
       		$scope.templates = response.data.templates;
+                console.log('getAllTemplates ',$scope.templates);
 		$scope.form_disabled = false;
       	}
       	,function(response) {
