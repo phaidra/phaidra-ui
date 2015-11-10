@@ -780,7 +780,7 @@ var MEAddRecordModalCtrl = function ($scope, $modal, $modalInstance, FrontendSer
   
   
 }
-
+ 
 var METemplateDeleteModalCtrl = function ($scope, $rootScope, $modalInstance, FrontendService, promiseTracker, Massedit) {
      
      $scope.massedit = Massedit;
