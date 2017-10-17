@@ -1,6 +1,15 @@
-hypnotoad.pid
-.project
-.buildpath
-PhaidraUI.json
-lib/phaidra_directory/Phaidra/Directory/Univie.pm
-*~
+.DS_Store
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+test/e2e/reports
+selenium-debug.log
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

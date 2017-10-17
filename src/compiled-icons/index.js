@@ -1,0 +1,10 @@
+/* eslint-disable */
+require('./univie-extern')
+require('./univie-quick-biblio')
+require('./univie-quick-fakultaeten')
+require('./univie-quick-intranet')
+require('./univie-quick-kontakt')
+require('./univie-quick-lesung')
+require('./univie-quick-studienpoint')
+require('./univie-quick-univis')
+require('./univie-quick-webmail')
