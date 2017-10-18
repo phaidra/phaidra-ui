@@ -5,7 +5,6 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 import * as svgicon from 'vue-svgicon'
-import './stylus/main.styl'
 
 Vue.config.productionTip = false
 
