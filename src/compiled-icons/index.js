@@ -1,4 +1,5 @@
 /* eslint-disable */
+require('./material-social-person')
 require('./univie-extern')
 require('./univie-quick-biblio')
 require('./univie-quick-fakultaeten')
@@ -8,3 +9,4 @@ require('./univie-quick-lesung')
 require('./univie-quick-studienpoint')
 require('./univie-quick-univis')
 require('./univie-quick-webmail')
+require('./univie-sprache')

@@ -1,11 +1,3 @@
-<!--
-<template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view></router-view>
-  </div>
-</template>
--->
 <template>
   <v-app>
     <v-container fluid>
@@ -21,6 +13,25 @@
               <img src="./assets/Uni_Logo_2016.png" class="logo" alt="uni-logo" />
             </v-flex>
             <v-flex text-xs-right>
+              <v-btn flat icon color="grey" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn>
+
+              <v-menu bottom transition="slide-y-transition" class="v-align-top">
+                <v-btn icon slot="activator" class="top-margin-3">
+                  {{$i18n.locale}}
+                  <icon name="univie-sprache" class="lang-icon" color="grey"></icon>
+                </v-btn>
+                <v-list>
+                  <v-list-tile @click="$i18n.locale='en'">
+                    <v-list-tile-title>English</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile @click="$i18n.locale='de'">
+                    <v-list-tile-title>Deutsch</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile @click="$i18n.locale='it'">
+                    <v-list-tile-title>Italiano</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
               <a id="quicklinks-button" class="ph-button" v-on:click="quicklinksenabled = !quicklinksenabled">Quicklinks</a>
             </v-flex>
           </v-layout>
@@ -41,8 +52,10 @@
 </template>
 
 <script>
-  /* import '@/assets/css/material-icons.css' */
+  import '@/assets/css/material-icons.css'
   import Quicklinks from '@/components/Quicklinks'
+  import '@/compiled-icons/material-social-person'
+  import '@/compiled-icons/univie-sprache'
 
   export default {
     components: {
@@ -51,7 +64,8 @@
     name: 'app',
     data () {
       return {
-        quicklinksenabled: 0
+        quicklinksenabled: 0,
+        fab: false
       }
     }
   }
@@ -62,7 +76,7 @@
   @require '../node_modules/vuetify/src/stylus/settings/_colors'
 
   $theme := {
-    primary: white
+    primary: #1a74b0
     accent: $red.accent-2
     secondary: $grey.lighten-1
     info: $blue.lighten-1
@@ -102,6 +116,18 @@
   -webkit-box-shadow: 48px 0 0 0 white, -48px 0 0 0 white, 0 8px 40px -6px rgba(70, 70, 70, 0.4);
   box-shadow: 48px 0 0 0 white, -48px 0 0 0 white, 0 8px 40px -6px rgba(70, 70, 70, 0.4);
   background-color: white;
+}
+
+.v-align-top {
+  vertical-align: top;
+}
+
+.top-margin-3 {
+  margin-top: 3px;
+}
+
+.lang-icon {
+  margin-left: 5px;
 }
 
 .ph-button  {
