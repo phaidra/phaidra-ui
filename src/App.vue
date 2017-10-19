@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex text-xs-right>
               <router-link :to="'login'"><v-btn flat icon color="grey" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
-              <s>{{displayname}}</s>
+              <s>{{currentUser.displayName}}</s>
               <v-menu bottom transition="slide-y-transition" class="v-align-top">
                 <v-btn icon slot="activator" class="top-margin-3">
                   {{$i18n.locale}}
@@ -58,10 +58,10 @@
   import '@/compiled-icons/univie-sprache'
 
   export default {
+    name: 'app',
     components: {
       Quicklinks
     },
-    name: 'app',
     data () {
       return {
         quicklinksenabled: 0,
@@ -69,14 +69,9 @@
         displayname: ''
       }
     },
-    mounted: function () {
-      this.$on('loggedin', function (displayname) {
-        alert('hura')
-      })
-    },
-    events: {
-      loggedin: function (argument) {
-        alert('hura')
+    computed: {
+      currentUser () {
+        return this.$store.state.currentUser
       }
     }
   }

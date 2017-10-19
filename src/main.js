@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import Vuex from 'vuex'
 import Vuetify from 'vuetify'
 import VueI18n from 'vue-i18n'
 import App from './App'
@@ -9,8 +10,8 @@ import * as svgicon from 'vue-svgicon'
 
 Vue.config.productionTip = false
 
+Vue.use(Vuex)
 Vue.use(Vuetify)
-
 Vue.use(VueI18n)
 
 Vue.use(svgicon, {
@@ -256,11 +257,27 @@ const i18n = new VueI18n({
   messages
 })
 
+const store = new Vuex.Store({
+  state: {
+    currentUser: {
+      displayName: '',
+      email: ''
+    }
+  },
+  mutations: {
+    setLoginData (state, payload) {
+      state.currentUser.displayName = payload.displayName
+      state.currentUser.email = payload.email
+    }
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
-  i18n,
   el: '#app',
   router,
+  store,
+  i18n,
   template: '<App/>',
   components: { App }
 })

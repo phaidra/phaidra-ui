@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     submit: function () {
-      this.$emit('loggedin', 'Rastislav Hudak')
+      this.$store.commit('setLoginData', {displayName: 'David Hasselhoff', email: 'dave@example.com'})
     }
   }
 }
