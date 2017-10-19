@@ -13,8 +13,8 @@
               <img src="./assets/Uni_Logo_2016.png" class="logo" alt="uni-logo" />
             </v-flex>
             <v-flex text-xs-right>
-              <v-btn flat icon color="grey" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn>
-
+              <router-link :to="'login'"><v-btn flat icon color="grey" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
+              <s>{{displayname}}</s>
               <v-menu bottom transition="slide-y-transition" class="v-align-top">
                 <v-btn icon slot="activator" class="top-margin-3">
                   {{$i18n.locale}}
@@ -65,7 +65,18 @@
     data () {
       return {
         quicklinksenabled: 0,
-        fab: false
+        fab: false,
+        displayname: ''
+      }
+    },
+    mounted: function () {
+      this.$on('loggedin', function (displayname) {
+        alert('hura')
+      })
+    },
+    events: {
+      loggedin: function (argument) {
+        alert('hura')
       }
     }
   }

@@ -22,6 +22,7 @@
           </v-card-text>
           <v-divider class="mt-5"></v-divider>
           <v-card-actions>
+            <v-spacer></v-spacer>
             <v-btn color="primary" flat @click="submit">Login</v-btn>
           </v-card-actions>
         </v-card>
@@ -40,6 +41,11 @@ export default {
       e1: true,
       username: '',
       password: ''
+    }
+  },
+  methods: {
+    submit: function () {
+      this.$emit('loggedin', 'Rastislav Hudak')
     }
   }
 }
