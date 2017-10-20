@@ -8,10 +8,10 @@
           <v-card-text>
             <v-flex xs10 offset-xs1>
               <v-form v-model="valid">
-                <v-text-field :label="$t('Username')" v-model="username" required></v-text-field>
+                <v-text-field :label="$t('Username')" v-model="credentials.username" required></v-text-field>
                 <v-text-field
                   :label="$t('Password')"
-                  v-model="password"
+                  v-model="credentials.password"
                   required
                   :append-icon="e1 ? 'visibility' : 'visibility_off'"
                   :append-icon-cb="() => (e1 = !e1)"
@@ -39,19 +39,20 @@ export default {
   data () {
     return {
       e1: true,
-      username: '',
-      password: ''
+      credentials: {
+        username: '',
+        password: ''
+      }
     }
   },
   methods: {
     submit: function () {
-      this.$store.commit('setLoginData', {displayName: 'David Hasselhoff', email: 'dave@example.com'})
+      this.$store.dispatch('login', this.credentials)
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1, h2 {
   font-weight: normal;

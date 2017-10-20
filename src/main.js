@@ -265,9 +265,14 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    setLoginData (state, payload) {
-      state.currentUser.displayName = payload.displayName
-      state.currentUser.email = payload.email
+    setLoginData (state, logindata) {
+      state.currentUser.displayName = logindata.displayName
+      state.currentUser.email = logindata.email
+    }
+  },
+  actions: {
+    login ({ commit }, credentials) {
+      commit('setLoginData', {displayName: 'David', email: 'dave@example.com'})
     }
   }
 })
