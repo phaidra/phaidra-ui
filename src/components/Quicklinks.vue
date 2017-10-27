@@ -167,16 +167,10 @@ import '@/compiled-icons/univie-quick-webmail'
 
 export default {
   name: 'quicklinks',
-  props: ['showquicklinks'],
-  data () {
-    return {
-      msg: 'ho'
-    }
-  }
+  props: ['showquicklinks']
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 .svg-icon {
@@ -190,15 +184,6 @@ export default {
   padding-bottom: 30px;
   width:100%;
 }
-
-/*
-.header-quicklinks {
-  position:fixed;
-  margin-bottom: 20px;
-  z-index: 10;
-  width:100%;
-}
-*/
 
 h3.top-row-header {
     margin-top: 0px;

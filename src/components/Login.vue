@@ -42,7 +42,8 @@ export default {
       credentials: {
         username: '',
         password: ''
-      }
+      },
+      valid: false
     }
   },
   methods: {
