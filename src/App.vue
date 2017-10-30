@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex text-xs-right>
               <router-link :to="'login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
-              <span class="subheading displayname grey--text text--lighten-1">{{currentUser.displayName}}</span>
+              <span class="subheading displayname grey--text text--lighten-1">{{currentUser.firstname}} {{currentUser.lastname}}</span>
               <v-menu bottom transition="slide-y-transition" class="v-align-top">
                 <v-btn flat icon slot="activator" color="grey lighten-1" class="top-margin-3">
                   {{$i18n.locale}}
@@ -51,7 +51,13 @@
         </v-flex>
 
         <v-flex xs12 md8 offset-md2>
+
+          <v-alert v-for="alert in alerts" :color="alert.type" icon="priority_high" value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
+            {{$t(alert.msg)}}
+          </v-alert>
+
           <router-view></router-view>
+
         </v-flex>
 
         <v-flex xs12>
@@ -90,14 +96,17 @@
     },
     data () {
       return {
-        quicklinksenabled: 0,
-        fab: false,
-        displayname: ''
+        quicklinksenabled: 0
       }
     },
     computed: {
       currentUser () {
         return this.$store.state.currentUser
+      },
+      alerts: {
+        get () {
+          return this.$store.state.alerts
+        }
       }
     }
   }
@@ -113,7 +122,7 @@
     "lighten-4":  #f2f2f2, // univie
     "lighten-3":  #eeeeee,
     "lighten-2":  #a4a4a4, // univie
-    "lighten-1":  #7b7b7b,
+    "lighten-1":  #7b7b7b, // univie
     "darken-1":   #757575,
     "darken-2":   #616161,
     "darken-3":   #424242,
@@ -154,6 +163,13 @@
   }
 
   @require './stylus/main'
+
+  // phaidra-api returns 'danger', vuetify uses 'error'
+  .danger
+    @extends .error
+
+  .alert
+    font-weight: 400
 
 </style>
 
