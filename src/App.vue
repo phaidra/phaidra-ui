@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex text-xs-right>
               <router-link :to="'login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
-              <span class="subheading displayname grey--text text--lighten-1">{{currentUser.firstname}} {{currentUser.lastname}}</span>
+              <span class="subheading displayname grey--text text--lighten-1">{{user.firstname}} {{user.lastname}}</span>
               <v-menu bottom transition="slide-y-transition" class="v-align-top">
                 <v-btn flat icon slot="activator" color="grey lighten-1" class="top-margin-3">
                   {{$i18n.locale}}
@@ -100,8 +100,8 @@
       }
     },
     computed: {
-      currentUser () {
-        return this.$store.state.currentUser
+      user () {
+        return this.$store.state.user
       },
       alerts: {
         get () {
