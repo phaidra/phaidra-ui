@@ -4,28 +4,30 @@
     <v-layout row wrap>
 
       <v-flex xs4 offset-xs4>
-        <v-card>
-          <v-card-text>
-            <v-flex xs10 offset-xs1>
-              <v-form v-model="valid">
-                <v-text-field :label="$t('Username')" v-model="credentials.username" required></v-text-field>
-                <v-text-field
-                  :label="$t('Password')"
-                  v-model="credentials.password"
-                  required
-                  :append-icon="e1 ? 'visibility' : 'visibility_off'"
-                  :append-icon-cb="() => (e1 = !e1)"
-                  :type="e1 ? 'password' : 'text'"
-                ></v-text-field>
-              </v-form>
-            </v-flex>
-          </v-card-text>
-          <v-divider class="mt-5"></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" flat @click="submit">Login</v-btn>
-          </v-card-actions>
-        </v-card>
+        <v-form @submit="login">
+          <v-card>
+            <v-card-text>
+              <v-flex xs10 offset-xs1>
+                <v-form v-model="valid">
+                  <v-text-field :label="$t('Username')" v-model="credentials.username" required></v-text-field>
+                  <v-text-field
+                    :label="$t('Password')"
+                    v-model="credentials.password"
+                    required
+                    :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                    :append-icon-cb="toggleVisibility"
+                    :type="e1 ? 'password' : 'text'"
+                  ></v-text-field>
+                </v-form>
+              </v-flex>
+            </v-card-text>
+            <v-divider class="mt-5"></v-divider>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn type="submit" color="primary" flat>Login</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-form>
       </v-flex>
 
     </v-layout>
@@ -47,10 +49,13 @@ export default {
     }
   },
   methods: {
-    submit: function () {
+    login: function () {
       this.$store.dispatch('login', this.credentials).then(() => {
         this.$router.push('/')
       })
+    },
+    toggleVisibility: function () {
+      this.e1 = !this.e1
     }
   }
 }

@@ -9,8 +9,8 @@ const state = {
 const actions = {
   login ({ commit, state, rootState }, credentials) {
     return new Promise((resolve, reject) => {
-      commit('alerts/clearAlerts')
-      commit('clearToken')
+      commit('clearAlerts')
+      commit('clearUser')
 
       commit('setUsername', credentials.username)
 
@@ -23,7 +23,9 @@ const actions = {
       })
       .then(function (response) { return response.json() })
       .then(function (json) {
-        commit('alerts/setAlerts', json.alerts)
+        if (json.alerts && json.alerts.length > 0) {
+          commit('setAlerts', json.alerts)
+        }
         if (json.status === 200) {
           commit('setToken', json['XSRF-TOKEN'])
 
@@ -37,7 +39,9 @@ const actions = {
           })
           .then(function (response) { return response.json() })
           .then(function (json) {
-            commit('alerts/setAlerts', json.alerts)
+            if (json.alerts && json.alerts.length > 0) {
+              commit('setAlerts', json.alerts)
+            }
             if (json.status === 200) {
               commit('setLoginData', {
                 firstname: json.user_data.firstname,
@@ -58,6 +62,32 @@ const actions = {
         reject()
       })
     })
+  },
+  logout ({ commit, state, rootState }) {
+    return new Promise((resolve, reject) => {
+      commit('clearAlerts')
+
+      fetch(rootState.config.api + '/signout', {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'X-XSRF-TOKEN': state.token
+        }
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        if (json.alerts && json.alerts.length > 0) {
+          commit('setAlerts', json.alerts)
+        }
+        commit('clearUser')
+        resolve()
+      })
+      .catch(function (error) {
+        console.log(error)
+        commit('clearUser')
+        resolve()
+      })
+    })
   }
 }
 
@@ -70,7 +100,11 @@ const mutations = {
   setUsername (state, username) {
     state.username = username
   },
-  clearToken (state) {
+  clearUser (state) {
+    state.username = ''
+    state.firstname = ''
+    state.lastname = ''
+    state.email = ''
     state.token = ''
   },
   setToken (state, token) {

@@ -1,2 +1,95 @@
 /** Stylus Styles */
+@require '../../node_modules/vuetify/src/stylus/settings/_colors'
+
+$phaidrablue = {
+  "base":       #1A74B0, // univie
+  "lighten-5":  #E3F2FD,
+  "lighten-4":  #BBDEFB,
+  "lighten-3":  #90CAF9,
+  "lighten-2":  #64B5F6,
+  "lighten-1":  #42A5F5,
+  "darken-1":   #1E88E5,
+  "darken-2":   #1976D2,
+  "darken-3":   #1565C0,
+  "darken-4":   #0D47A1,
+  "accent-1":   #82B1FF,
+  "accent-2":   #448AFF,
+  "accent-3":   #2979FF,
+  "accent-4":   #2962FF
+}
+
+$phaidragrey = {
+  "base":       #777777, // univie
+  "lighten-5":  #F9F9F9, // univie
+  "lighten-4":  #F2F2F2, // univie
+  "lighten-3":  #EEEEEE,
+  "lighten-2":  #A4A4A4, // univie
+  "lighten-1":  #7B7B7B, // univie
+  "darken-1":   #757575,
+  "darken-2":   #616161,
+  "darken-3":   #424242,
+  "darken-4":   #212121
+}
+
+$colors = {
+  "red": $red,
+  "pink": $pink,
+  "purple": $purple,
+  "deep-purple": $deep-purple,
+  "indigo": $indigo,
+  "blue": $phaidrablue,
+  "light-blue": $light-blue,
+  "cyan": $cyan,
+  "teal": $teal,
+  "green": $green,
+  "light-green": $light-green,
+  "lime": $lime,
+  "yellow": $yellow,
+  "amber": $amber,
+  "orange": $orange,
+  "deep-orange": $deep-orange,
+  "brown": $brown,
+  "blue-grey": $blue-grey,
+  "grey": $phaidragrey,
+  "shades": $shades
+}
+
+$theme := {
+  primary: $phaidrablue.base
+  accent: $red.accent-2
+  secondary: $grey.lighten-1
+  info: $blue.lighten-1
+  warning: $amber.darken-2
+  error: $red.accent-4
+  success: $green.lighten-2
+}
+
+$headings := {
+  h1: { size: 26pt, weight: 300, line-height: 1.1, letter-spacing: normal }, // univie
+  h2: { size: 22pt, weight: 300, line-height: 1.1, letter-spacing: normal, padding: 8px }, // univie
+  h3: { size: 17.5pt, weight: 300, line-height: 1.1, letter-spacing: normal }, // univie
+  h4: { size: 34px, weight: 400, line-height: 40px, letter-spacing: normal }
+  h5: { size: 24px, weight: 400, line-height: 32px, letter-spacing: normal },
+  h6: { size: 20px, weight: 500, line-height: 1, letter-spacing: .02em },
+  subheading: { size: 16px, weight: 400 },
+  body-2: { size: 14px, weight: 500 },
+  body-1: { size: 14px, weight: 400 },
+  caption: { size: 12px, weight: 400 },
+  button: { size: 14px, weight: 500 }
+}
+
 @import '../../node_modules/vuetify/src/stylus/main'
+
+h2
+  padding: 8px
+  color: $theme.primary
+
+h3
+  color: $theme.primary
+
+// phaidra-api returns 'danger', vuetify uses 'error'
+.danger
+  @extends .error
+
+.alert
+  font-weight: 400

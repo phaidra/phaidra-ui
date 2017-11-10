@@ -10,7 +10,7 @@
 
           <v-layout column >
 
-            <h3 class="top-row-header">{{ 'Information about' | translate }} ...</h3>
+            <h3 class="top-row-header">{{ $t('Information about') }} ...</h3>
 
             <a href="http://datamanagement.univie.ac.at/" target="_blank">
               <v-layout row>
@@ -57,7 +57,7 @@
 
           <v-layout column grid-list-md>
 
-            <h3 class="top-row-header">{{ 'Most searched-for services' | translate }} ...</h3>
+            <h3 class="top-row-header">{{ $t('Most searched-for services') }} ...</h3>
 
             <a href="http://studentpoint.univie.ac.at" target="_blank">
               <v-layout row>

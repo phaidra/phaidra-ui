@@ -37,13 +37,14 @@
               <v-spacer></v-spacer>
               <v-toolbar-side-icon class="hidden-md-and-up"></v-toolbar-side-icon>
               <v-toolbar-items class="hidden-sm-and-down">
-                <v-btn flat><router-link :to="'search'">{{ $t("Search") }}</router-link></v-btn>
-                <v-btn flat><router-link :to="'search'">{{ $t("Submit") }}</router-link></v-btn>
-                <v-btn flat><router-link :to="'search'">{{ $t("Uploads") }}</router-link></v-btn>
-                <v-btn flat><router-link :to="'search'">{{ $t("Bookmarks") }}</router-link></v-btn>
-                <v-btn flat><router-link :to="'search'">{{ $t("Groups") }}</router-link></v-btn>
-                <v-btn flat><router-link :to="'search'">{{ $t("Templates") }}</router-link></v-btn>
-                <v-btn flat><router-link :to="'search'">{{ $t("Logout") }}</router-link></v-btn>
+                <router-link :to="'search'"><v-btn flat>{{ $t("Search") }}</v-btn></router-link>
+                <router-link v-if="signedin" :to="'submit'"><v-btn flat>{{ $t("Submit") }}</v-btn></router-link>
+                <router-link v-if="signedin" :to="'myobjects'"><v-btn flat>{{ $t("My objects") }}</v-btn></router-link>
+                <router-link v-if="signedin" :to="'bookmarks'"><v-btn flat>{{ $t("Bookmarks") }}</v-btn></router-link>
+                <router-link v-if="signedin" :to="'groups'"><v-btn flat>{{ $t("Groups") }}</v-btn></router-link>
+                <router-link v-if="signedin" :to="'templates'"><v-btn flat>{{ $t("Templates") }}</v-btn></router-link>
+                <router-link v-if="!signedin" :to="'login'"><v-btn flat>{{ $t("Login") }}</v-btn></router-link>
+                <router-link v-if="signedin" :to="'/'"><v-btn @click="logout" flat>{{ $t("Logout") }}</v-btn></router-link>
               </v-toolbar-items>
             </v-toolbar>
             </v-flex>
@@ -52,11 +53,10 @@
 
         <v-flex xs12 md8 offset-md2>
 
-          <v-alert v-for="alert in alerts" :color="alert.type" icon="priority_high" value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
-            {{$t(alert.msg)}}
+          <v-alert v-for="alert in alerts" :color="alert.type" :value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
+            <v-layout>{{$t(alert.msg)}}<v-spacer></v-spacer><icon name="univie-sprache" color="grey lighten-1" v-on:click.native="dismiss(alert)"></icon></v-layout>
           </v-alert>
-
-          <router-view></router-view>
+          <router-view class="mt-5 mb-3"></router-view>
 
         </v-flex>
 
@@ -100,13 +100,22 @@
       }
     },
     computed: {
+      signedin () {
+        return this.$store.state.user.token ? 1 : 0
+      },
       user () {
         return this.$store.state.user
       },
-      alerts: {
-        get () {
-          return this.$store.state.alerts
-        }
+      alerts () {
+        return this.$store.state.alerts.alerts
+      }
+    },
+    methods: {
+      logout: function () {
+        this.$store.dispatch('logout')
+      },
+      dismiss: function (alert) {
+        this.$store.commit('clearAlert', alert)
       }
     }
   }
@@ -114,62 +123,7 @@
 
 <style lang="stylus">
 
-  @require '../node_modules/vuetify/src/stylus/settings/_colors'
-
-  $grey = {
-    "base":       #777, //univie
-    "lighten-5":  #f9f9f9, // univie
-    "lighten-4":  #f2f2f2, // univie
-    "lighten-3":  #eeeeee,
-    "lighten-2":  #a4a4a4, // univie
-    "lighten-1":  #7b7b7b, // univie
-    "darken-1":   #757575,
-    "darken-2":   #616161,
-    "darken-3":   #424242,
-    "darken-4":   #212121
-  }
-
-  $colors = {
-    "red": $red,
-    "pink": $pink,
-    "purple": $purple,
-    "deep-purple": $deep-purple,
-    "indigo": $indigo,
-    "blue": $blue,
-    "light-blue": $light-blue,
-    "cyan": $cyan,
-    "teal": $teal,
-    "green": $green,
-    "light-green": $light-green,
-    "lime": $lime,
-    "yellow": $yellow,
-    "amber": $amber,
-    "orange": $orange,
-    "deep-orange": $deep-orange,
-    "brown": $brown,
-    "blue-grey": $blue-grey,
-    "grey": $grey,
-    "shades": $shades
-  }
-
-  $theme := {
-    primary: #1a74b0
-    accent: $red.accent-2
-    secondary: $grey.lighten-1
-    info: $blue.lighten-1
-    warning: $amber.darken-2
-    error: $red.accent-4
-    success: $green.lighten-2
-  }
-
   @require './stylus/main'
-
-  // phaidra-api returns 'danger', vuetify uses 'error'
-  .danger
-    @extends .error
-
-  .alert
-    font-weight: 400
 
 </style>
 

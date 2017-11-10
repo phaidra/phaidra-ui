@@ -28,6 +28,20 @@ const i18n = new VueI18n({
   messages
 })
 
+Vue.filter('capitalize', function (value) {
+  if (!value) return ''
+  value = value.toString()
+  return value.charAt(0).toUpperCase() + value.slice(1)
+})
+
+Vue.filter('bytes', function (bytes, precision) {
+  if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-'
+  if (typeof precision === 'undefined') precision = 1
+  var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB']
+  var number = Math.floor(Math.log(bytes) / Math.log(1024))
+  return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number]
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

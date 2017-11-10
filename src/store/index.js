@@ -4,7 +4,7 @@ import user from './modules/user'
 import alerts from './modules/alerts'
 import search from './modules/search'
 import groups from './modules/groups'
-import config from '../config/phaidra-ui.js'
+import config from '../config/phaidra-ui'
 
 Vue.use(Vuex)
 

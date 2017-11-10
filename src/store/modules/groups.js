@@ -4,7 +4,7 @@ const state = {
 
 const actions = {
   getUserGroups ({ commit, state }) {
-    commit('alerts/clearAlert')
+    commit('clearAlerts')
 
     fetch(state.config.api + '/groups', {
       method: 'GET',
@@ -15,7 +15,7 @@ const actions = {
     })
     .then(function (response) { return response.json() })
     .then(function (json) {
-      commit('alerts/setAlerts', json.alerts)
+      commit('setAlerts', json.alerts)
       commit('setGroups', json.groups)
     })
     .catch(function (error) { console.log(error) })
