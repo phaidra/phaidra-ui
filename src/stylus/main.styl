@@ -80,6 +80,33 @@ $headings := {
 
 @import '../../node_modules/vuetify/src/stylus/main'
 
+.pagination
+
+  &__item
+    elevation(0)
+    border-radius: 0px
+
+    &--active
+      elevation(0)
+
+   &__navigation
+    elevation(0)
+
+.pagination a
+  transition: none
+
+.pagination a:hover
+  box-shadow: none
+
+.application--light .pagination__item
+  color: $phaidragrey.base
+
+.application--light .pagination__item--active
+  color: #fff;
+
+.application--light .pagination__navigation .icon
+  color: $phaidragrey.base
+
 h2
   padding: 8px
   color: $theme.primary

@@ -34,19 +34,33 @@
               </v-menu>
               <a id="quicklinks-button" class="ph-button" v-on:click="quicklinksenabled = !quicklinksenabled">Quicklinks</a>
               <v-toolbar flat color="white">
-              <v-spacer></v-spacer>
-              <v-toolbar-side-icon class="hidden-md-and-up"></v-toolbar-side-icon>
-              <v-toolbar-items class="hidden-sm-and-down">
-                <router-link :to="'search'"><v-btn flat>{{ $t("Search") }}</v-btn></router-link>
-                <router-link v-if="signedin" :to="'submit'"><v-btn flat>{{ $t("Submit") }}</v-btn></router-link>
-                <router-link v-if="signedin" :to="'myobjects'"><v-btn flat>{{ $t("My objects") }}</v-btn></router-link>
-                <router-link v-if="signedin" :to="'bookmarks'"><v-btn flat>{{ $t("Bookmarks") }}</v-btn></router-link>
-                <router-link v-if="signedin" :to="'groups'"><v-btn flat>{{ $t("Groups") }}</v-btn></router-link>
-                <router-link v-if="signedin" :to="'templates'"><v-btn flat>{{ $t("Templates") }}</v-btn></router-link>
-                <router-link v-if="!signedin" :to="'login'"><v-btn flat>{{ $t("Login") }}</v-btn></router-link>
-                <router-link v-if="signedin" :to="'/'"><v-btn @click="logout" flat>{{ $t("Logout") }}</v-btn></router-link>
-              </v-toolbar-items>
-            </v-toolbar>
+                <v-spacer></v-spacer>
+                <v-toolbar-side-icon class="hidden-md-and-up">
+                  <v-menu offset-y>
+                    <v-btn flat icon color="grey lighten-1" slot="activator"><icon name="material-navigation-menu" width="24px" height="24px"></icon></v-btn>
+                    <v-list>
+                      <v-list-tile @click="$router.push('search')"><v-list-tile-title>{{ $t("Search") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="signedin" @click="$router.push('myobjects')"><v-list-tile-title>{{ $t("My objects") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="signedin" @click="$router.push('templates')"><v-list-tile-title>{{ $t("Templates") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="!signedin" @click="$router.push('login')"><v-list-tile-title>{{ $t("Login") }}</v-list-tile-title></v-list-tile>
+                      <v-list-tile v-if="signedin" @click="$router.push('/')"><v-list-tile-title>{{ $t("Logout") }}</v-list-tile-title></v-list-tile>
+                    </v-list>
+                  </v-menu>
+                </v-toolbar-side-icon>
+                <v-toolbar-items class="hidden-sm-and-down">
+                  <router-link :to="{ name: 'search', params: { a: 123 }}"><v-btn flat>{{ $t("Search") }}</v-btn></router-link>
+                  <router-link v-if="signedin" :to="'submit'"><v-btn flat>{{ $t("Submit") }}</v-btn></router-link>
+                  <router-link v-if="signedin" :to="'myobjects'"><v-btn flat>{{ $t("My objects") }}</v-btn></router-link>
+                  <router-link v-if="signedin" :to="'bookmarks'"><v-btn flat>{{ $t("Bookmarks") }}</v-btn></router-link>
+                  <router-link v-if="signedin" :to="'groups'"><v-btn flat>{{ $t("Groups") }}</v-btn></router-link>
+                  <router-link v-if="signedin" :to="'templates'"><v-btn flat>{{ $t("Templates") }}</v-btn></router-link>
+                  <router-link v-if="!signedin" :to="'login'"><v-btn flat>{{ $t("Login") }}</v-btn></router-link>
+                  <router-link v-if="signedin" :to="'/'"><v-btn @click="logout" flat>{{ $t("Logout") }}</v-btn></router-link>
+                </v-toolbar-items>
+              </v-toolbar>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -54,7 +68,7 @@
         <v-flex xs12 md8 offset-md2>
 
           <v-alert v-for="alert in alerts" :color="alert.type" :value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
-            <v-layout>{{$t(alert.msg)}}<v-spacer></v-spacer><icon name="univie-sprache" color="grey lighten-1" v-on:click.native="dismiss(alert)"></icon></v-layout>
+            <v-layout>{{$t(alert.msg)}}<v-spacer></v-spacer><icon name="univie-sprache" color="grey lighten-1" @click.native="dismiss(alert)"></icon></v-layout>
           </v-alert>
           <router-view class="mt-5 mb-3"></router-view>
 
@@ -86,6 +100,7 @@
   import Quicklinks from '@/components/Quicklinks'
   import Quicklinksfooter from '@/components/Quicklinksfooter'
   import '@/compiled-icons/material-social-person'
+  import '@/compiled-icons/material-navigation-menu'
   import '@/compiled-icons/univie-sprache'
 
   export default {

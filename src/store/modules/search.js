@@ -421,8 +421,11 @@ const mutations = {
   setSearchResults (state, results) {
     state.searchResults = results
   },
-  setSearchDef (state, def) {
-    state.searchDef = def
+  setSearchDefQuery (state, query) {
+    state.searchDef.query = query
+  },
+  setSearchDefLink (state, link) {
+    state.searchDef.link = link
   },
   setSuggestions (state, params) {
     Vue.set(state.suggestions, params.suggester, params.suggestions)
@@ -439,9 +442,6 @@ const mutations = {
   setQuery (state, query) {
     state.q = query
   },
-  setPage (state, page) {
-    state.page = page
-  },
   resetFacets (state) {
     state.facets = []
   },
@@ -450,19 +450,19 @@ const mutations = {
       for (var i = 0; i < state.facetQueries.length; i++) {
         for (var j = 0; j < state.facetQueries[i].queries.length; j++) {
           if (state.facetQueries[i].queries[j].query === key) {
-            state.facetQueries[i].queries[j].count = facetCounts.facet_queries[key]
+            Vue.set(state.facetQueries[i].queries[j], 'count', facetCounts.facet_queries[key])
           }
           if (state.facetQueries[i].queries[j].childFacet) {
             var lvl1 = state.facetQueries[i].queries[j].childFacet
             for (var k = 0; k < lvl1.queries.length; k++) {
               if (lvl1.queries[k].query === key) {
-                lvl1.queries[k].count = facetCounts.facet_queries[key]
+                Vue.set(lvl1.queries[k], 'count', facetCounts.facet_queries[key])
               }
               if (lvl1.queries[k].childFacet) {
                 var lvl2 = lvl1.queries[k].childFacet
                 for (var l = 0; l < lvl2.queries.length; l++) {
                   if (lvl2.queries[l].query === key) {
-                    lvl2.queries[l].count = facetCounts.facet_queries[key]
+                    Vue.set(lvl2.queries[l], 'count', facetCounts.facet_queries[key])
                   }
                 }
               }
@@ -474,10 +474,141 @@ const mutations = {
   },
   toggleDocDescription (state, index) {
     Vue.set(state.docs[index], 'showDescription', !state.docs[index].showDescription)
+  },
+  toggleFacet (state, params) {
+    Vue.set(params.q, 'active', !params.q.active)
+
+    state.page = 1
+
+    if (params.f.exclusive) {
+      for (var i = 0; i < params.f.queries.length; i++) {
+        if (params.f.queries[i] !== params.q) {
+          Vue.set(params.f.queries[i], 'active', 0)
+        }
+      }
+    }
+  },
+  showFacet (state, f) {
+    Vue.set(f, 'show', !f.show)
+
+    if (!f.show) {
+      // when hiding facet, remove it's filters
+      for (var i = 0; i < f.queries.length; i++) {
+        f.queries[i].active = false
+        if (f.childFacet) {
+          var lvl1 = f.childFacet
+          for (var j = 0; j < lvl1.queries.length; j++) {
+            lvl1.queries[j].active = false
+            if (lvl1.childFacet) {
+              var lvl2 = f.childFacet
+              for (var k = 0; k < lvl2.queries.length; k++) {
+                lvl2.queries[k].active = false
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  setOwnerFilter (state, owner) {
+    state.owner = owner
+  },
+  clearOwnerFilter (state) {
+    state.owner = ''
+  },
+  setPersAuthors (state, values) {
+    state.pers_authors[0].values = values
+  },
+  setCorpAuthors (state, values) {
+    state.corp_authors[0].values = values
+  },
+  addRoleFilter (state, role) {
+    state.roles.push(role)
+  },
+  removeRoleFilter (state, role) {
+    state.roles.splice(state.roles.indexOf(role), 1)
+  },
+  setRoleFilterValues (state, role) {
+    state.roles[state.roles.indexOf(role)].values = role.values
+  },
+  removeRoleFilterValue (state, params) {
+    state.roles[state.roles.indexOf(params.role)].values.splice(state.roles[state.roles.indexOf(params.role)].values.indexOf(params.value), 1)
+  },
+  clearRoleFilter (state) {
+    state.roles = []
+  },
+  setPage (state, page) {
+    state.page = page
+  },
+  setSort (state, sort) {
+    for (var i = 0; i < state.sortdef.length; i++) {
+      if (state.sortdef[i].id === sort) {
+        state.sortdef[i].active = !state.sortdef[i].active
+      } else {
+        state.sortdef[i].active = false
+      }
+    }
   }
 }
 
 const actions = {
+  setSort ({ dispatch, commit }, sort) {
+    commit('setSort', sort)
+    dispatch('search')
+  },
+  setPage ({ dispatch, commit }, page) {
+    commit('setPage', page)
+    dispatch('search')
+  },
+  setRoleFilterValues ({ dispatch, commit }, params) {
+    commit('setRoleFilterValues', params)
+    dispatch('search')
+  },
+  removeRoleFilterValue ({ dispatch, commit }, params) {
+    commit('removeRoleFilterValue', params)
+    dispatch('search')
+  },
+  addRoleFilter ({ dispatch, commit }, role) {
+    commit('addRoleFilter', role)
+    dispatch('search')
+  },
+  removeRoleFilter ({ dispatch, commit }, role) {
+    commit('removeRoleFilter', role)
+    dispatch('search')
+  },
+  clearRoleFilter ({ dispatch, commit }) {
+    commit('clearRoleFilter')
+    dispatch('search')
+  },
+  setPersAuthors ({ dispatch, commit }, values) {
+    commit('setPersAuthors', values)
+    dispatch('search')
+  },
+  setCorpAuthors ({ dispatch, commit }, values) {
+    commit('setCorpAuthors', values)
+    dispatch('search')
+  },
+  clearAuthorFilter ({ dispatch, commit }) {
+    commit('setPersAuthors', [])
+    commit('setCorpAuthors', [])
+    dispatch('search')
+  },
+  setOwnerFilter ({ dispatch, commit }, owner) {
+    commit('setOwnerFilter', owner)
+    dispatch('search')
+  },
+  clearOwnerFilter ({ dispatch, commit }) {
+    commit('clearOwnerFilter')
+    dispatch('search')
+  },
+  showFacet ({ dispatch, commit, state }, f) {
+    commit('showFacet', f)
+    dispatch('search')
+  },
+  toggleFacet ({ dispatch, commit, state }, params) {
+    commit('toggleFacet', params)
+    dispatch('search')
+  },
   search ({ commit, state, rootState }) {
     var i, j, k, l, field, v
     var start = (state.page - 1) * state.pagesize
@@ -636,11 +767,13 @@ const actions = {
       searchdefarr.push('collection=' + state.collection)
     }
 
+    commit('setSearchDefQuery', searchdefarr.join('&'))
+
     if (ands.length > 0) {
       params['fq'] = ands.join(' AND ')
     }
 
-    var query = qs.stringify(params)
+    var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
     var url = rootState.config.solr + '/select?' + query
     var promise = fetch(url, {
       method: 'GET',

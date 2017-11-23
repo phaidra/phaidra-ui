@@ -54,17 +54,8 @@
         default: ''
       },
 
-      // Label of list
-      label: String,
-
       // Debounce time
       debounce: Number,
-
-      // ajax URL will be fetched
-      searchaction: {
-        type: String,
-        required: true
-      },
 
       suggester: {
         type: String,

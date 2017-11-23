@@ -36,12 +36,13 @@
                 </v-flex>
               </v-layout>
               <v-slide-y-transition>
-                <v-card-text v-show="doc.showDescription">{{ doc.dc_description[0] }}
+                <v-card-text v-show="doc.showDescription" class="search-description">{{ doc.dc_description[0] }}
                 </v-card-text>
               </v-slide-y-transition>
             </v-layout>
           </v-container>
         </v-card>
+        <v-divider></v-divider>
       </v-flex>
     </v-layout>
   </v-container>
@@ -71,8 +72,8 @@ export default {
   padding-top: 10px;
 }
 
-.card {
-  border-bottom: 1px dotted #e4e4e4;
+.search-description {
+  white-space: pre-wrap;
 }
 
 </style>
