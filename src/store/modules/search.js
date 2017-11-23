@@ -472,8 +472,8 @@ const mutations = {
       }
     })
   },
-  toggleDocDescription (state, index) {
-    Vue.set(state.docs[index], 'showDescription', !state.docs[index].showDescription)
+  toggleShowMore (state, index) {
+    Vue.set(state.docs[index], 'showMore', !state.docs[index].showMore)
   },
   toggleFacet (state, params) {
     Vue.set(params.q, 'active', !params.q.active)
