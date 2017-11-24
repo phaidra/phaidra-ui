@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Login from '@/components/Login'
 import Search from '@/components/Search'
+import Detail from '@/components/Detail'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: Search
+    },
+    {
+      path: '/detail/:pid',
+      name: 'detail',
+      component: Detail
     }
   ]
 })

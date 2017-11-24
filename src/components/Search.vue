@@ -10,6 +10,7 @@
             <autocomplete
               placeholder="Search..."
               name="autocomplete"
+              :initValue="query"
               :suggester="'titlesuggester'"
               :customParams="{ token: 'dev' }"
               :classes="{ input: 'form-control', wrapper: 'input-wrapper'}"
@@ -18,7 +19,6 @@
           </v-flex>
 
           <v-flex xs12 class="pt-5">
-            <h3>Params: {{ q }}</h3>
             <v-layout row>
               <v-flex xs2><span>{{ total }} {{ $t('objects') }}</span></v-flex>
               <v-flex xs6>
@@ -52,12 +52,12 @@
                       </v-tooltip>
                     </v-flex>
                     <v-flex>
-                      <v-dialog v-model="linkdialog" max-width="500px">
+                      <v-dialog v-model="linkdialog" max-width="800px">
                         <v-card>
                           <v-card-title>
                             <h3>{{ $t('Link to search results') }}</h3>
                           </v-card-title>
-                          <v-card-text>{{ searchlink }}</v-card-text>
+                          <v-card-text>{{ searchDef.link }}</v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn color="primary" flat @click.stop="linkdialog=false">Close</v-btn>
@@ -120,8 +120,8 @@ export default {
     }
   },
   computed: {
-    q () {
-      return this.$route.params.q
+    query: function () {
+      return this.$store.state.search.q
     },
     page: {
       get () {
@@ -143,17 +143,18 @@ export default {
     signedin () {
       return this.$store.state.user.token ? 1 : 0
     },
-    searchlink: function () {
-      return this.$store.state.search.searchDef.link
+    searchDef: function () {
+      return this.$store.state.search.searchDef
     }
   },
   methods: {
     handleSelect: function (query) {
       this.$store.commit('setQuery', query.term)
       this.$store.dispatch('search').then(() => {
-        this.$store.commit('setSearchDefLink', location.protocol + '//' + location.host + '/#/search?' + this.$store.state.search.searchDef.query)
+        // this.$store.commit('setSearchDefLink', location.protocol + '//' + location.host + '/#/search?' + this.$store.state.search.searchDef.query)
+        // var query = this.$route.query.stringify({a: 'blaba'}, { encodeValuesOnly: true, indices: false })
         // $location.search(state.searchdef.query).replace()
-        // window.history.replaceState('Search', 'Search results', searchdef.link);
+        window.history.replaceState('Search', 'Search results', this.searchDef.link)
       })
     },
     setSort: function (sort) {
@@ -167,9 +168,13 @@ export default {
       }
     }
   },
-  created: function () {
+  beforeCreate: function () {
     this.$store.commit('initDateFacet')
+    this.$store.commit('setSearchParams', this.$route.query)
     this.$store.dispatch('search')
+  },
+  created: function () {
+
   }
 }
 </script>

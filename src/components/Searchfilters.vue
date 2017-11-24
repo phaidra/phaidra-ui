@@ -52,6 +52,7 @@
               searchaction="search"
               placeholder="Search..."
               name="autocomplete"
+              :initValue="owner"
               :suggester="'ownersuggester'"
               :customParams="{ token: 'dev' }"
               :classes="{ input: 'form-control', wrapper: 'input-wrapper'}"
@@ -178,6 +179,18 @@ export default {
     Autocomplete
   },
   computed: {
+    owner () {
+      return this.$store.state.search.owner
+    },
+    showRoleFilter () {
+      return this.$store.state.search.showRoleFilter
+    },
+    showAuthorFilter () {
+      return this.$store.state.search.showAuthorFilter
+    },
+    showOwnerFilter () {
+      return this.$store.state.search.showOwnerFilter
+    },
     facetQueries () {
       return this.$store.state.search.facetQueries
     },
@@ -216,9 +229,6 @@ export default {
   },
   data () {
     return {
-      showOwnerFilter: false,
-      showAuthorFilter: false,
-      showRoleFilter: false,
       selectedRole: { pers: '', corp: '' },
       marcRolesArray: []
     }
@@ -230,26 +240,17 @@ export default {
     toggleFacet: function (q, f) {
       this.$store.dispatch('toggleFacet', { q: q, f: f })
     },
-    toggleOwnerFilter: function () {
-      this.showOwnerFilter = !this.showOwnerFilter
-      if (!this.showOwnerFilter) {
-        this.$store.dispatch('clearOwnerFilter')
-      }
-    },
     handleOwnerSelect: function (query) {
       this.$store.dispatch('setOwnerFilter', query.term)
     },
+    toggleOwnerFilter: function () {
+      this.$store.dispatch('toggleOwnerFilter')
+    },
     toggleAuthorFilter: function () {
-      this.showAuthorFilter = !this.showAuthorFilter
-      if (!this.showAuthorFilter) {
-        this.$store.dispatch('clearAuthorFilter')
-      }
+      this.$store.dispatch('toggleAuthorFilter')
     },
     toggleRoleFilter: function () {
-      this.showRoleFilter = !this.showRoleFilter
-      if (!this.showRoleFilter) {
-        this.$store.dispatch('clearRoleFilter')
-      }
+      this.$store.dispatch('toggleRoleFilter')
     },
     addRoleFilter: function (type) {
       if (this.selectedRole[type]) {

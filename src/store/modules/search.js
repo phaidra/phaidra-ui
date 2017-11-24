@@ -46,6 +46,7 @@ const state = {
   facet_counts: null,
   facet_filter: [],
   owner: '',
+  showOwnerFilter: false,
   pers_authors: [
     {
       field: 'bib_roles_pers_aut',
@@ -53,6 +54,7 @@ const state = {
       values: []
     }
   ],
+  showAuthorFilter: false,
   corp_authors: [
     {
       field: 'bib_roles_corp_aut',
@@ -60,6 +62,7 @@ const state = {
       values: []
     }
   ],
+  showRoleFilter: false,
   roles: [],
   query_input: '',
   collection: '',
@@ -421,11 +424,9 @@ const mutations = {
   setSearchResults (state, results) {
     state.searchResults = results
   },
-  setSearchDefQuery (state, query) {
+  setSearchDef (state, query) {
     state.searchDef.query = query
-  },
-  setSearchDefLink (state, link) {
-    state.searchDef.link = link
+    state.searchDef.link = location.protocol + '//' + location.host + '/#/search?' + query
   },
   setSuggestions (state, params) {
     Vue.set(state.suggestions, params.suggester, params.suggestions)
@@ -471,9 +472,6 @@ const mutations = {
         }
       }
     })
-  },
-  toggleShowMore (state, index) {
-    Vue.set(state.docs[index], 'showMore', !state.docs[index].showMore)
   },
   toggleFacet (state, params) {
     Vue.set(params.q, 'active', !params.q.active)
@@ -534,11 +532,129 @@ const mutations = {
   removeRoleFilterValue (state, params) {
     state.roles[state.roles.indexOf(params.role)].values.splice(state.roles[state.roles.indexOf(params.role)].values.indexOf(params.value), 1)
   },
+  toggleShowOwnerFilter (state) {
+    state.showOwnerFilter = !state.showOwnerFilter
+  },
+  toggleShowAuthorFilter (state) {
+    state.showAuthorFilter = !state.showAuthorFilter
+  },
+  toggleShowRoleFilter (state) {
+    state.showRoleFilter = !state.showRoleFilter
+  },
   clearRoleFilter (state) {
     state.roles = []
   },
   setPage (state, page) {
     state.page = page
+  },
+  setSearchParams (state, params) {
+    if (params.q) {
+      state.q = params.q
+    }
+
+    if (params.page) {
+      state.page = parseInt(params.page)
+    }
+
+    if (params.pagesize) {
+      state.pagesize = parseInt(params.pagesize)
+    }
+
+    if (params.sortdef) {
+      for (var i = 0; i < state.sortdef.length; i++) {
+        if (state.sortdef[i].id === params.sortdef) {
+          state.sortdef[i].active = true
+        }
+      }
+    }
+
+    if (params.owner) {
+      state.owner = params.owner
+      state.showOwnerFilter = true
+    }
+
+    if (params.collection) {
+      state.collection = params.collection
+    }
+
+    if (params.fq) {
+      if (typeof params.fq === 'string') {
+        params.fq = [params.fq]
+      }
+      for (var n = 0; n < params.fq.length; n++) {
+        var fqa = params.fq[n].split('_')
+        var facetId = fqa[0]
+        var queryId = fqa[1]
+        for (var j = 0; j < state.facetQueries.length; j++) {
+          if (state.facetQueries[j].id === facetId) {
+            state.facetQueries[j].show = 1
+            for (var k = 0; k < state.facetQueries[j].queries.length; k++) {
+              if (state.facetQueries[j].queries[k].id === queryId) {
+                state.facetQueries[j].queries[k].active = 1
+              }
+              if (state.facetQueries[j].queries[k].childFacet) {
+                var lvl1 = state.facetQueries[j].queries[k].childFacet
+                for (var l = 0; l < lvl1.queries.length; l++) {
+                  if (lvl1.queries[l].id === queryId) {
+                    lvl1.queries[l].active = 1
+                    state.facetQueries[j].queries[k].active = 1
+                  }
+                  if (lvl1.queries[l].childFacet) {
+                    var lvl2 = lvl1.queries[l].childFacet
+                    for (var m = 0; m < lvl2.queries.length; m++) {
+                      if (lvl2.queries[m].id === queryId) {
+                        lvl2.queries[m].active = 1
+                        lvl1.queries[l].active = 1
+                        state.facetQueries[j].queries[k].active = 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (params.fr) {
+      if (typeof params.fr === 'string') {
+        params.fr = [params.fr]
+      }
+      var roles = {}
+      for (var o = 0; o < params.fr.length; o++) {
+        var idx = params.fr[o].lastIndexOf('_')
+        var role = params.fr[o].substring(0, idx)
+        var value = params.fr[o].substring(idx + 1)
+
+        if (roles[role]) {
+          roles[role].values.push(value)
+        } else {
+          roles[role] = { values: [value] }
+        }
+      }
+
+      Object.keys(roles).forEach(function (role) {
+        var label = state.marcRoles[role]
+        if (role === 'bib_roles_pers_aut') {
+          state.pers_authors[0].values = roles[role].values
+          state.showAuthorFilter = true
+        } else {
+          if (role === 'bib_roles_corp_aut') {
+            state.corp_authors[0].values = roles[role].values
+            state.showAuthorFilter = true
+          } else {
+            state.roles.push({
+              field: role,
+              label: label,
+              values: roles[role].values,
+              type: role.includes('_pers_') ? 'pers' : 'corp'
+            })
+            state.showRolesFilter = true
+          }
+        }
+      })
+    }
   },
   setSort (state, sort) {
     for (var i = 0; i < state.sortdef.length; i++) {
@@ -552,6 +668,24 @@ const mutations = {
 }
 
 const actions = {
+  toggleAuthorFilter ({ dispatch, commit, state }) {
+    commit('toggleShowAuthorFilter')
+    if (!state.showAuthorFilter) {
+      dispatch('clearAuthorFilter')
+    }
+  },
+  toggleRoleFilter ({ dispatch, commit, state }) {
+    commit('toggleShowRoleFilter')
+    if (!state.showRoleFilter) {
+      dispatch('clearRoleFilter')
+    }
+  },
+  toggleOwnerFilter ({ dispatch, commit, state }) {
+    commit('toggleShowOwnerFilter')
+    if (!state.showOwnerFilter) {
+      dispatch('clearOwnerFilter')
+    }
+  },
   setSort ({ dispatch, commit }, sort) {
     commit('setSort', sort)
     dispatch('search')
@@ -767,7 +901,7 @@ const actions = {
       searchdefarr.push('collection=' + state.collection)
     }
 
-    commit('setSearchDefQuery', searchdefarr.join('&'))
+    commit('setSearchDef', searchdefarr.join('&'))
 
     if (ands.length > 0) {
       params['fq'] = ands.join(' AND ')

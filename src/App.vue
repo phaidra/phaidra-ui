@@ -51,7 +51,7 @@
                   </v-menu>
                 </v-toolbar-side-icon>
                 <v-toolbar-items class="hidden-sm-and-down">
-                  <router-link :to="{ name: 'search', params: { a: 123 }}"><v-btn flat>{{ $t("Search") }}</v-btn></router-link>
+                  <router-link :to="{ name: 'search'}"><v-btn flat>{{ $t("Search") }}</v-btn></router-link>
                   <router-link v-if="signedin" :to="'submit'"><v-btn flat>{{ $t("Submit") }}</v-btn></router-link>
                   <router-link v-if="signedin" :to="'myobjects'"><v-btn flat>{{ $t("My objects") }}</v-btn></router-link>
                   <router-link v-if="signedin" :to="'bookmarks'"><v-btn flat>{{ $t("Bookmarks") }}</v-btn></router-link>
@@ -70,7 +70,11 @@
           <v-alert v-for="alert in alerts" :color="alert.type" :value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
             <v-layout>{{$t(alert.msg)}}<v-spacer></v-spacer><icon name="univie-sprache" color="grey lighten-1" @click.native="dismiss(alert)"></icon></v-layout>
           </v-alert>
-          <router-view class="mt-5 mb-3"></router-view>
+            <transition name="fade" mode="out-in">-->
+              <keep-alive>
+                <router-view class="mt-5 mb-3"></router-view>
+              </keep-alive>
+            </transition>
 
         </v-flex>
 
@@ -252,6 +256,13 @@ address {
 
 #quicklinks-button:hover {
   color: white;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.1s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 
 </style>
