@@ -4,24 +4,25 @@
 
     <v-layout row>
 
-      <v-flex xs12 md8>
+      <v-flex xs12 md9>
         <v-layout column>
+
+          <v-flex>
+            <router-link :to="{ name: 'search' }">&laquo; {{ $t('Back to search results') }}</router-link>
+          </v-flex>
 
           <v-flex class="text-xs-center">
             <a :href="config.api + '/object/' + doc.pid + '/diss/Content/get'">
-              <img :src="'https://' + config.instance + '/preview/' + doc.pid + '/Document/preview/480'" />
+              <img v-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/Document/preview/480'" />
+              <img v-if="doc.cmodel === 'Picture'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
             </a>
           </v-flex>
 
           <v-flex v-for="(title,i) in titles" :key="i" class="mt-3">
             <v-container fluid>
               <v-layout row>
-                <v-flex class="caption grey--text" xs2>
-                  {{ $t('Title') }} ({{ title.lang }})
-                </v-flex>
-                <v-flex xs10>
-                  {{ title.value }}
-                </v-flex>
+                <v-flex class="caption grey--text" xs2>{{ $t('Title') }} ({{ title.lang }})</v-flex>
+                <v-flex xs10>{{ title.value }}</v-flex>
               </v-layout>
             </v-container>
           </v-flex>
@@ -29,9 +30,7 @@
           <v-flex v-for="(role,i) in roles" :key="i" class="mt-3">
             <v-container fluid>
               <v-layout row>
-                <v-flex class="caption grey--text" xs2>
-                  {{ role.label }}
-                </v-flex>
+                <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
                 <v-flex xs10>
                   <v-layout column>
                     <v-flex v-for="(entity,j) in role.entities" :key="j">
@@ -43,18 +42,242 @@
             </v-container>
           </v-flex>
 
+          <v-flex v-if="doc.bib_journal" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('Journal') }}</v-flex>
+                <v-flex xs10>
+                  <v-layout column>
+                    <v-flex v-for="(v,i) in doc.bib_journal" :key="i">{{v}}</v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-if="doc.bib_volume" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('Volume') }}</v-flex>
+                <v-flex xs10>
+                  <v-layout column>
+                    <v-flex v-for="(v,i) in doc.bib_volume" :key="i">{{v}}</v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-if="doc.bib_publisher" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('Publisher') }}</v-flex>
+                <v-flex xs10>
+                  <v-layout column>
+                    <v-flex v-for="(v,i) in doc.bib_publisher" :key="i">{{v}}</v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-if="doc.bib_published" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('Published') }}</v-flex>
+                <v-flex xs10>
+                  <v-layout column>
+                    <v-flex v-for="(v,i) in doc.bib_published" :key="i">{{v}}</v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-if="doc.bib_publisherlocation" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('Publisher location') }}</v-flex>
+                <v-flex xs10>
+                  <v-layout column>
+                    <v-flex v-for="(v,i) in doc.bib_publisherlocation" :key="i">{{v}}</v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-for="(desc,i) in descriptions" :key="i" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
+                <v-flex xs10>{{ desc.value }}</v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex class="mt-3" v-if="doc.dc_license">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t('License') }}</v-flex>
+                <v-flex xs10>
+                  <licenseview v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></licenseview>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
         </v-layout>
       </v-flex>
-      <v-flex xs12 md4>
+
+      <v-flex xs12 md3>
+        <v-layout column grid-list-md>
+
+          <v-card flat>
+            <v-card-text>
+              <v-layout column>
+                <h3>{{ $t('Identifiers') }}</h3>
+                <v-container grid-list-md fluid>
+                  <v-layout row wrap>
+                    <v-flex class="caption grey--text" xs2>PID</v-flex>
+                    <v-flex xs10>{{ 'https://' + config.instance + '/' + doc.pid }}</v-flex>
+                  </v-layout>
+
+                  <v-layout v-if="identifiers.length > 1" row wrap>
+                    <v-flex class="caption grey--text" xs2>Other</v-flex>
+                    <v-layout column>
+                      <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + config.instance + '/' + doc.pid">
+                        {{ id }}
+                      </v-flex>
+                    </v-layout>
+                  </v-layout>
+                </v-container>
+
+              </v-layout>
+            </v-card-text>
+          </v-card>
+
+          <v-card flat>
+            <v-card-text>
+              <v-layout column>
+                <h3>Object data</h3>
+                <v-container fluid grid-list-md>
+                  <v-layout row>
+                    <v-flex class="caption grey--text" xs4>Owner</v-flex>
+                    <v-flex xs8>{{ owner }}</v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex class="caption grey--text" xs4>Object Type</v-flex>
+                    <v-flex xs8>{{ doc.cmodel }}</v-flex>
+                  </v-layout>
+                  <v-layout row v-if="doc.dc_format">
+                    <v-flex class="caption grey--text" xs4>Format</v-flex>
+                    <v-flex xs8>
+                      <v-layout column>
+                        <v-flex v-for="(v,i) in doc.dc_format" :key="i">{{ v }}</v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex class="caption grey--text" xs4>Created</v-flex>
+                    <v-flex xs8>{{ doc.created | time }}</v-flex>
+                  </v-layout>
+                </v-container>
+              </v-layout>
+            </v-card-text>
+          </v-card>
+
+          <v-card flat v-if="doc.ispartof || doc.hassuccessor || doc.isalternativeformatof || doc.isalternativeversionof || doc.isbacksideof">
+            <v-card-text>
+              <v-layout column>
+                <h3>Relationships</h3>
+                <v-container fluid grid-list-md>
+                  <v-layout row v-if="doc.ispartof">
+                    <v-flex class="caption grey--text" xs4>{{ $t('Is in collection') }}</v-flex>
+                    <v-flex xs8>
+                      <v-layout column>
+                        <v-flex v-for="(v,i) in doc.ispartof" :key="i">
+                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row v-if="doc.hassuccessor">
+                    <v-flex class="caption grey--text" xs4>{{ $t('Has newer version') }}</v-flex>
+                    <v-flex xs8>
+                      <v-layout column>
+                        <v-flex v-for="(v,i) in doc.hassuccessor" :key="i">
+                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row v-if="doc.isalternativeformatof">
+                    <v-flex class="caption grey--text" xs4>{{ $t('Is alternative format of') }}</v-flex>
+                    <v-flex xs8>
+                      <v-layout column>
+                        <v-flex v-for="(v,i) in doc.isalternativeformatof" :key="i">
+                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row v-if="doc.isalternativeversionof">
+                    <v-flex class="caption grey--text" xs4>{{ $t('Is alternative version of') }}</v-flex>
+                    <v-flex xs8>
+                      <v-layout column>
+                        <v-flex v-for="(v,i) in doc.isalternativeversionof" :key="i">
+                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row v-if="doc.isbacksideof">
+                    <v-flex class="caption grey--text" xs4>{{ $t('Is back side of') }}</v-flex>
+                    <v-flex xs8>
+                      <v-layout column>
+                        <v-flex v-for="(v,i) in doc.isbacksideof" :key="i">
+                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-layout>
+            </v-card-text>
+          </v-card>
+
+
+          <v-card flat>
+            <v-card-text>
+              <v-layout column>
+                <h3>Links</h3>
+                <v-flex>
+                  <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
+                </v-flex>
+                <v-flex>
+                  <a :href="config.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                </v-flex>
+                <v-flex>
+                  <a :href="config.api + '/object/' + doc.pid + '/dc?format=xml'" target="_blank">{{ $t('Dublin Core') }}</a>
+                </v-flex>
+                <v-flex>
+                  <a :href="config.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn v-if="viewable" :href="config.api + '/object/' + doc.pid + '/diss/Content/get'" color="primary">{{ $t('View') }}</v-btn>
+              <v-btn v-if="downloadable" :href="config.api + '/object/' + doc.pid + '/diss/Content/download'" color="primary">{{ $t('Download') }}</v-btn>
+              <v-btn v-if="doc.cmodel === 'Collection'" :to="{ name: 'search', query: { collection: doc.pid } }" color="primary">{{ $t('Show members') }}</v-btn>
+            </v-card-actions>
+          </v-card>
+
+
+        </v-layout>
 
       </v-flex>
 
-    </v-layout>
-      <v-btn :href="config.api + '/object/' + doc.pid + '/diss/Content/get'" flat>{{ $t('View') }}</v-btn>
-      <v-btn :href="config.api + '/object/' + doc.pid + '/diss/Content/download'" flat>{{ $t('Download') }}</v-btn>
-      <v-flex>
-        <router-link :to="{ name: 'search' }">{{ $t('Back') }}</router-link>
-      </v-flex>
 
     </v-layout>
 
@@ -63,15 +286,54 @@
 </template>
 
 <script>
+import Licenseview from '@/components/Licenseview'
 
 export default {
+
   name: 'detail',
+  components: {
+    Licenseview
+  },
   computed: {
+    downloadable: function () {
+      switch (this.$store.state.object.doc.cmodel) {
+        case 'PDFDocument':
+        case 'Video':
+        case 'Audio':
+        case 'Picture':
+        case 'Unknown':
+        case 'Book':
+          return true
+        default:
+          return false
+      }
+    },
+    viewable: function () {
+      switch (this.$store.state.object.doc.cmodel) {
+        case 'PDFDocument':
+        case 'Video':
+        case 'Audio':
+        case 'Picture':
+        case 'Book':
+          return true
+        default:
+          return false
+      }
+    },
     doc: function () {
       return this.$store.state.object.doc
     },
     config () {
       return this.$store.state.config
+    },
+    owner: function () {
+      return this.$store.state.object.doc.owner
+    },
+    identifiers: function () {
+      // TODO: add id from
+      // https://services.phaidra.univie.ac.at/api/object/<pid>/id
+      // in loadDoc and return store value
+      return this.$store.state.object.doc.dc_identifier
     },
     titles: function () {
       var titles = []
@@ -84,6 +346,18 @@ export default {
         }
       })
       return titles
+    },
+    descriptions: function () {
+      var descriptions = []
+      var doc = this.$store.state.object.doc
+      Object.keys(doc).forEach(function (field) {
+        if (field.startsWith('dc_description_')) {
+          for (var i = 0; i < doc[field].length; i++) {
+            descriptions.push({ value: doc[field][i], lang: field.substr(field.length - 3) })
+          }
+        }
+      })
+      return descriptions
     },
     roles: function () {
       var rolesHash = {}
@@ -127,13 +401,24 @@ export default {
     })
   },
   created: function () {
-    this.$store.commit('setDoc', null)
-    this.$store.dispatch('loadDoc', this.$route.params.pid)
+    // this.$store.commit('setDoc', null)
+    // this.$store.dispatch('loadDoc', this.$route.params.pid)
   }
 }
 </script>
 
+<style lang="stylus" scoped>
+
+@require '../stylus/main'
+
+h3
+  color: $phaidragrey.darken-4
+</style>
+
 <style scoped>
 
+.container {
+  padding: 0px;
+}
 
 </style>

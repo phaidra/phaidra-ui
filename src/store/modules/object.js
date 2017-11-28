@@ -2,7 +2,8 @@ import qs from 'qs'
 
 const state = {
   pid: '',
-  doc: null
+  doc: null,
+  metadata: null
 }
 
 const mutations = {
@@ -11,11 +12,14 @@ const mutations = {
   },
   setDoc (state, doc) {
     state.doc = doc
+  },
+  setMetadata (state, data) {
+    state.metadata = data
   }
 }
 
 const actions = {
-  loadDoc ({ commit, state, rootState }, pid) {
+  loadDoc ({ dispatch, commit, state, rootState }, pid) {
     commit('setPid', pid)
 
     var params = {
@@ -35,9 +39,26 @@ const actions = {
     .then(function (json) {
       if (json.response.numFound > 0) {
         commit('setDoc', json.response.docs[0])
+        dispatch('loadOwner')
       } else {
         commit('setDoc', null)
       }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+
+    return promise
+  },
+  loadMetadata ({ commit, state, rootState }, pid) {
+    var url = rootState.config.api + '/object/' + pid + '/metadata?mode=resolved'
+    var promise = fetch(url, {
+      method: 'GET',
+      mode: 'cors'
+    })
+    .then(function (response) { return response.json() })
+    .then(function (json) {
+      commit('setMetadata', json.metadata)
     })
     .catch(function (error) {
       console.log(error)

@@ -52,7 +52,6 @@
               <v-layout column>
                 <v-flex v-if="doc.dc_description" class="search-description pb-3">{{ doc.dc_description[0] }}</v-flex>
                 <v-layout row>
-                  <v-spacer></v-spacer>
                   <router-link :to="{ name: 'detail', params: { pid: doc.pid } }"><v-btn flat>{{ $t('Details') }}</v-btn></router-link>
                   <v-btn :href="config.api + '/object/' + doc.pid + '/diss/Content/get'" flat>{{ $t('View') }}</v-btn>
                   <v-btn :href="config.api + '/object/' + doc.pid + '/diss/Content/download'" flat>{{ $t('Download') }}</v-btn>
@@ -61,7 +60,7 @@
                 <v-flex class="pt-3">
                   <v-layout row>
                     <v-flex>
-                      <licenseview v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></licenseview>
+                      <licenseview class="pa-0" v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></licenseview>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex class="text-xs-right">

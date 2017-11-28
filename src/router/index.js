@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Login from '@/components/Login'
 import Search from '@/components/Search'
 import Detail from '@/components/Detail'
+import Metadata from '@/components/Metadata'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/detail/:pid',
       name: 'detail',
       component: Detail
+    },
+    {
+      path: '/metadata/:pid',
+      name: 'metadata',
+      component: Metadata
     }
   ]
 })

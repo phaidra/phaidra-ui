@@ -35,6 +35,12 @@ Vue.filter('date', function (value) {
   }
 })
 
+Vue.filter('time', function (value) {
+  if (value) {
+    return moment(String(value)).format('DD.MM.YYYY hh:ss')
+  }
+})
+
 Vue.filter('capitalize', function (value) {
   if (!value) return ''
   value = value.toString()
