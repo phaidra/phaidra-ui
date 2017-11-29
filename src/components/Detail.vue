@@ -2,7 +2,7 @@
 
   <v-container fluid grid-list-md>
 
-    <v-layout row>
+    <v-layout v-if="doc !== false" row>
 
       <v-flex xs12 md9>
         <v-layout column>
@@ -14,7 +14,9 @@
           <v-flex class="text-xs-center">
             <a :href="config.api + '/object/' + doc.pid + '/diss/Content/get'">
               <img v-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/Document/preview/480'" />
+              <img v-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
               <img v-if="doc.cmodel === 'Picture'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
+              <img v-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
             </a>
           </v-flex>
 
@@ -164,7 +166,10 @@
                 <v-container fluid grid-list-md>
                   <v-layout row>
                     <v-flex class="caption grey--text" xs4>Owner</v-flex>
-                    <v-flex xs8>{{ owner }}</v-flex>
+                    <v-flex v-if="owner.lastname" xs8>
+                      <a :href="'mailto:' + owner.email">{{ owner.firstname }} {{ owner.lastname }}</a>
+                    </v-flex>
+                    <v-flex v-else xs8>{{ doc.owner }}</v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex class="caption grey--text" xs4>Object Type</v-flex>
@@ -281,6 +286,12 @@
 
     </v-layout>
 
+    <v-layout v-else>
+      <v-flex>
+        <v-alert :value="true" transition="slide-y-transition">{{$t('Object not found')}}</v-alert>
+      </v-flex>
+    </v-layout>
+
   </v-container>
 
 </template>
@@ -327,7 +338,7 @@ export default {
       return this.$store.state.config
     },
     owner: function () {
-      return this.$store.state.object.doc.owner
+      return this.$store.state.object.owner
     },
     identifiers: function () {
       // TODO: add id from
@@ -386,6 +397,12 @@ export default {
         roles.push(rolesHash[r])
       })
       return roles
+    },
+    coverPid: function () {
+      // HACK
+      var pidNumStr = this.$store.state.object.doc.pid.substr(2)
+      var coverPidNum = parseInt(pidNumStr) + 1
+      return 'o:' + coverPidNum
     }
   },
   beforeRouteEnter: function (to, from, next) {
@@ -399,10 +416,6 @@ export default {
     this.$store.dispatch('loadDoc', to.params.pid).then(() => {
       next()
     })
-  },
-  created: function () {
-    // this.$store.commit('setDoc', null)
-    // this.$store.dispatch('loadDoc', this.$route.params.pid)
   }
 }
 </script>

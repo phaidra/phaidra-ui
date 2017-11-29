@@ -16,6 +16,9 @@
             <v-flex v-if="node.xmlname === 'description'">
               <v-text-field :label="$t(nodepath)" v-model="node.ui_value" multi-line box :disabled="disabled"></v-text-field>
             </v-flex>
+            <v-flex v-else-if="node.xmlname === 'data_order'">
+              <v-text-field :label="$t('Order')" v-bind:value="node.ui_value" :disabled="disabled"></v-text-field>
+            </v-flex>
             <v-flex v-else>
               <v-flex v-if="node.datatype === 'DateTime'">
                 <v-text-field :label="$t(nodepath)" v-bind:value="node.ui_value | time" box :disabled="disabled"></v-text-field>
@@ -26,7 +29,12 @@
             </v-flex>
           </v-flex>
           <v-flex v-else-if="node.input_type === 'select'">
-            <v-select :label="$t(nodepath)" v-model="node.labels[$i18n.locale]" :items="node.labels[$i18n.locale]" :disabled="disabled"></v-select>
+            <v-flex v-if="node.xmlname === 'lang'">
+              <v-text-field :label="$t('Language')" v-bind:value="$t('lang_' + node.ui_value)" :disabled="disabled"></v-text-field>
+            </v-flex>
+            <v-flex v-else>
+              <v-select :label="$t(nodepath)" v-model="node.labels[$i18n.locale]" :items="[node.labels[$i18n.locale]]" :disabled="disabled"></v-select>
+            </v-flex>
           </v-flex>
           <v-flex v-else class="red">
             Metadata error: Unsupported input type

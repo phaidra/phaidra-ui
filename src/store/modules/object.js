@@ -3,7 +3,8 @@ import qs from 'qs'
 const state = {
   pid: '',
   doc: null,
-  metadata: null
+  metadata: null,
+  owner: ''
 }
 
 const mutations = {
@@ -15,12 +16,17 @@ const mutations = {
   },
   setMetadata (state, data) {
     state.metadata = data
+  },
+  setOwner (state, owner) {
+    state.owner = owner
   }
 }
 
 const actions = {
   loadDoc ({ dispatch, commit, state, rootState }, pid) {
     commit('setPid', pid)
+
+    // TODO: if this is a page, load the index from api
 
     var params = {
       q: 'pid:"' + pid + '"',
@@ -39,10 +45,26 @@ const actions = {
     .then(function (json) {
       if (json.response.numFound > 0) {
         commit('setDoc', json.response.docs[0])
-        dispatch('loadOwner')
+        dispatch('loadOwner', json.response.docs[0].owner)
       } else {
-        commit('setDoc', null)
+        commit('setDoc', false)
       }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+
+    return promise
+  },
+  loadOwner ({ commit, state, rootState }, username) {
+    var url = rootState.config.api + '/directory/user/' + username + '/data'
+    var promise = fetch(url, {
+      method: 'GET',
+      mode: 'cors'
+    })
+    .then(function (response) { return response.json() })
+    .then(function (json) {
+      commit('setOwner', json.user_data)
     })
     .catch(function (error) {
       console.log(error)
