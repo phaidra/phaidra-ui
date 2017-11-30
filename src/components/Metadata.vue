@@ -47,9 +47,6 @@ export default {
     },
     metadata: function () {
       return this.$store.state.object.metadata
-    },
-    config () {
-      return this.$store.state.config
     }
   },
   data () {

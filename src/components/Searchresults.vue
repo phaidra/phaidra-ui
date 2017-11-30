@@ -11,7 +11,7 @@
                   <v-layout column>
                     <v-layout row>
                       <v-flex xs2>
-                         <img :src="'https://' + config.instance + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1"></img>
+                         <img :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1"></img>
                       </v-flex>
                       <v-flex xs10>
                         <v-layout column>
@@ -19,10 +19,10 @@
                             <v-container fluid>
                               <v-layout row>
                                 <v-flex xs10>
-                                  <h3 @click.stop><router-link :to="{ name: 'detail', params: { pid: doc.pid } }">{{ doc.dc_title[0] }}</router-link></h3>
+                                  <h3 class="display-2" @click.stop v-if="doc.dc_title"><router-link :to="{ name: 'detail', params: { pid: doc.pid } }">{{ doc.dc_title[0] }}</router-link></h3>
                                   <v-spacer></v-spacer>
                                 </v-flex>
-                                <v-flex xs2 class="text-xs-right"><span class="grey--text">{{ doc.created | date }}</span></v-flex>
+                                <v-flex xs2 class="text-xs-right"><span v-if="doc.created" class="grey--text">{{ doc.created | date }}</span></v-flex>
                               </v-layout>
                             </v-container>
                           </v-card-title>
@@ -53,8 +53,8 @@
                 <v-flex v-if="doc.dc_description" class="search-description pb-3">{{ doc.dc_description[0] }}</v-flex>
                 <v-layout row>
                   <router-link :to="{ name: 'detail', params: { pid: doc.pid } }"><v-btn flat>{{ $t('Details') }}</v-btn></router-link>
-                  <v-btn :href="config.api + '/object/' + doc.pid + '/diss/Content/get'" flat>{{ $t('View') }}</v-btn>
-                  <v-btn :href="config.api + '/object/' + doc.pid + '/diss/Content/download'" flat>{{ $t('Download') }}</v-btn>
+                  <v-btn :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" flat>{{ $t('View') }}</v-btn>
+                  <v-btn :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" flat>{{ $t('Download') }}</v-btn>
                 </v-layout>
                 <v-divider></v-divider>
                 <v-flex class="pt-3">
@@ -64,7 +64,7 @@
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex class="text-xs-right">
-                      <span class="grey--text">https://{{ config.instance}}/{{ doc.pid }}</span>
+                      <span class="grey--text">https://{{ instance.baseurl }}/{{ doc.pid }}</span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -91,8 +91,8 @@ export default {
     docs () {
       return this.$store.state.search.docs
     },
-    config () {
-      return this.$store.state.config
+    instance () {
+      return this.$store.state.settings.instance
     }
   },
   methods: {

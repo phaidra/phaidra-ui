@@ -2,15 +2,24 @@ const state = {
   groups: []
 }
 
+const mutations = {
+  setGroups (state, groups) {
+    state.groups = groups
+  },
+  initStore (state) {
+    state.groups = []
+  }
+}
+
 const actions = {
-  getUserGroups ({ commit, state }) {
+  getUserGroups ({ commit, state, rootState }) {
     commit('clearAlerts')
 
-    fetch(state.config.api + '/groups', {
+    fetch(rootState.settings.api + '/groups', {
       method: 'GET',
       mode: 'cors',
       headers: {
-        'X-XSRF-TOKEN': state.currentUser.token
+        'X-XSRF-TOKEN': rootState.user.token
       }
     })
     .then(function (response) { return response.json() })
@@ -22,14 +31,8 @@ const actions = {
   }
 }
 
-const mutations = {
-  setGroups (state, groups) {
-    state.currentUser.groups = groups
-  }
-}
-
 export default {
   state,
-  actions,
-  mutations
+  mutations,
+  actions
 }

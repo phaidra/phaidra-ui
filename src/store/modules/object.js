@@ -19,6 +19,12 @@ const mutations = {
   },
   setOwner (state, owner) {
     state.owner = owner
+  },
+  initStore (state) {
+    state.pid = ''
+    state.doc = null
+    state.metadata = null
+    state.owner = ''
   }
 }
 
@@ -36,7 +42,7 @@ const actions = {
     }
 
     var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-    var url = rootState.config.solr + '/select?' + query
+    var url = rootState.settings.instance.solr + '/select?' + query
     var promise = fetch(url, {
       method: 'GET',
       mode: 'cors'
@@ -57,7 +63,7 @@ const actions = {
     return promise
   },
   loadOwner ({ commit, state, rootState }, username) {
-    var url = rootState.config.api + '/directory/user/' + username + '/data'
+    var url = rootState.settings.instance.api + '/directory/user/' + username + '/data'
     var promise = fetch(url, {
       method: 'GET',
       mode: 'cors'
@@ -73,7 +79,7 @@ const actions = {
     return promise
   },
   loadMetadata ({ commit, state, rootState }, pid) {
-    var url = rootState.config.api + '/object/' + pid + '/metadata?mode=resolved'
+    var url = rootState.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
     var promise = fetch(url, {
       method: 'GET',
       mode: 'cors'

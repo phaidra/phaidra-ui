@@ -12,11 +12,10 @@
           </v-flex>
 
           <v-flex class="text-xs-center">
-            <a :href="config.api + '/object/' + doc.pid + '/diss/Content/get'">
-              <img v-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/Document/preview/480'" />
-              <img v-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
-              <img v-if="doc.cmodel === 'Picture'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
-              <img v-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + config.instance + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
+            <a :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'">
+              <img v-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/Document/preview/480'" />
+              <img v-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
+              <img v-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
             </a>
           </v-flex>
 
@@ -142,13 +141,13 @@
                 <v-container grid-list-md fluid>
                   <v-layout row wrap>
                     <v-flex class="caption grey--text" xs2>PID</v-flex>
-                    <v-flex xs10>{{ 'https://' + config.instance + '/' + doc.pid }}</v-flex>
+                    <v-flex xs10>{{ 'https://' + instance.baseurl + '/' + doc.pid }}</v-flex>
                   </v-layout>
 
                   <v-layout v-if="identifiers.length > 1" row wrap>
                     <v-flex class="caption grey--text" xs2>Other</v-flex>
                     <v-layout column>
-                      <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + config.instance + '/' + doc.pid">
+                      <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + instance.baseurl + '/' + doc.pid">
                         {{ id }}
                       </v-flex>
                     </v-layout>
@@ -261,19 +260,19 @@
                   <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
                 </v-flex>
                 <v-flex>
-                  <a :href="config.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                  <a :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
                 </v-flex>
                 <v-flex>
-                  <a :href="config.api + '/object/' + doc.pid + '/dc?format=xml'" target="_blank">{{ $t('Dublin Core') }}</a>
+                  <a :href="instance.api + '/object/' + doc.pid + '/dc?format=xml'" target="_blank">{{ $t('Dublin Core') }}</a>
                 </v-flex>
                 <v-flex>
-                  <a :href="config.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                  <a :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
                 </v-flex>
               </v-layout>
             </v-card-text>
             <v-card-actions>
-              <v-btn v-if="viewable" :href="config.api + '/object/' + doc.pid + '/diss/Content/get'" color="primary">{{ $t('View') }}</v-btn>
-              <v-btn v-if="downloadable" :href="config.api + '/object/' + doc.pid + '/diss/Content/download'" color="primary">{{ $t('Download') }}</v-btn>
+              <v-btn v-if="viewable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" color="primary">{{ $t('View') }}</v-btn>
+              <v-btn v-if="downloadable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" color="primary">{{ $t('Download') }}</v-btn>
               <v-btn v-if="doc.cmodel === 'Collection'" :to="{ name: 'search', query: { collection: doc.pid } }" color="primary">{{ $t('Show members') }}</v-btn>
             </v-card-actions>
           </v-card>
@@ -334,8 +333,8 @@ export default {
     doc: function () {
       return this.$store.state.object.doc
     },
-    config () {
-      return this.$store.state.config
+    instance () {
+      return this.$store.state.settings.instance
     },
     owner: function () {
       return this.$store.state.object.owner

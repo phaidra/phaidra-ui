@@ -2,70 +2,7 @@ import Vue from 'vue'
 import qs from 'qs'
 
 const state = {
-  suggestions: {},
-  q: '',
-  docs: [],
-  total: 0,
-  page: 1,
-  pagesize: 10,
-  lang: 'en',
-  searchDef: {
-    query: '',
-    link: ''
-  },
-  sortdef: [
-    {
-      id: 'title asc',
-      active: false,
-      def: {
-        'en': 'sort_eng_dc_title asc,sort_dc_title asc',
-        'de': 'sort_deu_dc_title asc,sort_dc_title asc',
-        'it': 'sort_ita_dc_title asc,sort_dc_title asc'
-      }
-    },
-    {
-      id: 'title desc',
-      active: false,
-      def: {
-        'en': 'sort_eng_dc_title desc,sort_dc_title desc',
-        'de': 'sort_deu_dc_title desc,sort_dc_title desc',
-        'it': 'sort_ita_dc_title desc,sort_dc_title desc'
-      }
-    },
-    {
-      id: 'created asc',
-      active: false,
-      def: 'created asc'
-    },
-    {
-      id: 'created desc',
-      active: false,
-      def: 'created desc'
-    }
-  ],
-  facet_counts: null,
-  facet_filter: [],
-  owner: '',
-  showOwnerFilter: false,
-  pers_authors: [
-    {
-      field: 'bib_roles_pers_aut',
-      label: 'Author',
-      values: []
-    }
-  ],
-  showAuthorFilter: false,
-  corp_authors: [
-    {
-      field: 'bib_roles_corp_aut',
-      label: 'Author',
-      values: []
-    }
-  ],
-  showRoleFilter: false,
-  roles: [],
-  query_input: '',
-  collection: '',
+  // static (only defined here)
   facetLabels: {
     datastreams: 'Access',
     resourcetype: 'Resource type',
@@ -158,186 +95,28 @@ const state = {
     'act': 'Actor',
     'adp': 'Adapter'
   },
-  facetQueries: [
-    {
-      label: 'Access',
-      field: 'datastreams',
-      id: 'datastreams',
-      exclusive: 1,
-      show: 0,
-      queries: [
-        {
-          id: 'restricted',
-          query: 'datastreams:POLICY',
-          label: 'Restricted'
-        },
-        {
-          id: 'unrestricted',
-          query: '-datastreams:POLICY',
-          label: 'Unrestricted'
-        }
-      ]
-    },
-    {
-      label: 'Type',
-      field: 'resourcetype',
-      id: 'resourcetype',
-      show: 1,
-      queries: [
-        {
-          id: 'image',
-          query: 'resourcetype:image',
-          label: 'Image'
-        },
-        {
-          id: 'book',
-          query: 'resourcetype:book',
-          label: 'Book'
-        },
-        {
-          id: 'article',
-          query: 'resourcetype:journalarticle',
-          label: 'Article'
-        },
-        {
-          id: 'text',
-          query: 'resourcetype:text',
-          label: 'Text'
-        },
-        {
-          id: 'collection',
-          query: 'resourcetype:collection',
-          label: 'Collection'
-        },
-        {
-          id: 'video',
-          query: 'resourcetype:video',
-          label: 'Video'
-        },
-        {
-          id: 'other',
-          query: 'resourcetype:other',
-          label: 'Data'
-        },
-        {
-          id: 'dataset',
-          query: 'resourcetype:dataset',
-          label: 'Container'
-        },
-        {
-          id: 'map',
-          query: 'resourcetype:map',
-          label: 'Map'
-        },
-        {
-          id: 'resource',
-          query: 'resourcetype:interactiveresource',
-          label: 'Resource'
-        },
-        {
-          id: 'sound',
-          query: 'resourcetype:sound',
-          label: 'Sound'
-        }
-      ]
-    },
-    {
-      label: 'Size',
-      field: 'tsize',
-      id: 'size',
-      show: 0,
-      queries: [
-        {
-          id: 'less10',
-          query: 'tsize:[0 TO 10485760]',
-          label: 'less 10MB'
-        },
-        {
-          id: '10to50',
-          query: 'tsize:[10485760 TO 52428800]',
-          label: '10MB - 50MB'
-        },
-        {
-          id: '50to100',
-          query: 'tsize:[52428800 TO 104857600]',
-          label: '50MB - 100MB'
-        },
-        {
-          id: '100to200',
-          query: 'tsize:[104857600 TO 209715200]',
-          label: '100MB - 200MB'
-        },
-        {
-          id: '200to500',
-          query: 'tsize:[209715200 TO 524288000]',
-          label: '200MB - 500MB'
-        },
-        {
-          id: '500to1000',
-          query: 'tsize:[524288000 TO 1073741824]',
-          label: '500MB - 1GB'
-        },
-        {
-          id: 'more1000',
-          query: 'tsize:[1073741824 TO *]',
-          label: 'more 1GB'
-        }
-      ]
-    },
-    {
-      label: 'License',
-      field: 'dc_license',
-      id: 'license',
-      show: 0,
-      queries: [
-        {
-          id: 'all-rights-reserved',
-          query: 'dc_license:\'All rights reserved\'',
-          label: 'All rights reserved'
-        },
-        {
-          id: 'gplv3',
-          query: 'dc_license:\'GPLv3\'',
-          label: 'GPLv3'
-        },
-        {
-          id: 'pdm',
-          query: 'dc_license:\'Public Domain Mark\'',
-          label: 'Public Domain Mark'
-        },
-        {
-          id: 'cc-by',
-          query: '(dc_license:\'CC BY 2.0 AT\' OR dc_license:\'CC BY 2.0 Generic\' OR dc_license:\'CC BY 3.0 AT\' OR dc_license:\'CC BY 3.0 Unported\' OR dc_license:\'CC BY 4.0 International\')',
-          label: 'CC BY'
-        },
-        {
-          id: 'cc-by-sa',
-          query: '(dc_license:\'CC BY-SA 2.0 AT\' OR dc_license:\'CC BY-SA 2.0 Generic\' OR dc_license:\'CC BY-SA 3.0 AT\' OR dc_license:\'CC BY-SA 3.0 Unported\' OR dc_license:\'CC BY-SA 4.0 International\')',
-          label: 'CC BY-SA'
-        },
-        {
-          id: 'cc-by-nc',
-          query: '(dc_license:\'CC BY-NC 2.0 AT\' OR dc_license:\'CC BY-NC 2.0 Generic\' OR dc_license:\'CC BY-NC 3.0 AT\' OR dc_license:\'CC BY-NC 3.0 Unported\' OR dc_license:\'CC BY-NC 4.0 International\')',
-          label: 'CC BY-NC'
-        },
-        {
-          id: 'cc-by-nd',
-          query: '(dc_license:\'CC BY-ND 2.0 AT\' OR dc_license:\'CC BY-ND 2.0 Generic\' OR dc_license:\'CC BY-ND 3.0 AT\' OR dc_license:\'CC BY-ND 3.0 Unported\' OR dc_license:\'CC BY-ND 4.0 International\')',
-          label: 'CC BY-ND'
-        },
-        {
-          id: 'cc-by-nc-sa',
-          query: '(dc_license:\'CC BY-NC-SA 2.0 AT\' OR dc_license:\'CC BY-NC-SA 2.0 Generic\' OR dc_license:\'CC BY-NC-SA 3.0 AT\' OR dc_license:\'CC BY-NC-SA 3.0 Unported\' OR dc_license:\'CC BY-NC-SA 4.0 International\')',
-          label: 'CC BY-NC-SA'
-        },
-        {
-          id: 'cc-by-nc-nd',
-          query: '(dc_license:\'CC BY-NC-ND 2.0 AT\' OR dc_license:\'CC BY-NC-ND 2.0 Generic\' OR dc_license:\'CC BY-NC-ND 3.0 AT\' OR dc_license:\'CC BY-NC-ND 3.0 Unported\' OR dc_license:\'CC BY-NC-ND 4.0 International\')',
-          label: 'CC BY-NC-ND'
-        }
-      ]
-    }
-  ]
+  // inited in initStore
+  suggestions: {},
+  q: '',
+  docs: [],
+  total: 0,
+  page: 1,
+  pagesize: 10,
+  lang: 'en',
+  searchDef: {},
+  sortdef: [],
+  facet_counts: null,
+  facet_filter: [],
+  owner: '',
+  showOwnerFilter: false,
+  pers_authors: [],
+  showAuthorFilter: false,
+  corp_authors: [],
+  showRoleFilter: false,
+  roles: [],
+  query_input: '',
+  collection: '',
+  facetQueries: []
 }
 
 const getters = {
@@ -347,7 +126,252 @@ const getters = {
 }
 
 const mutations = {
-  initDateFacet (state) {
+  initStore (state) {
+    state.suggestions = {}
+    state.q = ''
+    state.docs = []
+    state.total = 0
+    state.page = 1
+    state.pagesize = 10
+    state.lang = 'en'
+    state.searchDef = {
+      query: '',
+      link: ''
+    }
+    state.sortdef = [
+      {
+        id: 'title asc',
+        active: false,
+        def: {
+          'en': 'sort_eng_dc_title asc,sort_dc_title asc',
+          'de': 'sort_deu_dc_title asc,sort_dc_title asc',
+          'it': 'sort_ita_dc_title asc,sort_dc_title asc'
+        }
+      },
+      {
+        id: 'title desc',
+        active: false,
+        def: {
+          'en': 'sort_eng_dc_title desc,sort_dc_title desc',
+          'de': 'sort_deu_dc_title desc,sort_dc_title desc',
+          'it': 'sort_ita_dc_title desc,sort_dc_title desc'
+        }
+      },
+      {
+        id: 'created asc',
+        active: false,
+        def: 'created asc'
+      },
+      {
+        id: 'created desc',
+        active: false,
+        def: 'created desc'
+      }
+    ]
+    state.facet_counts = null
+    state.facet_filter = []
+    state.owner = ''
+    state.showOwnerFilter = false
+    state.pers_authors = [
+      {
+        field: 'bib_roles_pers_aut',
+        label: 'Author',
+        values: []
+      }
+    ]
+    state.showAuthorFilter = false
+    state.corp_authors = [
+      {
+        field: 'bib_roles_corp_aut',
+        label: 'Author',
+        values: []
+      }
+    ]
+    state.showRoleFilter = false
+    state.roles = []
+    state.query_input = ''
+    state.collection = ''
+    state.facetQueries = [
+      {
+        label: 'Access',
+        field: 'datastreams',
+        id: 'datastreams',
+        exclusive: 1,
+        show: 0,
+        queries: [
+          {
+            id: 'restricted',
+            query: 'datastreams:POLICY',
+            label: 'Restricted'
+          },
+          {
+            id: 'unrestricted',
+            query: '-datastreams:POLICY',
+            label: 'Unrestricted'
+          }
+        ]
+      },
+      {
+        label: 'Type',
+        field: 'resourcetype',
+        id: 'resourcetype',
+        show: 1,
+        queries: [
+          {
+            id: 'image',
+            query: 'resourcetype:image',
+            label: 'Image'
+          },
+          {
+            id: 'book',
+            query: 'resourcetype:book',
+            label: 'Book'
+          },
+          {
+            id: 'article',
+            query: 'resourcetype:journalarticle',
+            label: 'Article'
+          },
+          {
+            id: 'text',
+            query: 'resourcetype:text',
+            label: 'Text'
+          },
+          {
+            id: 'collection',
+            query: 'resourcetype:collection',
+            label: 'Collection'
+          },
+          {
+            id: 'video',
+            query: 'resourcetype:video',
+            label: 'Video'
+          },
+          {
+            id: 'other',
+            query: 'resourcetype:other',
+            label: 'Data'
+          },
+          {
+            id: 'dataset',
+            query: 'resourcetype:dataset',
+            label: 'Container'
+          },
+          {
+            id: 'map',
+            query: 'resourcetype:map',
+            label: 'Map'
+          },
+          {
+            id: 'resource',
+            query: 'resourcetype:interactiveresource',
+            label: 'Resource'
+          },
+          {
+            id: 'sound',
+            query: 'resourcetype:sound',
+            label: 'Sound'
+          }
+        ]
+      },
+      {
+        label: 'Size',
+        field: 'tsize',
+        id: 'size',
+        show: 0,
+        queries: [
+          {
+            id: 'less10',
+            query: 'tsize:[0 TO 10485760]',
+            label: 'less 10MB'
+          },
+          {
+            id: '10to50',
+            query: 'tsize:[10485760 TO 52428800]',
+            label: '10MB - 50MB'
+          },
+          {
+            id: '50to100',
+            query: 'tsize:[52428800 TO 104857600]',
+            label: '50MB - 100MB'
+          },
+          {
+            id: '100to200',
+            query: 'tsize:[104857600 TO 209715200]',
+            label: '100MB - 200MB'
+          },
+          {
+            id: '200to500',
+            query: 'tsize:[209715200 TO 524288000]',
+            label: '200MB - 500MB'
+          },
+          {
+            id: '500to1000',
+            query: 'tsize:[524288000 TO 1073741824]',
+            label: '500MB - 1GB'
+          },
+          {
+            id: 'more1000',
+            query: 'tsize:[1073741824 TO *]',
+            label: 'more 1GB'
+          }
+        ]
+      },
+      {
+        label: 'License',
+        field: 'dc_license',
+        id: 'license',
+        show: 0,
+        queries: [
+          {
+            id: 'all-rights-reserved',
+            query: 'dc_license:\'All rights reserved\'',
+            label: 'All rights reserved'
+          },
+          {
+            id: 'gplv3',
+            query: 'dc_license:\'GPLv3\'',
+            label: 'GPLv3'
+          },
+          {
+            id: 'pdm',
+            query: 'dc_license:\'Public Domain Mark\'',
+            label: 'Public Domain Mark'
+          },
+          {
+            id: 'cc-by',
+            query: '(dc_license:\'CC BY 2.0 AT\' OR dc_license:\'CC BY 2.0 Generic\' OR dc_license:\'CC BY 3.0 AT\' OR dc_license:\'CC BY 3.0 Unported\' OR dc_license:\'CC BY 4.0 International\')',
+            label: 'CC BY'
+          },
+          {
+            id: 'cc-by-sa',
+            query: '(dc_license:\'CC BY-SA 2.0 AT\' OR dc_license:\'CC BY-SA 2.0 Generic\' OR dc_license:\'CC BY-SA 3.0 AT\' OR dc_license:\'CC BY-SA 3.0 Unported\' OR dc_license:\'CC BY-SA 4.0 International\')',
+            label: 'CC BY-SA'
+          },
+          {
+            id: 'cc-by-nc',
+            query: '(dc_license:\'CC BY-NC 2.0 AT\' OR dc_license:\'CC BY-NC 2.0 Generic\' OR dc_license:\'CC BY-NC 3.0 AT\' OR dc_license:\'CC BY-NC 3.0 Unported\' OR dc_license:\'CC BY-NC 4.0 International\')',
+            label: 'CC BY-NC'
+          },
+          {
+            id: 'cc-by-nd',
+            query: '(dc_license:\'CC BY-ND 2.0 AT\' OR dc_license:\'CC BY-ND 2.0 Generic\' OR dc_license:\'CC BY-ND 3.0 AT\' OR dc_license:\'CC BY-ND 3.0 Unported\' OR dc_license:\'CC BY-ND 4.0 International\')',
+            label: 'CC BY-ND'
+          },
+          {
+            id: 'cc-by-nc-sa',
+            query: '(dc_license:\'CC BY-NC-SA 2.0 AT\' OR dc_license:\'CC BY-NC-SA 2.0 Generic\' OR dc_license:\'CC BY-NC-SA 3.0 AT\' OR dc_license:\'CC BY-NC-SA 3.0 Unported\' OR dc_license:\'CC BY-NC-SA 4.0 International\')',
+            label: 'CC BY-NC-SA'
+          },
+          {
+            id: 'cc-by-nc-nd',
+            query: '(dc_license:\'CC BY-NC-ND 2.0 AT\' OR dc_license:\'CC BY-NC-ND 2.0 Generic\' OR dc_license:\'CC BY-NC-ND 3.0 AT\' OR dc_license:\'CC BY-NC-ND 3.0 Unported\' OR dc_license:\'CC BY-NC-ND 4.0 International\')',
+            label: 'CC BY-NC-ND'
+          }
+        ]
+      }
+    ]
+
     var months31 = [1, 3, 5, 7, 8, 10, 12]
     var months30 = [4, 6, 9, 11]
     var startYear = 2008
@@ -668,6 +692,9 @@ const mutations = {
 }
 
 const actions = {
+  switchInstance ({ dispatch }) {
+    dispatch('search')
+  },
   toggleAuthorFilter ({ dispatch, commit, state }) {
     commit('toggleShowAuthorFilter')
     if (!state.showAuthorFilter) {
@@ -894,6 +921,9 @@ const actions = {
     if (state.owner) {
       ands.push('owner:"' + state.owner + '"')
       searchdefarr.push('owner=' + state.owner)
+    } else {
+      // an object should have at least an owner, else it's garbage
+      ands.push('owner:*')
     }
 
     if (state.collection) {
@@ -908,7 +938,7 @@ const actions = {
     }
 
     var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-    var url = rootState.config.solr + '/select?' + query
+    var url = rootState.settings.instance.solr + '/select?' + query
     var promise = fetch(url, {
       method: 'GET',
       mode: 'cors'
@@ -938,7 +968,7 @@ const actions = {
 
       var query = qs.stringify(params)
 
-      fetch(rootState.config.solr + '/suggest?' + query, {
+      fetch(rootState.settings.instance.solr + '/suggest?' + query, {
         method: 'GET',
         mode: 'cors'
       })

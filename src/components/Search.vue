@@ -169,12 +169,8 @@ export default {
     }
   },
   beforeCreate: function () {
-    this.$store.commit('initDateFacet')
     this.$store.commit('setSearchParams', this.$route.query)
     this.$store.dispatch('search')
-  },
-  created: function () {
-
   }
 }
 </script>

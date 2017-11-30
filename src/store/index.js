@@ -5,6 +5,7 @@ import alerts from './modules/alerts'
 import search from './modules/search'
 import groups from './modules/groups'
 import object from './modules/object'
+import settings from './modules/settings'
 import config from '../config/phaidra-ui'
 
 Vue.use(Vuex)
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     config: config
   },
   modules: {
+    settings,
     user,
     alerts,
     search,

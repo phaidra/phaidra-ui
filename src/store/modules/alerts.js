@@ -9,12 +9,17 @@ const mutations = {
   clearAlert (state, alert) {
     state.alerts = state.alerts.filter(e => e !== alert)
   },
-  clearAlerts (state) {
+  initStore (state) {
     state.alerts = []
   }
 }
 
+const actions = {
+
+}
+
 export default {
   state,
-  mutations
+  mutations,
+  actions
 }
