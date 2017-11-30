@@ -137,7 +137,7 @@
           <v-card flat>
             <v-card-text>
               <v-layout column>
-                <h3>{{ $t('Identifiers') }}</h3>
+                <h3 class="display-2">{{ $t('Identifiers') }}</h3>
                 <v-container grid-list-md fluid>
                   <v-layout row wrap>
                     <v-flex class="caption grey--text" xs2>PID</v-flex>
@@ -161,7 +161,7 @@
           <v-card flat>
             <v-card-text>
               <v-layout column>
-                <h3>Object data</h3>
+                <h3 class="display-2">Object data</h3>
                 <v-container fluid grid-list-md>
                   <v-layout row>
                     <v-flex class="caption grey--text" xs4>Owner</v-flex>
@@ -194,7 +194,7 @@
           <v-card flat v-if="doc.ispartof || doc.hassuccessor || doc.isalternativeformatof || doc.isalternativeversionof || doc.isbacksideof">
             <v-card-text>
               <v-layout column>
-                <h3>Relationships</h3>
+                <h3 class="display-2">Relationships</h3>
                 <v-container fluid grid-list-md>
                   <v-layout row v-if="doc.ispartof">
                     <v-flex class="caption grey--text" xs4>{{ $t('Is in collection') }}</v-flex>
@@ -255,7 +255,7 @@
           <v-card flat>
             <v-card-text>
               <v-layout column>
-                <h3>Links</h3>
+                <h3 class="display-2">Links</h3>
                 <v-flex>
                   <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
                 </v-flex>

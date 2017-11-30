@@ -55,7 +55,7 @@
                       <v-dialog v-model="linkdialog" max-width="800px">
                         <v-card>
                           <v-card-title>
-                            <h3>{{ $t('Link to search results') }}</h3>
+                            <h3 class="display-2">{{ $t('Link to search results') }}</h3>
                           </v-card-title>
                           <v-card-text>{{ searchDef.link }}</v-card-text>
                           <v-card-actions>
@@ -89,7 +89,7 @@
 
       </v-flex>
       <v-flex xs3 class="pa-2">
-        <h2 class="border-bottom">Filters</h2>
+        <h3 class="border-bottom display-2 pa-2">Filters</h3>
         <searchfilters></searchfilters>
       </v-flex>
     </v-layout>
