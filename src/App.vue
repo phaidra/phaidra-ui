@@ -108,10 +108,10 @@
         <v-flex xs12 md8 offset-md2>
           <v-layout row wrap class="footer-margin">
             <v-flex text-xs-left>
-              <span class="grey--text text--darken-2"><address>Universität Wien | Universitätsring 1 | 1010 Wien | <abbr title="Telefon">T</abbr> +43-1-4277-0</address></span>
+              <span class="grey--text text--darken-2"><address>{{ settings.instance.address }} | <abbr title="Telefon">T</abbr> {{ settings.instance.phone }}</address></span>
             </v-flex>
             <v-flex text-xs-right>
-              <a href="http://datamanagement.univie.ac.at/" target="_blank">Servicepage</a> | <router-link :to="'impressum'">Impressum</router-link>
+              <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link>
             </v-flex>
           </v-layout>
         </v-flex>
