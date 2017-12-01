@@ -13,11 +13,9 @@ const mutations = {
 
 const actions = {
   switchInstance ({ commit, rootState }, instance) {
-    // this commits initStore in every store module which has it
-    commit('initStore', rootState)
     commit('switchInstance', { rootState: rootState, instance: instance })
   },
-  initStore ({ commit, rootState }) {
+  initSettings ({ commit, rootState }) {
     commit('initSettings', rootState)
   }
 }

@@ -51,12 +51,11 @@
             <v-container fluid grid-list-lg>
               <v-layout column>
                 <v-flex v-if="doc.dc_description" class="search-description pb-3">{{ doc.dc_description[0] }}</v-flex>
-                <v-layout row>
-                  <router-link :to="{ name: 'detail', params: { pid: doc.pid } }"><v-btn flat>{{ $t('Details') }}</v-btn></router-link>
-                  <v-btn :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" flat>{{ $t('View') }}</v-btn>
-                  <v-btn :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" flat>{{ $t('Download') }}</v-btn>
-                </v-layout>
-                <v-divider></v-divider>
+                <v-flex class="text-xs-right">
+                  <v-btn :to="{ name: 'detail', params: { pid: doc.pid } }" raised>{{ $t('Details') }}</v-btn>
+                  <v-btn :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</v-btn>
+                  <v-btn :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</v-btn>
+                </v-flex>
                 <v-flex class="pt-3">
                   <v-layout row>
                     <v-flex>

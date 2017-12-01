@@ -81,15 +81,18 @@
                 </v-container>
               </v-flex>
             </v-layout>
+            <v-flex v-if="inCollection" class="display-2 primary--text">{{ $t('Members of') }} {{ inCollection }} <icon name="material-navigation-close" class="primary--text" height="100%" @click.native="removeCollectionFilter()"></icon></v-flex>
             <searchresults></searchresults>
-            <v-pagination v-if="total>pagesize" v-bind:length.number="totalPages" total-visible="13" v-model="page" class="mb-3"></v-pagination>
+            <v-flex class="text-xs-center">
+              <v-pagination v-if="total>pagesize" v-bind:length.number="totalPages" total-visible="13" v-model="page" class="mb-3"></v-pagination>
+            </v-flex>
           </v-flex>
 
         </v-layout>
 
       </v-flex>
       <v-flex xs3 class="pa-2">
-        <h3 class="border-bottom display-2 pa-2">Filters</h3>
+        <h3 class="border-bottom display-2 pa-2 primary--text">Filters</h3>
         <searchfilters></searchfilters>
       </v-flex>
     </v-layout>
@@ -145,6 +148,9 @@ export default {
     },
     searchDef: function () {
       return this.$store.state.search.searchDef
+    },
+    inCollection: function () {
+      return this.$store.state.search.collection
     }
   },
   methods: {
@@ -166,6 +172,9 @@ export default {
           return this.$store.state.search.sortdef[i].active
         }
       }
+    },
+    removeCollectionFilter: function () {
+      this.$store.dispatch('setCollection', '')
     }
   },
   beforeCreate: function () {

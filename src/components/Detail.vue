@@ -137,23 +137,25 @@
           <v-card flat>
             <v-card-text>
               <v-layout column>
-                <h3 class="display-2">{{ $t('Identifiers') }}</h3>
-                <v-container grid-list-md fluid>
-                  <v-layout row wrap>
-                    <v-flex class="caption grey--text" xs2>PID</v-flex>
-                    <v-flex xs10>{{ 'https://' + instance.baseurl + '/' + doc.pid }}</v-flex>
-                  </v-layout>
-
-                  <v-layout v-if="identifiers.length > 1" row wrap>
-                    <v-flex class="caption grey--text" xs2>Other</v-flex>
-                    <v-layout column>
-                      <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + instance.baseurl + '/' + doc.pid">
-                        {{ id }}
-                      </v-flex>
+                <v-flex>
+                  <h3 class="display-2">{{ $t('Identifiers') }}</h3>
+                </v-flex>
+                <v-flex>
+                  <v-container grid-list-md fluid>
+                    <v-layout row wrap>
+                      <v-flex class="caption grey--text" xs2>PID</v-flex>
+                      <v-flex xs10>{{ 'https://' + instance.baseurl + '/' + doc.pid }}</v-flex>
                     </v-layout>
-                  </v-layout>
-                </v-container>
-
+                    <v-layout v-if="identifiers.length > 1" row wrap>
+                      <v-flex class="caption grey--text" xs2>Other</v-flex>
+                      <v-layout column>
+                        <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + instance.baseurl + '/' + doc.pid">
+                          {{ id }}
+                        </v-flex>
+                      </v-layout>
+                    </v-layout>
+                  </v-container>
+                </v-flex>
               </v-layout>
             </v-card-text>
           </v-card>
@@ -161,32 +163,36 @@
           <v-card flat>
             <v-card-text>
               <v-layout column>
-                <h3 class="display-2">Object data</h3>
-                <v-container fluid grid-list-md>
-                  <v-layout row>
-                    <v-flex class="caption grey--text" xs4>Owner</v-flex>
-                    <v-flex v-if="owner.lastname" xs8>
-                      <a :href="'mailto:' + owner.email">{{ owner.firstname }} {{ owner.lastname }}</a>
-                    </v-flex>
-                    <v-flex v-else xs8>{{ doc.owner }}</v-flex>
-                  </v-layout>
-                  <v-layout row>
-                    <v-flex class="caption grey--text" xs4>Object Type</v-flex>
-                    <v-flex xs8>{{ doc.cmodel }}</v-flex>
-                  </v-layout>
-                  <v-layout row v-if="doc.dc_format">
-                    <v-flex class="caption grey--text" xs4>Format</v-flex>
-                    <v-flex xs8>
-                      <v-layout column>
-                        <v-flex v-for="(v,i) in doc.dc_format" :key="i">{{ v }}</v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout row>
-                    <v-flex class="caption grey--text" xs4>Created</v-flex>
-                    <v-flex xs8>{{ doc.created | time }}</v-flex>
-                  </v-layout>
-                </v-container>
+                <v-flex>
+                  <h3 class="display-2">{{ $t('Object data') }}</h3>
+                </v-flex>
+                <v-flex>
+                  <v-container fluid grid-list-md>
+                    <v-layout row>
+                      <v-flex class="caption grey--text" xs4>Owner</v-flex>
+                      <v-flex v-if="owner.lastname" xs8>
+                        <a :href="'mailto:' + owner.email">{{ owner.firstname }} {{ owner.lastname }}</a>
+                      </v-flex>
+                      <v-flex v-else xs8>{{ doc.owner }}</v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex class="caption grey--text" xs4>Object Type</v-flex>
+                      <v-flex xs8>{{ doc.cmodel }}</v-flex>
+                    </v-layout>
+                    <v-layout row v-if="doc.dc_format">
+                      <v-flex class="caption grey--text" xs4>Format</v-flex>
+                      <v-flex xs8>
+                        <v-layout column>
+                          <v-flex v-for="(v,i) in doc.dc_format" :key="i">{{ v }}</v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex class="caption grey--text" xs4>Created</v-flex>
+                      <v-flex xs8>{{ doc.created | time }}</v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-flex>
               </v-layout>
             </v-card-text>
           </v-card>
@@ -194,59 +200,63 @@
           <v-card flat v-if="doc.ispartof || doc.hassuccessor || doc.isalternativeformatof || doc.isalternativeversionof || doc.isbacksideof">
             <v-card-text>
               <v-layout column>
-                <h3 class="display-2">Relationships</h3>
-                <v-container fluid grid-list-md>
-                  <v-layout row v-if="doc.ispartof">
-                    <v-flex class="caption grey--text" xs4>{{ $t('Is in collection') }}</v-flex>
-                    <v-flex xs8>
-                      <v-layout column>
-                        <v-flex v-for="(v,i) in doc.ispartof" :key="i">
-                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout row v-if="doc.hassuccessor">
-                    <v-flex class="caption grey--text" xs4>{{ $t('Has newer version') }}</v-flex>
-                    <v-flex xs8>
-                      <v-layout column>
-                        <v-flex v-for="(v,i) in doc.hassuccessor" :key="i">
-                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout row v-if="doc.isalternativeformatof">
-                    <v-flex class="caption grey--text" xs4>{{ $t('Is alternative format of') }}</v-flex>
-                    <v-flex xs8>
-                      <v-layout column>
-                        <v-flex v-for="(v,i) in doc.isalternativeformatof" :key="i">
-                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout row v-if="doc.isalternativeversionof">
-                    <v-flex class="caption grey--text" xs4>{{ $t('Is alternative version of') }}</v-flex>
-                    <v-flex xs8>
-                      <v-layout column>
-                        <v-flex v-for="(v,i) in doc.isalternativeversionof" :key="i">
-                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout row v-if="doc.isbacksideof">
-                    <v-flex class="caption grey--text" xs4>{{ $t('Is back side of') }}</v-flex>
-                    <v-flex xs8>
-                      <v-layout column>
-                        <v-flex v-for="(v,i) in doc.isbacksideof" :key="i">
-                          <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-container>
+                <v-flex>
+                  <h3 class="display-2">{{ $t('Relationships') }}</h3>
+                </v-flex>
+                <v-flex>
+                  <v-container fluid grid-list-md>
+                    <v-layout row v-if="doc.ispartof">
+                      <v-flex class="caption grey--text" xs4>{{ $t('Is in collection') }}</v-flex>
+                      <v-flex xs8>
+                        <v-layout column>
+                          <v-flex v-for="(v,i) in doc.ispartof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row v-if="doc.hassuccessor">
+                      <v-flex class="caption grey--text" xs4>{{ $t('Has newer version') }}</v-flex>
+                      <v-flex xs8>
+                        <v-layout column>
+                          <v-flex v-for="(v,i) in doc.hassuccessor" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row v-if="doc.isalternativeformatof">
+                      <v-flex class="caption grey--text" xs4>{{ $t('Is alternative format of') }}</v-flex>
+                      <v-flex xs8>
+                        <v-layout column>
+                          <v-flex v-for="(v,i) in doc.isalternativeformatof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row v-if="doc.isalternativeversionof">
+                      <v-flex class="caption grey--text" xs4>{{ $t('Is alternative version of') }}</v-flex>
+                      <v-flex xs8>
+                        <v-layout column>
+                          <v-flex v-for="(v,i) in doc.isalternativeversionof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row v-if="doc.isbacksideof">
+                      <v-flex class="caption grey--text" xs4>{{ $t('Is back side of') }}</v-flex>
+                      <v-flex xs8>
+                        <v-layout column>
+                          <v-flex v-for="(v,i) in doc.isbacksideof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-flex>
               </v-layout>
             </v-card-text>
           </v-card>
@@ -255,25 +265,29 @@
           <v-card flat>
             <v-card-text>
               <v-layout column>
-                <h3 class="display-2">Links</h3>
                 <v-flex>
-                  <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
+                  <h3 class="display-2">{{ $t('Links') }}</h3>
                 </v-flex>
-                <v-flex>
-                  <a :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
-                </v-flex>
-                <v-flex>
-                  <a :href="instance.api + '/object/' + doc.pid + '/dc?format=xml'" target="_blank">{{ $t('Dublin Core') }}</a>
-                </v-flex>
-                <v-flex>
-                  <a :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                <v-flex class="pa-2">
+                  <v-flex>
+                    <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
+                  </v-flex>
+                  <v-flex>
+                    <a :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                  </v-flex>
+                  <v-flex>
+                    <a :href="instance.api + '/object/' + doc.pid + '/dc?format=xml'" target="_blank">{{ $t('Dublin Core') }}</a>
+                  </v-flex>
+                  <v-flex>
+                    <a :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                  </v-flex>
                 </v-flex>
               </v-layout>
             </v-card-text>
             <v-card-actions>
-              <v-btn v-if="viewable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" color="primary">{{ $t('View') }}</v-btn>
-              <v-btn v-if="downloadable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" color="primary">{{ $t('Download') }}</v-btn>
-              <v-btn v-if="doc.cmodel === 'Collection'" :to="{ name: 'search', query: { collection: doc.pid } }" color="primary">{{ $t('Show members') }}</v-btn>
+              <v-btn v-if="viewable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</v-btn>
+              <v-btn v-if="downloadable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</v-btn>
+              <a :href="'http://localhost:8080/?#/search/?collection=' + doc.pid" target="_blank"><v-btn v-if="doc.cmodel === 'Collection'" primary>{{ $t('Show members') }}</v-btn></a>
             </v-card-actions>
           </v-card>
 

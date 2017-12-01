@@ -9,13 +9,13 @@
 
       <v-flex>
 
-        <v-tabs v-model="active" dark>
+        <v-tabs v-model="active" >
           <v-tabs-bar>
-            <v-tabs-item v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tabs-item>
-            <v-tabs-slider color="white"></v-tabs-slider>
+            <v-tabs-item v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tabs-item>
+            <v-tabs-slider color="primary"></v-tabs-slider>
           </v-tabs-bar>
           <v-tabs-items>
-            <v-tabs-content v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname">
+            <v-tabs-content v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'">
               <v-card flat class="grey lighten-5">
                 <v-card-text>
                   <metadatarenderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></metadatarenderer>

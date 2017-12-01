@@ -177,13 +177,16 @@
       },
       switchInstance: function (e) {
         this.$store.dispatch('switchInstance', e).then(() => {
+          // this commits initStore in every store module which has it
+          this.$store.commit('initStore')
           this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
           this.$router.push('/search')
         })
       }
     },
     created: function () {
-      this.$store.dispatch('initStore')
+      this.$store.dispatch('initSettings')
+      this.$store.commit('initStore')
       this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
     }
   }

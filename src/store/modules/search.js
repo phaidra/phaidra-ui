@@ -688,10 +688,17 @@ const mutations = {
         state.sortdef[i].active = false
       }
     }
+  },
+  setCollection (state, collection) {
+    state.collection = collection
   }
 }
 
 const actions = {
+  setCollection ({ dispatch, commit }, collection) {
+    commit('setCollection', collection)
+    dispatch('search')
+  },
   switchInstance ({ dispatch }) {
     dispatch('search')
   },
