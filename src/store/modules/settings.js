@@ -1,10 +1,12 @@
 const state = {
-  instance: null
+  instance: null,
+  global: null
 }
 
 const mutations = {
   initSettings (state, rootState) {
     state.instance = rootState.config.instances[rootState.config.defaultinstance]
+    state.global = rootState.config.global
   },
   switchInstance (state, payload) {
     state.instance = payload.rootState.config.instances[payload.instance]

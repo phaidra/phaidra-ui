@@ -699,9 +699,6 @@ const actions = {
     commit('setCollection', collection)
     dispatch('search')
   },
-  switchInstance ({ dispatch }) {
-    dispatch('search')
-  },
   toggleAuthorFilter ({ dispatch, commit, state }) {
     commit('toggleShowAuthorFilter')
     if (!state.showAuthorFilter) {

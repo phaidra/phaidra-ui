@@ -13,9 +13,10 @@
 
           <v-flex class="text-xs-center">
             <a :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'">
-              <img v-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/Document/preview/480'" />
-              <img v-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
-              <img v-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
+              <img v-if="(doc.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
+              <img v-else-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/Document/preview/480'" />
+              <img v-else-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
+              <img v-else-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
             </a>
           </v-flex>
 
@@ -23,7 +24,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Title') }} ({{ title.lang }})</v-flex>
-                <v-flex xs10>{{ title.value }}</v-flex>
+                <v-flex xs9>{{ title.value }}</v-flex>
               </v-layout>
             </v-container>
           </v-flex>
@@ -32,7 +33,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <v-layout column>
                     <v-flex v-for="(entity,j) in role.entities" :key="j">
                       {{ entity.firstname }} {{ entity.lastname }} <span class="grey--text">{{ entity.institution }}</span>
@@ -47,7 +48,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Journal') }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <v-layout column>
                     <v-flex v-for="(v,i) in doc.bib_journal" :key="i">{{v}}</v-flex>
                   </v-layout>
@@ -60,7 +61,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Volume') }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <v-layout column>
                     <v-flex v-for="(v,i) in doc.bib_volume" :key="i">{{v}}</v-flex>
                   </v-layout>
@@ -73,7 +74,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Publisher') }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <v-layout column>
                     <v-flex v-for="(v,i) in doc.bib_publisher" :key="i">{{v}}</v-flex>
                   </v-layout>
@@ -86,7 +87,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Published') }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <v-layout column>
                     <v-flex v-for="(v,i) in doc.bib_published" :key="i">{{v}}</v-flex>
                   </v-layout>
@@ -99,7 +100,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Publisher location') }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <v-layout column>
                     <v-flex v-for="(v,i) in doc.bib_publisherlocation" :key="i">{{v}}</v-flex>
                   </v-layout>
@@ -112,7 +113,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
-                <v-flex xs10>{{ desc.value }}</v-flex>
+                <v-flex xs9>{{ desc.value }}</v-flex>
               </v-layout>
             </v-container>
           </v-flex>
@@ -121,7 +122,7 @@
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('License') }}</v-flex>
-                <v-flex xs10>
+                <v-flex xs9>
                   <licenseview v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></licenseview>
                 </v-flex>
               </v-layout>
@@ -170,7 +171,7 @@
                   <v-container fluid grid-list-md>
                     <v-layout row>
                       <v-flex class="caption grey--text" xs4>Owner</v-flex>
-                      <v-flex v-if="owner.lastname" xs8>
+                      <v-flex v-if="owner" xs8>
                         <a :href="'mailto:' + owner.email">{{ owner.firstname }} {{ owner.lastname }}</a>
                       </v-flex>
                       <v-flex v-else xs8>{{ doc.owner }}</v-flex>

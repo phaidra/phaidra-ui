@@ -11,7 +11,8 @@
                   <v-layout column>
                     <v-layout row>
                       <v-flex xs2>
-                         <img :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1"></img>
+                         <img v-if="instance.baseurl === 'e-book.fwf.ac.at'" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Asset/getThumbnail'" style="max-width:120px" class="elevation-1"></img>
+                         <img v-else :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1"></img>
                       </v-flex>
                       <v-flex xs10>
                         <v-layout column>
