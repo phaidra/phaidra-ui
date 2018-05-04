@@ -20,7 +20,7 @@ npm install
 ## Configure
 
 /etc/phaidra/phaidra-ui.json
-```json
+```js
 export default {
   defaultinstance: 'myinstance.example.com',
   global: {
