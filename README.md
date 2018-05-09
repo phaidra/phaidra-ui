@@ -14,6 +14,8 @@ sudo apt-get install -y nodejs
 
 ``` bash
 # install dependencies
+git clone git@github.com:phaidra/phaidra-ui.git
+cd phaidra-ui
 npm install
 ```
 
@@ -41,7 +43,7 @@ export default {
 }
 ```
 
-## Run dev server
+## Run (dev server)
 
 ```bash
 # serve with hot reload at localhost:8080
