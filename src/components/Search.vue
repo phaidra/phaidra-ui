@@ -82,7 +82,7 @@
               </v-flex>
             </v-layout>
             <v-flex v-if="inCollection" class="display-2 primary--text">{{ $t('Members of') }} {{ inCollection }} <icon name="material-navigation-close" class="primary--text" height="100%" @click.native="removeCollectionFilter()"></icon></v-flex>
-            <searchresults></searchresults>
+            <search-results></search-results>
             <v-flex class="text-xs-center">
               <v-pagination v-if="total>pagesize" v-bind:length.number="totalPages" total-visible="13" v-model="page" class="mb-3"></v-pagination>
             </v-flex>
@@ -93,7 +93,7 @@
       </v-flex>
       <v-flex xs3 class="pa-2">
         <h3 class="border-bottom display-2 pa-2 primary--text">Filters</h3>
-        <searchfilters></searchfilters>
+        <search-filters></search-filters>
       </v-flex>
     </v-layout>
 
@@ -101,8 +101,8 @@
 
 <script>
 import Autocomplete from '@/components/Autocomplete'
-import Searchresults from '@/components/Searchresults'
-import Searchfilters from '@/components/Searchfilters'
+import SearchResults from '@/components/SearchResults'
+import SearchFilters from '@/components/SearchFilters'
 import '@/compiled-icons/fontello-sort-name-up'
 import '@/compiled-icons/fontello-sort-name-down'
 import '@/compiled-icons/fontello-sort-number-up'
@@ -114,8 +114,8 @@ export default {
   name: 'search',
   components: {
     Autocomplete,
-    Searchresults,
-    Searchfilters
+    SearchResults,
+    SearchFilters
   },
   data () {
     return {

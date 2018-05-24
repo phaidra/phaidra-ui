@@ -11,8 +11,8 @@
                   <v-layout column>
                     <v-layout row>
                       <v-flex xs2>
-                         <img v-if="instance.baseurl === 'e-book.fwf.ac.at'" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Asset/getThumbnail'" style="max-width:120px" class="elevation-1"></img>
-                         <img v-else :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1"></img>
+                         <img v-if="instance.baseurl === 'e-book.fwf.ac.at'" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Asset/getThumbnail'" style="max-width:120px" class="elevation-1" />
+                         <img v-else :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1" />
                       </v-flex>
                       <v-flex xs10>
                         <v-layout column>
@@ -60,7 +60,7 @@
                 <v-flex class="pt-3">
                   <v-layout row>
                     <v-flex>
-                      <licenseview class="pa-0" v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></licenseview>
+                      <license-view class="pa-0" v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></license-view>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex class="text-xs-right">
@@ -80,12 +80,12 @@
 </template>
 
 <script>
-import Licenseview from '@/components/Licenseview'
+import LicenseView from '@/components/LicenseView'
 
 export default {
-  name: 'searchresults',
+  name: 'search-results',
   components: {
-    Licenseview
+    LicenseView
   },
   computed: {
     docs () {

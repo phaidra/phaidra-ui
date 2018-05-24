@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-container fluid>
-      <v-layout column>
+      <v-layout row wrap>
 
         <v-flex xs12>
           <quicklinks v-if="isUnivie" :showquicklinks="quicklinksenabled"></quicklinks>
@@ -9,8 +9,8 @@
 
 
         <v-flex xs12 md8 offset-md2 class="header">
-          <v-container fluid>
-          <v-layout row >
+       
+          <v-layout row wrap>
             <v-flex xs3 text-xs-left>
               <router-link :to="'/'">
                 <img v-if="isUnivie" src="./assets/Uni_Logo_2016.png" class="logo" alt="logo" />
@@ -26,7 +26,7 @@
 
             <v-flex xs9>
 
-              <v-container fluid>
+            
               <v-layout column>
                 <v-flex>
                   <v-layout row wrap >
@@ -57,12 +57,14 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex v-if="settings.global.showinstanceswitch" text-xs-left class="select-instance">
-                  <v-select :items="instances" @input="switchInstance" :value="settings.instance.baseurl" item-text="baseurl" single-line></v-select>
-                </v-flex>
-                <v-flex text-xs-left v-else-if="settings.instance.title">
-                  <router-link :to="'/'"><h2 class="display-3 primary--text pt-3">{{ settings.instance.title }}</h2></router-link>
-                </v-flex>
+                <v-layout row wrap >
+                  <v-flex v-if="settings.global.showinstanceswitch" xs4 text-xs-left class="select-instance">
+                    <v-select :items="instances" @input="switchInstance" :value="settings.instance.baseurl" item-text="baseurl" single-line></v-select>
+                  </v-flex>                
+                  <v-flex text-xs-left v-else-if="settings.instance.title">
+                    <router-link :to="'/'"><h2 class="display-3 primary--text pt-3">{{ settings.instance.title }}</h2></router-link>
+                  </v-flex>
+                </v-layout>
                 <v-flex>
                   <v-toolbar flat color="white" dense>
                     <v-toolbar-side-icon class="hidden-md-and-up">
@@ -83,21 +85,21 @@
                     <v-spacer></v-spacer>
                     <v-toolbar-items class="hidden-sm-and-down">
                       <v-btn flat :to="{ name: 'search'}">{{ $t("Search") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'submit'">{{ $t("Submit") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'myobjects'">{{ $t("My objects") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'bookmarks'">{{ $t("Bookmarks") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'groups'">{{ $t("Groups") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'templates'">{{ $t("Templates") }}</v-btn>
-                      <v-btn flat v-if="!signedin && settings.enablelogin" :to="'login'">{{ $t("Login") }}</v-btn>
+                      <v-btn flat v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</v-btn>
+                      <v-btn flat v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</v-btn>
+                      <v-btn flat v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</v-btn>
+                      <v-btn flat v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</v-btn>
+                      <v-btn flat v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</v-btn>
+                      <v-btn flat v-if="!signedin && settings.enablelogin" :to="'/login'">{{ $t("Login") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="''" @click="logout" >{{ $t("Logout") }}</v-btn>
                     </v-toolbar-items>
                   </v-toolbar>
                 </v-flex>
               </v-layout>
-            </v-container>
+            
             </v-flex>
           </v-layout>
-        </v-container>
+        
         </v-flex>
 
 
@@ -116,7 +118,7 @@
         </v-flex>
 
         <v-flex xs12 v-if="isUnivie">
-          <quicklinksfooter></quicklinksfooter>
+          <quicklinks-footer></quicklinks-footer>
         </v-flex>
 
         <v-flex xs12 md8 offset-md2>
@@ -139,7 +141,7 @@
 <script>
   import '@/assets/css/material-icons.css'
   import Quicklinks from '@/components/Quicklinks'
-  import Quicklinksfooter from '@/components/Quicklinksfooter'
+  import QuicklinksFooter from '@/components/QuicklinksFooter'
   import '@/compiled-icons/material-social-person'
   import '@/compiled-icons/material-navigation-menu'
   import '@/compiled-icons/univie-sprache'
@@ -148,7 +150,7 @@
     name: 'app',
     components: {
       Quicklinks,
-      Quicklinksfooter
+      QuicklinksFooter
     },
     data () {
       return {
@@ -341,6 +343,15 @@ address {
 .select-instance {
   max-width: 300px;
 }
+
+.border-bottom {
+  border-bottom: 1px solid #bdbdbd;
+}
+
+.border-top {
+  border-top: 1px solid #bdbdbd;
+}
+
 </style>
 
 <style scoped>

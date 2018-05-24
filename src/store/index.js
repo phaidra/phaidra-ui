@@ -5,6 +5,7 @@ import alerts from './modules/alerts'
 import search from './modules/search'
 import groups from './modules/groups'
 import object from './modules/object'
+import vocab from './modules/vocab'
 import settings from './modules/settings'
 import config from '../config/phaidra-ui'
 
@@ -22,7 +23,8 @@ export default new Vuex.Store({
     alerts,
     search,
     groups,
-    object
+    object,
+    vocab
   },
   strict: debug
 })

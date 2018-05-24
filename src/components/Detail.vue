@@ -123,7 +123,7 @@
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('License') }}</v-flex>
                 <v-flex xs9>
-                  <licenseview v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></licenseview>
+                  <license-view v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></license-view>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -311,13 +311,13 @@
 </template>
 
 <script>
-import Licenseview from '@/components/Licenseview'
+import LicenseView from '@/components/LicenseView'
 
 export default {
 
   name: 'detail',
   components: {
-    Licenseview
+    LicenseView
   },
   computed: {
     downloadable: function () {

@@ -42,7 +42,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs2>
-        <metadatarenderer v-for="(a,j) in node.attributes" :key="j" :node="a" :path="nodepath"></metadatarenderer>
+        <metadata-renderer v-for="(a,j) in node.attributes" :key="j" :node="a" :path="nodepath"></metadata-renderer>
       </v-flex>
     </v-layout>
   </v-container>
@@ -52,7 +52,7 @@
 <script>
 
 export default {
-  name: 'metadatarenderer',
+  name: 'metadata-renderer',
   props: {
     node: Object,
     path: {

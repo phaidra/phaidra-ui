@@ -174,7 +174,7 @@ import '@/compiled-icons/material-action-account-balance'
 import '@/compiled-icons/material-navigation-close'
 
 export default {
-  name: 'searchfilters',
+  name: 'search-filters',
   components: {
     Autocomplete
   },

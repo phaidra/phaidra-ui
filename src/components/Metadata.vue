@@ -18,7 +18,7 @@
             <v-tabs-content v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'">
               <v-card flat class="grey lighten-5">
                 <v-card-text>
-                  <metadatarenderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></metadatarenderer>
+                  <metadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></metadata-renderer>
                 </v-card-text>
               </v-card>
             </v-tabs-content>
@@ -33,13 +33,13 @@
 </template>
 
 <script>
-import Metadatarenderer from '@/components/Metadatarenderer'
+import MetadataRenderer from '@/components/MetadataRenderer'
 
 export default {
 
   name: 'metadata',
   components: {
-    Metadatarenderer
+    MetadataRenderer
   },
   computed: {
     pid: function () {

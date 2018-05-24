@@ -30,7 +30,7 @@
 <script>
 
 export default {
-  name: 'licenseview',
+  name: 'license-view',
   props: {
     dclicense: String
   },
