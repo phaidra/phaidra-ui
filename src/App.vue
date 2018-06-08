@@ -72,6 +72,7 @@
                         <v-btn flat icon color="grey lighten-1" slot="activator"><icon name="material-navigation-menu" width="24px" height="24px"></icon></v-btn>
                         <v-list>
                           <v-list-tile @click="$router.push('search')"><v-list-tile-title>{{ $t("Search") }}</v-list-tile-title></v-list-tile>
+                          <v-list-tile @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('myobjects')"><v-list-tile-title>{{ $t("My objects") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
@@ -85,6 +86,7 @@
                     <v-spacer></v-spacer>
                     <v-toolbar-items class="hidden-sm-and-down">
                       <v-btn flat :to="{ name: 'search'}">{{ $t("Search") }}</v-btn>
+                      <v-btn flat :to="'/submit'">{{ $t("Submit") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</v-btn>

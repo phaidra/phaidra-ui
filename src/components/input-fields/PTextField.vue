@@ -1,27 +1,21 @@
 <template>
   <v-layout row>
     <v-flex xs8>
-      <v-text-field 
-        v-if="required"
+      <v-text-field         
         :value="value" 
         v-on:input="$emit('input', $event)" 
         :label="label" 
         :required="required"
-        :rules="[ v => !!v || 'Required' ]"
+        :rules="required ? [ v => !!v || 'Required'] : []"
         :multi-line="multiline"
       ></v-text-field>
-      <v-text-field 
-        v-else
-        :value="value" 
-        v-on:input="$emit('input', $event)" 
-        :label="label"         
-        :multi-line="multiline"
-      ></v-text-field>      
     </v-flex>
     <v-flex xs2 v-if="multilingual">
       <v-select 
         v-on:input="$emit('input-language', $event)" 
-        :label="'Language'" 
+        :label="'Language'"
+        :required="required"
+        :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms" 
         :value="language"
       ></v-select>                      

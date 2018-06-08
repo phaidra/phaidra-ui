@@ -14,15 +14,15 @@
         v-on:input="$emit('input-lastname', $event)"
       ></v-text-field>
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs2 v-if="showrole">
       <v-select 
         v-on:input="$emit('input-role', $event)" 
         :label="'Role'" 
         :items="vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms" 
-        :value="role"
+        :value="role"        
       ></v-select>                      
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs2 v-if="showdate">
       <v-menu
         ref="datepicker"
         v-model="datepicker"
@@ -91,6 +91,14 @@ export default {
     },
     ordered: {
       type: Boolean
+    },
+    showrole: {
+      type: Boolean,
+      default: true
+    },
+    showdate: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
