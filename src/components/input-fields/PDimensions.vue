@@ -16,21 +16,21 @@
         :value="unit"
       ></v-select>                 
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs1>
       <v-text-field
         :value="length" 
         v-on:input="$emit('input-length', $event)" 
         :label="'Length'"
       ></v-text-field>
     </v-flex>    
-    <v-flex xs2>
+    <v-flex xs1>
       <v-text-field
         :value="width" 
         v-on:input="$emit('input-width', $event)" 
         :label="'Width'"
       ></v-text-field>
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs1>
       <v-text-field
         :value="height" 
         v-on:input="$emit('input-height', $event)" 
@@ -44,12 +44,16 @@
         :label="'Circumference'"
       ></v-text-field>
     </v-flex>
-    <v-flex xs1>
+    <v-flex xs2>
       <v-container fill-height>
         <v-layout row>
           <v-flex class="pt-4">
-            <icon v-if="multiplicable" name="material-content-add" width="24px" height="24px" v-on:click.native="$emit('add', $event)"></icon>
-            <icon v-if="multiplicable" name="material-content-remove" width="24px" height="24px" v-on:click.native="$emit('remove', $event)"></icon>
+            <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('add', $event)">
+              <icon name="material-content-add" width="24px" height="24px"></icon>
+            </v-btn>
+            <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
+              <icon name="material-content-remove" width="24px" height="24px"></icon>
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -97,3 +101,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btn {
+  margin: 0;
+}
+</style>

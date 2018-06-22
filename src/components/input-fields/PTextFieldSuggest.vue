@@ -38,8 +38,12 @@
       <v-container fill-height>
         <v-layout row>
           <v-flex class="pt-4">
-            <icon v-if="multiplicable" name="material-content-add" width="24px" height="24px" v-on:click.native="$emit('add', $event)"></icon>
-            <icon v-if="multiplicable" name="material-content-remove" width="24px" height="24px" v-on:click.native="$emit('remove', $event)"></icon>
+            <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
+              <icon v-if="multiplicable" name="material-content-add" width="24px" height="24px"></icon>
+            </v-btn>
+            <v-btn flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
+              <icon v-if="multiplicable" name="material-content-remove" width="24px" height="24px"></icon>
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-container>
@@ -257,6 +261,8 @@
   z-index: 999;
   margin-top: 2px;
 }
-
+.btn {
+  margin: 0;
+}
 </style>
 

@@ -27,8 +27,8 @@ const mutations = {
   },
   setLanguagesTermsStatic (state) {
     state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms = [
-      { value: 'http://id.loc.gov/vocabulary/iso639-2/deu', text: 'German' },
-      { value: 'http://id.loc.gov/vocabulary/iso639-2/eng', text: 'English' }
+      { value: 'deu', text: 'German' },
+      { value: 'eng', text: 'English' }
     ]
     state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].loaded = true
   },

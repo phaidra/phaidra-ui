@@ -1,47 +1,28 @@
 <template>
   <v-layout row>
-    <v-flex xs2>
+    <v-flex xs4>
       <v-text-field
-        :value="firstname"
-        :label="'Firstname'"
-        v-on:input="$emit('input-firstname', $event)"
+        :value="title"
+        :label="'Title'"
+        v-on:input="$emit('input-title', $event)"
       ></v-text-field>
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs4>
       <v-text-field
-        :value="lastname"
-        :label="'Lastname'"
-        v-on:input="$emit('input-lastname', $event)"
+        :value="subtitle"
+        :label="'Subtitle'"
+        v-on:input="$emit('input-subtitle', $event)"
       ></v-text-field>
     </v-flex>
-    <v-flex xs2>
-      <v-select
-        :disabled="disablerole" 
-        v-on:input="$emit('input-role', $event)" 
-        :label="'Role'" 
+    <v-flex xs2 v-if="multilingual">
+      <v-select 
+        v-on:input="$emit('input-language', $event)" 
+        :label="'Language'"
+        :required="required"
+        :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms" 
-        :value="role"        
+        :value="language"
       ></v-select>                      
-    </v-flex>
-    <v-flex xs2 v-if="showdate">
-      <v-menu
-        ref="datepicker"
-        v-model="datepicker"
-        :return-value.sync="date"
-        lazy
-        transition="fade-transition"
-        offset-y
-        full-width
-        min-width="290px"
-      >
-        <v-text-field
-          slot="activator"
-          v-model="selectedDate"
-          :label="'Date'"
-          append-icon="event"
-        ></v-text-field>
-        <v-date-picker v-model="selectedDate" :value="date" v-on:input="$emit('input-date', $event)" :reactive="true"></v-date-picker>
-      </v-menu>
     </v-flex>
     <v-flex xs2>
       <v-container fill-height>
@@ -73,23 +54,20 @@ import '@/compiled-icons/material-hardware-arrow-down'
 import '@/compiled-icons/material-hardware-arrow-up'
 
 export default {
-  name: 'p-entity',
+  name: 'p-title',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }
   },
   props: {
-    firstname: {
+    title: {
       type: String
     },
-    lastname: {
+    subtitle: {
       type: String
     },
-    role: {
-      type: String
-    },
-    date: {
+    language: {
       type: String
     },
     required: {
@@ -98,16 +76,11 @@ export default {
     multiplicable: {
       type: Boolean
     },
-    ordered: {
+    multilingual: {
       type: Boolean
     },
-    disablerole: {
-      type: Boolean,
-      default: true
-    },
-    showdate: {
-      type: Boolean,
-      default: true
+    ordered: {
+      type: Boolean
     }
   },
   data () {
