@@ -1,6 +1,14 @@
 const state = {
   vocabularies: {
+    'lang': {
+      terms: [],
+      loaded: false
+    },
     'http://id.loc.gov/vocabulary/iso639-2': {
+      terms: [],
+      loaded: false
+    },
+    'https://phaidra.org/vocabulary/roles': {
       terms: [],
       loaded: false
     }
@@ -8,7 +16,7 @@ const state = {
 }
 
 const mutations = {
-  setLanguagesTerms (state, data) {
+  setIso6392Terms (state, data) {
     var i, j
     for (i = 0; i < data.length; i++) {
       if (data[i]['http://www.w3.org/2004/02/skos/core#prefLabel']) {
@@ -25,16 +33,40 @@ const mutations = {
     }
     state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].loaded = true
   },
-  setLanguagesTermsStatic (state) {
+  setIso6392TermsStatic (state) {
     state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms = [
-      { value: 'deu', text: 'German' },
-      { value: 'eng', text: 'English' }
+      { value: 'http://id.loc.gov/vocabulary/iso639-2/deu', text: 'German' },
+      { value: 'http://id.loc.gov/vocabulary/iso639-2/eng', text: 'English' }
     ]
     state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].loaded = true
   },
+  setLangTermsStatic (state) {
+    state.vocabularies['lang'].terms = [
+      { value: 'deu', text: 'German' },
+      { value: 'eng', text: 'English' }
+    ]
+    state.vocabularies['lang'].loaded = true
+  },
+  setRolesTerms (state, rootState) {
+    // todo
+  },
+  setRolesTermsStatic (state, rootState) {
+    for (var role in rootState.search.marcRoles) {
+      state.vocabularies['https://phaidra.org/vocabulary/roles'].terms.push({ value: role, text: rootState.search.marcRoles[role] })
+    }
+    state.vocabularies['https://phaidra.org/vocabulary/roles'].loaded = true
+  },
   initStore (state) {
     state.vocabularies = {
+      'lang': {
+        terms: [],
+        loaded: false
+      },
       'http://id.loc.gov/vocabulary/iso639-2': {
+        terms: [],
+        loaded: false
+      },
+      'https://phaidra.org/vocabulary/roles': {
         terms: [],
         loaded: false
       }
@@ -43,7 +75,7 @@ const mutations = {
 }
 
 const actions = {
-  loadLanguages ({ commit, state, rootState }) {
+  loadIso6392 ({ commit, state, rootState }) {
     if (!state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].loaded) {
       fetch(rootState.settings.instance.api + '/vocabulary?uri=http://id.loc.gov/vocabulary/iso639-2', {
         method: 'GET',
@@ -54,14 +86,40 @@ const actions = {
       })
       .then(function (response) { return response.json() })
       .then(function (json) {
-        commit('setLanguagesTerms', json.vocabulary)
+        commit('setIso6392Terms', json.vocabulary)
       })
       .catch(function (error) { console.log(error) })
     }
   },
-  loadLanguagesStatic ({ commit, state, rootState }) {
+  loadIso6392Static ({ commit, state }) {
     if (!state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].loaded) {
-      commit('setLanguagesTermsStatic')
+      commit('setIso6392TermsStatic')
+    }
+  },
+  loadLangStatic ({ commit, state }) {
+    if (!state.vocabularies['lang'].loaded) {
+      commit('setLangTermsStatic')
+    }
+  },
+  loadRoles ({ commit, state, rootState }) {
+    if (!state.vocabularies['https://phaidra.org/vocabulary/roles'].loaded) {
+      fetch(rootState.settings.instance.api + '/vocabulary?uri=https://phaidra.org/vocabulary/roles', {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'X-XSRF-TOKEN': rootState.user.token
+        }
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        commit('setRolesTerms', json.vocabulary)
+      })
+      .catch(function (error) { console.log(error) })
+    }
+  },
+  loadRolesStatic ({ commit, state, rootState }) {
+    if (!state.vocabularies['https://phaidra.org/vocabulary/roles'].loaded) {
+      commit('setRolesTermsStatic', rootState)
     }
   }
 }

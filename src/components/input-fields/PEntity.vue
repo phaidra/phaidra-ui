@@ -19,7 +19,7 @@
         :disabled="disablerole" 
         v-on:input="$emit('input-role', $event)" 
         :label="'Role'" 
-        :items="vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms" 
+        :items="vocabularies['https://phaidra.org/vocabulary/roles'].terms" 
         :value="role"        
       ></v-select>                      
     </v-flex>
@@ -27,7 +27,7 @@
       <v-menu
         ref="datepicker"
         v-model="datepicker"
-        :return-value.sync="date"
+        :return-value.sync="datemodel"
         lazy
         transition="fade-transition"
         offset-y
@@ -103,7 +103,7 @@ export default {
     },
     disablerole: {
       type: Boolean,
-      default: true
+      default: false
     },
     showdate: {
       type: Boolean,
@@ -113,7 +113,8 @@ export default {
   data () {
     return {
       datepicker: false,
-      selectedDate: ''
+      selectedDate: '',
+      datemodel: ''
     }
   }
 }

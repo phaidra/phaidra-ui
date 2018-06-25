@@ -18,7 +18,7 @@
       <v-select 
         v-on:input="$emit('input-language', $event)" 
         :label="'Language'" 
-        :items="vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms" 
+        :items="vocabularies['lang'].terms" 
         :value="language"
       ></v-select>                      
     </v-flex>

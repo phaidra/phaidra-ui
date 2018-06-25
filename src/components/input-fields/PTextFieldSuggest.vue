@@ -30,7 +30,7 @@
         :label="'Language'"
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
-        :items="vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms" 
+        :items="vocabularies['lang'].terms" 
         :value="language"
       ></v-select>                      
     </v-flex>

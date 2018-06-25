@@ -130,7 +130,7 @@
         </v-layout>
       </v-tab-item>
       <v-tab-item class="ma-4">
-        <vue-json-pretty :data="jsonld"></vue-json-pretty>
+        <vue-json-pretty :data="jsonld" ref="prettyprint"></vue-json-pretty>
       </v-tab-item>
     </v-tabs>
 
@@ -166,18 +166,17 @@ export default {
   data () {
     return {
       activetab: null,
-      jsonld: {
-        '@context': {
-          bf: 'http://id.loc.gov/ontologies/bibframe/',
-          dce: 'http://purl.org/dc/elements/1.1/',
-          rdfs: 'https://www.w3.org/TR/rdf-schema/',
-          dcterms: 'http://purl.org/dc/terms/',
-          skos: 'http://www.w3.org/2004/02/skos/core#',
-          relators: 'http://id.loc.gov/vocabulary/relators',
-          foaf: 'http://xmlns.com/foaf/spec/#',
-          edm: 'http://www.europeana.eu/schemas/edm/'
-        }
+      jsonldcontext: {
+        bf: 'http://id.loc.gov/ontologies/bibframe/',
+        dce: 'http://purl.org/dc/elements/1.1/',
+        rdfs: 'https://www.w3.org/TR/rdf-schema/',
+        dcterms: 'http://purl.org/dc/terms/',
+        skos: 'http://www.w3.org/2004/02/skos/core#',
+        role: 'https://phaidra.org/vocabulary/roles',
+        foaf: 'http://xmlns.com/foaf/spec/#',
+        edm: 'http://www.europeana.eu/schemas/edm/'
       },
+      jsonld: {},
       form: {
         sections: [
           {
@@ -218,7 +217,8 @@ export default {
               },
               {
                 id: 4,
-                predicate: 'opaque:ethnographic',
+                predicate: 'bf:note',
+                bfnotetype: 'ethnographic',
                 label: 'Sociocult. category',
                 value: '',
                 inputtype: 'text-field',
@@ -237,7 +237,7 @@ export default {
               {
                 id: 6,
                 label: 'Contributions',
-                predicate: 'relators',
+                predicate: 'role',
                 firstname: '',
                 lastname: '',
                 role: '',
@@ -250,6 +250,7 @@ export default {
               {
                 id: 7,
                 predicate: 'bf:note',
+                bfnotetype: 'notice',
                 label: 'Note',
                 value: '',
                 inputtype: 'text-field',
@@ -285,10 +286,10 @@ export default {
               {
                 id: 10,
                 label: 'Owner',
-                predicate: 'rolle',
+                predicate: 'role',
                 firstname: '',
                 lastname: '',
-                role: 'urheberin',
+                role: 'own',
                 date: '',
                 disablerole: true,
                 showdate: false,
@@ -457,10 +458,10 @@ export default {
               {
                 id: 29,
                 label: 'Digitaliser',
-                predicate: 'rolle',
+                predicate: 'role',
                 firstname: '',
                 lastname: '',
-                role: 'digitaliser',
+                role: 'digitiser',
                 date: '',
                 disablerole: true,
                 showdate: false,
@@ -570,34 +571,45 @@ export default {
   },
   methods: {
     generateJson: function () {
+      this.jsonld = {
+        '@context': this.jsonldcontext
+      }
       for (var i = 0; i < this.form.sections.length; i++) {
         var s = this.form.sections[i]
         for (var j = 0; j < s.fields.length; j++) {
           var f = s.fields[j]
           var def
+
           if (f.predicate === 'dce:title') {
             def = {
               '@type': 'bf:Title',
-              'rdfs:label': f.title,
-              '@language': f.language
+              'bf:mainTitle': {
+                '@value': f.title,
+                '@language': f.language
+              }
             }
             if (f.subtitle !== '') {
-              def['rdfs:label'] = f.title + ' : ' + f.subtitle
-              def['bf:mainTitle'] = f.title
-              def['bf:subtitle'] = f.subtitle
+              def['bf:subtitle'] = {
+                '@value': f.subtitle,
+                '@language': f.language
+              }
             }
             if (!this.jsonld['dce.title']) {
               this.jsonld['dce.title'] = []
             }
             this.jsonld['dce.title'].push(def)
           }
+
           if (f.predicate === 'bf:note') {
             def = {
               '@type': 'bf:Note',
               'rdfs:label': f.value
             }
             if (f.language && (f.language !== '')) {
-              def['@language'] = f.language
+              def['rdfs:label'] = {
+                '@value': f.value,
+                '@language': f.language
+              }
             }
             if (f.bfnotetype && (f.bfnotetype !== '')) {
               def['bf:noteType'] = f.bfnotetype
@@ -607,7 +619,22 @@ export default {
             }
             this.jsonld['bf:note'].push(def)
           }
-          if (f.predicate === 'relators') {
+
+          if (f.predicate === 'dce:subject') {
+            if (!this.jsonld['dce:subject']) {
+              this.jsonld['dce:subject'] = []
+            }
+            this.jsonld['dce:subject'].push({
+              '@value': f.value,
+              '@language': f.language
+            })
+          }
+
+          if (f.predicate === 'dcterms:language') {
+            this.jsonld['dcterms:language'] = f.value
+          }
+
+          if (f.predicate === 'role') {
             def = {
               '@type': 'foaf:Person',
               'foaf:firstName': f.firstname,
@@ -616,19 +643,22 @@ export default {
             if (f.date && (f.date !== '')) {
               def['dcterms:date'] = f.date
             }
-            if (!this.jsonld['relators:' + f.role]) {
-              this.jsonld['relators:' + f.role] = []
+            if (!this.jsonld['role:' + f.role]) {
+              this.jsonld['role:' + f.role] = []
             }
-            this.jsonld['relators:' + f.role].push(def)
+            this.jsonld['role:' + f.role].push(def)
           }
+
           if (f.predicate === 'edm:rights') {
             this.jsonld['edm:rights'] = f.value
           }
+
           if (f.predicate === 'dcterms:type') {
             this.jsonld['dcterms:type'] = f.value
           }
         }
       }
+      this.$refs.prettyprint.$forceUpdate()
     },
     addField: function (arr, f) {
       var newField = arrays.duplicate(arr, f)
@@ -691,9 +721,9 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
-      vm.$store.dispatch('loadLanguagesStatic').then(() => {
-        next()
-      })
+      vm.$store.dispatch('loadLangStatic')
+      vm.$store.dispatch('loadIso6392Static')
+      vm.$store.dispatch('loadRolesStatic')
     })
   }
 }
