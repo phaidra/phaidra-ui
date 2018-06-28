@@ -70,15 +70,6 @@
               ></p-select>        
             </v-flex>
 
-            <v-flex offset-xs1 xs4 v-else-if="f.inputtype == 'select-suggest'" >
-              <p-select-suggest
-                v-bind.sync="f" 
-                v-on:input="f.value=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-              ></p-select-suggest>        
-            </v-flex>
-
             <v-flex offset-xs1 v-else-if="f.inputtype == 'entity'" >
               <p-entity
                 v-bind.sync="f"
@@ -93,13 +84,13 @@
               ></p-entity>
             </v-flex>
 
-            <v-flex offset-xs1 v-else-if="f.inputtype == 'lat-long'" >
-              <p-lat-long 
+            <v-flex offset-xs1 v-else-if="f.inputtype == 'gbv-suggest-getty'" >
+              <p-gbv-suggest-getty
                 v-bind.sync="f" 
                 v-on:input="f.value=$event"
                 v-on:add="addField(s.fields, f)"
                 v-on:remove="removeField(s.fields, f)"
-              ></p-lat-long>        
+              ></p-gbv-suggest-getty>        
             </v-flex>
 
             <v-flex offset-xs1 v-else-if="f.inputtype == 'dimensions'" >
@@ -144,10 +135,9 @@ import arrays from '@/utils/arrays'
 import PTextField from '@/components/input-fields/PTextField'
 import PTextFieldSuggest from '@/components/input-fields/PTextFieldSuggest'
 import PTitle from '@/components/input-fields/PTitle'
-import PSelectSuggest from '@/components/input-fields/PSelectSuggest'
 import PEntity from '@/components/input-fields/PEntity'
 import PSelect from '@/components/input-fields/PSelect'
-import PLatLong from '@/components/input-fields/PLatLong'
+import PGbvSuggestGetty from '@/components/input-fields/PGbvSuggestGetty'
 import PDimensions from '@/components/input-fields/PDimensions'
 
 export default {
@@ -155,11 +145,10 @@ export default {
   components: {
     PTextField,
     PTextFieldSuggest,
-    PSelectSuggest,
     PTitle,
     PEntity,
     PSelect,
-    PLatLong,
+    PGbvSuggestGetty,
     PDimensions,
     VueJsonPretty
   },
@@ -298,14 +287,14 @@ export default {
               },
               {
                 id: 11,
-                predicate: 'dce:subject',
+                predicate: 'schema:temporalCoverage',
                 label: 'Zeitpunkt, Zeitraum',
                 value: '',
                 inputtype: 'text-field'
               },
               {
                 id: 12,
-                predicate: 'bf:note',
+                predicate: 'dcterms:provenance',
                 label: 'Provenience',
                 value: '',
                 inputtype: 'text-field',
@@ -315,7 +304,7 @@ export default {
               },
               {
                 id: 13,
-                predicate: 'dce:coverage',
+                predicate: 'bf:physicalLocation',
                 label: 'Standort',
                 value: '',
                 inputtype: 'text-field'
@@ -323,6 +312,7 @@ export default {
               {
                 id: 14,
                 predicate: 'bf:note',
+                bfnotetype: 'logid',
                 label: 'Aktenvermerk/Eingangsbuch',
                 value: '',
                 inputtype: 'text-field'
@@ -335,35 +325,11 @@ export default {
             fields: [
               {
                 id: 15,
-                predicate: 'dcterms:etnographicterm',
-                label: 'Koordinaten',
+                predicate: 'dce:coverage',
+                label: 'Ort',
                 value: '',
-                inputtype: 'lat-long'
-              },
-              {
-                id: 16,
-                predicate: 'dcterms:etnographicterm',
-                label: 'Ort, Region',
-                value: '',
-                inputtype: 'text-field'
-              },
-              {
-                id: 17,
-                predicate: 'dcterms:subject',
-                label: 'State',
-                value: '',
-                language: '',
-                inputtype: 'select-suggest',
-                suggester: 'titlesuggester'
-              },
-              {
-                id: 18,
-                predicate: 'dcterms:subject',
-                label: 'Region',
-                value: '',
-                language: '',
-                inputtype: 'select-suggest',
-                suggester: 'titlesuggester'
+                inputtype: 'gbv-suggest-getty',
+                voc: 'tgn'
               },
               {
                 id: 19,
@@ -580,81 +546,104 @@ export default {
           var f = s.fields[j]
           var def
 
-          if (f.predicate === 'dce:title') {
-            def = {
-              '@type': 'bf:Title',
-              'bf:mainTitle': {
-                '@value': f.title,
-                '@language': f.language
+          switch (f.predicate) {
+
+            case 'dce:title':
+              def = {
+                '@type': 'bf:Title',
+                'bf:mainTitle': {
+                  '@value': f.title,
+                  '@language': f.language
+                }
               }
-            }
-            if (f.subtitle !== '') {
-              def['bf:subtitle'] = {
-                '@value': f.subtitle,
-                '@language': f.language
+              if (f.subtitle !== '') {
+                def['bf:subtitle'] = {
+                  '@value': f.subtitle,
+                  '@language': f.language
+                }
               }
-            }
-            if (!this.jsonld['dce.title']) {
-              this.jsonld['dce.title'] = []
-            }
-            this.jsonld['dce.title'].push(def)
-          }
-
-          if (f.predicate === 'bf:note') {
-            def = {
-              '@type': 'bf:Note',
-              'rdfs:label': f.value
-            }
-            if (f.language && (f.language !== '')) {
-              def['rdfs:label'] = {
-                '@value': f.value,
-                '@language': f.language
+              if (!this.jsonld['dce.title']) {
+                this.jsonld['dce.title'] = []
               }
-            }
-            if (f.bfnotetype && (f.bfnotetype !== '')) {
-              def['bf:noteType'] = f.bfnotetype
-            }
-            if (!this.jsonld['bf:note']) {
-              this.jsonld['bf:note'] = []
-            }
-            this.jsonld['bf:note'].push(def)
-          }
+              this.jsonld['dce.title'].push(def)
+              break
 
-          if (f.predicate === 'dce:subject') {
-            if (!this.jsonld['dce:subject']) {
-              this.jsonld['dce:subject'] = []
-            }
-            this.jsonld['dce:subject'].push({
-              '@value': f.value,
-              '@language': f.language
-            })
-          }
+            case 'bf:note':
+              if (f.value !== '') {
+                def = {
+                  '@type': 'bf:Note',
+                  'rdfs:label': f.value
+                }
+                if (f.language && (f.language !== '')) {
+                  def['rdfs:label'] = {
+                    '@value': f.value,
+                    '@language': f.language
+                  }
+                }
+                if (f.bfnotetype && (f.bfnotetype !== '')) {
+                  def['bf:noteType'] = f.bfnotetype
+                }
+                if (!this.jsonld['bf:note']) {
+                  this.jsonld['bf:note'] = []
+                }
+                this.jsonld['bf:note'].push(def)
+              }
+              break
 
-          if (f.predicate === 'dcterms:language') {
-            this.jsonld['dcterms:language'] = f.value
-          }
+            case 'dce:subject':
+              if (f.value !== '') {
+                if (!this.jsonld['dce:subject']) {
+                  this.jsonld['dce:subject'] = []
+                }
+                this.jsonld['dce:subject'].push({
+                  '@value': f.value,
+                  '@language': f.language
+                })
+              }
+              break
 
-          if (f.predicate === 'role') {
-            def = {
-              '@type': 'foaf:Person',
-              'foaf:firstName': f.firstname,
-              'foaf:surname': f.lastname
-            }
-            if (f.date && (f.date !== '')) {
-              def['dcterms:date'] = f.date
-            }
-            if (!this.jsonld['role:' + f.role]) {
-              this.jsonld['role:' + f.role] = []
-            }
-            this.jsonld['role:' + f.role].push(def)
-          }
+            case 'role':
+              if (f.role && (f.role !== '')) {
+                def = {
+                  '@type': 'foaf:Person',
+                  'foaf:firstName': f.firstname,
+                  'foaf:surname': f.lastname
+                }
+                if (f.date && (f.date !== '')) {
+                  def['dcterms:date'] = f.date
+                }
+                if (!this.jsonld['role:' + f.role]) {
+                  this.jsonld['role:' + f.role] = []
+                }
+                this.jsonld['role:' + f.role].push(def)
+              }
+              break
 
-          if (f.predicate === 'edm:rights') {
-            this.jsonld['edm:rights'] = f.value
-          }
+            case 'dcterms:provenance':
+              if (f.value !== '') {
+                def = {
+                  '@type': 'dcterms:ProvenanceStatement',
+                  'rdfs:label': f.value
+                }
+                if (f.language && (f.language !== '')) {
+                  def['rdfs:label'] = {
+                    '@value': f.value,
+                    '@language': f.language
+                  }
+                }
+                if (!this.jsonld['dctems:provenance']) {
+                  this.jsonld['dctems:provenance'] = []
+                }
+                this.jsonld['dctems:provenance'].push(def)
+              }
+              break
 
-          if (f.predicate === 'dcterms:type') {
-            this.jsonld['dcterms:type'] = f.value
+            default:
+              if (f.predicate && (f.predicate !== '')) {
+                if (f.value && (f.value !== '')) {
+                  this.jsonld[f.predicate] = f.value
+                }
+              }
           }
         }
       }

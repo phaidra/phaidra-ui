@@ -93,7 +93,10 @@
           item: false
         })
       },
-      debounce: Number,
+      debounce: {
+        type: Number,
+        default: 500
+      },
       min: {
         type: Number,
         default: 0
