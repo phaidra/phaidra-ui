@@ -27,7 +27,7 @@
       </v-select>
     </v-flex>
     <v-flex xs4>
-      <v-text-field disabled>{{ prefLabel }}</v-text-field>
+      <v-text-field :value="prefLabel" :hint="value" disabled persistent-hint></v-text-field>
     </v-flex>
     <v-flex xs2>
       <v-container fill-height>
@@ -53,37 +53,6 @@ import '@/compiled-icons/material-content-remove'
 
 export default {
   name: 'p-gbv-suggest-getty',
-  computed: {
-    prefLabel: function () {
-      var self = this
-
-      if (this.value) {
-        self.loading = true
-
-        var params = {
-          uri: this.value
-        }
-
-        var query = qs.stringify(params)
-
-        fetch(self.$store.state.settings.instance.api + '/resolve/?' + query, {
-          method: 'GET',
-          mode: 'cors'
-        })
-        .then(function (response) {
-          return response.json()
-        })
-        .then(function (json) {
-          self.loading = false
-          return json.term
-        })
-        .catch(function (error) {
-          console.log(error)
-          self.loading = false
-        })
-      }
-    }
-  },
   props: {
     value: {
       type: String,
@@ -111,6 +80,9 @@ export default {
   watch: {
     search (val) {
       val && this.querySuggestionsDebounce(val)
+    },
+    value (val) {
+      val && this.resolve(val)
     }
   },
   data () {
@@ -119,13 +91,39 @@ export default {
       items: [],
       search: null,
       select: [],
-      debounceTask: undefined
+      debounceTask: undefined,
+      prefLabel: ''
     }
   },
   methods: {
-    queryName (q) {
-      // http://vocab.getty.edu/tgn/1003354
-      this.prefLabel = q
+    resolve: function (uri) {
+      var self = this
+
+      if (uri) {
+        self.loading = true
+
+        var params = {
+          uri: uri
+        }
+
+        var query = qs.stringify(params)
+
+        fetch(self.$store.state.settings.instance.api + '/resolve/?' + query, {
+          method: 'GET',
+          mode: 'cors'
+        })
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (json) {
+          self.loading = false
+          self.prefLabel = json.term
+        })
+        .catch(function (error) {
+          console.log(error)
+          self.loading = false
+        })
+      }
     },
     querySuggestionsDebounce (q) {
       if (this.debounce) {
