@@ -11,6 +11,26 @@ const state = {
     'https://phaidra.org/vocabulary/roles': {
       terms: [],
       loaded: false
+    },
+    'getty-aat-photo': {
+      terms: [],
+      loaded: false
+    },
+    'un-cefact': {
+      terms: [],
+      loaded: false
+    },
+    'condition': {
+      terms: [],
+      loaded: false
+    },
+    'original-copy': {
+      terms: [],
+      loaded: false
+    },
+    'stamp': {
+      terms: [],
+      loaded: false
     }
   }
 }
@@ -47,8 +67,39 @@ const mutations = {
     ]
     state.vocabularies['lang'].loaded = true
   },
-  setRolesTerms (state, rootState) {
-    // todo
+  setGettyAatPhotoTermsStatic (state) {
+    state.vocabularies['getty-aat-photo'].terms = [
+      { value: 'http://vocab.getty.edu/aat/300162056', text: 'black-and-white photography' },
+      { value: 'http://vocab.getty.edu/aat/300134530', text: 'color photography' }
+    ]
+    state.vocabularies['getty-aat-photo'].loaded = true
+  },
+  setUnCefactTermsStatic (state) {
+    state.vocabularies['un-cefact'].terms = [
+      { value: 'MTR', text: 'm' },
+      { value: 'CMT', text: 'cm' },
+      { value: 'MMT', text: 'mm' }
+    ]
+    state.vocabularies['un-cefact'].loaded = true
+  },
+  setConditionTermsStatic (state) {
+    state.vocabularies['condition'].terms = [
+      { value: 'fehlt', text: 'missing' }
+    ]
+    state.vocabularies['condition'].loaded = true
+  },
+  setOriginalCopyTermsStatic (state) {
+    state.vocabularies['original-copy'].terms = [
+      { value: 'original', text: 'original' },
+      { value: 'copy', text: 'copy' }
+    ]
+    state.vocabularies['original-copy'].loaded = true
+  },
+  setStampTermsStatic (state) {
+    state.vocabularies['stamp'].terms = [
+      { value: 'Dr. F. Dörbeck [blau, Stempel]', text: 'Dr. F. Dörbeck [blau, Stempel]' }
+    ]
+    state.vocabularies['stamp'].loaded = true
   },
   setRolesTermsStatic (state, rootState) {
     for (var role in rootState.search.marcRoles) {
@@ -67,6 +118,26 @@ const mutations = {
         loaded: false
       },
       'https://phaidra.org/vocabulary/roles': {
+        terms: [],
+        loaded: false
+      },
+      'getty-aat-photo': {
+        terms: [],
+        loaded: false
+      },
+      'un-cefact': {
+        terms: [],
+        loaded: false
+      },
+      'condition': {
+        terms: [],
+        loaded: false
+      },
+      'original-copy': {
+        terms: [],
+        loaded: false
+      },
+      'stamp': {
         terms: [],
         loaded: false
       }
@@ -99,6 +170,31 @@ const actions = {
   loadLangStatic ({ commit, state }) {
     if (!state.vocabularies['lang'].loaded) {
       commit('setLangTermsStatic')
+    }
+  },
+  loadGettyAatPhotoStatic ({ commit, state }) {
+    if (!state.vocabularies['getty-aat-photo'].loaded) {
+      commit('setGettyAatPhotoTermsStatic')
+    }
+  },
+  loadUnCefactStatic ({ commit, state }) {
+    if (!state.vocabularies['un-cefact'].loaded) {
+      commit('setUnCefactTermsStatic')
+    }
+  },
+  loadConditionStatic ({ commit, state }) {
+    if (!state.vocabularies['condition'].loaded) {
+      commit('setConditionTermsStatic')
+    }
+  },
+  loadOriginalCopyStatic ({ commit, state }) {
+    if (!state.vocabularies['original-copy'].loaded) {
+      commit('setOriginalCopyTermsStatic')
+    }
+  },
+  loadStampStatic ({ commit, state }) {
+    if (!state.vocabularies['stamp'].loaded) {
+      commit('setStampTermsStatic')
     }
   },
   loadRoles ({ commit, state, rootState }) {

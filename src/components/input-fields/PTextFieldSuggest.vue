@@ -34,15 +34,15 @@
         :value="language"
       ></v-select>                      
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
           <v-flex class="pt-4">
             <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
-              <icon v-if="multiplicable" name="material-content-add" width="24px" height="24px"></icon>
+              <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>
             <v-btn flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
-              <icon v-if="multiplicable" name="material-content-remove" width="24px" height="24px"></icon>
+              <icon name="material-content-remove" width="24px" height="24px"></icon>
             </v-btn>
           </v-flex>
         </v-layout>

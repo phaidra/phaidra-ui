@@ -16,12 +16,12 @@
               <h3 class="display-2 submit-header">{{ $t(s.title) }}</h3>
             </v-flex>
             <v-flex xs6></v-flex>
-            <v-flex xs2>
+            <v-flex xs2 v-if="s.multiplicable" >
               <v-btn flat icon slot="activator" v-on:click.native="addSection(s)">
-                <icon v-if="s.multiplicable" name="material-content-add" width="24px" height="24px"></icon>
+                <icon name="material-content-add" width="24px" height="24px"></icon>
               </v-btn>
               <v-btn flat icon slot="activator" v-on:click.native="removeSection(s)">
-                <icon v-if="s.multiplicable" name="material-content-remove" width="24px" height="24px"></icon>
+                <icon name="material-content-remove" width="24px" height="24px"></icon>
               </v-btn>
             </v-flex>        
           </v-layout>
@@ -163,7 +163,8 @@ export default {
         skos: 'http://www.w3.org/2004/02/skos/core#',
         role: 'https://phaidra.org/vocabulary/roles',
         foaf: 'http://xmlns.com/foaf/spec/#',
-        edm: 'http://www.europeana.eu/schemas/edm/'
+        edm: 'http://www.europeana.eu/schemas/edm/',
+        schema: 'http://schema.org/'
       },
       jsonld: {},
       form: {
@@ -210,7 +211,8 @@ export default {
                 bfnotetype: 'ethnographic',
                 label: 'Sociocult. category',
                 value: '',
-                inputtype: 'text-field',
+                inputtype: 'text-field-suggest',
+                suggester: 'titlesuggester',
                 multiplicable: true
               },
               {
@@ -269,8 +271,8 @@ export default {
             ]
           },
           {
-            title: 'Provenience',
-            id: 'provenience',
+            title: 'Provenance',
+            id: 'provenance',
             fields: [
               {
                 id: 10,
@@ -333,44 +335,36 @@ export default {
               },
               {
                 id: 19,
-                predicate: 'dcterms:subject',
+                predicate: 'vra-measurements',
                 label: 'Dimensions',
-                source: '',
-                unit: '',
-                length: '',
+                source: 'http://vocab.getty.edu/aat/300162056',
+                unit: 'CMT',
                 height: '',
                 width: '',
-                circumference: '',
                 inputtype: 'dimensions',
                 multiplicable: true
               },
               {
-                id: 20,
-                label: 'Format',
-                predicate: 'dcterms:language',
-                value: '',
-                inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
-              },
-              {
                 id: 21,
                 label: 'Original/Copy',
-                predicate: 'dcterms:language',
+                predicate: 'bf:note',
+                bfnotetype: 'original-copy',
                 value: '',
                 inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
+                vocabulary: 'original-copy'
               },
               {
                 id: 22,
                 label: 'Condition',
-                predicate: 'dcterms:language',
+                predicate: 'bf:note',
+                bfnotetype: 'condition',
                 value: '',
                 inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
+                vocabulary: 'condition'
               },
               {
                 id: 23,
-                predicate: 'dcterms:description',
+                predicate: 'vra:hasInscription',
                 label: 'Inscription',
                 value: '',
                 inputtype: 'text-field',
@@ -381,10 +375,11 @@ export default {
               {
                 id: 24,
                 label: 'Stamp',
-                predicate: 'dcterms:language',
+                predicate: 'bf:note',
+                bfnotetype: 'stamp',
                 value: '',
                 inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
+                vocabulary: 'stamp'
               }
             ]
           },
@@ -540,6 +535,12 @@ export default {
       this.jsonld = {
         '@context': this.jsonldcontext
       }
+
+      var vraWork = {
+        '@type': 'vra:Work'
+      }
+      var addVraWork = false
+
       for (var i = 0; i < this.form.sections.length; i++) {
         var s = this.form.sections[i]
         for (var j = 0; j < s.fields.length; j++) {
@@ -638,6 +639,36 @@ export default {
               }
               break
 
+            case 'vra-measurements':
+              if (f.height !== '' || f.width !== '') {
+                vraWork['vra:hasTechnique'] = f.technique
+                vraWork['vra:height'] = {
+                  '@type': 'vra:QuantitativeValue',
+                  'vra:unitCode': f.unit,
+                  'vra:value': f.height
+                }
+                vraWork['vra:width'] = {
+                  '@type': 'vra:QuantitativeValue',
+                  'vra:unitCode': f.unit,
+                  'vra:value': f.width
+                }
+                addVraWork = true
+              }
+              break
+
+            case 'vra:hasInscription':
+              if (f.value !== '') {
+                vraWork['vra:hasInscription'] = {
+                  '@type': 'vra:Inscription',
+                  'vra:text': {
+                    '@value': f.value,
+                    '@language': f.language
+                  }
+                }
+                addVraWork = true
+              }
+              break
+
             default:
               if (f.predicate && (f.predicate !== '')) {
                 if (f.value && (f.value !== '')) {
@@ -646,6 +677,12 @@ export default {
               }
           }
         }
+      }
+      if (addVraWork) {
+        if (!this.jsonld['vra:imageOf']) {
+          this.jsonld['vra:imageOf'] = []
+        }
+        this.jsonld['vra:imageOf'].push(vraWork)
       }
       this.$refs.prettyprint.$forceUpdate()
     },
@@ -713,6 +750,11 @@ export default {
       vm.$store.dispatch('loadLangStatic')
       vm.$store.dispatch('loadIso6392Static')
       vm.$store.dispatch('loadRolesStatic')
+      vm.$store.dispatch('loadGettyAatPhotoStatic')
+      vm.$store.dispatch('loadUnCefactStatic')
+      vm.$store.dispatch('loadConditionStatic')
+      vm.$store.dispatch('loadOriginalCopyStatic')
+      vm.$store.dispatch('loadStampStatic')
     })
   }
 }

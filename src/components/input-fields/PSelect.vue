@@ -12,14 +12,14 @@
         autocomplete
       ></v-select>
     </v-flex>
-    <v-flex xs4>
+    <v-flex xs4 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
           <v-flex class="pt-4">
-            <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('add', $event)">
+            <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>
-            <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
+            <v-btn flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
               <icon name="material-content-remove" width="24px" height="24px"></icon>
             </v-btn>
           </v-flex>
