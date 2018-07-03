@@ -88,7 +88,7 @@ export default {
 </script>
 
 <style scoped>
-.btn {
+.v-btn {
   margin: 0;
 }
 </style>

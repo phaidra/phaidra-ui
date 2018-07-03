@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs2>
+    <v-flex xs3>
       <v-select 
         v-on:input="$emit('input-source', $event)" 
         :label="'Source'"
@@ -9,7 +9,7 @@
         box
       ></v-select>                 
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs1>
       <v-select 
         v-on:input="$emit('input-unit', $event)" 
         :label="'Unit'"
@@ -87,7 +87,7 @@ export default {
 </script>
 
 <style scoped>
-.btn {
+.v-btn {
   margin: 0;
 }
 </style>

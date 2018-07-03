@@ -1,129 +1,147 @@
 <template>
-  <v-container grid-list-lg class="form-background" fluid>
-    <v-layout row wrap>
-      <v-flex xs12 class="text-xs-right display-2 submit-header mb-1">KSA Submit - Photo</v-flex>
-    </v-layout>
- 
-    <v-tabs v-model="activetab" slider-color="primary" >
-      <v-tab ripple >Form</v-tab>
-      <v-tab ripple @click="generateJson()">Debug</v-tab>
-      <v-tab-item>
+  <v-container grid-list-lg class="ksa-submit" >
 
-        <v-layout v-for="(s) in this.form.sections" :key="s.id" column wrap>
+    <v-toolbar color="primary lighten-3" tabs dark>
+      <v-toolbar-title>KSA Submit - Photo</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-menu bottom left>
+        <v-btn slot="activator" dark icon >
+          <v-icon>more_vert</v-icon>
+        </v-btn>
 
-          <v-layout row wrap class=" pa-4 mt-4 border-top">
-            <v-flex xs4>
-              <h3 class="display-2 submit-header">{{ $t(s.title) }}</h3>
-            </v-flex>
-            <v-flex xs6></v-flex>
-            <v-flex xs2 v-if="s.multiplicable" >
-              <v-btn flat icon slot="activator" v-on:click.native="addSection(s)">
+        <v-list>
+          <v-list-tile @click="" >
+            <v-list-tile-title>{{ $t('Create template') }}</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="" >
+            <v-list-tile-title>{{ $t('Load template') }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+
+      <v-tabs v-model="activetab" slot="extension" slider-color="primary" color="primary lighten-3" align-with-title>
+        <v-tab ripple >Form</v-tab>
+        <v-tab ripple @click="generateJson()">Debug</v-tab>
+      </v-tabs>
+    </v-toolbar>
+    <v-tabs-items v-model="activetab">
+      <v-tab-item class="pa-3">
+
+        <v-layout v-for="(s) in this.form.sections" :key="s.id" column wrap class="ma-3">
+          
+          <v-card >
+            <v-card-title class="headline grey lighten-2 white--text">
+              <span>{{ $t(s.title) }}</span>
+              <v-spacer></v-spacer>
+              <v-btn v-if="s.multiplicable" flat icon v-on:click.native="addSection(s)" class="grey lighten-2 white--text">
                 <icon name="material-content-add" width="24px" height="24px"></icon>
               </v-btn>
-              <v-btn flat icon slot="activator" v-on:click.native="removeSection(s)">
+              <v-btn v-if="s.multiplicable" flat icon v-on:click.native="removeSection(s)" class="grey lighten-2 white--text">
                 <icon name="material-content-remove" width="24px" height="24px"></icon>
               </v-btn>
-            </v-flex>        
-          </v-layout>
+            </v-card-title>
+            <v-card-text class="mt-4">
+              <v-layout v-for="(f) in s.fields" :key="f.id" row wrap>
 
-          <v-layout v-for="(f) in s.fields" :key="f.id" row wrap>
+                <v-flex offset-xs1 v-if="f.inputtype == 'text-field'" >
+                  <p-text-field             
+                    v-bind.sync="f"
+                    v-on:input="f.value=$event"
+                    v-on:input-language="f.language=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-text-field>
+                </v-flex>
 
-            <v-flex offset-xs1 v-if="f.inputtype == 'text-field'" >
-              <p-text-field             
-                v-bind.sync="f"
-                v-on:input="f.value=$event"
-                v-on:input-language="f.language=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-              ></p-text-field>
-            </v-flex>
+                <v-flex offset-xs1 v-else-if="f.inputtype == 'text-field-suggest'" >
+                  <p-text-field-suggest
+                    v-bind.sync="f"
+                    v-on:input="f.value=$event"
+                    v-on:input-language="f.language=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-text-field-suggest>
+                </v-flex>
 
-            <v-flex offset-xs1 v-else-if="f.inputtype == 'text-field-suggest'" >
-              <p-text-field-suggest
-                v-bind.sync="f"
-                v-on:input="f.value=$event"
-                v-on:input-language="f.language=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-              ></p-text-field-suggest>
-            </v-flex>
+                <v-flex offset-xs1 v-if="f.inputtype == 'title'" >
+                  <p-title            
+                    v-bind.sync="f"
+                    v-on:input-title="f.title=$event"
+                    v-on:input-subtitle="f.subtitle=$event"
+                    v-on:input-language="f.language=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                    v-on:up="sortFieldUp(s.fields, f)"
+                    v-on:down="sortFieldDown(s.fields, f)"
+                  ></p-title>
+                </v-flex>
 
-            <v-flex offset-xs1 v-if="f.inputtype == 'title'" >
-              <p-title            
-                v-bind.sync="f"
-                v-on:input-title="f.title=$event"
-                v-on:input-subtitle="f.subtitle=$event"
-                v-on:input-language="f.language=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-                v-on:up="sortFieldUp(s.fields, f)"
-                v-on:down="sortFieldDown(s.fields, f)"
-              ></p-title>
-            </v-flex>
+                <v-flex offset-xs1 xs4 v-else-if="f.inputtype == 'select'" >
+                  <p-select 
+                    v-bind.sync="f" 
+                    v-on:input="f.value=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-select>        
+                </v-flex>
 
-            <v-flex offset-xs1 xs4 v-else-if="f.inputtype == 'select'" >
-              <p-select 
-                v-bind.sync="f" 
-                v-on:input="f.value=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-              ></p-select>        
-            </v-flex>
+                <v-flex offset-xs1 v-else-if="f.inputtype == 'entity'" >
+                  <p-entity
+                    v-bind.sync="f"
+                    v-on:input-firstname="f.firstname=$event"
+                    v-on:input-lastname="f.lastname=$event"
+                    v-on:input-role="f.role=$event"
+                    v-on:input-date="f.date=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                    v-on:up="sortFieldUp(s.fields, f)"
+                    v-on:down="sortFieldDown(s.fields, f)"
+                  ></p-entity>
+                </v-flex>
 
-            <v-flex offset-xs1 v-else-if="f.inputtype == 'entity'" >
-              <p-entity
-                v-bind.sync="f"
-                v-on:input-firstname="f.firstname=$event"
-                v-on:input-lastname="f.lastname=$event"
-                v-on:input-role="f.role=$event"
-                v-on:input-date="f.date=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-                v-on:up="sortFieldUp(s.fields, f)"
-                v-on:down="sortFieldDown(s.fields, f)"
-              ></p-entity>
-            </v-flex>
+                <v-flex offset-xs1 v-else-if="f.inputtype == 'gbv-suggest-getty'" >
+                  <p-gbv-suggest-getty
+                    v-bind.sync="f" 
+                    v-on:input="f.value=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-gbv-suggest-getty>        
+                </v-flex>
 
-            <v-flex offset-xs1 v-else-if="f.inputtype == 'gbv-suggest-getty'" >
-              <p-gbv-suggest-getty
-                v-bind.sync="f" 
-                v-on:input="f.value=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-              ></p-gbv-suggest-getty>        
-            </v-flex>
+                <v-flex offset-xs1 v-else-if="f.inputtype == 'dimensions'" >
+                  <p-dimensions
+                    v-bind.sync="f" 
+                    v-on:input-source="f.source=$event"
+                    v-on:input-unit="f.unit=$event"
+                    v-on:input-length="f.length=$event"
+                    v-on:input-height="f.height=$event"
+                    v-on:input-width="f.width=$event"
+                    v-on:input-circumference="f.circumference=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-dimensions>        
+                </v-flex>
 
-            <v-flex offset-xs1 v-else-if="f.inputtype == 'dimensions'" >
-              <p-dimensions
-                v-bind.sync="f" 
-                v-on:input-source="f.source=$event"
-                v-on:input-unit="f.unit=$event"
-                v-on:input-length="f.length=$event"
-                v-on:input-height="f.height=$event"
-                v-on:input-width="f.width=$event"
-                v-on:input-circumference="f.circumference=$event"
-                v-on:add="addField(s.fields, f)"
-                v-on:remove="removeField(s.fields, f)"
-              ></p-dimensions>        
-            </v-flex>
+                <v-flex offset-xs1 v-else-if="f.inputtype == 'file'" >
+                  <input type="file" @input="f.value = $event.target.files[0]">
+                </v-flex>
 
-            <v-flex offset-xs1 v-else-if="f.inputtype == 'file'" >
-              <input type="file" @input="f.value = $event.target.files[0]">
-            </v-flex>
+              </v-layout>
+            </v-card-text>
+          </v-card>
 
-          </v-layout>
         </v-layout>
 
-        <v-layout row wrap>
-          <v-flex offset-xs10>
-            <v-btn raised >Submit</v-btn>
-          </v-flex>
+        <v-layout row wrap class="ma-3">
+          <v-spacer></v-spacer>
+          <v-btn raised color="primary lighten-2">Submit</v-btn>
         </v-layout>
+  
       </v-tab-item>
       <v-tab-item class="ma-4">
         <vue-json-pretty :data="jsonld" ref="prettyprint"></vue-json-pretty>
       </v-tab-item>
-    </v-tabs>
+    </v-tabs-items>
 
   </v-container>
  
@@ -501,7 +519,7 @@ export default {
                 id: 39,
                 label: 'Format',
                 predicate: 'dce:format',
-                value: '',
+                value: 'image/tiff',
                 inputtype: 'select',
                 vocabulary: 'mime-types'
               }
@@ -767,8 +785,14 @@ export default {
 }
 </script>
 
+<style>
+.ksa-submit .v-label {
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+</style>
+
 <style scoped>
-.btn {
+.v-btn {
   margin: 0;
 }
 </style>

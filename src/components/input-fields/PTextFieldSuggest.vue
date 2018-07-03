@@ -171,7 +171,7 @@
   z-index: 999;
   margin-top: 2px;
 }
-.btn {
+.v-btn {
   margin: 0;
 }
 </style>
