@@ -6,6 +6,7 @@
         :label="'Source'"
         :items="vocabularies['getty-aat-photo'].terms" 
         :value="source"
+        box
       ></v-select>                 
     </v-flex>
     <v-flex xs2>
@@ -14,6 +15,7 @@
         :label="'Unit'"
         :items="vocabularies['un-cefact'].terms" 
         :value="unit"
+        box
       ></v-select>                 
     </v-flex>
     <v-flex xs2>
@@ -21,6 +23,7 @@
         :value="width" 
         v-on:input="$emit('input-width', $event)" 
         :label="'Width'"
+        box
       ></v-text-field>
     </v-flex>
     <v-flex xs2>
@@ -28,12 +31,13 @@
         :value="height" 
         v-on:input="$emit('input-height', $event)" 
         :label="'Height'"
+        box
       ></v-text-field>
     </v-flex>    
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
-          <v-flex class="pt-4">
+          <v-flex>
             <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>

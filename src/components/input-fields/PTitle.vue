@@ -5,6 +5,7 @@
         :value="title"
         :label="'Title'"
         v-on:input="$emit('input-title', $event)"
+        box
       ></v-text-field>
     </v-flex>
     <v-flex xs4>
@@ -12,6 +13,7 @@
         :value="subtitle"
         :label="'Subtitle'"
         v-on:input="$emit('input-subtitle', $event)"
+        box
       ></v-text-field>
     </v-flex>
     <v-flex xs2 v-if="multilingual">
@@ -22,12 +24,13 @@
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 
         :value="language"
+        box
       ></v-select>                      
     </v-flex>
     <v-flex xs2>
       <v-container fill-height>
         <v-layout row>
-          <v-flex class="pt-4">
+          <v-flex>
             <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>

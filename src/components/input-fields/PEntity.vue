@@ -5,6 +5,7 @@
         :value="firstname"
         :label="'Firstname'"
         v-on:input="$emit('input-firstname', $event)"
+        box
       ></v-text-field>
     </v-flex>
     <v-flex xs2>
@@ -12,6 +13,7 @@
         :value="lastname"
         :label="'Lastname'"
         v-on:input="$emit('input-lastname', $event)"
+        box
       ></v-text-field>
     </v-flex>
     <v-flex xs2>
@@ -20,7 +22,8 @@
         v-on:input="$emit('input-role', $event)" 
         :label="'Role'" 
         :items="vocabularies['https://phaidra.org/vocabulary/roles'].terms" 
-        :value="role"        
+        :value="role"
+        box
       ></v-select>                      
     </v-flex>
     <v-flex xs2 v-if="showdate">
@@ -33,12 +36,14 @@
         offset-y
         full-width
         min-width="290px"
+        box
       >
         <v-text-field
           slot="activator"
           v-model="selectedDate"
           :label="'Date'"
           append-icon="event"
+          box
         ></v-text-field>
         <v-date-picker v-model="selectedDate" :value="date" v-on:input="$emit('input-date', $event)" :reactive="true"></v-date-picker>
       </v-menu>
@@ -46,7 +51,7 @@
     <v-flex xs2>
       <v-container fill-height>
         <v-layout row>
-          <v-flex class="pt-4">
+          <v-flex>
             <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>

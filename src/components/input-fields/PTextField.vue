@@ -1,14 +1,22 @@
 <template>
   <v-layout row>
     <v-flex xs8>
-      <v-text-field         
+      <v-text-field v-if="!multiline"         
         :value="value" 
         v-on:input="$emit('input', $event)" 
         :label="label" 
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
-        :multi-line="multiline"
+        box
       ></v-text-field>
+      <v-textarea v-if="multiline"         
+        :value="value" 
+        v-on:input="$emit('input', $event)" 
+        :label="label" 
+        :required="required"
+        :rules="required ? [ v => !!v || 'Required'] : []"
+        box
+      ></v-textarea>
     </v-flex>
     <v-flex xs2 v-if="multilingual">
       <v-select 
@@ -18,12 +26,13 @@
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 
         :value="language"
+        box
       ></v-select>                      
     </v-flex>
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
-          <v-flex class="pt-4">
+          <v-flex>
             <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>

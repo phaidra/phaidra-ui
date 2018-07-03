@@ -1,30 +1,20 @@
 <template>
   <v-layout row>
     <v-flex xs4>
-      <v-select
-        :value="value" 
-        :loading="loading"
-        :items="items"
-        :required="required"
-        :rules="required ? [() => select.length > 0 || 'Required'] : []"
-        :search-input.sync="search"
+      <v-autocomplete
+        v-model="model"
         v-on:input="$emit('input', $event)"
-        :label="label" 
-        autocomplete
+        :items="items"
+        :loading="loading"
+        :search-input.sync="search"
         cache-items
-      >
-        <template slot="item" slot-scope="data">
-          <template v-if="typeof data.item !== 'object'">
-            <v-list-tile-content v-text="data.item"></v-list-tile-content>
-          </template>
-          <template v-else>
-            <v-list-tile-content>
-              <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
-              <v-list-tile-sub-title v-html="data.item.value"></v-list-tile-sub-title>
-            </v-list-tile-content>
-          </template>
-        </template>
-      </v-select>
+        hide-no-data
+        hide-selected
+        item-text="text"
+        item-value="value"
+        :label="label"
+        box
+      ></v-autocomplete>
     </v-flex>
     <v-flex xs4>
       <v-text-field :value="prefLabel" :hint="value" disabled persistent-hint></v-text-field>
@@ -32,7 +22,7 @@
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
-          <v-flex class="pt-4">
+          <v-flex>
             <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>
@@ -87,10 +77,10 @@ export default {
   },
   data () {
     return {
-      loading: false,
       items: [],
+      loading: false,
+      model: null,
       search: null,
-      select: [],
       debounceTask: undefined,
       prefLabel: ''
     }
@@ -161,8 +151,8 @@ export default {
       })
       .catch(function (error) {
         console.log(error)
-        self.loading = false
       })
+      .finally(() => (self.loading = false))
     }
   }
 }

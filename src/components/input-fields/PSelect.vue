@@ -1,21 +1,25 @@
 <template>
   <v-layout row>
     <v-flex xs8>
-      <v-select 
-        :value="value" 
-        v-on:input="$emit('input', $event)" 
-        :label="label" 
+      <v-autocomplete
+        :value="value"
         :required="required"
+        v-on:input="$emit('input', $event)"
         :rules="required ? [ v => !!v || 'Required'] : []"
-        :loading="loading"
         :items="vocabularies[vocabulary].terms"
-        autocomplete
-      ></v-select>
+        :loading="loading"
+        hide-no-data
+        hide-selected
+        item-text="text"
+        item-value="value"
+        :label="label"
+        box
+      ></v-autocomplete>
     </v-flex>
     <v-flex xs4 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
-          <v-flex class="pt-4">
+          <v-flex>
             <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>

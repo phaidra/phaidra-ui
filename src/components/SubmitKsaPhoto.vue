@@ -297,7 +297,7 @@ export default {
               {
                 id: 12,
                 predicate: 'dcterms:provenance',
-                label: 'Provenience',
+                label: 'Provenance',
                 value: '',
                 inputtype: 'text-field',
                 multiline: true,
@@ -326,23 +326,12 @@ export default {
             id: 'contextual',
             fields: [
               {
-                id: 15,
-                predicate: 'dce:coverage',
-                label: 'Ort',
+                id: 27,
+                label: 'Condition',
+                predicate: 'bf:note',
+                bfnotetype: 'condition',
                 value: '',
-                inputtype: 'gbv-suggest-getty',
-                voc: 'tgn'
-              },
-              {
-                id: 19,
-                predicate: 'vra-measurements',
-                label: 'Dimensions',
-                source: 'http://vocab.getty.edu/aat/300162056',
-                unit: 'CMT',
-                height: '',
-                width: '',
-                inputtype: 'dimensions',
-                multiplicable: true
+                inputtype: 'text-field'
               },
               {
                 id: 21,
@@ -354,13 +343,15 @@ export default {
                 vocabulary: 'original-copy'
               },
               {
-                id: 22,
-                label: 'Condition',
-                predicate: 'bf:note',
-                bfnotetype: 'condition',
-                value: '',
-                inputtype: 'select',
-                vocabulary: 'condition'
+                id: 19,
+                predicate: 'vra-measurements',
+                label: 'Dimensions',
+                source: 'http://vocab.getty.edu/aat/300162056',
+                unit: 'CMT',
+                height: '',
+                width: '',
+                inputtype: 'dimensions',
+                multiplicable: true
               },
               {
                 id: 23,
@@ -380,6 +371,14 @@ export default {
                 value: '',
                 inputtype: 'select',
                 vocabulary: 'stamp'
+              },
+              {
+                id: 15,
+                predicate: 'dce:coverage',
+                label: 'Ort',
+                value: '',
+                inputtype: 'gbv-suggest-getty',
+                voc: 'tgn'
               }
             ]
           },
@@ -388,37 +387,26 @@ export default {
             id: 'technical',
             fields: [
               {
-                id: 25,
-                label: 'Technical information',
-                predicate: 'dcterms:language',
-                value: '',
-                inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
-              },
-              {
-                id: 26,
-                predicate: 'dcterms:etnographicterm',
-                label: 'Technical description',
-                value: '',
-                inputtype: 'text-field'
-              },
-              {
-                id: 27,
-                predicate: 'dcterms:etnographicterm',
-                label: 'Material',
-                value: '',
-                inputtype: 'text-field'
-              },
-              {
                 id: 28,
-                predicate: 'dcterms:etnographicterm',
-                label: 'Digitalisierungsinformation',
+                predicate: 'opaque:digitalOrigin',
+                label: 'Digitization',
+                value: 'reformatted digital',
+                inputtype: 'select',
+                vocabulary: 'digital-origin',
+                multilingual: true
+              },
+              {
+                id: 288,
+                label: 'Digitization note',
+                predicate: 'bf:note',
+                bfnotetype: 'digitization',
                 value: '',
-                inputtype: 'text-field'
+                inputtype: 'text-field',
+                multilingual: true
               },
               {
                 id: 29,
-                label: 'Digitaliser',
+                label: 'Digitiser',
                 predicate: 'role',
                 firstname: '',
                 lastname: '',
@@ -427,7 +415,7 @@ export default {
                 disablerole: true,
                 showdate: false,
                 inputtype: 'entity',
-                ordergroup: 'entity-digitaliser'
+                ordergroup: 'entity-digitiser'
               }
             ]
           },
@@ -441,12 +429,12 @@ export default {
                 predicate: 'edm:rights',
                 value: '',
                 inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
+                vocabulary: 'licenses'
               },
               {
                 id: 31,
-                predicate: 'dcterms:description',
-                label: 'Rechte/Schutz',
+                predicate: 'dce:rights',
+                label: 'Rights statement',
                 value: '',
                 inputtype: 'text-field',
                 multiline: true,
@@ -469,29 +457,20 @@ export default {
               },
               {
                 id: 34,
-                predicate: 'dcterms:title',
+                predicate: 'dce:title',
                 label: 'Title',
-                value: '',
-                inputtype: 'text-field',
+                title: '',
+                subtitle: '',
+                language: '',
+                inputtype: 'title',
                 required: true,
                 ordergroup: 'title',
                 multiplicable: true,
-                multilingual: true,
-                language: ''
-              },
-              {
-                id: 35,
-                predicate: 'dcterms:title',
-                label: 'Subtitle',
-                value: '',
-                inputtype: 'text-field',
-                multiplicable: true,
-                multilingual: true,
-                language: ''
+                multilingual: true
               },
               {
                 id: 36,
-                predicate: 'dcterms:description',
+                predicate: 'bf:note',
                 label: 'Description',
                 value: '',
                 inputtype: 'text-field',
@@ -502,7 +481,8 @@ export default {
               },
               {
                 id: 37,
-                predicate: 'dcterms:etnographicterm',
+                predicate: 'bf:note',
+                bfnotetype: 'signature',
                 label: 'Signature',
                 value: '',
                 inputtype: 'text-field',
@@ -510,8 +490,9 @@ export default {
               },
               {
                 id: 38,
-                predicate: 'dcterms:etnographicterm',
-                label: 'File name',
+                predicate: 'bf:note',
+                bfnotetype: 'filename',
+                label: 'Filename',
                 value: '',
                 inputtype: 'text-field',
                 multiplicable: true
@@ -519,10 +500,10 @@ export default {
               {
                 id: 39,
                 label: 'Format',
-                predicate: 'dcterms:language',
+                predicate: 'dce:format',
                 value: '',
                 inputtype: 'select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2'
+                vocabulary: 'mime-types'
               }
             ]
           }
@@ -597,6 +578,39 @@ export default {
                   this.jsonld['dce:subject'] = []
                 }
                 this.jsonld['dce:subject'].push({
+                  '@value': f.value,
+                  '@language': f.language
+                })
+              }
+              break
+
+            case 'dce:rights':
+              if (f.value !== '') {
+                if (!this.jsonld['dce:rights']) {
+                  this.jsonld['dce:rights'] = []
+                }
+                this.jsonld['dce:rights'].push({
+                  '@value': f.value,
+                  '@language': f.language
+                })
+              }
+              break
+
+            case 'dce:format':
+              if (f.value !== '') {
+                if (!this.jsonld['dce:format']) {
+                  this.jsonld['dce:format'] = []
+                }
+                this.jsonld['dce:format'].push(f.value)
+              }
+              break
+
+            case 'opaque:digitalOrigin':
+              if (f.value !== '') {
+                if (!this.jsonld['opaque:digitalOrigin']) {
+                  this.jsonld['opaque:digitalOrigin'] = []
+                }
+                this.jsonld['opaque:digitalOrigin'].push({
                   '@value': f.value,
                   '@language': f.language
                 })
@@ -747,14 +761,7 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
-      vm.$store.dispatch('loadLangStatic')
-      vm.$store.dispatch('loadIso6392Static')
-      vm.$store.dispatch('loadRolesStatic')
-      vm.$store.dispatch('loadGettyAatPhotoStatic')
-      vm.$store.dispatch('loadUnCefactStatic')
-      vm.$store.dispatch('loadConditionStatic')
-      vm.$store.dispatch('loadOriginalCopyStatic')
-      vm.$store.dispatch('loadStampStatic')
+      vm.$store.dispatch('loadRoles')
     })
   }
 }
