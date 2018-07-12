@@ -108,7 +108,7 @@
 
         <v-flex xs12 md8 offset-md2 class="content">
 
-          <v-alert v-for="alert in alerts" :color="alert.type" :value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
+          <v-alert v-for="alert in alerts" :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
             <v-layout>{{$t(alert.msg)}}<v-spacer></v-spacer><icon name="material-navigation-close" color="grey lighten-1" @click.native="dismiss(alert)"></icon></v-layout>
           </v-alert>
             <transition name="fade" mode="out-in">

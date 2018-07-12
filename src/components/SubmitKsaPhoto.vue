@@ -134,12 +134,12 @@
 
         <v-layout row wrap class="ma-3">
           <v-spacer></v-spacer>
-          <v-btn raised color="primary lighten-2">Submit</v-btn>
+          <v-btn raised color="primary lighten-2" @click="submit()">Submit</v-btn>
         </v-layout>
   
       </v-tab-item>
       <v-tab-item class="ma-4">
-        <vue-json-pretty :data="jsonld" ref="prettyprint"></vue-json-pretty>
+        <vue-json-pretty :data="metadata" ref="prettyprint"></vue-json-pretty>
       </v-tab-item>
     </v-tabs-items>
 
@@ -148,6 +148,7 @@
 </template>
 
 <script>
+import base64 from 'base-64'
 import VueJsonPretty from 'vue-json-pretty'
 import arrays from '@/utils/arrays'
 import PTextField from '@/components/input-fields/PTextField'
@@ -178,13 +179,14 @@ export default {
         dce: 'http://purl.org/dc/elements/1.1/',
         rdfs: 'https://www.w3.org/TR/rdf-schema/',
         dcterms: 'http://purl.org/dc/terms/',
-        skos: 'http://www.w3.org/2004/02/skos/core#',
         role: 'https://phaidra.org/vocabulary/roles',
         foaf: 'http://xmlns.com/foaf/spec/#',
         edm: 'http://www.europeana.eu/schemas/edm/',
-        schema: 'http://schema.org/'
+        schema: 'http://schema.org/',
+        vra: 'http://purl.org/vra/'
       },
-      jsonld: {},
+      jsonlds: {},
+      metadata: {},
       form: {
         sections: [
           {
@@ -530,8 +532,45 @@ export default {
     }
   },
   methods: {
+    submit: function () {
+      var self = this
+      this.generateJson()
+      var formData = new FormData()
+      formData.append('metadata', JSON.stringify(this.metadata))
+      for (var i = 0; i < this.form.sections.length; i++) {
+        var s = this.form.sections[i]
+        if (s.type === 'file') {
+          for (var j = 0; j < s.fields.length; j++) {
+            if (s.fields[j].inputtype === 'file') {
+              if (s.fields[j].value !== '') {
+                formData.append('member_' + s.id, s.fields[j].value)
+              }
+            }
+          }
+        }
+      }
+      fetch(self.$store.state.settings.instance.api + '/container/create', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Authorization': 'Basic ' + base64.encode(self.$store.state.settings.instance.adminuser + ':' + self.$store.state.settings.instance.adminpass),
+          'X-XSRF-TOKEN': this.$store.state.user.token
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(function (json) {
+        if (json.alerts && json.alerts.length > 0) {
+          self.$store.commit('setAlerts', json.alerts)
+        }
+      })
+      .catch(function (error) {
+        self.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+        console.error('Error:', error)
+      })
+    },
     generateJson: function () {
-      this.jsonld = {
+      this.jsonlds['container'] = {
         '@context': this.jsonldcontext
       }
 
@@ -542,132 +581,151 @@ export default {
 
       for (var i = 0; i < this.form.sections.length; i++) {
         var s = this.form.sections[i]
+        var jsonldid = 'container'
+        if (s.type === 'file') {
+          jsonldid = 'member_' + s.id
+          this.jsonlds[jsonldid] = {
+            '@context': this.jsonldcontext
+          }
+        }
         for (var j = 0; j < s.fields.length; j++) {
           var f = s.fields[j]
-          var def
 
           switch (f.predicate) {
 
             case 'dce:title':
-              def = {
-                '@type': 'bf:Title',
-                'bf:mainTitle': {
-                  '@value': f.title,
-                  '@language': f.language
+              if (f.title !== '') {
+                var titledef = {
+                  '@type': 'bf:Title',
+                  'bf:mainTitle': {
+                    '@value': f.title
+                  }
                 }
-              }
-              if (f.subtitle !== '') {
-                def['bf:subtitle'] = {
-                  '@value': f.subtitle,
-                  '@language': f.language
+                if (f.language !== '') {
+                  titledef['bf:mainTitle']['@language'] = f.language
                 }
+                if (f.subtitle !== '') {
+                  titledef['bf:subtitle'] = {
+                    '@value': f.subtitle
+                  }
+                  if (f.language !== '') {
+                    titledef['bf:subtitle']['@language'] = f.language
+                  }
+                }
+                if (!this.jsonlds[jsonldid]['dce:title']) {
+                  this.jsonlds[jsonldid]['dce:title'] = []
+                }
+                this.jsonlds[jsonldid]['dce:title'].push(titledef)
               }
-              if (!this.jsonld['dce.title']) {
-                this.jsonld['dce.title'] = []
-              }
-              this.jsonld['dce.title'].push(def)
               break
 
             case 'bf:note':
               if (f.value !== '') {
-                def = {
-                  '@type': 'bf:Note',
-                  'rdfs:label': f.value
-                }
-                if (f.language && (f.language !== '')) {
-                  def['rdfs:label'] = {
-                    '@value': f.value,
-                    '@language': f.language
+                var notedef = {
+                  'rdfs:label': {
+                    '@value': f.value
                   }
                 }
+                if (f.language && (f.language !== '')) {
+                  notedef['rdfs:label']['@language'] = f.language
+                }
                 if (f.bfnotetype && (f.bfnotetype !== '')) {
-                  def['bf:noteType'] = f.bfnotetype
+                  notedef['bf:noteType'] = f.bfnotetype
                 }
-                if (!this.jsonld['bf:note']) {
-                  this.jsonld['bf:note'] = []
+                if (!this.jsonlds[jsonldid]['bf:note']) {
+                  this.jsonlds[jsonldid]['bf:note'] = []
                 }
-                this.jsonld['bf:note'].push(def)
+                this.jsonlds[jsonldid]['bf:note'].push(notedef)
               }
               break
 
             case 'dce:subject':
               if (f.value !== '') {
-                if (!this.jsonld['dce:subject']) {
-                  this.jsonld['dce:subject'] = []
+                var subdef = {
+                  '@value': f.value
                 }
-                this.jsonld['dce:subject'].push({
-                  '@value': f.value,
-                  '@language': f.language
-                })
+                if (f.language && (f.language !== '')) {
+                  subdef['@language'] = f.language
+                }
+                if (!this.jsonlds[jsonldid]['dce:subject']) {
+                  this.jsonlds[jsonldid]['dce:subject'] = []
+                }
+                this.jsonlds[jsonldid]['dce:subject'].push(subdef)
               }
               break
 
             case 'dce:rights':
               if (f.value !== '') {
-                if (!this.jsonld['dce:rights']) {
-                  this.jsonld['dce:rights'] = []
+                var rdef = {
+                  '@value': f.value
                 }
-                this.jsonld['dce:rights'].push({
-                  '@value': f.value,
-                  '@language': f.language
-                })
+                if (f.language && (f.language !== '')) {
+                  rdef['@language'] = f.language
+                }
+                if (!this.jsonlds[jsonldid]['dce:rights']) {
+                  this.jsonlds[jsonldid]['dce:rights'] = []
+                }
+                this.jsonlds[jsonldid]['dce:rights'].push(rdef)
               }
               break
 
             case 'dce:format':
               if (f.value !== '') {
-                if (!this.jsonld['dce:format']) {
-                  this.jsonld['dce:format'] = []
+                if (!this.jsonlds[jsonldid]['dce:format']) {
+                  this.jsonlds[jsonldid]['dce:format'] = []
                 }
-                this.jsonld['dce:format'].push(f.value)
+                this.jsonlds[jsonldid]['dce:format'].push(f.value)
               }
               break
 
             case 'opaque:digitalOrigin':
               if (f.value !== '') {
-                if (!this.jsonld['opaque:digitalOrigin']) {
-                  this.jsonld['opaque:digitalOrigin'] = []
+                var dodef = {
+                  '@value': f.value
                 }
-                this.jsonld['opaque:digitalOrigin'].push({
-                  '@value': f.value,
-                  '@language': f.language
-                })
+                if (f.language && (f.language !== '')) {
+                  dodef['@language'] = f.language
+                }
+                if (!this.jsonlds[jsonldid]['opaque:digitalOrigin']) {
+                  this.jsonlds[jsonldid]['opaque:digitalOrigin'] = []
+                }
+                this.jsonlds[jsonldid]['opaque:digitalOrigin'].push(dodef)
               }
               break
 
             case 'role':
-              if (f.role && (f.role !== '')) {
-                def = {
+              if (f.role && (f.role !== '') && (f.firstname !== '' || f.lastname !== '')) {
+                var roledef = {
                   '@type': 'foaf:Person',
                   'foaf:firstName': f.firstname,
                   'foaf:surname': f.lastname
                 }
                 if (f.date && (f.date !== '')) {
-                  def['dcterms:date'] = f.date
+                  roledef['dcterms:date'] = f.date
                 }
-                if (!this.jsonld['role:' + f.role]) {
-                  this.jsonld['role:' + f.role] = []
+                if (!this.jsonlds[jsonldid]['role:' + f.role]) {
+                  this.jsonlds[jsonldid]['role:' + f.role] = []
                 }
-                this.jsonld['role:' + f.role].push(def)
+                this.jsonlds[jsonldid]['role:' + f.role].push(roledef)
               }
               break
 
             case 'dcterms:provenance':
               if (f.value !== '') {
-                def = {
+                var provdef = {
                   '@type': 'dcterms:ProvenanceStatement',
-                  'rdfs:label': f.value
-                }
-                if (f.language && (f.language !== '')) {
-                  def['rdfs:label'] = {
+                  'rdfs:label': {
                     '@value': f.value,
                     '@language': f.language
                   }
                 }
-                if (!this.jsonld['dctems:provenance']) {
-                  this.jsonld['dctems:provenance'] = []
+                if (f.language && (f.language !== '')) {
+                  provdef['rdfs:label']['@language'] = f.language
                 }
-                this.jsonld['dctems:provenance'].push(def)
+                if (!this.jsonlds[jsonldid]['dctems:provenance']) {
+                  this.jsonlds[jsonldid]['dctems:provenance'] = []
+                }
+                this.jsonlds[jsonldid]['dctems:provenance'].push(provdef)
               }
               break
 
@@ -693,9 +751,11 @@ export default {
                 vraWork['vra:hasInscription'] = {
                   '@type': 'vra:Inscription',
                   'vra:text': {
-                    '@value': f.value,
-                    '@language': f.language
+                    '@value': f.value
                   }
+                }
+                if (f.language && (f.language !== '')) {
+                  vraWork['vra:text']['@language'] = f.language
                 }
                 addVraWork = true
               }
@@ -704,18 +764,19 @@ export default {
             default:
               if (f.predicate && (f.predicate !== '')) {
                 if (f.value && (f.value !== '')) {
-                  this.jsonld[f.predicate] = f.value
+                  this.jsonlds[jsonldid][f.predicate] = f.value
                 }
               }
           }
         }
       }
       if (addVraWork) {
-        if (!this.jsonld['vra:imageOf']) {
-          this.jsonld['vra:imageOf'] = []
+        if (!this.jsonlds[jsonldid]['vra:imageOf']) {
+          this.jsonlds[jsonldid]['vra:imageOf'] = []
         }
-        this.jsonld['vra:imageOf'].push(vraWork)
+        this.jsonlds[jsonldid]['vra:imageOf'].push(vraWork)
       }
+      this.metadata = { metadata: { 'json-ld': this.jsonlds } }
       this.$refs.prettyprint.$forceUpdate()
     },
     addField: function (arr, f) {
@@ -747,34 +808,19 @@ export default {
     },
     addSection: function (s) {
       var ns = arrays.duplicate(this.form.sections, s)
+      ns.id = (new Date()).getTime()
       for (var i = 0; i < ns.fields.length; i++) {
-        ns.fields[i].id = (new Date()).getTime()
+        var id = (new Date()).getTime()
+        if (i > 0) {
+          id = ns.fields[i - 1].id + 1
+        }
+        ns.fields[i].id = id
         ns.fields[i].value = ''
         ns.fields[i].language = ''
       }
     },
     removeSection: function (s) {
       arrays.remove(this.form.sections, s)
-    },
-    submit: function () {
-      var data = new FormData()
-
-      for (var i = 0; i < this.form.sections.length; i++) {
-        var s = this.form.sections[i]
-        for (var j = 0; j < s.fields.length; j++) {
-          var f = s.fields[j]
-          if (f.type === 'file') {
-            data.append(s.id + '_file', f.value)
-          }
-        }
-      }
-
-      data.append('metadata', this.form)
-
-      fetch(self.$store.state.settings.instance.api + '/submit', {
-        method: 'POST',
-        body: data
-      })
     }
   },
   beforeRouteEnter: function (to, from, next) {

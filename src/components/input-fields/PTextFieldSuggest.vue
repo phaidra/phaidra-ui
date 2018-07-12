@@ -4,6 +4,7 @@
       <v-combobox
         v-model="model"
         v-on:input="$emit('input', $event)"
+        v-on:change="$emit('input', $event)"
         :items="items"
         :loading="loading"
         :search-input.sync="search"
