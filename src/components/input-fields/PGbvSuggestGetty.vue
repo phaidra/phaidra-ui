@@ -17,7 +17,7 @@
       ></v-autocomplete>
     </v-flex>
     <v-flex xs4>
-      <v-text-field :value="prefLabel" :hint="value" disabled persistent-hint></v-text-field>
+      <v-text-field :value="name" :hint="value" disabled persistent-hint></v-text-field>
     </v-flex>
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
@@ -82,7 +82,9 @@ export default {
       model: null,
       search: null,
       debounceTask: undefined,
-      prefLabel: ''
+      name: '',
+      latitude: '',
+      longitude: ''
     }
   },
   methods: {
@@ -107,7 +109,10 @@ export default {
         })
         .then(function (json) {
           self.loading = false
-          self.prefLabel = json.term
+          self.name = json.term
+          self.latitude = json.latitude
+          self.longitude = json.longitude
+          self.$emit('resolve', { name: self.name, latitude: self.latitude, longitude: self.longitude })
         })
         .catch(function (error) {
           console.log(error)

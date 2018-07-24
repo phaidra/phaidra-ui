@@ -103,6 +103,7 @@
                   <p-gbv-suggest-getty
                     v-bind.sync="f" 
                     v-on:input="f.value=$event"
+                    v-on:resolve="updatePlace(f, $event)"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                   ></p-gbv-suggest-getty>        
@@ -393,7 +394,7 @@ export default {
               },
               {
                 id: 15,
-                predicate: 'dce:coverage',
+                predicate: 'dcterms:spatial',
                 label: 'Ort',
                 value: '',
                 inputtype: 'gbv-suggest-getty',
@@ -641,15 +642,39 @@ export default {
             case 'dce:subject':
               if (f.value !== '') {
                 var subdef = {
-                  '@value': f.value
+                  '@type': 'skos:Concept',
+                  'skos:prefLabel': {
+                    '@value': f.value
+                  }
                 }
                 if (f.language && (f.language !== '')) {
-                  subdef['@language'] = f.language
+                  subdef['skos:prefLabel']['@language'] = f.language
                 }
                 if (!this.jsonlds[jsonldid]['dce:subject']) {
                   this.jsonlds[jsonldid]['dce:subject'] = []
                 }
                 this.jsonlds[jsonldid]['dce:subject'].push(subdef)
+              }
+              break
+
+            case 'dcterms:spatial':
+              if (f.value !== '') {
+                var spadef = {
+                  '@type': 'schema:Place',
+                  'schema:name': {
+                    '@value': f.name
+                  },
+                  'schema:geo': {
+                    '@type': 'schema:GeoCoordinates',
+                    'latitude': f.latitude,
+                    'longitude': f.longitude
+                  },
+                  'skos:exactMatch': f.value
+                }
+                if (!this.jsonlds[jsonldid]['dcterms:spatial']) {
+                  this.jsonlds[jsonldid]['dcterms:spatial'] = []
+                }
+                this.jsonlds[jsonldid]['dcterms:spatial'].push(spadef)
               }
               break
 
@@ -824,6 +849,11 @@ export default {
     },
     removeSection: function (s) {
       arrays.remove(this.form.sections, s)
+    },
+    updatePlace: function (f, event) {
+      f.name = event.name
+      f.latitude = event.latitude
+      f.longitude = event.longitude
     }
   },
   beforeRouteEnter: function (to, from, next) {
