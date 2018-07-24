@@ -180,7 +180,6 @@ export default {
         rdfs: 'https://www.w3.org/TR/rdf-schema/',
         dcterms: 'http://purl.org/dc/terms/',
         role: 'https://phaidra.org/vocabulary/roles',
-        foaf: 'http://xmlns.com/foaf/spec/#',
         edm: 'http://www.europeana.eu/schemas/edm/',
         schema: 'http://schema.org/',
         vra: 'http://purl.org/vra/'
@@ -433,7 +432,7 @@ export default {
                 role: 'digitiser',
                 date: '',
                 disablerole: true,
-                showdate: false,
+                showdate: true,
                 inputtype: 'entity',
                 ordergroup: 'entity-digitiser'
               }
@@ -696,9 +695,13 @@ export default {
             case 'role':
               if (f.role && (f.role !== '') && (f.firstname !== '' || f.lastname !== '')) {
                 var roledef = {
-                  '@type': 'foaf:Person',
-                  'foaf:firstName': f.firstname,
-                  'foaf:surname': f.lastname
+                  '@type': 'schema:Person',
+                  'schema:givenName': {
+                    '@value': f.firstname
+                  },
+                  'schema:familyName': {
+                    '@value': f.lastname
+                  }
                 }
                 if (f.date && (f.date !== '')) {
                   roledef['dcterms:date'] = f.date
