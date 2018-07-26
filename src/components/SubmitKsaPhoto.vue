@@ -658,18 +658,22 @@ export default {
               break
 
             case 'dcterms:spatial':
-              if (f.value !== '') {
+              if ((f.prefLabel.length > 0) || (f.coordinates.length > 0)) {
                 var spadef = {
-                  '@type': 'schema:Place',
-                  'schema:name': {
-                    '@value': f.name
-                  },
-                  'schema:geo': {
+                  '@type': 'schema:Place'
+                }
+                if (f.prefLabel) {
+                  spadef['skos:prefLabel'] = f.prefLabel
+                }
+                if (f.path) {
+                  spadef['rdfs:label'] = f.path
+                }
+                if (f.coordinates) {
+                  spadef['schema:geo'] = {
                     '@type': 'schema:GeoCoordinates',
-                    'latitude': f.latitude,
-                    'longitude': f.longitude
-                  },
-                  'skos:exactMatch': f.value
+                    'schema:latitude': f.coordinates['schema:latitude'],
+                    'schema:longitude': f.coordinates['schema:longitude']
+                  }
                 }
                 if (!this.jsonlds[jsonldid]['dcterms:spatial']) {
                   this.jsonlds[jsonldid]['dcterms:spatial'] = []
@@ -714,6 +718,21 @@ export default {
                   this.jsonlds[jsonldid]['opaque:digitalOrigin'] = []
                 }
                 this.jsonlds[jsonldid]['opaque:digitalOrigin'].push(dodef)
+              }
+              break
+
+            case 'schema:temporalCoverage':
+              if (f.value !== '') {
+                var tcdef = {
+                  '@value': f.value
+                }
+                if (f.language && (f.language !== '')) {
+                  tcdef['@language'] = f.language
+                }
+                if (!this.jsonlds[jsonldid]['schema:temporalCoverage']) {
+                  this.jsonlds[jsonldid]['schema:temporalCoverage'] = []
+                }
+                this.jsonlds[jsonldid]['schema:temporalCoverage'].push(tcdef)
               }
               break
 
@@ -792,7 +811,10 @@ export default {
             default:
               if (f.predicate && (f.predicate !== '')) {
                 if (f.value && (f.value !== '')) {
-                  this.jsonlds[jsonldid][f.predicate] = f.value
+                  if (!this.jsonlds[jsonldid][f.predicate]) {
+                    this.jsonlds[jsonldid][f.predicate] = []
+                  }
+                  this.jsonlds[jsonldid][f.predicate].push(f.value)
                 }
               }
           }
@@ -851,9 +873,9 @@ export default {
       arrays.remove(this.form.sections, s)
     },
     updatePlace: function (f, event) {
-      f.name = event.name
-      f.latitude = event.latitude
-      f.longitude = event.longitude
+      f.prefLabel = event.prefLabel
+      f.path = event.path
+      f.coordinates = event.coordinates
     }
   },
   beforeRouteEnter: function (to, from, next) {

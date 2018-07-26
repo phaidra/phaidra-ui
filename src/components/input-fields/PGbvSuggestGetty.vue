@@ -82,9 +82,10 @@ export default {
       model: null,
       search: null,
       debounceTask: undefined,
-      name: '',
-      latitude: '',
-      longitude: ''
+      prefLabel: '',
+      path: '',
+      coordinates: [],
+      name: ''
     }
   },
   methods: {
@@ -109,10 +110,13 @@ export default {
         })
         .then(function (json) {
           self.loading = false
-          self.name = json.term
-          self.latitude = json.latitude
-          self.longitude = json.longitude
-          self.$emit('resolve', { name: self.name, latitude: self.latitude, longitude: self.longitude })
+          self.prefLabel = json[uri]['skos:prefLabel']
+          for (var i = 0; i < self.prefLabel.length; i++) {
+            self.name = self.prefLabel[i]['@value']
+          }
+          self.path = json[uri]['rdfs:label']
+          self.coordinates = json[uri]['schema:GeoCoordinates']
+          self.$emit('resolve', { prefLabel: self.prefLabel, path: self.path, coordinates: self.coordinates })
         })
         .catch(function (error) {
           console.log(error)
