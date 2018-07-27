@@ -574,11 +574,6 @@ export default {
         '@context': this.jsonldcontext
       }
 
-      var vraWork = {
-        '@type': 'vra:Work'
-      }
-      var addVraWork = false
-
       for (var i = 0; i < this.form.sections.length; i++) {
         var s = this.form.sections[i]
         var jsonldid = 'container'
@@ -588,6 +583,10 @@ export default {
             '@context': this.jsonldcontext
           }
         }
+        var vraWork = {
+          '@type': 'vra:Work'
+        }
+        var addVraWork = false
         for (var j = 0; j < s.fields.length; j++) {
           var f = s.fields[j]
 
@@ -658,7 +657,7 @@ export default {
               break
 
             case 'dcterms:spatial':
-              if ((f.prefLabel.length > 0) || (f.coordinates.length > 0)) {
+              if (f.prefLabel && (f.prefLabel.length > 0)) {
                 var spadef = {
                   '@type': 'schema:Place'
                 }
@@ -668,7 +667,7 @@ export default {
                 if (f.path) {
                   spadef['rdfs:label'] = f.path
                 }
-                if (f.coordinates) {
+                if (f.coordinates && (f.coordinates.length > 0)) {
                   spadef['schema:geo'] = {
                     '@type': 'schema:GeoCoordinates',
                     'schema:latitude': f.coordinates['schema:latitude'],
@@ -802,7 +801,7 @@ export default {
                   }
                 }
                 if (f.language && (f.language !== '')) {
-                  vraWork['vra:text']['@language'] = f.language
+                  vraWork['vra:hasInscription']['vra:text']['@language'] = f.language
                 }
                 addVraWork = true
               }
