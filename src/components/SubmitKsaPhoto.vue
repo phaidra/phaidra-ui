@@ -183,7 +183,8 @@ export default {
         role: 'https://phaidra.org/vocabulary/roles',
         edm: 'http://www.europeana.eu/schemas/edm/',
         schema: 'http://schema.org/',
-        vra: 'http://purl.org/vra/'
+        vra: 'http://purl.org/vra/',
+        frapo: 'http://purl.org/cerif/frapo'
       },
       jsonlds: {},
       metadata: {},
@@ -202,7 +203,7 @@ export default {
                 multilingual: true
               },
               {
-                id: 1,
+                id: 101,
                 predicate: 'dce:title',
                 label: 'Title',
                 title: '',
@@ -215,7 +216,7 @@ export default {
                 multilingual: true
               },
               {
-                id: 3,
+                id: 103,
                 predicate: 'bf:note',
                 label: 'Description',
                 value: '',
@@ -226,7 +227,7 @@ export default {
                 language: ''
               },
               {
-                id: 4,
+                id: 104,
                 predicate: 'bf:note',
                 bfnotetype: 'ethnographic',
                 label: 'Sociocult. category',
@@ -236,7 +237,7 @@ export default {
                 multiplicable: true
               },
               {
-                id: 5,
+                id: 105,
                 label: 'Language',
                 predicate: 'dcterms:language',
                 value: '',
@@ -246,7 +247,7 @@ export default {
                 required: true
               },
               {
-                id: 6,
+                id: 106,
                 label: 'Contributions',
                 predicate: 'role',
                 firstname: '',
@@ -259,7 +260,7 @@ export default {
                 ordergroup: 'entity'
               },
               {
-                id: 7,
+                id: 107,
                 predicate: 'bf:note',
                 bfnotetype: 'notice',
                 label: 'Note',
@@ -269,7 +270,7 @@ export default {
                 multilingual: true
               },
               {
-                id: 8,
+                id: 108,
                 predicate: 'dce:subject',
                 label: 'Keyword',
                 value: '',
@@ -280,13 +281,29 @@ export default {
                 multilingual: true
               },
               {
-                id: 9,
+                id: 109,
                 predicate: 'bf:note',
                 bfnotetype: 'signature',
                 label: 'Signature',
                 value: '',
                 inputtype: 'text-field',
                 multiplicable: true
+              },
+              {
+                id: 110,
+                predicate: 'frapo:hasFundingAgency',
+                label: 'Funder',
+                name: '',
+                funderId: '',
+                inputtype: 'text-field'
+              },
+              {
+                id: 111,
+                predicate: 'frapo:isOutputOf',
+                label: 'Project',
+                name: '',
+                projectId: '',
+                inputtype: 'text-field'
               }
             ]
           },
@@ -294,19 +311,6 @@ export default {
             title: 'Provenance',
             id: 'provenance',
             fields: [
-              {
-                id: 10,
-                label: 'Owner',
-                predicate: 'role',
-                firstname: '',
-                lastname: '',
-                role: 'own',
-                date: '',
-                disablerole: true,
-                showdate: false,
-                inputtype: 'entity',
-                ordergroup: 'entity-urheberin'
-              },
               {
                 id: 11,
                 predicate: 'schema:temporalCoverage',
@@ -374,6 +378,28 @@ export default {
                 multiplicable: true
               },
               {
+                id: 41,
+                label: 'Technical info',
+                predicate: 'bf:note',
+                bfnotetype: 'technical-info',
+                value: '',
+                inputtype: 'text-field',
+                multilingual: true,
+                multiplicable: true,
+                language: ''
+              },
+              {
+                id: 42,
+                label: 'Material description',
+                predicate: 'bf:note',
+                bfnotetype: 'material-description',
+                value: '',
+                inputtype: 'text-field',
+                multilingual: true,
+                multiplicable: true,
+                language: ''
+              },
+              {
                 id: 23,
                 predicate: 'vra:hasInscription',
                 label: 'Inscription',
@@ -399,43 +425,16 @@ export default {
                 value: '',
                 inputtype: 'gbv-suggest-getty',
                 voc: 'tgn'
-              }
-            ]
-          },
-          {
-            title: 'Technical Data',
-            id: 'technical',
-            fields: [
-              {
-                id: 28,
-                predicate: 'opaque:digitalOrigin',
-                label: 'Digitization',
-                value: 'reformatted digital',
-                inputtype: 'select',
-                vocabulary: 'digital-origin',
-                multilingual: true
               },
               {
-                id: 288,
-                label: 'Digitization note',
-                predicate: 'bf:note',
-                bfnotetype: 'digitization',
+                id: 155,
+                predicate: 'dcterms:spatial',
+                label: 'Ort einheimisch',
                 value: '',
                 inputtype: 'text-field',
-                multilingual: true
-              },
-              {
-                id: 29,
-                label: 'Digitiser',
-                predicate: 'role',
-                firstname: '',
-                lastname: '',
-                role: 'digitiser',
-                date: '',
-                disablerole: true,
-                showdate: true,
-                inputtype: 'entity',
-                ordergroup: 'entity-digitiser'
+                multilingual: true,
+                multiplicable: true,
+                language: ''
               }
             ]
           },
@@ -524,6 +523,37 @@ export default {
                 value: 'image/tiff',
                 inputtype: 'select',
                 vocabulary: 'mime-types'
+              },
+              {
+                id: 28,
+                predicate: 'opaque:digitalOrigin',
+                label: 'Digitization',
+                value: 'reformatted digital',
+                inputtype: 'select',
+                vocabulary: 'digital-origin',
+                multilingual: true
+              },
+              {
+                id: 288,
+                label: 'Digitization note',
+                predicate: 'bf:note',
+                bfnotetype: 'digitization-note',
+                value: '',
+                inputtype: 'text-field',
+                multilingual: true
+              },
+              {
+                id: 29,
+                label: 'Digitiser',
+                predicate: 'role',
+                firstname: '',
+                lastname: '',
+                role: 'digitiser',
+                date: '',
+                disablerole: true,
+                showdate: true,
+                inputtype: 'entity',
+                ordergroup: 'entity-digitiser'
               }
             ]
           }
@@ -618,6 +648,38 @@ export default {
               }
               break
 
+            case 'frapo:isOutputOf':
+              if ((f.name !== '') || (f.projectId !== '')) {
+                var projectdef = {
+                  '@type': 'foaf:Project'
+                }
+                if (f.name !== '') {
+                  projectdef['rdfs:label'] = [{
+                    '@value': f.name
+                  }]
+                }
+                if (f.projectId !== '') {
+                  projectdef['skos:exactMatch'] = [f.projectId]
+                }
+              }
+              break
+
+            case 'frapo:hasFundingAgency':
+              if ((f.name !== '') || (f.funderId !== '')) {
+                var funderdef = {
+                  '@type': 'frapo:FundingAgency'
+                }
+                if (f.name !== '') {
+                  funderdef['rdfs:label'] = [{
+                    '@value': f.name
+                  }]
+                }
+                if (f.projectId !== '') {
+                  funderdef['skos:exactMatch'] = [f.projectId]
+                }
+              }
+              break
+
             case 'bf:note':
               if (f.value !== '') {
                 var notedef = {
@@ -657,27 +719,47 @@ export default {
               break
 
             case 'dcterms:spatial':
-              if (f.prefLabel && (f.prefLabel.length > 0)) {
-                var spadef = {
-                  '@type': 'schema:Place'
-                }
-                if (f.prefLabel) {
-                  spadef['skos:prefLabel'] = f.prefLabel
-                }
-                if (f.path) {
-                  spadef['rdfs:label'] = f.path
-                }
-                if (f.coordinates && (f.coordinates.length > 0)) {
-                  spadef['schema:geo'] = {
-                    '@type': 'schema:GeoCoordinates',
-                    'schema:latitude': f.coordinates['schema:latitude'],
-                    'schema:longitude': f.coordinates['schema:longitude']
+              if (f.inputtype === 'text-field') {
+                var spaconceptdef = {
+                  '@type': 'skos:Concept',
+                  'skos:prefLabel': {
+                    '@value': f.value
                   }
+                }
+                if (f.language && (f.language !== '')) {
+                  spaconceptdef['skos:prefLabel']['@language'] = f.language
                 }
                 if (!this.jsonlds[jsonldid]['dcterms:spatial']) {
                   this.jsonlds[jsonldid]['dcterms:spatial'] = []
                 }
-                this.jsonlds[jsonldid]['dcterms:spatial'].push(spadef)
+                this.jsonlds[jsonldid]['dcterms:spatial'].push(spaconceptdef)
+              }
+              if (f.inputtype === 'gbv-suggest-getty') {
+                if (f.prefLabel && (f.prefLabel.length > 0)) {
+                  var spadef = {
+                    '@type': 'schema:Place'
+                  }
+                  if (f.value) {
+                    spadef['skos:exactMatch'] = [f.value]
+                  }
+                  if (f.prefLabel) {
+                    spadef['skos:prefLabel'] = f.prefLabel
+                  }
+                  if (f.path) {
+                    spadef['rdfs:label'] = f.path
+                  }
+                  if (f.coordinates) {
+                    spadef['schema:geo'] = {
+                      '@type': 'schema:GeoCoordinates',
+                      'schema:latitude': f.coordinates['schema:latitude'],
+                      'schema:longitude': f.coordinates['schema:longitude']
+                    }
+                  }
+                  if (!this.jsonlds[jsonldid]['dcterms:spatial']) {
+                    this.jsonlds[jsonldid]['dcterms:spatial'] = []
+                  }
+                  this.jsonlds[jsonldid]['dcterms:spatial'].push(spadef)
+                }
               }
               break
 
