@@ -90,6 +90,7 @@
                     v-bind.sync="f"
                     v-on:input-firstname="f.firstname=$event"
                     v-on:input-lastname="f.lastname=$event"
+                    v-on:input-institution="f.institution=$event"
                     v-on:input-role="f.role=$event"
                     v-on:input-date="f.date=$event"
                     v-on:add="addField(s.fields, f)"
@@ -121,6 +122,20 @@
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                   ></p-dimensions>        
+                </v-flex>
+
+                <v-flex offset-xs1 v-else-if="f.inputtype == 'funding'" >
+                  <p-funding
+                    v-bind.sync="f" 
+                    v-on:input-funder-name="f.funderName=$event"
+                    v-on:input-funder-id="f.funderId=$event"
+                    v-on:input-funder-name-language="f.funderNameLanguage=$event"
+                    v-on:input-project-name="f.projectName=$event"
+                    v-on:input-project-id="f.projectId=$event"
+                    v-on:input-project-name-language="f.projectNameLanguage=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-funding>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.inputtype == 'file'" >
@@ -159,6 +174,7 @@ import PEntity from '@/components/input-fields/PEntity'
 import PSelect from '@/components/input-fields/PSelect'
 import PGbvSuggestGetty from '@/components/input-fields/PGbvSuggestGetty'
 import PDimensions from '@/components/input-fields/PDimensions'
+import PFunding from '@/components/input-fields/PFunding'
 
 export default {
   name: 'submit-ksa-photo',
@@ -170,6 +186,7 @@ export default {
     PSelect,
     PGbvSuggestGetty,
     PDimensions,
+    PFunding,
     VueJsonPretty
   },
   data () {
@@ -184,7 +201,8 @@ export default {
         edm: 'http://www.europeana.eu/schemas/edm/',
         schema: 'http://schema.org/',
         vra: 'http://purl.org/vra/',
-        frapo: 'http://purl.org/cerif/frapo'
+        frapo: 'http://purl.org/cerif/frapo',
+        ebucore: 'http://www.ebu.ch/metadata/ontologies/ebucore/ebucore'
       },
       jsonlds: {},
       metadata: {},
@@ -195,7 +213,7 @@ export default {
             id: 'general',
             fields: [
               {
-                id: 0,
+                id: 100,
                 predicate: 'dcterms:type',
                 value: 'http://purl.org/coar/resource_type/c_ecc8',
                 ordergroup: 'title',
@@ -216,7 +234,7 @@ export default {
                 multilingual: true
               },
               {
-                id: 103,
+                id: 102,
                 predicate: 'bf:note',
                 label: 'Description',
                 value: '',
@@ -227,17 +245,17 @@ export default {
                 language: ''
               },
               {
-                id: 104,
+                id: 103,
                 predicate: 'bf:note',
                 bfnotetype: 'ethnographic',
-                label: 'Sociocult. category',
+                label: 'Sociocultural category',
                 value: '',
                 inputtype: 'text-field-suggest',
                 suggester: 'titlesuggester',
                 multiplicable: true
               },
               {
-                id: 105,
+                id: 104,
                 label: 'Language',
                 predicate: 'dcterms:language',
                 value: '',
@@ -247,9 +265,10 @@ export default {
                 required: true
               },
               {
-                id: 106,
+                id: 105,
                 label: 'Contributions',
                 predicate: 'role',
+                type: 'personal',
                 firstname: '',
                 lastname: '',
                 role: '',
@@ -260,9 +279,9 @@ export default {
                 ordergroup: 'entity'
               },
               {
-                id: 107,
+                id: 106,
                 predicate: 'bf:note',
-                bfnotetype: 'notice',
+                bfnotetype: 'note',
                 label: 'Note',
                 value: '',
                 inputtype: 'text-field',
@@ -270,7 +289,7 @@ export default {
                 multilingual: true
               },
               {
-                id: 108,
+                id: 107,
                 predicate: 'dce:subject',
                 label: 'Keyword',
                 value: '',
@@ -281,29 +300,26 @@ export default {
                 multilingual: true
               },
               {
-                id: 109,
+                id: 108,
                 predicate: 'bf:note',
-                bfnotetype: 'signature',
+                bfnotetype: 'callnumber',
                 label: 'Signature',
                 value: '',
                 inputtype: 'text-field',
                 multiplicable: true
               },
               {
-                id: 110,
-                predicate: 'frapo:hasFundingAgency',
-                label: 'Funder',
-                name: '',
-                funderId: '',
-                inputtype: 'text-field'
-              },
-              {
-                id: 111,
-                predicate: 'frapo:isOutputOf',
-                label: 'Project',
-                name: '',
+                id: 109,
+                predicate: 'funding',
+                label: 'Funding',
+                projectName: '',
                 projectId: '',
-                inputtype: 'text-field'
+                projectNameLanguage: '',
+                funderName: '',
+                funderId: '',
+                funedNameLanguage: '',
+                inputtype: 'funding',
+                multiplicable: true
               }
             ]
           },
@@ -312,14 +328,14 @@ export default {
             id: 'provenance',
             fields: [
               {
-                id: 11,
+                id: 200,
                 predicate: 'schema:temporalCoverage',
                 label: 'Zeitpunkt, Zeitraum',
                 value: '',
                 inputtype: 'text-field'
               },
               {
-                id: 12,
+                id: 201,
                 predicate: 'dcterms:provenance',
                 label: 'Provenance',
                 value: '',
@@ -329,17 +345,17 @@ export default {
                 language: ''
               },
               {
-                id: 13,
+                id: 202,
                 predicate: 'bf:physicalLocation',
                 label: 'Standort',
                 value: '',
                 inputtype: 'text-field'
               },
               {
-                id: 14,
+                id: 203,
                 predicate: 'bf:note',
-                bfnotetype: 'logid',
-                label: 'Aktenvermerk/Eingangsbuch',
+                bfnotetype: 'accessionnumber',
+                label: 'Accession number',
                 value: '',
                 inputtype: 'text-field'
               }
@@ -350,24 +366,24 @@ export default {
             id: 'contextual',
             fields: [
               {
-                id: 27,
+                id: 204,
                 label: 'Condition',
                 predicate: 'bf:note',
-                bfnotetype: 'condition',
+                class: 'ConditionNote',
                 value: '',
                 inputtype: 'text-field'
               },
               {
-                id: 21,
-                label: 'Original/Copy',
+                id: 205,
+                label: 'Reproduction note',
                 predicate: 'bf:note',
-                bfnotetype: 'original-copy',
+                class: 'ReproductionNote',
                 value: '',
                 inputtype: 'select',
                 vocabulary: 'original-copy'
               },
               {
-                id: 19,
+                id: 206,
                 predicate: 'vra-measurements',
                 label: 'Dimensions',
                 source: 'http://vocab.getty.edu/aat/300162056',
@@ -375,13 +391,14 @@ export default {
                 height: '',
                 width: '',
                 inputtype: 'dimensions',
+                usesource: true,
                 multiplicable: true
               },
               {
-                id: 41,
-                label: 'Technical info',
-                predicate: 'bf:note',
-                bfnotetype: 'technical-info',
+                id: 207,
+                label: 'Technique',
+                predicate: 'vra:technique',
+                class: 'vra:Technique',
                 value: '',
                 inputtype: 'text-field',
                 multilingual: true,
@@ -389,10 +406,10 @@ export default {
                 language: ''
               },
               {
-                id: 42,
+                id: 208,
                 label: 'Material description',
-                predicate: 'bf:note',
-                bfnotetype: 'material-description',
+                predicate: 'vra:material',
+                class: 'vra:Material',
                 value: '',
                 inputtype: 'text-field',
                 multilingual: true,
@@ -400,7 +417,7 @@ export default {
                 language: ''
               },
               {
-                id: 23,
+                id: 209,
                 predicate: 'vra:hasInscription',
                 label: 'Inscription',
                 value: '',
@@ -410,16 +427,16 @@ export default {
                 language: ''
               },
               {
-                id: 24,
+                id: 210,
                 label: 'Stamp',
                 predicate: 'bf:note',
-                bfnotetype: 'stamp',
+                class: 'phaidra:StampNote',
                 value: '',
                 inputtype: 'select',
                 vocabulary: 'stamp'
               },
               {
-                id: 15,
+                id: 211,
                 predicate: 'dcterms:spatial',
                 label: 'Ort',
                 value: '',
@@ -427,7 +444,7 @@ export default {
                 voc: 'tgn'
               },
               {
-                id: 155,
+                id: 212,
                 predicate: 'dcterms:spatial',
                 label: 'Ort einheimisch',
                 value: '',
@@ -439,11 +456,124 @@ export default {
             ]
           },
           {
+            title: 'Secondary',
+            id: 'secondary',
+            fields: [
+              {
+                id: 300,
+                predicate: 'phaidra:callNumber',
+                label: 'Call number',
+                value: '',
+                inputtype: 'text-field',
+                multiplicable: true
+              },
+              {
+                id: 301,
+                predicate: 'schema:temporalCoverage',
+                label: 'Zeitpunkt, Zeitraum',
+                value: '',
+                inputtype: 'text-field'
+              },
+              {
+                id: 302,
+                predicate: 'dcterms:provenance',
+                label: 'Provenance',
+                value: '',
+                inputtype: 'text-field',
+                multiline: true,
+                multilingual: true,
+                language: ''
+              },
+              {
+                id: 303,
+                predicate: 'bf:physicalLocation',
+                label: 'Standort',
+                value: '',
+                inputtype: 'text-field'
+              },
+              {
+                id: 304,
+                label: 'Contributions',
+                predicate: 'role',
+                type: 'corporate',
+                institution: '',
+                role: '',
+                date: '',
+                inputtype: 'entity',
+                multiplicable: true,
+                ordered: true,
+                ordergroup: 'entity'
+              },
+              {
+                id: 305,
+                predicate: 'opaque:cco_accessionNumber',
+                label: 'Accession number',
+                value: '',
+                inputtype: 'text-field'
+              },
+              {
+                id: 307,
+                predicate: 'dce:title',
+                label: 'Title',
+                title: '',
+                subtitle: '',
+                language: '',
+                inputtype: 'title',
+                required: true,
+                ordergroup: 'title',
+                multiplicable: true,
+                multilingual: true
+              },
+              {
+                id: 308,
+                predicate: 'bf:note',
+                label: 'Description',
+                value: '',
+                inputtype: 'text-field',
+                multiline: true,
+                multiplicable: true,
+                multilingual: true,
+                language: ''
+              },
+              {
+                id: 309,
+                label: 'Technique',
+                predicate: 'vra:technique',
+                class: 'vra:Technique',
+                value: '',
+                inputtype: 'select',
+                vocabulary: 'getty-aat-photo'
+              },
+              {
+                id: 310,
+                label: 'Material description',
+                predicate: 'vra:material',
+                class: 'vra:Material',
+                value: '',
+                inputtype: 'text-field',
+                multilingual: true,
+                multiplicable: true,
+                language: ''
+              },
+              {
+                id: 311,
+                predicate: 'vra-measurements',
+                label: 'Dimensions',
+                unit: 'CMT',
+                height: '',
+                width: '',
+                inputtype: 'dimensions',
+                usesource: false,
+                multiplicable: true
+              }
+            ]
+          },
+          {
             title: 'Rights',
             id: 'rights',
             fields: [
               {
-                id: 30,
+                id: 400,
                 label: 'License',
                 predicate: 'edm:rights',
                 value: '',
@@ -451,7 +581,7 @@ export default {
                 vocabulary: 'licenses'
               },
               {
-                id: 31,
+                id: 401,
                 predicate: 'dce:rights',
                 label: 'Rights statement',
                 value: '',
@@ -469,13 +599,13 @@ export default {
             multiplicable: true,
             fields: [
               {
-                id: 33,
+                id: 500,
                 label: 'Datei',
                 value: '',
                 inputtype: 'file'
               },
               {
-                id: 34,
+                id: 501,
                 predicate: 'dce:title',
                 label: 'Title',
                 title: '',
@@ -488,7 +618,7 @@ export default {
                 multilingual: true
               },
               {
-                id: 36,
+                id: 502,
                 predicate: 'bf:note',
                 label: 'Description',
                 value: '',
@@ -499,53 +629,43 @@ export default {
                 language: ''
               },
               {
-                id: 37,
-                predicate: 'bf:note',
-                bfnotetype: 'signature',
+                id: 503,
+                predicate: 'phaidra:callNumber',
                 label: 'Signature',
                 value: '',
                 inputtype: 'text-field',
                 multiplicable: true
               },
               {
-                id: 38,
-                predicate: 'bf:note',
-                bfnotetype: 'filename',
+                id: 504,
+                predicate: 'ebucore:filename',
                 label: 'Filename',
                 value: '',
                 inputtype: 'text-field',
                 multiplicable: true
               },
               {
-                id: 39,
-                label: 'Format',
-                predicate: 'dce:format',
+                id: 505,
+                label: 'Mime type',
+                predicate: 'ebucore:hasMimeType',
                 value: 'image/tiff',
                 inputtype: 'select',
                 vocabulary: 'mime-types'
               },
               {
-                id: 28,
-                predicate: 'opaque:digitalOrigin',
-                label: 'Digitization',
-                value: 'reformatted digital',
-                inputtype: 'select',
-                vocabulary: 'digital-origin',
-                multilingual: true
-              },
-              {
-                id: 288,
+                id: 507,
                 label: 'Digitization note',
                 predicate: 'bf:note',
-                bfnotetype: 'digitization-note',
+                class: 'DigitizationNote',
                 value: '',
                 inputtype: 'text-field',
                 multilingual: true
               },
               {
-                id: 29,
+                id: 508,
                 label: 'Digitiser',
                 predicate: 'role',
+                type: 'personal',
                 firstname: '',
                 lastname: '',
                 role: 'digitiser',
@@ -613,6 +733,10 @@ export default {
             '@context': this.jsonldcontext
           }
         }
+        if (s.id === 'secondary') {
+          jsonldid = 'secondary'
+          this.jsonlds[jsonldid] = {}
+        }
         var vraWork = {
           '@type': 'vra:Work'
         }
@@ -648,35 +772,46 @@ export default {
               }
               break
 
-            case 'frapo:isOutputOf':
-              if ((f.name !== '') || (f.projectId !== '')) {
+            case 'funding':
+              if ((f.projectName !== '') || (f.projectId !== '')) {
                 var projectdef = {
                   '@type': 'foaf:Project'
                 }
-                if (f.name !== '') {
-                  projectdef['rdfs:label'] = [{
-                    '@value': f.name
-                  }]
+                if (f.projectName !== '') {
+                  projectdef['rdfs:label'] = {
+                    '@value': f.projectName
+                  }
+                }
+                if (f.projectNameLanguage !== '') {
+                  projectdef['rdfs:label']['@language'] = f.projectNameLanguage
                 }
                 if (f.projectId !== '') {
-                  projectdef['skos:exactMatch'] = [f.projectId]
+                  projectdef['skos:exactMatch'] = f.projectId
                 }
+                if (!this.jsonlds[jsonldid]['frapo:isOutputOf']) {
+                  this.jsonlds[jsonldid]['frapo:isOutputOf'] = []
+                }
+                this.jsonlds[jsonldid]['frapo:isOutputOf'].push(projectdef)
               }
-              break
-
-            case 'frapo:hasFundingAgency':
-              if ((f.name !== '') || (f.funderId !== '')) {
+              if ((f.funderName !== '') || (f.funderId !== '')) {
                 var funderdef = {
                   '@type': 'frapo:FundingAgency'
                 }
-                if (f.name !== '') {
-                  funderdef['rdfs:label'] = [{
-                    '@value': f.name
-                  }]
+                if (f.funderName !== '') {
+                  funderdef['rdfs:label'] = {
+                    '@value': f.funderName
+                  }
                 }
-                if (f.projectId !== '') {
-                  funderdef['skos:exactMatch'] = [f.projectId]
+                if (f.funderNameLanguage !== '') {
+                  funderdef['rdfs:label']['@language'] = f.funderNameLanguage
                 }
+                if (f.funderId !== '') {
+                  funderdef['skos:exactMatch'] = f.funderId
+                }
+                if (!this.jsonlds[jsonldid]['frapo:hasFundingAgency']) {
+                  this.jsonlds[jsonldid]['frapo:hasFundingAgency'] = []
+                }
+                this.jsonlds[jsonldid]['frapo:hasFundingAgency'].push(funderdef)
               }
               break
 
@@ -818,14 +953,25 @@ export default {
               break
 
             case 'role':
-              if (f.role && (f.role !== '') && (f.firstname !== '' || f.lastname !== '')) {
-                var roledef = {
-                  '@type': 'schema:Person',
-                  'schema:givenName': {
-                    '@value': f.firstname
-                  },
-                  'schema:familyName': {
-                    '@value': f.lastname
+              if (f.role && (f.role !== '') && (f.firstname !== '' || f.lastname !== '' || f.institution !== '')) {
+                var roledef
+                if (f.type === 'personal') {
+                  roledef = {
+                    '@type': 'schema:Person',
+                    'schema:givenName': {
+                      '@value': f.firstname
+                    },
+                    'schema:familyName': {
+                      '@value': f.lastname
+                    }
+                  }
+                }
+                if (f.type === 'corporate') {
+                  roledef = {
+                    '@type': 'schema:Organization',
+                    'schema:name': {
+                      '@value': f.institution
+                    }
                   }
                 }
                 if (f.date && (f.date !== '')) {
@@ -859,7 +1005,9 @@ export default {
 
             case 'vra-measurements':
               if (f.height !== '' || f.width !== '') {
-                vraWork['vra:hasTechnique'] = f.technique
+                if (f.technique) {
+                  vraWork['vra:hasTechnique'] = f.technique
+                }
                 vraWork['vra:height'] = {
                   '@type': 'vra:QuantitativeValue',
                   'vra:unitCode': f.unit,

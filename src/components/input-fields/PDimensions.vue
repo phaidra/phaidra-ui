@@ -1,15 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs3>
-      <v-select 
-        v-on:input="$emit('input-source', $event)" 
-        :label="'Source'"
-        :items="vocabularies['getty-aat-photo'].terms" 
-        :value="source"
-        box
-      ></v-select>                 
-    </v-flex>
-    <v-flex xs1>
+    <v-flex xs2>
       <v-select 
         v-on:input="$emit('input-unit', $event)" 
         :label="'Unit'"
@@ -78,6 +69,9 @@ export default {
     label: {
       type: String,
       required: true
+    },
+    usesource: {
+      type: Boolean
     },
     multiplicable: {
       type: Boolean

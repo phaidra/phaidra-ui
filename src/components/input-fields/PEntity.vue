@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs2>
+    <v-flex xs2 v-if="type === 'personal'">
       <v-text-field
         :value="firstname"
         :label="'Firstname'"
@@ -8,11 +8,19 @@
         box
       ></v-text-field>
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs2 v-if="type === 'personal'">
       <v-text-field
         :value="lastname"
         :label="'Lastname'"
         v-on:input="$emit('input-lastname', $event)"
+        box
+      ></v-text-field>
+    </v-flex>
+    <v-flex xs4 v-if="type === 'corporate'">
+      <v-text-field
+        :value="institution"
+        :label="'Institution'"
+        v-on:input="$emit('input-institution', $event)"
         box
       ></v-text-field>
     </v-flex>
@@ -91,10 +99,16 @@ export default {
     lastname: {
       type: String
     },
+    institution: {
+      type: String
+    },
     role: {
       type: String
     },
     date: {
+      type: String
+    },
+    type: {
       type: String
     },
     required: {
