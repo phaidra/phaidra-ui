@@ -1,5 +1,6 @@
 <template>
 
+
     <v-layout row>
 
       <v-flex xs10>
@@ -9,58 +10,66 @@
           <v-layout row>
             <v-flex xs6>
               <v-text-field
-                :value="projectName"
+                :value="name"
                 :label="'Project name'"
-                v-on:input="$emit('input-project-name', $event)"
+                v-on:input="$emit('input-name', $event)"
                 box
               ></v-text-field>
             </v-flex>
             <v-flex xs2>
               <v-select 
-                v-on:input="$emit('input-project-name-language', $event)" 
+                v-on:input="$emit('input-name-language', $event)" 
                 :label="'Language'"
                 :items="vocabularies['lang'].terms" 
-                :value="projectNameLanguage"
+                :value="nameLanguage"
                 box
               ></v-select>                      
             </v-flex>
-            <v-flex xs4>
-              <v-text-field
-                :value="projectId"
-                :label="'Project ID'"
-                v-on:input="$emit('input-project-id', $event)"
-                box
-              ></v-text-field>
-            </v-flex>    
+                
           </v-layout>
 
           <v-layout row>
             <v-flex xs6>
               <v-text-field
-                :value="funderName"
-                :label="'Funder name'"
-                v-on:input="$emit('input-funder-name', $event)"
+                :value="description"
+                :label="'Project description'"
+                v-on:input="$emit('input-description', $event)"
                 box
               ></v-text-field>
             </v-flex>
             <v-flex xs2>
               <v-select 
-                v-on:input="$emit('input-funder-name-language', $event)" 
+                v-on:input="$emit('input-description-language', $event)" 
                 :label="'Language'"
                 :items="vocabularies['lang'].terms" 
-                :value="funderNameLanguage"
+                :value="descriptionLanguage"
                 box
               ></v-select>                      
             </v-flex>
-            <v-flex xs4>
+               
+          </v-layout>
+
+          <v-layout row>
+
+            <v-flex xs6>
               <v-text-field
-                :value="funderId"
-                :label="'Funder ID'"
-                v-on:input="$emit('input-funder-id', $event)"
+                :value="id"
+                :label="'Project identifier'"
+                v-on:input="$emit('input-id', $event)"
                 box
               ></v-text-field>
-            </v-flex>    
+            </v-flex>
+
+             <v-flex xs6>
+              <v-text-field
+                :value="homepage"
+                :label="'Project homepage'"
+                v-on:input="$emit('input-homepage', $event)"
+                box
+              ></v-text-field>
+            </v-flex>
           </v-layout>
+          
         </v-layout>
       </v-flex>
       
@@ -95,22 +104,22 @@ export default {
     }
   },
   props: {
-    projectName: {
+    name: {
       type: String
     },
-    projectNameLanguage: {
+    nameLanguage: {
       type: String
     },
-    projectId: {
+    identifier: {
       type: String
     },
-    funderName: {
+    description: {
       type: String
     },
-    funderNameLanguage: {
+    descriptionLanguage: {
       type: String
     },
-    funderId: {
+    homepage: {
       type: String
     },
     multiplicable: {

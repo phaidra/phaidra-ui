@@ -43,7 +43,7 @@
             <v-card-text class="mt-4">
               <v-layout v-for="(f) in s.fields" :key="f.id" row wrap>
 
-                <v-flex offset-xs1 v-if="f.inputtype == 'text-field'" >
+                <v-flex offset-xs1 v-if="f.component == 'p-text-field'" >
                   <p-text-field             
                     v-bind.sync="f"
                     v-on:input="f.value=$event"
@@ -53,7 +53,7 @@
                   ></p-text-field>
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.inputtype == 'text-field-suggest'" >
+                <v-flex offset-xs1 v-else-if="f.component == 'p-text-field-suggest'" >
                   <p-text-field-suggest
                     v-bind.sync="f"
                     v-on:input="f.value=$event"
@@ -63,7 +63,7 @@
                   ></p-text-field-suggest>
                 </v-flex>
 
-                <v-flex offset-xs1 v-if="f.inputtype == 'title'" >
+                <v-flex offset-xs1 v-if="f.component == 'p-title'" >
                   <p-title            
                     v-bind.sync="f"
                     v-on:input-title="f.title=$event"
@@ -76,7 +76,7 @@
                   ></p-title>
                 </v-flex>
 
-                <v-flex offset-xs1 xs4 v-else-if="f.inputtype == 'select'" >
+                <v-flex offset-xs1 xs4 v-else-if="f.component == 'p-select'" >
                   <p-select 
                     v-bind.sync="f" 
                     v-on:input="f.value=$event"
@@ -85,7 +85,7 @@
                   ></p-select>        
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.inputtype == 'entity'" >
+                <v-flex offset-xs1 v-else-if="f.component == 'p-entity'" >
                   <p-entity
                     v-bind.sync="f"
                     v-on:input-firstname="f.firstname=$event"
@@ -100,7 +100,7 @@
                   ></p-entity>
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.inputtype == 'gbv-suggest-getty'" >
+                <v-flex offset-xs1 v-else-if="f.component == 'p-gbv-suggest-getty'" >
                   <p-gbv-suggest-getty
                     v-bind.sync="f" 
                     v-on:input="f.value=$event"
@@ -110,7 +110,7 @@
                   ></p-gbv-suggest-getty>        
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.inputtype == 'dimensions'" >
+                <v-flex offset-xs1 v-else-if="f.component == 'p-dimensions'" >
                   <p-dimensions
                     v-bind.sync="f" 
                     v-on:input-source="f.source=$event"
@@ -124,21 +124,32 @@
                   ></p-dimensions>        
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.inputtype == 'funding'" >
-                  <p-funding
+                <v-flex offset-xs1 v-else-if="f.component == 'p-project'" >
+                  <p-project
                     v-bind.sync="f" 
-                    v-on:input-funder-name="f.funderName=$event"
-                    v-on:input-funder-id="f.funderId=$event"
-                    v-on:input-funder-name-language="f.funderNameLanguage=$event"
-                    v-on:input-project-name="f.projectName=$event"
-                    v-on:input-project-id="f.projectId=$event"
-                    v-on:input-project-name-language="f.projectNameLanguage=$event"
+                    v-on:input-name="f.name=$event"
+                    v-on:input-name-language="f.nameLanguage=$event"
+                    v-on:input-description="f.description=$event"
+                    v-on:input-description-language="f.descriptionLanguage=$event"
+                    v-on:input-identifier="f.identifier=$event"
+                    v-on:input-homepage="f.homepage=$event"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-funding>        
+                  ></p-project>        
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.inputtype == 'file'" >
+                <v-flex offset-xs1 v-else-if="f.component == 'p-funder'" >
+                  <p-funder
+                    v-bind.sync="f" 
+                    v-on:input-name="f.name=$event"
+                    v-on:input-name-language="f.nameLanguage=$event"
+                    v-on:input-identifier="f.identifier=$event"
+                    v-on:add="addField(s.fields, f)"
+                    v-on:remove="removeField(s.fields, f)"
+                  ></p-funder>        
+                </v-flex>
+
+                <v-flex offset-xs1 v-else-if="f.component == 'input-file'" >
                   <input type="file" @input="f.value = $event.target.files[0]">
                 </v-flex>
 
@@ -174,7 +185,8 @@ import PEntity from '@/components/input-fields/PEntity'
 import PSelect from '@/components/input-fields/PSelect'
 import PGbvSuggestGetty from '@/components/input-fields/PGbvSuggestGetty'
 import PDimensions from '@/components/input-fields/PDimensions'
-import PFunding from '@/components/input-fields/PFunding'
+import PProject from '@/components/input-fields/PProject'
+import PFunder from '@/components/input-fields/PFunder'
 
 export default {
   name: 'submit-ksa-photo',
@@ -186,7 +198,8 @@ export default {
     PSelect,
     PGbvSuggestGetty,
     PDimensions,
-    PFunding,
+    PProject,
+    PFunder,
     VueJsonPretty
   },
   data () {
@@ -215,127 +228,148 @@ export default {
               {
                 id: 100,
                 predicate: 'dcterms:type',
-                value: 'http://purl.org/coar/resource_type/c_ecc8',
-                ordergroup: 'title',
-                multiplicable: true,
-                multilingual: true
+                metadataset: 'digital',
+                component: 'p-select',
+                vocabulary: 'http://purl.org/coar/resource_type/',
+                required: true,
+                multiplicable: false,
+                label: 'Resource type',
+                value: 'http://purl.org/coar/resource_type/c_ecc8'
               },
               {
                 id: 101,
                 predicate: 'dce:title',
+                metadataset: 'digital',
+                component: 'p-title',
+                required: true,
+                multiplicable: true,
+                multilingual: true,
+                ordergroup: 'title',
                 label: 'Title',
                 title: '',
                 subtitle: '',
                 language: '',
-                inputtype: 'title',
-                required: true,
-                ordergroup: 'title',
-                multiplicable: true,
-                multilingual: true
               },
               {
                 id: 102,
                 predicate: 'bf:note',
-                label: 'Description',
-                value: '',
-                inputtype: 'text-field',
-                multiline: true,
+                metadataset: 'digital',
+                component: 'p-text-field',
                 multiplicable: true,
                 multilingual: true,
+                multiline: true,
+                label: 'Description',
+                value: '',
                 language: ''
               },
               {
                 id: 103,
-                predicate: 'bf:note',
-                bfnotetype: 'ethnographic',
-                label: 'Sociocultural category',
-                value: '',
-                inputtype: 'text-field-suggest',
+                predicate: 'opaque:ethnographic',
+                metadataset: 'digital',
+                component: 'p-text-field-suggest',
                 suggester: 'titlesuggester',
-                multiplicable: true
+                multiplicable: true,
+                multilingual: true,
+                label: 'Sociocultural category',
+                value: ''
               },
               {
                 id: 104,
-                label: 'Language',
                 predicate: 'dcterms:language',
-                value: '',
-                inputtype: 'select',
+                metadataset: 'digital',
+                component: 'p-select',
                 vocabulary: 'http://id.loc.gov/vocabulary/iso639-2',
+                required: true,
                 multiplicable: true,
-                required: true
+                label: 'Language',
+                value: ''
               },
               {
                 id: 105,
-                label: 'Contributions',
                 predicate: 'role',
+                metadataset: 'digital',
+                component: 'p-entity',
                 type: 'personal',
+                multiplicable: true,
+                ordered: true,
+                ordergroup: 'general-entity',
+                label: 'Contributions',
                 firstname: '',
                 lastname: '',
                 role: '',
-                date: '',
-                inputtype: 'entity',
-                multiplicable: true,
-                ordered: true,
-                ordergroup: 'entity'
+                date: ''
               },
               {
                 id: 106,
                 predicate: 'bf:note',
-                bfnotetype: 'note',
+                metadataset: 'digital',
+                component: 'p-text-field',
+                bfnotetype: 'phaidra:Remark',
+                multilingual: true,
+                multiline: true,
                 label: 'Note',
                 value: '',
-                inputtype: 'text-field',
-                multiline: true,
-                multilingual: true
+                language: ''
               },
               {
                 id: 107,
                 predicate: 'dce:subject',
-                label: 'Keyword',
-                value: '',
-                language: '',
-                inputtype: 'text-field-suggest',
+                metadataset: 'digital',
+                component: 'p-text-field-suggest',
                 suggester: 'titlesuggester',
                 multiplicable: true,
-                multilingual: true
+                multilingual: true,
+                label: 'Keyword',
+                value: '',
+                language: ''
               },
               {
                 id: 108,
-                predicate: 'bf:note',
-                bfnotetype: 'callnumber',
-                label: 'Signature',
-                value: '',
-                inputtype: 'text-field',
-                multiplicable: true
+                predicate: 'frapo:isOutputOf',
+                metadataset: 'digital',
+                component: 'p-project',
+                multiplicable: true,
+                name: '',
+                nameLanguage: '',
+                description: '',
+                descriptionLanguage: '',
+                identifier: '',
+                homepage: ''
               },
               {
                 id: 109,
-                predicate: 'funding',
-                label: 'Funding',
-                projectName: '',
-                projectId: '',
-                projectNameLanguage: '',
-                funderName: '',
-                funderId: '',
-                funedNameLanguage: '',
-                inputtype: 'funding',
-                multiplicable: true
+                predicate: 'frapo:hasFundingAgency',
+                metadataset: 'digital',
+                component: 'p-funder',
+                multiplicable: true,
+                name: '',
+                nameLanguage: '',
+                identifier: ''
               }
             ]
           },
           {
-            title: 'Provenance',
-            id: 'provenance',
+            title: 'Digitized object',
+            id: 'digitized',
             fields: [
               {
                 id: 200,
+                predicate: 'bf:shelfMark',
+                metadataset: 'analog',
+                component: 'p-text-field',
+                multiplicable: true,
+                label: 'Call number',
+                value: ''
+              },
+              {
+                id: 201,
                 predicate: 'schema:temporalCoverage',
                 label: 'Zeitpunkt, Zeitraum',
                 value: '',
                 inputtype: 'text-field'
               },
               {
-                id: 201,
+                id: 202,
                 predicate: 'dcterms:provenance',
                 label: 'Provenance',
                 value: '',
@@ -345,28 +379,23 @@ export default {
                 language: ''
               },
               {
-                id: 202,
+                id: 203,
                 predicate: 'bf:physicalLocation',
-                label: 'Standort',
-                value: '',
-                inputtype: 'text-field'
+                metadataset: 'digital',
+                component: 'p-text-field',
+                label: 'Physical location',
+                value: ''
               },
               {
-                id: 203,
+                id: 204,
                 predicate: 'bf:note',
                 bfnotetype: 'accessionnumber',
                 label: 'Accession number',
                 value: '',
                 inputtype: 'text-field'
-              }
-            ]
-          },
-          {
-            title: 'Contextual',
-            id: 'contextual',
-            fields: [
+              },
               {
-                id: 204,
+                id: 205,
                 label: 'Condition',
                 predicate: 'bf:note',
                 class: 'ConditionNote',
@@ -374,7 +403,7 @@ export default {
                 inputtype: 'text-field'
               },
               {
-                id: 205,
+                id: 206,
                 label: 'Reproduction note',
                 predicate: 'bf:note',
                 class: 'ReproductionNote',
@@ -383,7 +412,7 @@ export default {
                 vocabulary: 'original-copy'
               },
               {
-                id: 206,
+                id: 207,
                 predicate: 'vra-measurements',
                 label: 'Dimensions',
                 source: 'http://vocab.getty.edu/aat/300162056',
@@ -395,7 +424,7 @@ export default {
                 multiplicable: true
               },
               {
-                id: 207,
+                id: 208,
                 label: 'Technique',
                 predicate: 'vra:technique',
                 class: 'vra:Technique',
@@ -406,7 +435,7 @@ export default {
                 language: ''
               },
               {
-                id: 208,
+                id: 209,
                 label: 'Material description',
                 predicate: 'vra:material',
                 class: 'vra:Material',
@@ -417,26 +446,28 @@ export default {
                 language: ''
               },
               {
-                id: 209,
+                id: 210,
                 predicate: 'vra:hasInscription',
+                metadataset: 'analog',
+                component: 'p-text-field',
+                multiline: true,
+                multiplicable: true,
+                multilingual: true,
                 label: 'Inscription',
                 value: '',
-                inputtype: 'text-field',
-                multiline: true,
-                multilingual: true,
                 language: ''
               },
               {
-                id: 210,
+                id: 211,
+                predicate: 'phaidra:stamp',
+                metadataset: 'analog',
+                component: 'select',
+                vocabulary: 'https://phaidra.org/vocabularies/stamp/',
                 label: 'Stamp',
-                predicate: 'bf:note',
-                class: 'phaidra:StampNote',
                 value: '',
-                inputtype: 'select',
-                vocabulary: 'stamp'
               },
               {
-                id: 211,
+                id: 212,
                 predicate: 'dcterms:spatial',
                 label: 'Ort',
                 value: '',
@@ -444,7 +475,7 @@ export default {
                 voc: 'tgn'
               },
               {
-                id: 212,
+                id: 213,
                 predicate: 'dcterms:spatial',
                 label: 'Ort einheimisch',
                 value: '',
@@ -507,9 +538,10 @@ export default {
               {
                 id: 305,
                 predicate: 'opaque:cco_accessionNumber',
+                metadataset: 'subject-depicted',
+                component: 'p-text-field',
                 label: 'Accession number',
-                value: '',
-                inputtype: 'text-field'
+                value: ''
               },
               {
                 id: 307,
@@ -574,20 +606,22 @@ export default {
             fields: [
               {
                 id: 400,
-                label: 'License',
                 predicate: 'edm:rights',
-                value: '',
-                inputtype: 'select',
-                vocabulary: 'licenses'
+                metadataset: 'digital',
+                component: 'p-select',
+                vocabulary: 'licenses',
+                label: 'License',
+                value: ''
               },
               {
                 id: 401,
                 predicate: 'dce:rights',
-                label: 'Rights statement',
-                value: '',
-                inputtype: 'text-field',
+                metadataset: 'digital',
+                component: 'p-text-field',
                 multiline: true,
                 multilingual: true,
+                label: 'Rights statement',
+                value: '',
                 language: ''
               }
             ]
@@ -600,9 +634,9 @@ export default {
             fields: [
               {
                 id: 500,
+                component: 'input-file',
                 label: 'Datei',
-                value: '',
-                inputtype: 'file'
+                value: ''
               },
               {
                 id: 501,

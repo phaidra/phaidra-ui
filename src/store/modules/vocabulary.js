@@ -18,6 +18,12 @@ const state = {
       terms: [],
       loaded: false
     },
+    'http://purl.org/coar/resource_type/': {
+      terms: [
+        { value: 'http://vocab.getty.edu/aat/300162056', text: 'still image' },
+      ],
+      loaded: false
+    },
     'getty-aat-photo': {
       terms: [
         { value: 'http://vocab.getty.edu/aat/300162056', text: 'black-and-white photography' },
@@ -81,9 +87,9 @@ const state = {
       ],
       loaded: false
     },
-    'stamp': {
+    'https://phaidra.org/vocabulary/stamp': {
       terms: [
-        { value: 'Dr. F. Dörbeck [blau, Stempel]', text: 'Dr. F. Dörbeck [blau, Stempel]' }
+        { value: 'https://phaidra.org/vocabulary/stamp/10891', text: 'Aus dem Nachlass Frh. Heinrich v. Ferstel' }
       ],
       loaded: false
     }
