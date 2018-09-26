@@ -20,7 +20,7 @@ const state = {
     },
     'http://purl.org/coar/resource_type/': {
       terms: [
-        { value: 'http://vocab.getty.edu/aat/300162056', text: 'still image' },
+        { value: 'http://vocab.getty.edu/aat/300162056', text: 'still image' }
       ],
       loaded: false
     },

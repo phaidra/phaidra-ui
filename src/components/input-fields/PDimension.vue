@@ -1,6 +1,14 @@
 <template>
   <v-layout row>
     <v-flex xs2>
+      <v-text-field
+        :value="value" 
+        v-on:input="$emit('input-value', $event)" 
+        :label="label"
+        box
+      ></v-text-field>
+    </v-flex>
+    <v-flex xs2>
       <v-select 
         v-on:input="$emit('input-unit', $event)" 
         :label="'Unit'"
@@ -8,23 +16,7 @@
         :value="unit"
         box
       ></v-select>                 
-    </v-flex>
-    <v-flex xs2>
-      <v-text-field
-        :value="width" 
-        v-on:input="$emit('input-width', $event)" 
-        :label="'Width'"
-        box
-      ></v-text-field>
-    </v-flex>
-    <v-flex xs2>
-      <v-text-field
-        :value="height" 
-        v-on:input="$emit('input-height', $event)" 
-        :label="'Height'"
-        box
-      ></v-text-field>
-    </v-flex>    
+    </v-flex>   
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
@@ -47,31 +39,22 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-dimensions',
+  name: 'p-dimension',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }
   },
   props: {
-    source: {
-      type: String
-    },
     unit: {
       type: String
     },
-    width: {
-      type: String
-    },
-    height: {
+    value: {
       type: String
     },
     label: {
       type: String,
       required: true
-    },
-    usesource: {
-      type: Boolean
     },
     multiplicable: {
       type: Boolean

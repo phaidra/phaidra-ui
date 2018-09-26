@@ -1,6 +1,5 @@
 <template>
 
-
     <v-layout row>
 
       <v-flex xs10>
@@ -73,7 +72,7 @@
         </v-layout>
       </v-flex>
       
-      <v-flex xs1>
+      <v-flex xs1 style="border-right: 2px">
         <v-container fill-height>
           <v-layout class="vertical-center" row>
             <v-flex>

@@ -110,18 +110,14 @@
                   ></p-gbv-suggest-getty>        
                 </v-flex>
 
-                <v-flex offset-xs1 v-else-if="f.component == 'p-dimensions'" >
-                  <p-dimensions
+                <v-flex offset-xs1 v-else-if="f.component == 'p-dimension'" >
+                  <p-dimension
                     v-bind.sync="f" 
-                    v-on:input-source="f.source=$event"
+                    v-on:input-value="f.value=$event"
                     v-on:input-unit="f.unit=$event"
-                    v-on:input-length="f.length=$event"
-                    v-on:input-height="f.height=$event"
-                    v-on:input-width="f.width=$event"
-                    v-on:input-circumference="f.circumference=$event"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-dimensions>        
+                  ></p-dimension>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-project'" >
@@ -184,7 +180,7 @@ import PTitle from '@/components/input-fields/PTitle'
 import PEntity from '@/components/input-fields/PEntity'
 import PSelect from '@/components/input-fields/PSelect'
 import PGbvSuggestGetty from '@/components/input-fields/PGbvSuggestGetty'
-import PDimensions from '@/components/input-fields/PDimensions'
+import PDimension from '@/components/input-fields/PDimension'
 import PProject from '@/components/input-fields/PProject'
 import PFunder from '@/components/input-fields/PFunder'
 
@@ -197,7 +193,7 @@ export default {
     PEntity,
     PSelect,
     PGbvSuggestGetty,
-    PDimensions,
+    PDimension,
     PProject,
     PFunder,
     VueJsonPretty
@@ -248,7 +244,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: '',
+                language: ''
               },
               {
                 id: 102,
@@ -287,9 +283,9 @@ export default {
               {
                 id: 105,
                 predicate: 'role',
+                type: 'schema:Person',
                 metadataset: 'digital',
                 component: 'p-entity',
-                type: 'personal',
                 multiplicable: true,
                 ordered: true,
                 ordergroup: 'general-entity',
@@ -302,9 +298,9 @@ export default {
               {
                 id: 106,
                 predicate: 'bf:note',
+                type: 'phaidra:Remark',
                 metadataset: 'digital',
                 component: 'p-text-field',
-                bfnotetype: 'phaidra:Remark',
                 multilingual: true,
                 multiline: true,
                 label: 'Note',
@@ -328,7 +324,6 @@ export default {
                 predicate: 'frapo:isOutputOf',
                 metadataset: 'digital',
                 component: 'p-project',
-                multiplicable: true,
                 name: '',
                 nameLanguage: '',
                 description: '',
@@ -341,7 +336,6 @@ export default {
                 predicate: 'frapo:hasFundingAgency',
                 metadataset: 'digital',
                 component: 'p-funder',
-                multiplicable: true,
                 name: '',
                 nameLanguage: '',
                 identifier: ''
@@ -364,18 +358,20 @@ export default {
               {
                 id: 201,
                 predicate: 'schema:temporalCoverage',
-                label: 'Zeitpunkt, Zeitraum',
-                value: '',
-                inputtype: 'text-field'
+                metadataset: 'analog',
+                component: 'p-text-field',
+                label: 'Temporal coverage',
+                value: ''
               },
               {
                 id: 202,
                 predicate: 'dcterms:provenance',
-                label: 'Provenance',
-                value: '',
-                inputtype: 'text-field',
+                metadataset: 'analog',
+                component: 'p-text-field',
                 multiline: true,
                 multilingual: true,
+                label: 'Provenance',
+                value: '',
                 language: ''
               },
               {
@@ -388,65 +384,88 @@ export default {
               },
               {
                 id: 204,
-                predicate: 'bf:note',
-                bfnotetype: 'accessionnumber',
+                predicate: 'opaque:cco_accessionNumber',
+                metadataset: 'analog',
+                component: 'p-text-field',
                 label: 'Accession number',
-                value: '',
-                inputtype: 'text-field'
+                value: ''
               },
               {
                 id: 205,
-                label: 'Condition',
                 predicate: 'bf:note',
-                class: 'ConditionNote',
-                value: '',
-                inputtype: 'text-field'
-              },
-              {
-                id: 206,
-                label: 'Reproduction note',
-                predicate: 'bf:note',
-                class: 'ReproductionNote',
-                value: '',
-                inputtype: 'select',
-                vocabulary: 'original-copy'
-              },
-              {
-                id: 207,
-                predicate: 'vra-measurements',
-                label: 'Dimensions',
-                source: 'http://vocab.getty.edu/aat/300162056',
-                unit: 'CMT',
-                height: '',
-                width: '',
-                inputtype: 'dimensions',
-                usesource: true,
-                multiplicable: true
-              },
-              {
-                id: 208,
-                label: 'Technique',
-                predicate: 'vra:technique',
-                class: 'vra:Technique',
-                value: '',
-                inputtype: 'text-field',
+                type: 'phaidra:ConditionNote',
+                metadataset: 'analog',
+                component: 'p-text-field',
                 multilingual: true,
-                multiplicable: true,
+                multiline: true,
+                label: 'Condition',
+                value: '',
                 language: ''
               },
               {
+                id: 206,
+                predicate: 'bf:note',
+                type: 'phaidra:ReproductionNote',
+                metadataset: 'analog',
+                component: 'p-select',
+                vocabulary: 'original-copy',
+                label: 'Reproduction note',
+                value: ''
+              },
+              {
+                id: 208,
+                predicate: 'vra:technique',
+                type: 'vra:Technique',
+                metadataset: 'analog',
+                component: 'p-select',
+                vocabulary: 'getty-aat-photo',
+                label: 'Technique',
+                value: 'http://vocab.getty.edu/aat/300162056'
+              },
+              {
                 id: 209,
-                label: 'Material description',
-                predicate: 'vra:material',
-                class: 'vra:Material',
-                value: '',
-                inputtype: 'text-field',
+                predicate: 'vra:technique',
+                type: 'vra:Technique',
+                metadataset: 'analog',
+                component: 'p-text-field',
                 multilingual: true,
                 multiplicable: true,
+                label: 'Technique',
+                value: '',
                 language: ''
               },
               {
                 id: 210,
+                predicate: 'vra:material',
+                type: 'vra:Material',
+                metadataset: 'analog',
+                component: 'p-text-field',
+                multilingual: true,
+                multiplicable: true,
+                label: 'Material description',
+                value: '',
+                language: ''
+              },
+              {
+                id: 211,
+                predicate: 'schma:height',
+                metadataset: 'analog',
+                component: 'p-dimension',
+                label: 'Height',
+                unit: 'CMT',
+                value: ''
+              },
+              {
+                id: 212,
+                predicate: 'schma:width',
+                metadataset: 'analog',
+                component: 'p-dimension',
+                label: 'Width',
+                unit: 'CMT',
+                value: ''
+              },
+              {
+                id: 213,
                 predicate: 'vra:hasInscription',
                 metadataset: 'analog',
                 component: 'p-text-field',
@@ -458,145 +477,173 @@ export default {
                 language: ''
               },
               {
-                id: 211,
-                predicate: 'phaidra:stamp',
+                id: 214,
+                predicate: 'vra:hasInscription',
                 metadataset: 'analog',
-                component: 'select',
+                component: 'p-select',
                 vocabulary: 'https://phaidra.org/vocabularies/stamp/',
                 label: 'Stamp',
-                value: '',
+                value: ''
               },
               {
-                id: 212,
+                id: 215,
                 predicate: 'dcterms:spatial',
-                label: 'Ort',
-                value: '',
-                inputtype: 'gbv-suggest-getty',
-                voc: 'tgn'
+                metadataset: 'analog',
+                component: 'p-gbv-suggest-getty',
+                voc: 'tgn',
+                label: 'Place',
+                value: ''
               },
               {
-                id: 213,
+                id: 216,
                 predicate: 'dcterms:spatial',
-                label: 'Ort einheimisch',
-                value: '',
-                inputtype: 'text-field',
+                metadataset: 'analog',
+                component: 'p-text-field',
                 multilingual: true,
                 multiplicable: true,
+                label: 'Place (native name)',
+                value: '',
                 language: ''
               }
             ]
           },
           {
-            title: 'Secondary',
-            id: 'secondary',
+            title: 'Depicted object',
+            id: 'subject-represented',
             fields: [
               {
                 id: 300,
-                predicate: 'phaidra:callNumber',
-                label: 'Call number',
-                value: '',
-                inputtype: 'text-field',
-                multiplicable: true
-              },
-              {
-                id: 301,
-                predicate: 'schema:temporalCoverage',
-                label: 'Zeitpunkt, Zeitraum',
-                value: '',
-                inputtype: 'text-field'
-              },
-              {
-                id: 302,
-                predicate: 'dcterms:provenance',
-                label: 'Provenance',
-                value: '',
-                inputtype: 'text-field',
-                multiline: true,
+                predicate: 'dce:title',
+                metadataset: 'subject-represented',
+                component: 'p-title',
+                required: true,
+                multiplicable: true,
                 multilingual: true,
+                ordergroup: 'title',
+                label: 'Title',
+                title: '',
+                subtitle: '',
                 language: ''
               },
               {
-                id: 303,
-                predicate: 'bf:physicalLocation',
-                label: 'Standort',
+                id: 301,
+                predicate: 'bf:note',
+                metadataset: 'subject-represented',
+                component: 'p-text-field',
+                multiplicable: true,
+                multilingual: true,
+                multiline: true,
+                label: 'Description',
                 value: '',
-                inputtype: 'text-field'
+                language: ''
+              },
+              {
+                id: 302,
+                predicate: 'bf:shelfMark',
+                metadataset: 'subject-represented',
+                component: 'p-text-field',
+                multiplicable: true,
+                label: 'Call number',
+                value: ''
+              },
+              {
+                id: 303,
+                predicate: 'schema:temporalCoverage',
+                metadataset: 'subject-represented',
+                component: 'p-text-field',
+                label: 'Temporal coverage',
+                value: ''
               },
               {
                 id: 304,
-                label: 'Contributions',
-                predicate: 'role',
-                type: 'corporate',
-                institution: '',
-                role: '',
-                date: '',
-                inputtype: 'entity',
-                multiplicable: true,
-                ordered: true,
-                ordergroup: 'entity'
+                predicate: 'dcterms:provenance',
+                metadataset: 'subject-represented',
+                component: 'p-text-field',
+                multiline: true,
+                multilingual: true,
+                label: 'Provenance',
+                value: '',
+                language: ''
               },
               {
                 id: 305,
+                predicate: 'bf:physicalLocation',
+                metadataset: 'subject-represented',
+                component: 'p-text-field',
+                label: 'Physical location',
+                value: ''
+              },
+              {
+                id: 306,
+                predicate: 'role',
+                type: 'schema:Person',
+                metadataset: 'subject-represented',
+                component: 'p-entity',
+                multiplicable: true,
+                ordered: true,
+                ordergroup: 'general-entity',
+                label: 'Contributions',
+                firstname: '',
+                lastname: '',
+                role: '',
+                date: ''
+              },
+              {
+                id: 307,
                 predicate: 'opaque:cco_accessionNumber',
-                metadataset: 'subject-depicted',
+                metadataset: 'subject-represented',
                 component: 'p-text-field',
                 label: 'Accession number',
                 value: ''
               },
               {
-                id: 307,
-                predicate: 'dce:title',
-                label: 'Title',
-                title: '',
-                subtitle: '',
-                language: '',
-                inputtype: 'title',
-                required: true,
-                ordergroup: 'title',
-                multiplicable: true,
-                multilingual: true
-              },
-              {
                 id: 308,
-                predicate: 'bf:note',
-                label: 'Description',
-                value: '',
-                inputtype: 'text-field',
-                multiline: true,
-                multiplicable: true,
-                multilingual: true,
-                language: ''
+                predicate: 'vra:technique',
+                type: 'vra:Technique',
+                metadataset: 'subject-represented',
+                component: 'p-select',
+                vocabulary: 'getty-aat-photo',
+                label: 'Technique',
+                value: ''
               },
               {
                 id: 309,
-                label: 'Technique',
-                predicate: 'vra:technique',
-                class: 'vra:Technique',
-                value: '',
-                inputtype: 'select',
-                vocabulary: 'getty-aat-photo'
-              },
-              {
-                id: 310,
-                label: 'Material description',
                 predicate: 'vra:material',
-                class: 'vra:Material',
-                value: '',
-                inputtype: 'text-field',
+                type: 'vra:Material',
+                metadataset: 'subject-represented',
+                component: 'p-text-field',
                 multilingual: true,
                 multiplicable: true,
+                label: 'Material description',
+                value: '',
                 language: ''
               },
               {
-                id: 311,
-                predicate: 'vra-measurements',
-                label: 'Dimensions',
+                id: 310,
+                predicate: 'schma:height',
+                metadataset: 'analog',
+                component: 'p-dimension',
+                label: 'Height',
                 unit: 'CMT',
-                height: '',
-                width: '',
-                inputtype: 'dimensions',
-                usesource: false,
-                multiplicable: true
+                value: ''
+              },
+              {
+                id: 311,
+                predicate: 'schma:width',
+                metadataset: 'analog',
+                component: 'p-dimension',
+                label: 'Width',
+                unit: 'CMT',
+                value: ''
+              },
+              {
+                id: 312,
+                predicate: 'schma:depth',
+                metadataset: 'analog',
+                component: 'p-dimension',
+                label: 'Depth',
+                unit: 'CMT',
+                value: ''
               }
             ]
           },
@@ -641,73 +688,72 @@ export default {
               {
                 id: 501,
                 predicate: 'dce:title',
+                metadataset: 'digital',
+                component: 'p-title',
+                required: true,
+                multiplicable: true,
+                multilingual: true,
+                ordergroup: 'title',
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: '',
-                inputtype: 'title',
-                required: true,
-                ordergroup: 'title',
-                multiplicable: true,
-                multilingual: true
+                language: ''
               },
               {
                 id: 502,
                 predicate: 'bf:note',
-                label: 'Description',
-                value: '',
-                inputtype: 'text-field',
-                multiline: true,
+                metadataset: 'digital',
+                component: 'p-text-field',
                 multiplicable: true,
                 multilingual: true,
+                multiline: true,
+                label: 'Description',
+                value: '',
                 language: ''
               },
               {
                 id: 503,
-                predicate: 'phaidra:callNumber',
-                label: 'Signature',
-                value: '',
-                inputtype: 'text-field',
-                multiplicable: true
+                predicate: 'ebucore:filename',
+                metadataset: 'digital',
+                component: 'p-text-field',
+                label: 'Filename',
+                value: ''
               },
               {
                 id: 504,
-                predicate: 'ebucore:filename',
-                label: 'Filename',
-                value: '',
-                inputtype: 'text-field',
-                multiplicable: true
+                predicate: 'ebucore:hasMimeType',
+                metadataset: 'digital',
+                component: 'p-select',
+                vocabulary: 'mime-types',
+                label: 'MIME type',
+                value: 'image/tiff'
               },
               {
                 id: 505,
-                label: 'Mime type',
-                predicate: 'ebucore:hasMimeType',
-                value: 'image/tiff',
-                inputtype: 'select',
-                vocabulary: 'mime-types'
-              },
-              {
-                id: 507,
-                label: 'Digitization note',
                 predicate: 'bf:note',
-                class: 'DigitizationNote',
+                type: 'phaidra:DigitizationNote',
+                metadataset: 'digital',
+                component: 'p-text-field',
+                multilingual: true,
+                multiline: true,
+                label: 'Condition',
                 value: '',
-                inputtype: 'text-field',
-                multilingual: true
+                language: ''
               },
               {
-                id: 508,
-                label: 'Digitiser',
+                id: 506,
                 predicate: 'role',
-                type: 'personal',
+                type: 'schema:Person',
+                metadataset: 'digital',
+                component: 'p-entity',
+                disablerole: true,
+                showdate: true,
+                ordergroup: 'file-entity',
+                label: 'Digitiser',
                 firstname: '',
                 lastname: '',
                 role: 'digitiser',
-                date: '',
-                disablerole: true,
-                showdate: true,
-                inputtype: 'entity',
-                ordergroup: 'entity-digitiser'
+                date: ''
               }
             ]
           }

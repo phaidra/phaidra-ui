@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs2 v-if="type === 'personal'">
+    <v-flex xs2 v-if="type === 'schema:Person'">
       <v-text-field
         :value="firstname"
         :label="'Firstname'"
@@ -8,7 +8,7 @@
         box
       ></v-text-field>
     </v-flex>
-    <v-flex xs2 v-if="type === 'personal'">
+    <v-flex xs2 v-if="type === 'schema:Person'">
       <v-text-field
         :value="lastname"
         :label="'Lastname'"
@@ -16,7 +16,7 @@
         box
       ></v-text-field>
     </v-flex>
-    <v-flex xs4 v-if="type === 'corporate'">
+    <v-flex xs4 v-if="type === 'schema:Organisation'">
       <v-text-field
         :value="institution"
         :label="'Institution'"
