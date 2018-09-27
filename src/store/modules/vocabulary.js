@@ -14,13 +14,13 @@ const state = {
       ],
       loaded: false
     },
-    'https://phaidra.org/vocabulary/roles': {
+    'https://phaidra.org/vocabulary/role': {
       terms: [],
       loaded: false
     },
-    'http://purl.org/coar/resource_type/': {
+    'http://purl.org/coar/resource_type': {
       terms: [
-        { value: 'http://vocab.getty.edu/aat/300162056', text: 'still image' }
+        { value: 'http://purl.org/coar/resource_type/c_ecc8', text: 'still image' }
       ],
       loaded: false
     },
@@ -117,9 +117,9 @@ const mutations = {
   },
   setRolesTerms (state, marcRoles) {
     for (var role in marcRoles) {
-      state.vocabularies['https://phaidra.org/vocabulary/roles'].terms.push({ value: role, text: marcRoles[role] })
+      state.vocabularies['https://phaidra.org/vocabulary/role'].terms.push({ value: role, text: marcRoles[role] })
     }
-    state.vocabularies['https://phaidra.org/vocabulary/roles'].loaded = true
+    state.vocabularies['https://phaidra.org/vocabulary/role'].loaded = true
   },
   initStore (state) {
     /*
@@ -128,7 +128,7 @@ const mutations = {
       loaded: false
     }
     */
-    state.vocabularies['https://phaidra.org/vocabulary/roles'] = {
+    state.vocabularies['https://phaidra.org/vocabulary/role'] = {
       terms: [],
       loaded: false
     }
@@ -157,7 +157,7 @@ const actions = {
     }
   },
   loadRoles ({ commit, state, rootState }) {
-    if (!state.vocabularies['https://phaidra.org/vocabulary/roles'].loaded) {
+    if (!state.vocabularies['https://phaidra.org/vocabulary/role'].loaded) {
       commit('setRolesTerms', rootState.search.marcRoles)
     }
   }

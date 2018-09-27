@@ -29,7 +29,7 @@
         :disabled="disablerole" 
         v-on:input="$emit('input-role', $event)" 
         :label="'Role'" 
-        :items="vocabularies['https://phaidra.org/vocabulary/roles'].terms" 
+        :items="vocabularies['https://phaidra.org/vocabulary/role'].terms" 
         :value="role"
         box
       ></v-select>                      

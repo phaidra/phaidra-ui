@@ -4,15 +4,24 @@
     <v-layout column>
       <v-flex xs12>
         <v-expansion-panel popout expand>
-          <v-expansion-panel-content v-for="(doc, i) in this.docs" :key="doc.pid" v-model="doc.showMore">
+          <v-expansion-panel-content v-for="(doc) in this.docs" :key="doc.pid" v-model="doc.showMore">
             <div slot="header">
               <v-card flat>
-                <v-container fluid grid-list-lg>
+                <v-container fluid grid-list-lg pa-3>
                   <v-layout column>
                     <v-layout row>
                       <v-flex xs2>
-                         <img v-if="instance.baseurl === 'e-book.fwf.ac.at'" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Asset/getThumbnail'" style="max-width:120px" class="elevation-1" />
-                         <img v-else :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'" style="max-width:120px" class="elevation-1" />
+                        <v-img :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '///120'"  class="elevation-1">
+                          <v-layout
+                            slot="placeholder"
+                            fill-height
+                            align-center
+                            justify-center
+                            ma-0
+                          >
+                            <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                          </v-layout>
+                        </v-img>
                       </v-flex>
                       <v-flex xs10>
                         <v-layout column>
@@ -31,10 +40,10 @@
                             <v-layout column>
                               <v-flex>
                                 <span>
-                                  <span v-for="(aut,i) in doc.bib_roles_pers_aut" :key="i">
+                                  <span v-for="(aut,i) in doc.bib_roles_pers_aut" :key="'pers'+i">
                                     {{aut}}<span v-if="(i+1) < doc.bib_roles_pers_aut.length">; </span>
                                   </span>
-                                  <span v-for="(aut,i) in doc.bib_roles_corp_aut" :key="i">
+                                  <span v-for="(aut,i) in doc.bib_roles_corp_aut" :key="'corp'+i">
                                     {{aut}}<span v-if="(i+1) < doc.bib_roles_corp_aut.length">; </span>
                                   </span>
                                 </span>
@@ -49,7 +58,7 @@
                 </v-container>
               </v-card>
             </div><!--header -->
-            <v-container fluid grid-list-lg>
+            <v-container fluid grid-list-lg pa-3>
               <v-layout column>
                 <v-flex v-if="doc.dc_description" class="search-description pb-3">{{ doc.dc_description[0] }}</v-flex>
                 <v-flex class="text-xs-right">
@@ -71,7 +80,6 @@
               </v-layout>
             </v-container>
           </v-expansion-panel-content>
-          <!--<v-divider></v-divider>-->
         </v-expansion-panel>
       </v-flex>
     </v-layout>

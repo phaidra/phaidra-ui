@@ -59,7 +59,7 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-funding',
+  name: 'p-funder',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies

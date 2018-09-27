@@ -2,7 +2,7 @@
 
     <v-layout row >
 
-      <v-flex xs9 class="border-right">
+      <v-flex xs9 class="border-right" pr-2>
 
         <v-layout column>
 

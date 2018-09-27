@@ -52,14 +52,14 @@
 
             <v-flex xs6>
               <v-text-field
-                :value="id"
+                :value="identifier"
                 :label="'Project identifier'"
                 v-on:input="$emit('input-id', $event)"
                 box
               ></v-text-field>
             </v-flex>
 
-             <v-flex xs6>
+            <v-flex xs6>
               <v-text-field
                 :value="homepage"
                 :label="'Project homepage'"
@@ -96,7 +96,7 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-funding',
+  name: 'p-project',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
