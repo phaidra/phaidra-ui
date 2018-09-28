@@ -7,25 +7,21 @@
         <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ pid }}</router-link>
       </v-flex>
 
-      <v-flex>
-
-        <v-tabs v-model="active" >
-          <v-tabs-bar>
-            <v-tabs-item v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tabs-item>
-            <v-tabs-slider color="primary"></v-tabs-slider>
-          </v-tabs-bar>
-          <v-tabs-items>
-            <v-tabs-content v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'">
-              <v-card flat class="grey lighten-5">
-                <v-card-text>
-                  <metadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></metadata-renderer>
-                </v-card-text>
-              </v-card>
-            </v-tabs-content>
-          </v-tabs-items>
-        </v-tabs>
-
+      <v-flex>  
+        <v-tabs v-model="active" slider-color="primary" color="lighten-3">
+          <v-tab v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tab>
+        </v-tabs>  
+        <v-tabs-items v-model="active">
+          <v-tab-item v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" class="pa-3">
+            <v-card flat class="grey lighten-5">
+              <v-card-text>
+                <metadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></metadata-renderer>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
       </v-flex>
+      
     </v-layout>
 
   </v-container>

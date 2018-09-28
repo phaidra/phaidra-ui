@@ -4,7 +4,7 @@
 
     <v-layout v-if="doc !== false" row>
 
-      <v-flex xs12 md9>
+      <v-flex xs12 md9 v-if="doc">
         <v-layout column>
 
           <v-flex>
@@ -20,7 +20,7 @@
             </a>
           </v-flex>
 
-          <v-flex v-for="(title,i) in titles" :key="i" class="mt-3">
+          <v-flex v-for="(title,i) in titles" :key="'title'+i" class="mt-3">
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Title') }} ({{ title.lang }})</v-flex>
@@ -29,7 +29,7 @@
             </v-container>
           </v-flex>
 
-          <v-flex v-for="(role,i) in roles" :key="i" class="mt-3">
+          <v-flex v-for="(role,i) in roles" :key="'role'+i" class="mt-3">
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
@@ -109,7 +109,7 @@
             </v-container>
           </v-flex>
 
-          <v-flex v-for="(desc,i) in descriptions" :key="i" class="mt-3">
+          <v-flex v-for="(desc,i) in descriptions" :key="'desc'+i" class="mt-3">
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
@@ -132,7 +132,7 @@
         </v-layout>
       </v-flex>
 
-      <v-flex xs12 md3>
+      <v-flex xs12 md3 v-if="doc">
         <v-layout column grid-list-md>
 
           <v-card flat>

@@ -8,29 +8,32 @@
             <v-card>
               <v-card-text>
                 <v-flex class="caption grey--text" xs4>{{ $t(nodepath) }}</v-flex>
-                <metadatarenderer v-for="(child,i) in node.children" :key="i" :node="child" :path="nodepath"></metadatarenderer>
+                <metadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="nodepath"></metadata-renderer>
               </v-card-text>
             </v-card>
           </v-flex>
           <v-flex v-else-if="node.input_type === 'input_text'">
             <v-flex v-if="node.xmlname === 'description'">
-              <v-text-field :label="$t(nodepath)" v-model="node.ui_value" multi-line box :disabled="disabled"></v-text-field>
+              <v-text-field :label="$t(nodepath)" v-model="node.ui_value" multi-line :disabled="disabled"></v-text-field>
             </v-flex>
             <v-flex v-else-if="node.xmlname === 'data_order'">
               <v-text-field :label="$t('Order')" v-bind:value="node.ui_value" :disabled="disabled"></v-text-field>
             </v-flex>
             <v-flex v-else>
               <v-flex v-if="node.datatype === 'DateTime'">
-                <v-text-field :label="$t(nodepath)" v-bind:value="node.ui_value | time" box :disabled="disabled"></v-text-field>
+                <v-text-field :label="$t(nodepath)" v-bind:value="node.ui_value | time" :disabled="disabled"></v-text-field>
               </v-flex>
               <v-flex v-else>
-                <v-text-field :label="$t(nodepath)" v-model="node.ui_value" box :disabled="disabled"></v-text-field>
+                <v-text-field :label="$t(nodepath)" v-model="node.ui_value" :disabled="disabled"></v-text-field>
               </v-flex>
             </v-flex>
           </v-flex>
           <v-flex v-else-if="node.input_type === 'select'">
-            <v-flex v-if="node.xmlname === 'lang'">
+            <v-flex v-if="(node.xmlname === 'lang') || (node.xmlname === 'language')">
               <v-text-field :label="$t('Language')" v-bind:value="$t('lang_' + node.ui_value)" :disabled="disabled"></v-text-field>
+            </v-flex>
+            <v-flex v-else-if="node.xmlname === 'taxon'">
+              <v-text-field :label="$t('Taxon')" v-bind:value="node.ui_value" :disabled="disabled"></v-text-field>
             </v-flex>
             <v-flex v-else>
               <v-select :label="$t(nodepath)" v-model="node.labels[$i18n.locale]" :items="[node.labels[$i18n.locale]]" :disabled="disabled"></v-select>
@@ -50,7 +53,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'metadata-renderer',
   props: {
@@ -90,6 +92,10 @@ export default {
 .container {
   padding-top: 4px;
   padding-bottom: 0px;
+}
+
+.v-input__slot {
+  background-color: #fff;
 }
 
 </style>
