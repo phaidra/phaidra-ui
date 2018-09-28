@@ -31,7 +31,7 @@
                 <v-flex>
                   <v-layout row wrap >
                     <v-flex text-xs-right>
-                      <router-link v-if="settings.global.enablelogin" :to="'login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
+                      <router-link v-if="settings.global.enablelogin" :to="'/login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
 
                       <span v-if="signedin" class="subheading displayname grey--text text--lighten-1">{{ user.firstname }} {{ user.lastname }}</span>
 
@@ -73,7 +73,7 @@
                         <v-list>
                           <v-list-tile @click="$router.push('search')"><v-list-tile-title>{{ $t("Search") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
+                          <!--<v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>-->
                           <v-list-tile v-if="signedin" @click="$router.push('myobjects')"><v-list-tile-title>{{ $t("My objects") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
@@ -87,7 +87,7 @@
                     <v-toolbar-items class="hidden-sm-and-down">
                       <v-btn flat :to="{ name: 'search'}">{{ $t("Search") }}</v-btn>
                       <v-btn flat :to="'/submit'">{{ $t("Submit") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</v-btn>
+                      <!--<v-btn flat v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</v-btn>-->
                       <v-btn flat v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</v-btn>
