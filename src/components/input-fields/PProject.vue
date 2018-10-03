@@ -22,7 +22,20 @@
                 :items="vocabularies['lang'].terms" 
                 :value="nameLanguage"
                 box
-              ></v-select>                      
+                return-object
+              >
+                <template slot="item" slot-scope="{ item }">
+                  <v-list-tile-content two-line>
+                    <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+                    <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </template>
+                <template slot="selection" slot-scope="{ item }">
+                  <v-list-tile-content>
+                    <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+                  </v-list-tile-content>
+                </template>
+              </v-select>                      
             </v-flex>
                 
           </v-layout>
@@ -43,7 +56,20 @@
                 :items="vocabularies['lang'].terms" 
                 :value="descriptionLanguage"
                 box
-              ></v-select>                      
+                return-object
+              >
+                <template slot="item" slot-scope="{ item }">
+                  <v-list-tile-content two-line>
+                    <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+                    <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </template>
+                <template slot="selection" slot-scope="{ item }">
+                  <v-list-tile-content>
+                    <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+                  </v-list-tile-content>
+                </template>
+              </v-select>                      
             </v-flex>
                
           </v-layout>
@@ -107,7 +133,7 @@ export default {
       type: String
     },
     nameLanguage: {
-      type: String
+      type: Object
     },
     identifier: {
       type: String
@@ -116,7 +142,7 @@ export default {
       type: String
     },
     descriptionLanguage: {
-      type: String
+      type: Object
     },
     homepage: {
       type: String

@@ -2,19 +2,29 @@
   <v-layout row>
     <v-flex xs8>
       <v-autocomplete
-        :value="value"
+        :value="getTerm(value)"
         :required="required"
-        v-on:input="$emit('input', $event)"
+        v-on:input="$emit('input', $event )"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies[vocabulary].terms"
         :loading="loading"
         hide-no-data
-        hide-selected
-        item-text="text"
-        item-value="value"
         :label="label"
         box
-      ></v-autocomplete>
+        return-object
+      >
+        <template slot="item" slot-scope="{ item }">
+          <v-list-tile-content two-line>
+            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
+          </v-list-tile-content>
+        </template>
+        <template slot="selection" slot-scope="{ item }">
+          <v-list-tile-content>
+            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+      </v-autocomplete>
     </v-flex>
     <v-flex xs4 v-if="multiplicable" >
       <v-container fill-height>
@@ -44,10 +54,18 @@ export default {
       return this.$store.state.vocabulary.vocabularies
     }
   },
+  methods: {
+    getTerm: function (value) {
+      for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
+        if (this.vocabularies[this.vocabulary].terms[i]['@id'] === value) {
+          return this.vocabularies[this.vocabulary].terms[i]
+        }
+      }
+    }
+  },
   props: {
     value: {
-      type: [String, Object],
-      required: true
+      type: String
     },
     label: {
       type: String,
@@ -71,9 +89,15 @@ export default {
   },
   mounted: function () {
     this.$nextTick(function () {
-      this.loading = true
-      // check vocabulary loaded?
-      this.loading = false
+      this.loading = !this.vocabularies[this.vocabulary].loaded
+      // emit input to set rdfs:label in parent
+      if (this.value) {
+        for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
+          if (this.vocabularies[this.vocabulary].terms[i]['@id'] === this.value) {
+            this.$emit('input', this.vocabularies[this.vocabulary].terms[i])
+          }
+        }
+      }
     })
   }
 }

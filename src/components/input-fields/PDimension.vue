@@ -15,7 +15,7 @@
         :items="vocabularies['un-cefact'].terms" 
         :value="unit"
         box
-      ></v-select>                 
+      ></v-select>
     </v-flex>   
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>

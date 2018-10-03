@@ -1,41 +1,45 @@
 <template>
 
-    <v-layout row>
-
-      <v-flex xs10>
-
-        <v-layout column>
-          <v-layout row>
-            <v-flex xs6>
-              <v-text-field
-                :value="name"
-                :label="'Funder name'"
-                v-on:input="$emit('input-name', $event)"
-                box
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs2>
-              <v-select 
-                v-on:input="$emit('input-name-language', $event)" 
-                :label="'Language'"
-                :items="vocabularies['lang'].terms" 
-                :value="nameLanguage"
-                box
-              ></v-select>                      
-            </v-flex>
-            <v-flex xs4>
-              <v-text-field
-                :value="identifier"
-                :label="'Funder identifier'"
-                v-on:input="$emit('input-identifier', $event)"
-                box
-              ></v-text-field>
-            </v-flex>    
-          </v-layout>
-        </v-layout>
-      </v-flex>
-      
-      <v-flex xs2 v-if="multiplicable" >
+  <v-layout row>
+    <v-flex xs4>
+      <v-text-field
+        :value="name"
+        :label="'Funder name'"
+        v-on:input="$emit('input-name', $event)"
+        box
+      ></v-text-field>
+    </v-flex>
+    <v-flex xs2>
+      <v-select 
+        v-on:input="$emit('input-name-language', $event)" 
+        :label="'Language'"
+        :items="vocabularies['lang'].terms" 
+        :value="nameLanguage"
+        box
+        return-object
+      >
+        <template slot="item" slot-scope="{ item }">
+          <v-list-tile-content two-line>
+            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
+          </v-list-tile-content>
+        </template>
+        <template slot="selection" slot-scope="{ item }">
+          <v-list-tile-content>
+            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+      </v-select>                      
+    </v-flex>
+    <v-flex xs4>
+      <v-text-field
+        :value="identifier"
+        :label="'Funder identifier'"
+        v-on:input="$emit('input-identifier', $event)"
+        box
+      ></v-text-field>
+    </v-flex>  
+    <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
           <v-flex>
@@ -48,10 +52,9 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </v-flex>
-
-    </v-layout>
-
+    </v-flex>  
+  </v-layout>
+       
 </template>
 
 <script>
@@ -70,7 +73,7 @@ export default {
       type: String
     },
     nameLanguage: {
-      type: String
+      type: Object
     },
     identifier: {
       type: String

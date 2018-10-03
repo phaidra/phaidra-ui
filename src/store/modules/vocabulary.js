@@ -2,17 +2,17 @@ const state = {
   vocabularies: {
     'lang': {
       terms: [
-        { value: 'deu', text: 'German' },
-        { value: 'eng', text: 'English' }
+        { '@id': 'deu', 'rdfs:label': [{'@value': 'German', '@language': 'eng'}] },
+        { '@id': 'eng', 'rdfs:label': [{'@value': 'English', '@language': 'eng'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'http://id.loc.gov/vocabulary/iso639-2': {
       terms: [
-        { value: 'http://id.loc.gov/vocabulary/iso639-2/deu', text: 'German' },
-        { value: 'http://id.loc.gov/vocabulary/iso639-2/eng', text: 'English' }
+        { '@id': 'http://id.loc.gov/vocabulary/iso639-2/deu', 'rdfs:label': [{'@value': 'German', '@language': 'eng'}] },
+        { '@id': 'http://id.loc.gov/vocabulary/iso639-2/eng', 'rdfs:label': [{'@value': 'English', '@language': 'eng'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'https://phaidra.org/vocabulary/role': {
       terms: [],
@@ -20,78 +20,70 @@ const state = {
     },
     'http://purl.org/coar/resource_type': {
       terms: [
-        { value: 'http://purl.org/coar/resource_type/c_ecc8', text: 'still image' }
+        { '@id': 'http://purl.org/coar/resource_type/c_ecc8', 'rdfs:label': [{'@value': 'still image', '@language': 'eng'}] },
+        { '@id': 'http://purl.org/coar/resource_type/c_18cc', 'rdfs:label': [{'@value': 'sound', '@language': 'eng'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'getty-aat-photo': {
       terms: [
-        { value: 'http://vocab.getty.edu/aat/300162056', text: 'black-and-white photography' },
-        { value: 'http://vocab.getty.edu/aat/300134530', text: 'color photography' }
+        { '@id': 'http://vocab.getty.edu/aat/300162056', 'rdfs:label': [{'@value': 'black-and-white photography', '@language': 'eng'}] },
+        { '@id': 'http://vocab.getty.edu/aat/300134530', 'rdfs:label': [{'@value': 'color photography', '@language': 'eng'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'un-cefact': {
       terms: [
-        { value: 'MTR', text: 'm' },
-        { value: 'CMT', text: 'cm' },
-        { value: 'MMT', text: 'mm' }
+        { '@id': 'MTR', 'rdfs:label': [{'@value': 'm'}] },
+        { '@id': 'CMT', 'rdfs:label': [{'@value': 'cm'}] },
+        { '@id': 'MMT', 'rdfs:label': [{'@value': 'mm'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'mime-types': {
       terms: [
-        { value: 'image/jpeg', text: 'JPG/JPEG' },
-        { value: 'image/tiff', text: 'TIFF' },
-        { value: 'image/gif', text: 'GIF' },
-        { value: 'image/png', text: 'PNG' },
-        { value: 'image/x-ms-bmp', text: 'BMP' },
-        { value: 'audio/wav', text: 'WAVE' },
-        { value: 'audio/mpeg', text: 'MP3' },
-        { value: 'audio/flac', text: 'FLAC' },
-        { value: 'audio/ogg', text: 'Ogg' },
-        { value: 'application/pdf', text: 'PDF' },
-        { value: 'video/mpeg', text: 'MPEG' },
-        { value: 'video/avi', text: 'AVI' },
-        { value: 'video/mp4', text: 'MPEG-4' },
-        { value: 'video/quicktime', text: 'Quicktime' },
-        { value: 'video/x-matroska', text: 'MKV' }
+        { '@id': 'image/jpeg', 'rdfs:label': [{'@value': 'JPG/JPEG'}] },
+        { '@id': 'image/tiff', 'rdfs:label': [{'@value': 'TIFF'}] },
+        { '@id': 'image/gif', 'rdfs:label': [{'@value': 'GIF'}] },
+        { '@id': 'image/png', 'rdfs:label': [{'@value': 'PNG'}] },
+        { '@id': 'image/x-ms-bmp', 'rdfs:label': [{'@value': 'BMP'}] },
+        { '@id': 'audio/wav', 'rdfs:label': [{'@value': 'WAVE'}] },
+        { '@id': 'audio/mpeg', 'rdfs:label': [{'@value': 'MP3'}] },
+        { '@id': 'audio/flac', 'rdfs:label': [{'@value': 'FLAC'}] },
+        { '@id': 'audio/ogg', 'rdfs:label': [{'@value': 'Ogg'}] },
+        { '@id': 'application/pdf', 'rdfs:label': [{'@value': 'PDF'}] },
+        { '@id': 'video/mpeg', 'rdfs:label': [{'@value': 'MPEG'}] },
+        { '@id': 'video/avi', 'rdfs:label': [{'@value': 'AVI'}] },
+        { '@id': 'video/mp4', 'rdfs:label': [{'@value': 'MPEG-4'}] },
+        { '@id': 'video/quicktime', 'rdfs:label': [{'@value': 'Quicktime'}] },
+        { '@id': 'video/x-matroska', 'rdfs:label': [{'@value': 'MKV'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'licenses': {
       terms: [
-        { value: 'http://rightsstatements.org/vocab/InC/1.0/', text: 'All rights reserved' },
-        { value: 'http://creativecommons.org/licenses/by/4.0/', text: 'CC BY 4.0 International' },
-        { value: 'http://creativecommons.org/licenses/by-nc/4.0/', text: 'CC BY-NC 4.0 International' },
-        { value: 'http://creativecommons.org/licenses/by-nc-nd/4.0/', text: 'CC BY-NC-ND 4.0 International' },
-        { value: 'http://creativecommons.org/licenses/by-nc-sa/4.0/', text: 'CC BY-NC-SA 4.0 International' },
-        { value: 'http://creativecommons.org/licenses/by-nd/4.0/', text: 'CC BY-ND 4.0 International' },
-        { value: 'http://creativecommons.org/licenses/by-sa/4.0/', text: 'CC BY-SA 4.0 International' }
+        { '@id': 'http://rightsstatements.org/vocab/InC/1.0/', 'rdfs:label': [{'@value': 'All rights reserved', '@language': 'eng'}] },
+        { '@id': 'http://creativecommons.org/licenses/by/4.0/', 'rdfs:label': [{'@value': 'CC BY 4.0 International', '@language': 'eng'}] },
+        { '@id': 'http://creativecommons.org/licenses/by-nc/4.0/', 'rdfs:label': [{'@value': 'CC BY-NC 4.0 International', '@language': 'eng'}] },
+        { '@id': 'http://creativecommons.org/licenses/by-nc-nd/4.0/', 'rdfs:label': [{'@value': 'CC BY-NC-ND 4.0 International', '@language': 'eng'}] },
+        { '@id': 'http://creativecommons.org/licenses/by-nc-sa/4.0/', 'rdfs:label': [{'@value': 'CC BY-NC-SA 4.0 International', '@language': 'eng'}] },
+        { '@id': 'http://creativecommons.org/licenses/by-nd/4.0/', 'rdfs:label': [{'@value': 'CC BY-ND 4.0 International', '@language': 'eng'}] },
+        { '@id': 'http://creativecommons.org/licenses/by-sa/4.0/', 'rdfs:label': [{'@value': 'CC BY-SA 4.0 International', '@language': 'eng'}] }
       ],
-      loaded: false
+      loaded: true
     },
     'original-copy': {
       terms: [
-        { value: 'original', text: 'original' },
-        { value: 'copy', text: 'copy' }
+        { '@id': 'original', 'rdfs:label': [{'@value': 'original', '@language': 'eng'}] },
+        { '@id': 'copy', 'rdfs:label': [{'@value': 'copy', '@language': 'eng'}] }
       ],
-      loaded: false
-    },
-    'digital-origin': {
-      terms: [
-        { value: 'born digital', text: 'born digital' },
-        { value: 'reformatted digital', text: 'reformatted digital' },
-        { value: 'digitized microfilm', text: 'digitized microfilm' },
-        { value: 'digitized other analog', text: 'digitized other analog' }
-      ],
-      loaded: false
+      loaded: true
     },
     'https://phaidra.org/vocabulary/stamp': {
       terms: [
-        { value: 'https://phaidra.org/vocabulary/stamp/10891', text: 'Aus dem Nachlass Frh. Heinrich v. Ferstel' }
+        { '@id': 'https://phaidra.org/vocabulary/stamp/10891', 'rdfs:label': [{'@value': 'Aus dem Nachlass Frh. Heinrich v. Ferstel', '@language': 'deu'}] }
       ],
-      loaded: false
+      loaded: true
     }
   }
 }
@@ -104,20 +96,23 @@ const mutations = {
         state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms = []
         for (j = 0; j < data[i]['http://www.w3.org/2004/02/skos/core#prefLabel'].length; j++) {
           // TODO: add variants to i18n
-          var label
+          var label = []
           var l = data[i]['http://www.w3.org/2004/02/skos/core#prefLabel'][j]
           if (l['@language'] === 'en') {
-            label = l['@value']
+            label.push({ '@value': l['@value'], '@language': 'eng' })
+          }
+          if (l['@language'] === 'de') {
+            label.push({ '@value': l['@value'], '@language': 'deu' })
           }
         }
-        state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms.push({ value: data[i]['@id'], text: label })
+        state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].terms.push({ '@id': data[i]['@id'], 'rdfs:label': label })
       }
     }
     state.vocabularies['http://id.loc.gov/vocabulary/iso639-2'].loaded = true
   },
   setRolesTerms (state, marcRoles) {
     for (var role in marcRoles) {
-      state.vocabularies['https://phaidra.org/vocabulary/role'].terms.push({ value: role, text: marcRoles[role] })
+      state.vocabularies['https://phaidra.org/vocabulary/role'].terms.push({ '@id': role, 'rdfs:label': [{'@value': marcRoles[role], '@language': 'eng'}] })
     }
     state.vocabularies['https://phaidra.org/vocabulary/role'].loaded = true
   },

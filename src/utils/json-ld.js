@@ -1,5 +1,233 @@
 export default {
-  formDataToJsonLD (formData) {
+  get_json_dce_title (title, subtitle, language) {
+    var h = {
+      '@type': 'bf:Title',
+      'bf:mainTitle': {
+        '@value': title
+      }
+    }
+    if (language) {
+      h['bf:mainTitle']['@language'] = language['@id']
+    }
+    if (subtitle) {
+      h['bf:subtitle'] = {
+        '@value': subtitle
+      }
+      if (language) {
+        h['bf:subtitle']['@language'] = language['@id']
+      }
+    }
+    return h
+  },
+  get_json_bf_note (value, language, type) {
+    var h = {}
+
+    if (type) {
+      h['@type'] = type
+    }
+
+    h['rdfs:label'] = {
+      '@value': value
+    }
+
+    if (language) {
+      h['rdfs:label']['@language'] = language['@id']
+    }
+
+    return h
+  },
+  get_json_object (rdfslabels, preflabels, type, identifiers) {
+    var h = {}
+
+    if (type) {
+      h['@type'] = type
+    }
+
+    if (preflabels) {
+      if (preflabels.length > 0) {
+        h['skos:prefLabel'] = []
+        for (var j = 0; j < preflabels.length; j++) {
+          h['skos:prefLabel'].push(preflabels[j])
+        }
+      }
+    }
+
+    h['rdfs:label'] = []
+    for (var i = 0; i < rdfslabels.length; i++) {
+      h['rdfs:label'].push(rdfslabels[i])
+    }
+
+    if (identifiers) {
+      h['skos:exactMatch'] = identifiers
+    }
+    return h
+  },
+  get_json_spatial (rdfslabels, preflabels, coordinates, type, identifiers) {
+    var h = {}
+
+    if (type) {
+      h['@type'] = type
+    }
+
+    h['rdfs:label'] = []
+    for (var i = 0; i < rdfslabels.length; i++) {
+      h['rdfs:label'].push(rdfslabels[i])
+    }
+
+    if (preflabels) {
+      if (preflabels.length > 0) {
+        h['skos:prefLabel'] = []
+        for (var j = 0; j < preflabels.length; j++) {
+          h['skos:prefLabel'].push(preflabels[j])
+        }
+      }
+    }
+
+    if (identifiers) {
+      h['skos:exactMatch'] = identifiers
+    }
+
+    if (coordinates) {
+      h['schema:geo'] = {
+        '@type': 'schema:GeoCoordinates',
+        'schema:latitude': coordinates['schema:latitude'],
+        'schema:longitude': coordinates['schema:longitude']
+      }
+    }
+
+    return h
+  },
+  get_json_valueobject (value, language) {
+    var h = {
+      '@value': value
+    }
+
+    if (language) {
+      h['@language'] = language['@id']
+    }
+
+    return h
+  },
+  get_json_quantitativevalue (value, unitCode) {
+    var h = {
+      '@type': 'schema:QuantitativeValue',
+      'schema:unitCode': unitCode,
+      'schema:value': value
+    }
+
+    return h
+  },
+  get_json_role (type, firstname, lastname, institution, date, identifiers) {
+    var h = {
+      '@type': type
+    }
+    if (firstname) {
+      h['schema:givenName'] = {
+        '@value': firstname
+      }
+    }
+    if (lastname) {
+      h['schema:familyName'] = {
+        '@value': lastname
+      }
+    }
+    if (institution) {
+      h['schema:name'] = {
+        '@value': institution
+      }
+    }
+    if (date) {
+      h['dcterms:date'] = date
+    }
+    if (identifiers) {
+      h['skos:exactMatch'] = identifiers
+    }
+    return h
+  },
+  get_json_project (name, nameLanguage, description, descriptionLanguage, identifiers, homepage) {
+    var h = {
+      '@type': 'foaf:Project'
+    }
+    if (name) {
+      h['rdfs:label'] = {
+        '@value': name
+      }
+    }
+    if (nameLanguage) {
+      h['rdfs:label']['@language'] = nameLanguage
+    }
+    if (description) {
+      h['rdfs:comment'] = {
+        '@value': description
+      }
+    }
+    if (descriptionLanguage) {
+      h['rdfs:comment']['@language'] = descriptionLanguage
+    }
+    if (identifiers) {
+      h['skos:exactMatch'] = identifiers
+    }
+    if (homepage) {
+      h['foaf:homepage'] = homepage
+    }
+    return h
+  },
+  get_json_funder (name, nameLanguage, identifiers) {
+    var h = {
+      '@type': 'frapo:FundingAgency'
+    }
+    if (name) {
+      h['rdfs:label'] = {
+        '@value': name
+      }
+    }
+    if (nameLanguage) {
+      h['rdfs:label']['@language'] = nameLanguage
+    }
+    if (identifiers) {
+      h['skos:exactMatch'] = identifiers
+    }
+    return h
+  },
+  validate_object (object) {
+    if (!object['@type']) {
+      console.error('JSON-LD validation: missing @type attribute', object)
+      return false
+    }
+    return true
+  },
+  push_object (jsonld, predicate, object) {
+    if (this.validate_object(object)) {
+      if (!jsonld[predicate]) {
+        jsonld[predicate] = []
+      }
+      jsonld[predicate].push(object)
+    }
+  },
+  set_object (jsonld, predicate, object) {
+    if (this.validate_object(object)) {
+      jsonld[predicate] = object
+    }
+  },
+  push_literal (jsonld, predicate, value) {
+    if (!jsonld[predicate]) {
+      jsonld[predicate] = []
+    }
+    jsonld[predicate].push(value)
+  },
+  set_literal (jsonld, predicate, value) {
+    jsonld[predicate] = value
+  },
+  push_value (jsonld, predicate, valueobject) {
+    if (!jsonld[predicate]) {
+      jsonld[predicate] = []
+    }
+    jsonld[predicate].push(valueobject)
+  },
+  set_value (jsonld, predicate, valueobject) {
+    jsonld[predicate] = valueobject
+  },
+  form2json (formData) {
     var jsonlds = {}
     jsonlds['container'] = {}
 
@@ -10,8 +238,12 @@ export default {
         jsonldid = 'member_' + s.id
         jsonlds[jsonldid] = {}
       }
-      if (s.id === 'secondary') {
-        jsonldid = 'secondary'
+      if (s.type === 'phaidra:Subject') {
+        jsonldid = 'subject-' + i
+        jsonlds[jsonldid] = {}
+      }
+      if (s.type === 'phaidra:DigitizedObject') {
+        jsonldid = 'digitized-object'
         jsonlds[jsonldid] = {}
       }
 
@@ -22,292 +254,145 @@ export default {
 
           case 'dce:title':
             if (f.title) {
-              var titledef = {
-                '@type': 'bf:Title',
-                'bf:mainTitle': {
-                  '@value': f.title
-                }
-              }
-              if (f.language) {
-                titledef['bf:mainTitle']['@language'] = f.language
-              }
-              if (f.subtitle) {
-                titledef['bf:subtitle'] = {
-                  '@value': f.subtitle
-                }
-                if (f.language) {
-                  titledef['bf:subtitle']['@language'] = f.language
-                }
-              }
-              if (!jsonlds[jsonldid]['dce:title']) {
-                jsonlds[jsonldid]['dce:title'] = []
-              }
-              jsonlds[jsonldid]['dce:title'].push(titledef)
-            }
-            break
-
-          case 'funding':
-            if ((f.projectName) || (f.projectId)) {
-              var projectdef = {
-                '@type': 'foaf:Project'
-              }
-              if (f.projectName) {
-                projectdef['rdfs:label'] = {
-                  '@value': f.projectName
-                }
-              }
-              if (f.projectNameLanguage) {
-                projectdef['rdfs:label']['@language'] = f.projectNameLanguage
-              }
-              if (f.projectId) {
-                projectdef['skos:exactMatch'] = f.projectId
-              }
-              if (!jsonlds[jsonldid]['frapo:isOutputOf']) {
-                jsonlds[jsonldid]['frapo:isOutputOf'] = []
-              }
-              jsonlds[jsonldid]['frapo:isOutputOf'].push(projectdef)
-            }
-            if (f.funderName || f.funderId) {
-              var funderdef = {
-                '@type': 'frapo:FundingAgency'
-              }
-              if (f.funderName) {
-                funderdef['rdfs:label'] = {
-                  '@value': f.funderName
-                }
-              }
-              if (f.funderNameLanguage) {
-                funderdef['rdfs:label']['@language'] = f.funderNameLanguage
-              }
-              if (f.funderId) {
-                funderdef['skos:exactMatch'] = f.funderId
-              }
-              if (!jsonlds[jsonldid]['frapo:hasFundingAgency']) {
-                jsonlds[jsonldid]['frapo:hasFundingAgency'] = []
-              }
-              jsonlds[jsonldid]['frapo:hasFundingAgency'].push(funderdef)
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_dce_title(f.title, f.subtitle, f.language))
             }
             break
 
           case 'bf:note':
             if (f.value) {
-              var notedef = {
-                'rdfs:label': {
-                  '@value': f.value
-                }
-              }
-              if (f.language) {
-                notedef['rdfs:label']['@language'] = f.language
-              }
-              if (f.bfnotetype) {
-                notedef['bf:noteType'] = f.bfnotetype
-              }
-              if (!jsonlds[jsonldid]['bf:note']) {
-                jsonlds[jsonldid]['bf:note'] = []
-              }
-              jsonlds[jsonldid]['bf:note'].push(notedef)
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_bf_note(f.value, f.language, f.type))
             }
             break
 
-          case 'dce:subject':
+          case 'dcterms:language':
             if (f.value) {
-              var subdef = {
-                '@type': 'skos:Concept',
-                'skos:prefLabel': {
-                  '@value': f.value
-                }
-              }
-              if (f.language) {
-                subdef['skos:prefLabel']['@language'] = f.language
-              }
-              if (!jsonlds[jsonldid]['dce:subject']) {
-                jsonlds[jsonldid]['dce:subject'] = []
-              }
-              jsonlds[jsonldid]['dce:subject'].push(subdef)
+              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
             }
             break
 
-          case 'dcterms:spatial':
-            if (f.component === 'p-text-field') {
-              var spaconceptdef = {
-                '@type': 'skos:Concept',
-                'skos:prefLabel': {
-                  '@value': f.value
-                }
-              }
-              if (f.language) {
-                spaconceptdef['skos:prefLabel']['@language'] = f.language
-              }
-              if (!jsonlds[jsonldid]['dcterms:spatial']) {
-                jsonlds[jsonldid]['dcterms:spatial'] = []
-              }
-              jsonlds[jsonldid]['dcterms:spatial'].push(spaconceptdef)
-            }
-            if (f.component === 'p-gbv-suggest-getty') {
-              if (f.prefLabel && (f.prefLabel.length > 0)) {
-                var spadef = {
-                  '@type': 'schema:Place'
-                }
-                if (f.value) {
-                  spadef['skos:exactMatch'] = [f.value]
-                }
-                if (f.prefLabel) {
-                  spadef['skos:prefLabel'] = f.prefLabel
-                }
-                if (f.path) {
-                  spadef['rdfs:label'] = f.path
-                }
-                if (f.coordinates) {
-                  spadef['schema:geo'] = {
-                    '@type': 'schema:GeoCoordinates',
-                    'schema:latitude': f.coordinates['schema:latitude'],
-                    'schema:longitude': f.coordinates['schema:longitude']
-                  }
-                }
-                if (!jsonlds[jsonldid]['dcterms:spatial']) {
-                  jsonlds[jsonldid]['dcterms:spatial'] = []
-                }
-                jsonlds[jsonldid]['dcterms:spatial'].push(spadef)
-              }
-            }
-            break
-
-          case 'dce:rights':
+          case 'dcterms:type':
             if (f.value) {
-              var rdef = {
-                '@value': f.value
-              }
-              if (f.language) {
-                rdef['@language'] = f.language
-              }
-              if (!jsonlds[jsonldid]['dce:rights']) {
-                jsonlds[jsonldid]['dce:rights'] = []
-              }
-              jsonlds[jsonldid]['dce:rights'].push(rdef)
-            }
-            break
-
-          case 'dce:format':
-            if (f.value) {
-              if (!jsonlds[jsonldid]['dce:format']) {
-                jsonlds[jsonldid]['dce:format'] = []
-              }
-              jsonlds[jsonldid]['dce:format'].push(f.value)
-            }
-            break
-
-          case 'opaque:digitalOrigin':
-            if (f.value) {
-              var dodef = {
-                '@value': f.value
-              }
-              if (f.language) {
-                dodef['@language'] = f.language
-              }
-              if (!jsonlds[jsonldid]['opaque:digitalOrigin']) {
-                jsonlds[jsonldid]['opaque:digitalOrigin'] = []
-              }
-              jsonlds[jsonldid]['opaque:digitalOrigin'].push(dodef)
-            }
-            break
-
-          case 'schema:temporalCoverage':
-            if (f.value) {
-              var tcdef = {
-                '@value': f.value
-              }
-              if (f.language) {
-                tcdef['@language'] = f.language
-              }
-              if (!jsonlds[jsonldid]['schema:temporalCoverage']) {
-                jsonlds[jsonldid]['schema:temporalCoverage'] = []
-              }
-              jsonlds[jsonldid]['schema:temporalCoverage'].push(tcdef)
+              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
             }
             break
 
           case 'role':
-            if (f.role && (f.firstname || f.lastname || f.institution)) {
-              var roledef = {
-                '@type': f.type
-              }
-              if (f.firstname) {
-                roledef['schema:givenName'] = {
-                  '@value': f.firstname
-                }
-              }
-              if (f.lastname) {
-                roledef['schema:familyName'] = {
-                  '@value': f.lastname
-                }
-              }
-              if (f.institution) {
-                roledef['schema:name'] = {
-                  '@value': f.institution
-                }
-              }
-              if (f.date) {
-                roledef['dcterms:date'] = f.date
-              }
-              if (!jsonlds[jsonldid]['role:' + f.role]) {
-                jsonlds[jsonldid]['role:' + f.role] = []
-              }
-              jsonlds[jsonldid]['role:' + f.role].push(roledef)
+            if (f.role && (f.firstname || f.lastname || f.institution || f.identifier)) {
+              this.push_object(jsonlds[jsonldid], 'role:' + f.role, this.get_json_role(f.role, f.type, f.firstname, f.lastname, f.institution, f.date, [f.identifier]))
             }
             break
 
-          case 'dcterms:provenance':
+          case 'edm:rights':
             if (f.value) {
-              var provdef = {
-                '@type': 'dcterms:ProvenanceStatement',
-                'rdfs:label': {
-                  '@value': f.value,
-                  '@language': f.language
-                }
-              }
-              if (f.language) {
-                provdef['rdfs:label']['@language'] = f.language
-              }
-              if (!jsonlds[jsonldid]['dctems:provenance']) {
-                jsonlds[jsonldid]['dctems:provenance'] = []
-              }
-              jsonlds[jsonldid]['dctems:provenance'].push(provdef)
+              this.set_literal(jsonlds[jsonldid], f.predicate, f.value)
             }
             break
 
-          case 'schema:height':
-            if (f.heigh) {
+          case 'dce:rights':
+          case 'schema:temporalCoverage':
+            if (f.value) {
+              this.push_value(jsonlds[jsonldid], f.predicate, this.get_json_valueobject(f.value, f.language))
+            }
+            break
+
+          case 'opaque:ethnographic':
+          case 'dce:subject':
+            if (f.value) {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'skos:Concept'))
+            }
+            break
+
+          case 'frapo:isOutputOf':
+            if (f.name || f.identifier || f.description || f.homepage) {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_project(f.name, f.nameLanguage, f.description, f.descriptionLanguage, [f.identifier], f.homepage))
+            }
+            break
+
+          case 'frapo:hasFundingAgency':
+            if (f.name || f.identifier) {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_funder(f.name, f.nameLanguage, f.value))
+            }
+            break
+
+          case 'opaque:cco_accessionNumber':
+            if (f.value) {
+              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
+            }
+            break
+
+          case 'bf:shelfMark':
+            if (f.value) {
+              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
+            }
+            break
+
+          case 'bf:physicalLocation':
+            if (f.value) {
+              this.push_value(jsonlds[jsonldid], f.predicate, this.get_json_valueobject(f.value, f.language))
             }
             break
 
           case 'vra:hasInscription':
             if (f.value) {
-              var inscdef = {
-                '@type': 'vra:Inscription',
-                'vra:text': {
-                  '@value': f.value,
-                  '@language': f.language
-                }
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Inscription'))
+            }
+            break
+
+          case 'vra:material':
+            if (f.value) {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Material'))
+            }
+            break
+
+          case 'vra:hasTechnique':
+            if (f.component === 'p-select') {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object(f['rdfs:label'], null, 'vra:Technique', f.value))
+            } else {
+              if (f.value) {
+                this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Technique'))
               }
-              if (f.language) {
-                inscdef['vra:text']['@language'] = f.language
+            }
+            break
+
+          case 'schema:width':
+          case 'schema:height':
+          case 'schema:depth':
+          case 'schema:weight':
+            if (f.value) {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_quantitativevalue(f.value, f.unitCode))
+            }
+            break
+
+          case 'dcterms:provenance':
+            if (f.value) {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'dcterms:ProvenanceStatement'))
+            }
+            break
+
+          case 'dcterms:spatial':
+            if (f.component === 'p-gbv-suggest-getty') {
+              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_spatial(f['rdfs:label'], f['skos:prefLabel'], f.coordinates, 'schema:Place', [f.value]))
+            } else {
+              if (f.value) {
+                this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'schema:Place'))
               }
-              if (!jsonlds[jsonldid]['vra:hasInscription']) {
-                jsonlds[jsonldid]['vra:hasInscription'] = []
-              }
-              jsonlds[jsonldid]['vra:hasInscription'].push(inscdef)
+            }
+            break
+
+          case 'ebucore:filename':
+            if (f.value) {
+              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
+            }
+            break
+
+          case 'ebucore:hasMimeType':
+            if (f.value) {
+              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
             }
             break
 
           default:
-            if (f.predicate) {
-              if (f.value) {
-                if (!jsonlds[jsonldid][f.predicate]) {
-                  jsonlds[jsonldid][f.predicate] = []
-                }
-                jsonlds[jsonldid][f.predicate].push(f.value)
-              }
-            }
+            console.error('form2json: unrecognized predicate ', f.predicate, f)
         }
       }
     }

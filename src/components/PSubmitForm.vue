@@ -79,7 +79,7 @@
                 <v-flex offset-xs1 xs4 v-else-if="f.component == 'p-select'" >
                   <p-select 
                     v-bind.sync="f" 
-                    v-on:input="f.value=$event"
+                    v-on:input="selectInput(f, $event)"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                   ></p-select>        
@@ -91,6 +91,7 @@
                     v-on:input-firstname="f.firstname=$event"
                     v-on:input-lastname="f.lastname=$event"
                     v-on:input-institution="f.institution=$event"
+                    v-on:input-identifier="f.identifier=$event"
                     v-on:input-role="f.role=$event"
                     v-on:input-date="f.date=$event"
                     v-on:add="addField(s.fields, f)"
@@ -252,7 +253,7 @@ export default {
       })
     },
     generateJson: function () {
-      this.jsonlds = jsonLd.formDataToJsonLD(this.form)
+      this.jsonlds = jsonLd.form2json(this.form)
       this.metadata = { metadata: { 'json-ld': this.jsonlds } }
       this.$refs.prettyprint.$forceUpdate()
     },
@@ -300,9 +301,13 @@ export default {
       arrays.remove(this.form.sections, s)
     },
     updatePlace: function (f, event) {
-      f.prefLabel = event.prefLabel
-      f.path = event.path
+      f['skos:prefLabel'] = event['skos:prefLabel']
+      f['rdfs:label'] = event['rdfs:label']
       f.coordinates = event.coordinates
+    },
+    selectInput: function (f, event) {
+      f.value = event['@id']
+      f['rdfs:label'] = event['rdfs:label']
     }
   },
   mounted: function () {

@@ -32,7 +32,8 @@ export default {
                 required: true,
                 multiplicable: false,
                 label: 'Resource type',
-                value: 'http://purl.org/coar/resource_type/c_ecc8'
+                value: 'http://purl.org/coar/resource_type/c_ecc8',
+                'rdfs:label': []
               },
               {
                 id: 101,
@@ -46,11 +47,12 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: ''
+                language: {}
               },
               {
                 id: 102,
                 predicate: 'bf:note',
+                type: 'bf:Note',
                 metadataset: 'digital',
                 component: 'p-text-field',
                 multiplicable: true,
@@ -58,7 +60,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 103,
@@ -80,7 +82,8 @@ export default {
                 required: true,
                 multiplicable: true,
                 label: 'Language',
-                value: ''
+                value: '',
+                'rdfs:label': []
               },
               {
                 id: 105,
@@ -107,7 +110,7 @@ export default {
                 multiline: true,
                 label: 'Note',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 107,
@@ -119,7 +122,7 @@ export default {
                 multilingual: true,
                 label: 'Keyword',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 108,
@@ -127,9 +130,9 @@ export default {
                 metadataset: 'digital',
                 component: 'p-project',
                 name: '',
-                nameLanguage: '',
+                nameLanguage: {},
                 description: '',
-                descriptionLanguage: '',
+                descriptionLanguage: {},
                 identifier: '',
                 homepage: ''
               },
@@ -139,7 +142,7 @@ export default {
                 metadataset: 'digital',
                 component: 'p-funder',
                 name: '',
-                nameLanguage: '',
+                nameLanguage: {},
                 identifier: ''
               }
             ]
@@ -147,6 +150,7 @@ export default {
           {
             title: 'Digitized object',
             id: 'digitized',
+            type: 'phaidra:DigitizedObject',
             fields: [
               {
                 id: 200,
@@ -174,7 +178,7 @@ export default {
                 multilingual: true,
                 label: 'Provenance',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 203,
@@ -202,7 +206,7 @@ export default {
                 multiline: true,
                 label: 'Condition',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 206,
@@ -212,21 +216,23 @@ export default {
                 component: 'p-select',
                 vocabulary: 'original-copy',
                 label: 'Reproduction note',
-                value: ''
+                value: '',
+                'rdfs:label': []
               },
               {
                 id: 208,
-                predicate: 'vra:technique',
+                predicate: 'vra:hasTechnique',
                 type: 'vra:Technique',
                 metadataset: 'analog',
                 component: 'p-select',
                 vocabulary: 'getty-aat-photo',
                 label: 'Technique',
-                value: 'http://vocab.getty.edu/aat/300162056'
+                value: 'http://vocab.getty.edu/aat/300162056',
+                'rdfs:label': []
               },
               {
                 id: 209,
-                predicate: 'vra:technique',
+                predicate: 'vra:hasTechnique',
                 type: 'vra:Technique',
                 metadataset: 'analog',
                 component: 'p-text-field',
@@ -234,7 +240,7 @@ export default {
                 multiplicable: true,
                 label: 'Technique',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 210,
@@ -246,11 +252,11 @@ export default {
                 multiplicable: true,
                 label: 'Material description',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 211,
-                predicate: 'schma:height',
+                predicate: 'schema:height',
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Height',
@@ -259,7 +265,7 @@ export default {
               },
               {
                 id: 212,
-                predicate: 'schma:width',
+                predicate: 'schema:width',
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Width',
@@ -276,7 +282,7 @@ export default {
                 multilingual: true,
                 label: 'Inscription',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 214,
@@ -285,7 +291,8 @@ export default {
                 component: 'p-select',
                 vocabulary: 'https://phaidra.org/vocabulary/stamp',
                 label: 'Stamp',
-                value: ''
+                value: '',
+                'rdfs:label': []
               },
               {
                 id: 215,
@@ -294,7 +301,9 @@ export default {
                 component: 'p-gbv-suggest-getty',
                 voc: 'tgn',
                 label: 'Place',
-                value: ''
+                value: '',
+                'rdfs:label': [],
+                'skos:prefLabel': []
               },
               {
                 id: 216,
@@ -305,13 +314,14 @@ export default {
                 multiplicable: true,
                 label: 'Place (native name)',
                 value: '',
-                language: ''
+                language: {}
               }
             ]
           },
           {
             title: 'Depicted object',
             id: 'subject-represented',
+            type: 'phaidra:Subject',
             fields: [
               {
                 id: 300,
@@ -325,7 +335,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: ''
+                language: {}
               },
               {
                 id: 301,
@@ -337,7 +347,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 302,
@@ -365,7 +375,7 @@ export default {
                 multilingual: true,
                 label: 'Provenance',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 305,
@@ -387,6 +397,7 @@ export default {
                 label: 'Contributions',
                 firstname: '',
                 lastname: '',
+                identifier: '',
                 role: '',
                 date: ''
               },
@@ -400,13 +411,14 @@ export default {
               },
               {
                 id: 308,
-                predicate: 'vra:technique',
+                predicate: 'vra:hasTechnique',
                 type: 'vra:Technique',
                 metadataset: 'subject-represented',
                 component: 'p-select',
                 vocabulary: 'getty-aat-photo',
                 label: 'Technique',
-                value: ''
+                value: '',
+                'rdfs:label': []
               },
               {
                 id: 309,
@@ -418,60 +430,34 @@ export default {
                 multiplicable: true,
                 label: 'Material description',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 310,
-                predicate: 'schma:height',
+                predicate: 'schema:height',
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Height',
-                unit: 'CMT',
+                unitCode: 'CMT',
                 value: ''
               },
               {
                 id: 311,
-                predicate: 'schma:width',
+                predicate: 'schema:width',
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Width',
-                unit: 'CMT',
+                unitCode: 'CMT',
                 value: ''
               },
               {
                 id: 312,
-                predicate: 'schma:depth',
+                predicate: 'schema:depth',
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Depth',
-                unit: 'CMT',
+                unitCode: 'CMT',
                 value: ''
-              }
-            ]
-          },
-          {
-            title: 'Rights',
-            id: 'rights',
-            fields: [
-              {
-                id: 400,
-                predicate: 'edm:rights',
-                metadataset: 'digital',
-                component: 'p-select',
-                vocabulary: 'licenses',
-                label: 'License',
-                value: ''
-              },
-              {
-                id: 401,
-                predicate: 'dce:rights',
-                metadataset: 'digital',
-                component: 'p-text-field',
-                multiline: true,
-                multilingual: true,
-                label: 'Rights statement',
-                value: '',
-                language: ''
               }
             ]
           },
@@ -483,6 +469,8 @@ export default {
             fields: [
               {
                 id: 500,
+                predicate: 'ebucore:filename',
+                metadataset: 'digital',
                 component: 'input-file',
                 label: 'Datei',
                 value: ''
@@ -499,7 +487,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: ''
+                language: {}
               },
               {
                 id: 502,
@@ -511,7 +499,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 503,
@@ -528,7 +516,8 @@ export default {
                 component: 'p-select',
                 vocabulary: 'mime-types',
                 label: 'MIME type',
-                value: 'image/tiff'
+                value: 'image/tiff',
+                'rdfs:label': []
               },
               {
                 id: 505,
@@ -540,7 +529,7 @@ export default {
                 multiline: true,
                 label: 'Condition',
                 value: '',
-                language: ''
+                language: {}
               },
               {
                 id: 506,
@@ -556,6 +545,27 @@ export default {
                 lastname: '',
                 role: 'digitiser',
                 date: ''
+              },
+              {
+                id: 507,
+                predicate: 'edm:rights',
+                metadataset: 'digital',
+                component: 'p-select',
+                vocabulary: 'licenses',
+                label: 'License',
+                value: '',
+                'rdfs:label': []
+              },
+              {
+                id: 508,
+                predicate: 'dce:rights',
+                metadataset: 'digital',
+                component: 'p-text-field',
+                multiline: true,
+                multilingual: true,
+                label: 'Rights statement',
+                value: '',
+                language: {}
               }
             ]
           }

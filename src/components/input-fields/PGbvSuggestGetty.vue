@@ -82,8 +82,8 @@ export default {
       model: null,
       search: null,
       debounceTask: undefined,
-      prefLabel: '',
-      path: '',
+      preflabel: '',
+      rdfslabel: '',
       coordinates: [],
       name: ''
     }
@@ -110,13 +110,13 @@ export default {
         })
         .then(function (json) {
           self.loading = false
-          self.prefLabel = json[uri]['skos:prefLabel']
-          for (var i = 0; i < self.prefLabel.length; i++) {
-            self.name = self.prefLabel[i]['@value']
+          self.preflabel = json[uri]['skos:prefLabel']
+          for (var i = 0; i < self.preflabel.length; i++) {
+            self.name = self.preflabel[i]['@value']
           }
-          self.path = json[uri]['rdfs:label']
+          self.rdfslabel = json[uri]['rdfs:label']
           self.coordinates = json[uri]['schema:GeoCoordinates']
-          self.$emit('resolve', { prefLabel: self.prefLabel, path: self.path, coordinates: self.coordinates })
+          self.$emit('resolve', { 'skos:prefLabel': [{ '@value': self.preflabel }], 'rdfs:label': [{ '@value': self.rdfslabel }], coordinates: self.coordinates })
         })
         .catch(function (error) {
           console.log(error)

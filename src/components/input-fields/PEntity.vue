@@ -25,6 +25,14 @@
       ></v-text-field>
     </v-flex>
     <v-flex xs2>
+      <v-text-field
+        :value="identifier"
+        :label="'Identifier'"
+        v-on:input="$emit('input-identifier', $event)"
+        box
+      ></v-text-field>                    
+    </v-flex>
+    <v-flex xs2>
       <v-select
         :disabled="disablerole" 
         v-on:input="$emit('input-role', $event)" 
@@ -100,6 +108,9 @@ export default {
       type: String
     },
     institution: {
+      type: String
+    },
+    identifier: {
       type: String
     },
     role: {
