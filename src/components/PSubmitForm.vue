@@ -115,7 +115,7 @@
                   <p-dimension
                     v-bind.sync="f" 
                     v-on:input-value="f.value=$event"
-                    v-on:input-unit="f.unit=$event"
+                    v-on:input-unit="f.unitCode=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                   ></p-dimension>        

@@ -167,6 +167,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-text-field',
                 label: 'Temporal coverage',
+                multilingual: true,
                 value: ''
               },
               {
@@ -260,7 +261,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Height',
-                unit: 'CMT',
+                unitCode: 'CMT',
                 value: ''
               },
               {
@@ -269,7 +270,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Width',
-                unit: 'CMT',
+                unitCode: 'CMT',
                 value: ''
               },
               {
@@ -363,6 +364,7 @@ export default {
                 predicate: 'schema:temporalCoverage',
                 metadataset: 'subject-represented',
                 component: 'p-text-field',
+                multilingual: true,
                 label: 'Temporal coverage',
                 value: ''
               },
@@ -527,7 +529,7 @@ export default {
                 component: 'p-text-field',
                 multilingual: true,
                 multiline: true,
-                label: 'Condition',
+                label: 'Digitization note',
                 value: '',
                 language: ''
               },

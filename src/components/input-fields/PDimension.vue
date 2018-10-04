@@ -13,9 +13,21 @@
         v-on:input="$emit('input-unit', $event)" 
         :label="'Unit'"
         :items="vocabularies['un-cefact'].terms" 
-        :value="unit"
+        :value="getTerm(unit)"
         box
-      ></v-select>
+      >
+        <template slot="item" slot-scope="{ item }">
+          <v-list-tile-content two-line>
+            <v-list-tile-title  v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-sub-title  v-html="`${item['@id']}`"></v-list-tile-sub-title>
+          </v-list-tile-content>
+        </template>
+        <template slot="selection" slot-scope="{ item }">
+          <v-list-tile-content>
+            <v-list-tile-title v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+      </v-select>
     </v-flex>   
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
@@ -58,6 +70,15 @@ export default {
     },
     multiplicable: {
       type: Boolean
+    }
+  },
+  methods: {
+    getTerm: function (value) {
+      for (var i = 0; i < this.vocabularies['un-cefact'].terms.length; i++) {
+        if (this.vocabularies['un-cefact'].terms[i]['@id'] === value) {
+          return this.vocabularies['un-cefact'].terms[i]
+        }
+      }
     }
   }
 }

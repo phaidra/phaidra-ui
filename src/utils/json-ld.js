@@ -52,9 +52,11 @@ export default {
       }
     }
 
-    h['rdfs:label'] = []
-    for (var i = 0; i < rdfslabels.length; i++) {
-      h['rdfs:label'].push(rdfslabels[i])
+    if (rdfslabels) {
+      h['rdfs:label'] = []
+      for (var i = 0; i < rdfslabels.length; i++) {
+        h['rdfs:label'].push(rdfslabels[i])
+      }
     }
 
     if (identifiers) {
@@ -330,7 +332,7 @@ export default {
 
         case 'frapo:hasFundingAgency':
           if (f.name || f.identifier) {
-            this.push_object(jsonld, f.predicate, this.get_json_funder(f.name, f.nameLanguage, f.value))
+            this.push_object(jsonld, f.predicate, this.get_json_funder(f.name, f.nameLanguage, [f.identifier]))
           }
           break
 
@@ -353,8 +355,12 @@ export default {
           break
 
         case 'vra:hasInscription':
-          if (f.value) {
-            this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Inscription'))
+          if (f.component === 'p-select' && f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_object(null, null, 'vra:Inscription', f.value))
+          } else {
+            if (f.value) {
+              this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Inscription'))
+            }
           }
           break
 

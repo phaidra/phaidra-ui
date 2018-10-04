@@ -80,7 +80,7 @@
               <v-text-field
                 :value="identifier"
                 :label="'Project identifier'"
-                v-on:input="$emit('input-id', $event)"
+                v-on:input="$emit('input-identifier', $event)"
                 box
               ></v-text-field>
             </v-flex>
