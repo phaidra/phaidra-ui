@@ -47,7 +47,7 @@
                   <p-text-field             
                     v-bind.sync="f"
                     v-on:input="f.value=$event"
-                    v-on:input-language="f.language=$event"
+                    v-on:input-language="f.language=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                   ></p-text-field>
@@ -57,7 +57,7 @@
                   <p-text-field-suggest
                     v-bind.sync="f"
                     v-on:input="f.value=$event"
-                    v-on:input-language="f.language=$event"
+                    v-on:input-language="f.language=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                   ></p-text-field-suggest>
@@ -68,7 +68,7 @@
                     v-bind.sync="f"
                     v-on:input-title="f.title=$event"
                     v-on:input-subtitle="f.subtitle=$event"
-                    v-on:input-language="f.language=$event"
+                    v-on:input-language="f.language=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
                     v-on:up="sortFieldUp(s.fields, f)"
@@ -92,7 +92,7 @@
                     v-on:input-lastname="f.lastname=$event"
                     v-on:input-institution="f.institution=$event"
                     v-on:input-identifier="f.identifier=$event"
-                    v-on:input-role="f.role=$event"
+                    v-on:input-role="roleInput(f, $event)"
                     v-on:input-date="f.date=$event"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
@@ -125,9 +125,9 @@
                   <p-project
                     v-bind.sync="f" 
                     v-on:input-name="f.name=$event"
-                    v-on:input-name-language="f.nameLanguage=$event"
+                    v-on:input-name-language="f.nameLanguage=$event['@id']"
                     v-on:input-description="f.description=$event"
-                    v-on:input-description-language="f.descriptionLanguage=$event"
+                    v-on:input-description-language="f.descriptionLanguage=$event['@id']"
                     v-on:input-identifier="f.identifier=$event"
                     v-on:input-homepage="f.homepage=$event"
                     v-on:add="addField(s.fields, f)"
@@ -139,7 +139,7 @@
                   <p-funder
                     v-bind.sync="f" 
                     v-on:input-name="f.name=$event"
-                    v-on:input-name-language="f.nameLanguage=$event"
+                    v-on:input-name-language="f.nameLanguage=$event['@id']"
                     v-on:input-identifier="f.identifier=$event"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
@@ -253,7 +253,7 @@ export default {
       })
     },
     generateJson: function () {
-      this.jsonlds = jsonLd.form2json(this.form)
+      this.jsonlds = jsonLd.containerForm2json(this.form)
       this.metadata = { metadata: { 'json-ld': this.jsonlds } }
       this.$refs.prettyprint.$forceUpdate()
     },
@@ -307,6 +307,10 @@ export default {
     },
     selectInput: function (f, event) {
       f.value = event['@id']
+      f['rdfs:label'] = event['rdfs:label']
+    },
+    roleInput: function (f, event) {
+      f.role = event['@id']
       f['rdfs:label'] = event['rdfs:label']
     }
   },

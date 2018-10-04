@@ -23,7 +23,7 @@
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 
-        :value="language"
+        :value="getLangTerm(language)"
         box
         return-object
       >
@@ -84,7 +84,7 @@ export default {
       type: String
     },
     language: {
-      type: Object
+      type: String
     },
     required: {
       type: Boolean
@@ -103,6 +103,15 @@ export default {
     return {
       datepicker: false,
       selectedDate: ''
+    }
+  },
+  methods: {
+    getLangTerm: function (value) {
+      for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
+        if (this.vocabularies['lang'].terms[i]['@id'] === value) {
+          return this.vocabularies['lang'].terms[i]
+        }
+      }
     }
   }
 }

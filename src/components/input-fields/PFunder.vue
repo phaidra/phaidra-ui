@@ -14,7 +14,7 @@
         v-on:input="$emit('input-name-language', $event)" 
         :label="'Language'"
         :items="vocabularies['lang'].terms" 
-        :value="nameLanguage"
+        :value="getLangTerm(nameLanguage)"
         box
         return-object
       >
@@ -73,13 +73,22 @@ export default {
       type: String
     },
     nameLanguage: {
-      type: Object
+      type: String
     },
     identifier: {
       type: String
     },
     multiplicable: {
       type: Boolean
+    }
+  },
+  methods: {
+    getLangTerm: function (value) {
+      for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
+        if (this.vocabularies['lang'].terms[i]['@id'] === value) {
+          return this.vocabularies['lang'].terms[i]
+        }
+      }
     }
   }
 }

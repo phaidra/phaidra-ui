@@ -38,9 +38,22 @@
         v-on:input="$emit('input-role', $event)" 
         :label="'Role'" 
         :items="vocabularies['https://phaidra.org/vocabulary/role'].terms" 
-        :value="role"
+        :value="getTerm(role)"
         box
-      ></v-select>                      
+        return-object
+      >
+        <template slot="item" slot-scope="{ item }">
+          <v-list-tile-content two-line>
+            <v-list-tile-title  v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-sub-title  v-html="`${item['@id']}`"></v-list-tile-sub-title>
+          </v-list-tile-content>
+        </template>
+        <template slot="selection" slot-scope="{ item }">
+          <v-list-tile-content>
+            <v-list-tile-title v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+      </v-select>                      
     </v-flex>
     <v-flex xs2 v-if="showdate">
       <v-menu
@@ -140,12 +153,35 @@ export default {
       default: true
     }
   },
+  methods: {
+    getTerm: function (value) {
+      for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
+        if (this.vocabularies[this.vocabulary].terms[i]['@id'] === value) {
+          return this.vocabularies[this.vocabulary].terms[i]
+        }
+      }
+    }
+  },
   data () {
     return {
       datepicker: false,
       selectedDate: '',
-      datemodel: ''
+      datemodel: '',
+      vocabulary: 'https://phaidra.org/vocabulary/role'
     }
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      this.loading = !this.vocabularies[this.vocabulary].loaded
+      // emit input to set rdfs:label in parent
+      if (this.role) {
+        for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
+          if (this.vocabularies[this.vocabulary].terms[i]['@id'] === this.role) {
+            this.$emit('input', this.vocabularies[this.vocabulary].terms[i])
+          }
+        }
+      }
+    })
   }
 }
 </script>

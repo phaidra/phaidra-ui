@@ -26,7 +26,7 @@
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 
-        :value="language"
+        :value="getLangTerm(language)"
         box
         return-object
       >
@@ -73,7 +73,7 @@
         required: true
       },
       language: {
-        type: Object
+        type: String
       },
       label: {
         type: String,
@@ -116,6 +116,13 @@
       }
     },
     methods: {
+      getLangTerm: function (value) {
+        for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
+          if (this.vocabularies['lang'].terms[i]['@id'] === value) {
+            return this.vocabularies['lang'].terms[i]
+          }
+        }
+      },
       querySuggestionsDebounce (value) {
         this.showList = true
 

@@ -47,7 +47,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: {}
+                language: ''
               },
               {
                 id: 102,
@@ -60,7 +60,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 103,
@@ -110,7 +110,7 @@ export default {
                 multiline: true,
                 label: 'Note',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 107,
@@ -122,7 +122,7 @@ export default {
                 multilingual: true,
                 label: 'Keyword',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 108,
@@ -130,9 +130,9 @@ export default {
                 metadataset: 'digital',
                 component: 'p-project',
                 name: '',
-                nameLanguage: {},
+                nameLanguage: '',
                 description: '',
-                descriptionLanguage: {},
+                descriptionLanguage: '',
                 identifier: '',
                 homepage: ''
               },
@@ -142,7 +142,7 @@ export default {
                 metadataset: 'digital',
                 component: 'p-funder',
                 name: '',
-                nameLanguage: {},
+                nameLanguage: '',
                 identifier: ''
               }
             ]
@@ -178,7 +178,7 @@ export default {
                 multilingual: true,
                 label: 'Provenance',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 203,
@@ -206,7 +206,7 @@ export default {
                 multiline: true,
                 label: 'Condition',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 206,
@@ -240,7 +240,7 @@ export default {
                 multiplicable: true,
                 label: 'Technique',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 210,
@@ -252,7 +252,7 @@ export default {
                 multiplicable: true,
                 label: 'Material description',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 211,
@@ -282,7 +282,7 @@ export default {
                 multilingual: true,
                 label: 'Inscription',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 214,
@@ -314,7 +314,7 @@ export default {
                 multiplicable: true,
                 label: 'Place (native name)',
                 value: '',
-                language: {}
+                language: ''
               }
             ]
           },
@@ -335,7 +335,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: {}
+                language: ''
               },
               {
                 id: 301,
@@ -347,7 +347,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 302,
@@ -375,7 +375,7 @@ export default {
                 multilingual: true,
                 label: 'Provenance',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 305,
@@ -430,7 +430,7 @@ export default {
                 multiplicable: true,
                 label: 'Material description',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 310,
@@ -487,7 +487,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: {}
+                language: ''
               },
               {
                 id: 502,
@@ -499,7 +499,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 503,
@@ -529,7 +529,7 @@ export default {
                 multiline: true,
                 label: 'Condition',
                 value: '',
-                language: {}
+                language: ''
               },
               {
                 id: 506,
@@ -565,7 +565,7 @@ export default {
                 multilingual: true,
                 label: 'Rights statement',
                 value: '',
-                language: {}
+                language: ''
               }
             ]
           }

@@ -7,14 +7,14 @@ export default {
       }
     }
     if (language) {
-      h['bf:mainTitle']['@language'] = language['@id']
+      h['bf:mainTitle']['@language'] = language
     }
     if (subtitle) {
       h['bf:subtitle'] = {
         '@value': subtitle
       }
       if (language) {
-        h['bf:subtitle']['@language'] = language['@id']
+        h['bf:subtitle']['@language'] = language
       }
     }
     return h
@@ -31,7 +31,7 @@ export default {
     }
 
     if (language) {
-      h['rdfs:label']['@language'] = language['@id']
+      h['rdfs:label']['@language'] = language
     }
 
     return h
@@ -103,7 +103,7 @@ export default {
     }
 
     if (language) {
-      h['@language'] = language['@id']
+      h['@language'] = language
     }
 
     return h
@@ -227,7 +227,7 @@ export default {
   set_value (jsonld, predicate, valueobject) {
     jsonld[predicate] = valueobject
   },
-  form2json (formData) {
+  containerForm2json (formData) {
     var jsonlds = {}
     jsonlds['container'] = {}
 
@@ -240,162 +240,181 @@ export default {
       }
       if (s.type === 'phaidra:Subject') {
         jsonldid = 'subject-' + i
-        jsonlds[jsonldid] = {}
+        jsonlds[jsonldid] = {
+          '@type': 'phaidra:Subject'
+        }
       }
       if (s.type === 'phaidra:DigitizedObject') {
         jsonldid = 'digitized-object'
-        jsonlds[jsonldid] = {}
-      }
-
-      for (var j = 0; j < s.fields.length; j++) {
-        var f = s.fields[j]
-
-        switch (f.predicate) {
-
-          case 'dce:title':
-            if (f.title) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_dce_title(f.title, f.subtitle, f.language))
-            }
-            break
-
-          case 'bf:note':
-            if (f.value) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_bf_note(f.value, f.language, f.type))
-            }
-            break
-
-          case 'dcterms:language':
-            if (f.value) {
-              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          case 'dcterms:type':
-            if (f.value) {
-              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          case 'role':
-            if (f.role && (f.firstname || f.lastname || f.institution || f.identifier)) {
-              this.push_object(jsonlds[jsonldid], 'role:' + f.role, this.get_json_role(f.role, f.type, f.firstname, f.lastname, f.institution, f.date, [f.identifier]))
-            }
-            break
-
-          case 'edm:rights':
-            if (f.value) {
-              this.set_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          case 'dce:rights':
-          case 'schema:temporalCoverage':
-            if (f.value) {
-              this.push_value(jsonlds[jsonldid], f.predicate, this.get_json_valueobject(f.value, f.language))
-            }
-            break
-
-          case 'opaque:ethnographic':
-          case 'dce:subject':
-            if (f.value) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'skos:Concept'))
-            }
-            break
-
-          case 'frapo:isOutputOf':
-            if (f.name || f.identifier || f.description || f.homepage) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_project(f.name, f.nameLanguage, f.description, f.descriptionLanguage, [f.identifier], f.homepage))
-            }
-            break
-
-          case 'frapo:hasFundingAgency':
-            if (f.name || f.identifier) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_funder(f.name, f.nameLanguage, f.value))
-            }
-            break
-
-          case 'opaque:cco_accessionNumber':
-            if (f.value) {
-              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          case 'bf:shelfMark':
-            if (f.value) {
-              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          case 'bf:physicalLocation':
-            if (f.value) {
-              this.push_value(jsonlds[jsonldid], f.predicate, this.get_json_valueobject(f.value, f.language))
-            }
-            break
-
-          case 'vra:hasInscription':
-            if (f.value) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Inscription'))
-            }
-            break
-
-          case 'vra:material':
-            if (f.value) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Material'))
-            }
-            break
-
-          case 'vra:hasTechnique':
-            if (f.component === 'p-select') {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object(f['rdfs:label'], null, 'vra:Technique', f.value))
-            } else {
-              if (f.value) {
-                this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Technique'))
-              }
-            }
-            break
-
-          case 'schema:width':
-          case 'schema:height':
-          case 'schema:depth':
-          case 'schema:weight':
-            if (f.value) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_quantitativevalue(f.value, f.unitCode))
-            }
-            break
-
-          case 'dcterms:provenance':
-            if (f.value) {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'dcterms:ProvenanceStatement'))
-            }
-            break
-
-          case 'dcterms:spatial':
-            if (f.component === 'p-gbv-suggest-getty') {
-              this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_spatial(f['rdfs:label'], f['skos:prefLabel'], f.coordinates, 'schema:Place', [f.value]))
-            } else {
-              if (f.value) {
-                this.push_object(jsonlds[jsonldid], f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'schema:Place'))
-              }
-            }
-            break
-
-          case 'ebucore:filename':
-            if (f.value) {
-              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          case 'ebucore:hasMimeType':
-            if (f.value) {
-              this.push_literal(jsonlds[jsonldid], f.predicate, f.value)
-            }
-            break
-
-          default:
-            console.error('form2json: unrecognized predicate ', f.predicate, f)
+        jsonlds[jsonldid] = {
+          '@type': 'phaidra:DigitizedObject'
         }
       }
+
+      this.form2json(jsonlds[jsonldid], s)
     }
+
+    Object.keys(jsonlds).forEach(function (key) {
+      if (key === 'digitized-object' || key.startsWith('subject-')) {
+        if (!jsonlds['container']['dcterms:subject']) {
+          jsonlds['container']['dcterms:subject'] = []
+        }
+        jsonlds['container']['dcterms:subject'].push(jsonlds[key])
+        delete jsonlds[key]
+      }
+    })
+
     return jsonlds
+  },
+  form2json (jsonld, formData) {
+    for (var j = 0; j < formData.fields.length; j++) {
+      var f = formData.fields[j]
+
+      switch (f.predicate) {
+
+        case 'dce:title':
+          if (f.title) {
+            this.push_object(jsonld, f.predicate, this.get_json_dce_title(f.title, f.subtitle, f.language))
+          }
+          break
+
+        case 'bf:note':
+          if (f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_bf_note(f.value, f.language, f.type))
+          }
+          break
+
+        case 'dcterms:language':
+          if (f.value) {
+            this.push_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        case 'dcterms:type':
+          if (f.value) {
+            this.push_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        case 'role':
+          if (f.role && (f.firstname || f.lastname || f.institution || f.identifier)) {
+            this.push_object(jsonld, 'role:' + f.role, this.get_json_role(f.type, f.firstname, f.lastname, f.institution, f.date, [f.identifier]))
+          }
+          break
+
+        case 'edm:rights':
+          if (f.value) {
+            this.set_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        case 'dce:rights':
+        case 'schema:temporalCoverage':
+          if (f.value) {
+            this.push_value(jsonld, f.predicate, this.get_json_valueobject(f.value, f.language))
+          }
+          break
+
+        case 'opaque:ethnographic':
+        case 'dce:subject':
+          if (f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'skos:Concept'))
+          }
+          break
+
+        case 'frapo:isOutputOf':
+          if (f.name || f.identifier || f.description || f.homepage) {
+            this.push_object(jsonld, f.predicate, this.get_json_project(f.name, f.nameLanguage, f.description, f.descriptionLanguage, [f.identifier], f.homepage))
+          }
+          break
+
+        case 'frapo:hasFundingAgency':
+          if (f.name || f.identifier) {
+            this.push_object(jsonld, f.predicate, this.get_json_funder(f.name, f.nameLanguage, f.value))
+          }
+          break
+
+        case 'opaque:cco_accessionNumber':
+          if (f.value) {
+            this.push_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        case 'bf:shelfMark':
+          if (f.value) {
+            this.push_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        case 'bf:physicalLocation':
+          if (f.value) {
+            this.push_value(jsonld, f.predicate, this.get_json_valueobject(f.value, f.language))
+          }
+          break
+
+        case 'vra:hasInscription':
+          if (f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Inscription'))
+          }
+          break
+
+        case 'vra:material':
+          if (f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Material'))
+          }
+          break
+
+        case 'vra:hasTechnique':
+          if (f.component === 'p-select' && f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_object(f['rdfs:label'], null, 'vra:Technique', f.value))
+          } else {
+            if (f.value) {
+              this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Technique'))
+            }
+          }
+          break
+
+        case 'schema:width':
+        case 'schema:height':
+        case 'schema:depth':
+        case 'schema:weight':
+          if (f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_quantitativevalue(f.value, f.unitCode))
+          }
+          break
+
+        case 'dcterms:provenance':
+          if (f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'dcterms:ProvenanceStatement'))
+          }
+          break
+
+        case 'dcterms:spatial':
+          if (f.component === 'p-gbv-suggest-getty' && f.value) {
+            this.push_object(jsonld, f.predicate, this.get_json_spatial(f['rdfs:label'], f['skos:prefLabel'], f.coordinates, 'schema:Place', [f.value]))
+          } else {
+            if (f.value) {
+              this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'schema:Place'))
+            }
+          }
+          break
+
+        case 'ebucore:filename':
+          if (f.value) {
+            this.push_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        case 'ebucore:hasMimeType':
+          if (f.value) {
+            this.push_literal(jsonld, f.predicate, f.value)
+          }
+          break
+
+        default:
+          console.error('form2json: unrecognized predicate ', f.predicate, f)
+      }
+    }
+    return jsonld
   }
 }

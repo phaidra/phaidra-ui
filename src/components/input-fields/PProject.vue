@@ -20,7 +20,7 @@
                 v-on:input="$emit('input-name-language', $event)" 
                 :label="'Language'"
                 :items="vocabularies['lang'].terms" 
-                :value="nameLanguage"
+                :value="getLangTerm(nameLanguage)"
                 box
                 return-object
               >
@@ -54,7 +54,7 @@
                 v-on:input="$emit('input-description-language', $event)" 
                 :label="'Language'"
                 :items="vocabularies['lang'].terms" 
-                :value="descriptionLanguage"
+                :value="getLangTerm(descriptionLanguage)"
                 box
                 return-object
               >
@@ -133,7 +133,7 @@ export default {
       type: String
     },
     nameLanguage: {
-      type: Object
+      type: String
     },
     identifier: {
       type: String
@@ -142,13 +142,22 @@ export default {
       type: String
     },
     descriptionLanguage: {
-      type: Object
+      type: String
     },
     homepage: {
       type: String
     },
     multiplicable: {
       type: Boolean
+    }
+  },
+  methods: {
+    getLangTerm: function (value) {
+      for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
+        if (this.vocabularies['lang'].terms[i]['@id'] === value) {
+          return this.vocabularies['lang'].terms[i]
+        }
+      }
     }
   }
 }

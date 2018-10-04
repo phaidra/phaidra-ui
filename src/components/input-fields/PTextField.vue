@@ -25,7 +25,7 @@
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 
-        :value="language"
+        :value="getLangTerm(language)"
         box
       >
         <template slot="item" slot-scope="{ item }">
@@ -77,7 +77,7 @@ export default {
       required: true
     },
     language: {
-      type: Object
+      type: String
     },
     label: {
       type: String,
@@ -94,6 +94,15 @@ export default {
     },
     multiplicable: {
       type: Boolean
+    }
+  },
+  methods: {
+    getLangTerm: function (value) {
+      for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
+        if (this.vocabularies['lang'].terms[i]['@id'] === value) {
+          return this.vocabularies['lang'].terms[i]
+        }
+      }
     }
   }
 }
