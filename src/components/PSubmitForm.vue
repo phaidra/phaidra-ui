@@ -147,7 +147,7 @@
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'input-file'" >
-                  <input type="file" @input="f.value = $event.target.files[0]">
+                  <input type="file" @input="setFilename(f, $event)">
                 </v-flex>
 
               </v-layout>
@@ -312,6 +312,9 @@ export default {
     roleInput: function (f, event) {
       f.role = event['@id']
       f['rdfs:label'] = event['rdfs:label']
+    },
+    setFilename: function (f, event) {
+      f.value = event.target.files[0].name
     }
   },
   mounted: function () {

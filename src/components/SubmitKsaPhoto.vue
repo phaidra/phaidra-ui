@@ -504,14 +504,6 @@ export default {
                 language: ''
               },
               {
-                id: 503,
-                predicate: 'ebucore:filename',
-                metadataset: 'digital',
-                component: 'p-text-field',
-                label: 'Filename',
-                value: ''
-              },
-              {
                 id: 504,
                 predicate: 'ebucore:hasMimeType',
                 metadataset: 'digital',

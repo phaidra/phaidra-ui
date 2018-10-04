@@ -407,13 +407,13 @@ export default {
 
         case 'ebucore:filename':
           if (f.value) {
-            this.push_literal(jsonld, f.predicate, f.value)
+            this.set_literal(jsonld, f.predicate, f.value)
           }
           break
 
         case 'ebucore:hasMimeType':
           if (f.value) {
-            this.push_literal(jsonld, f.predicate, f.value)
+            this.set_literal(jsonld, f.predicate, f.value)
           }
           break
 
