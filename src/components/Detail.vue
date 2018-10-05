@@ -29,7 +29,22 @@
             </v-container>
           </v-flex>
 
-          <v-flex v-for="(role,i) in roles" :key="'role'+i" class="mt-3">
+          <v-flex v-if="is_jsonld" v-for="(role ,i) in parsedRoles" :key="'role'+i" class="mt-3">
+            <v-container fluid v-for="(value, key ,k) in role" :key="'role'+k">
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ getRoleLabel(key) }}</v-flex>
+                <v-flex xs9>
+                  <v-layout column>
+                    <v-flex v-for="(e,j) in value" :key="j">
+                      {{ e['schema:givenName']['@value'] }} {{ e['schema:familyName']['@value'] }} <span v-if="e['schema:affiliation']" class="grey--text">{{ e['schema:affiliation']['schema:name']['@value'] }}</span>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-if="is_uwm" v-for="(role,i) in parsedRolesUwm" :key="'role'+i" class="mt-3">
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
@@ -286,9 +301,10 @@
               </v-layout>
             </v-card-text>
             <v-card-actions>
-              <v-btn v-if="viewable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</v-btn>
-              <v-btn v-if="downloadable" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</v-btn>
-              <a :href="'http://localhost:8080/?#/search/?collection=' + doc.pid" target="_blank"><v-btn v-if="doc.cmodel === 'Collection'" primary>{{ $t('Show members') }}</v-btn></a>
+              <v-btn v-if="viewable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</v-btn>
+              <v-btn v-if="downloadable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</v-btn>
+              <v-btn v-if="canWrite" :to="{ name: 'metadata' }" primary>{{ $t('Edit metadata') }}</v-btn>
+              <a :href="'/?#/search/?collection=' + doc.pid" target="_blank"><v-btn v-if="doc.cmodel === 'Collection'" primary>{{ $t('Show members') }}</v-btn></a>
             </v-card-actions>
           </v-card>
 
@@ -319,7 +335,21 @@ export default {
   components: {
     LicenseView
   },
+  methods: {
+    getRoleLabel: function (role) {
+      var id = role.substring(role.indexOf(':') + 1)
+      var roleTerms = this.vocabularies['https://phaidra.org/vocabulary/role'].terms
+      for (var i = 0; i < roleTerms.length; i++) {
+        if (roleTerms[i]['@id'] === id) {
+          return roleTerms[i]['rdfs:label'][0]['@value']
+        }
+      }
+    }
+  },
   computed: {
+    vocabularies: function () {
+      return this.$store.state.vocabulary.vocabularies
+    },
     downloadable: function () {
       switch (this.$store.state.object.doc.cmodel) {
         case 'PDFDocument':
@@ -344,6 +374,18 @@ export default {
         default:
           return false
       }
+    },
+    canRead: function () {
+      return true // (this.$store.state.object.rights === 'ro' || this.$store.state.object.rights === 'rw')
+    },
+    canWrite: function () {
+      return true // (this.$store.state.object.rights === 'rw')
+    },
+    is_uwm: function () {
+      return this.$store.state.object.doc.uwm_roles_json
+    },
+    is_jsonld: function () {
+      return this.$store.state.object.doc.roles_json
     },
     doc: function () {
       return this.$store.state.object.doc
@@ -384,33 +426,39 @@ export default {
       })
       return descriptions
     },
-    roles: function () {
+    parsedRolesUwm: function () {
       var rolesHash = {}
-      var sortedContr = JSON.parse(this.$store.state.object.doc.uwm_roles_json).sort(function (a, b) {
-        return a.data_order - b.data_order
-      })
-      for (var i = 0; i < sortedContr.length; i++) {
-        sortedContr[i].entities = sortedContr[i].entities.sort(function (a, b) {
+      if (this.$store.state.object.doc.uwm_roles_json) {
+        var sortedContr = JSON.parse(this.$store.state.object.doc.uwm_roles_json).sort(function (a, b) {
           return a.data_order - b.data_order
         })
-        // merge multiple entities and multiple contributions if they have the same role
-        if (!rolesHash[sortedContr[i].role]) {
-          rolesHash[sortedContr[i].role] = {
-            role: sortedContr[i].role,
-            label: sortedContr[i].role === 'aut' ? this.$t('Author') : this.$t(this.$store.state.search.marcRoles[sortedContr[i].role]),
-            entities: []
+        for (var i = 0; i < sortedContr.length; i++) {
+          sortedContr[i].entities = sortedContr[i].entities.sort(function (a, b) {
+            return a.data_order - b.data_order
+          })
+          // merge multiple entities and multiple contributions if they have the same role
+          if (!rolesHash[sortedContr[i].role]) {
+            rolesHash[sortedContr[i].role] = {
+              role: sortedContr[i].role,
+              label: sortedContr[i].role === 'aut' ? this.$t('Author') : this.$t(this.$store.state.search.marcRoles[sortedContr[i].role]),
+              entities: []
+            }
+          }
+          for (var j = 0; j < sortedContr[i].entities.length; j++) {
+            rolesHash[sortedContr[i].role]['entities'].push(sortedContr[i].entities[j])
           }
         }
-        for (var j = 0; j < sortedContr[i].entities.length; j++) {
-          rolesHash[sortedContr[i].role]['entities'].push(sortedContr[i].entities[j])
-        }
       }
-
       var roles = []
       Object.keys(rolesHash).forEach(function (r) {
         roles.push(rolesHash[r])
       })
       return roles
+    },
+    parsedRoles: function () {
+      if (this.$store.state.object.doc.roles_json) {
+        return JSON.parse(this.$store.state.object.doc.roles_json)
+      }
     },
     coverPid: function () {
       // HACK
@@ -430,6 +478,9 @@ export default {
     this.$store.dispatch('loadDoc', to.params.pid).then(() => {
       next()
     })
+  },
+  mounted: function () {
+    this.$store.dispatch('loadRoles')
   }
 }
 </script>

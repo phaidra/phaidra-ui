@@ -225,8 +225,8 @@ export default {
         if (s.type === 'member') {
           for (var j = 0; j < s.fields.length; j++) {
             if (s.fields[j].component === 'input-file') {
-              if (s.fields[j].value !== '') {
-                httpFormData.append('member_' + s.id, s.fields[j].value)
+              if (s.fields[j].file !== '') {
+                httpFormData.append('member_' + s.id, s.fields[j].file)
               }
             }
           }
@@ -315,6 +315,7 @@ export default {
     },
     setFilename: function (f, event) {
       f.value = event.target.files[0].name
+      f.file = event.target.files[0]
     }
   },
   mounted: function () {

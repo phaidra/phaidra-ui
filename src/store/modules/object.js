@@ -4,7 +4,8 @@ const state = {
   pid: '',
   doc: null,
   metadata: null,
-  owner: ''
+  owner: '',
+  rights: ''
 }
 
 const mutations = {
@@ -20,11 +21,15 @@ const mutations = {
   setOwner (state, owner) {
     state.owner = owner
   },
+  setRights (state, rights) {
+    state.rights = rights
+  },
   initStore (state) {
     state.pid = ''
     state.doc = null
     state.metadata = null
     state.owner = ''
+    state.rights = ''
   }
 }
 
@@ -52,6 +57,7 @@ const actions = {
       if (json.response.numFound > 0) {
         commit('setDoc', json.response.docs[0])
         dispatch('loadOwner', json.response.docs[0].owner)
+        dispatch('loadRights', pid)
       } else {
         commit('setDoc', false)
       }
@@ -77,6 +83,42 @@ const actions = {
     })
 
     return promise
+  },
+  loadRights ({ commit, state, rootState }, pid) {
+    var url = rootState.settings.instance.api + '/authz/check/' + pid
+    // check if we have write rights
+    fetch(url + '/rw/', {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'X-XSRF-TOKEN': rootState.user.token
+      }
+    })
+    .then(function (response) {
+      if (response.status === 200) {
+        commit('setRights', 'rw')
+      } else {
+        // if not, check if we have read rights
+        fetch(url + '/ro/', {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'X-XSRF-TOKEN': rootState.user.token
+          }
+        })
+        .then(function (response) {
+          if (response.status === 200) {
+            commit('setRights', 'ro')
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
   },
   loadMetadata ({ commit, state, rootState }, pid) {
     var url = rootState.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
