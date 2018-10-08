@@ -7,7 +7,7 @@
         <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ pid }}</router-link>
       </v-flex>
 
-      <v-flex>  
+      <v-flex v-if="metadata['uwmetadata']">  
         <v-tabs v-model="active" slider-color="primary" color="lighten-3">
           <v-tab v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tab>
         </v-tabs>  
@@ -15,11 +15,15 @@
           <v-tab-item v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" class="pa-3">
             <v-card flat class="grey lighten-5">
               <v-card-text>
-                <metadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></metadata-renderer>
+                <uwmetadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></uwmetadata-renderer>
               </v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs-items>
+      </v-flex>
+
+      <v-flex v-if="metadata['JSON-LD']">
+        <vue-json-pretty :data="metadata['JSON-LD']"></vue-json-pretty>
       </v-flex>
       
     </v-layout>
@@ -29,13 +33,15 @@
 </template>
 
 <script>
-import MetadataRenderer from '@/components/MetadataRenderer'
+import UwmetadataRenderer from '@/components/UwmetadataRenderer'
+import VueJsonPretty from 'vue-json-pretty'
 
 export default {
 
   name: 'metadata',
   components: {
-    MetadataRenderer
+    UwmetadataRenderer,
+    VueJsonPretty
   },
   computed: {
     pid: function () {

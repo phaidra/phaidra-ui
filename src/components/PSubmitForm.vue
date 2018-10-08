@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-lg class="ksa-submit" >
+  <v-container grid-list-lg class="ksa-submit">
 
     <v-toolbar color="primary lighten-3" tabs dark>
       <v-toolbar-title>KSA Submit - Photo</v-toolbar-title>
@@ -158,7 +158,7 @@
 
         <v-layout row wrap class="ma-3">
           <v-spacer></v-spacer>
-          <v-btn raised color="primary lighten-2" @click="submit()">Submit</v-btn>
+          <v-btn raised :loading="loading" :disabled="loading" color="primary lighten-2" @click="submit()">Submit</v-btn>
         </v-layout>
   
       </v-tab-item>
@@ -205,7 +205,8 @@ export default {
       activetab: null,
       jsonlds: {},
       metadata: {},
-      form: this.definition
+      form: this.definition,
+      loading: false
     }
   },
   props: {
@@ -217,6 +218,7 @@ export default {
   methods: {
     submit: function () {
       var self = this
+      this.loading = true
       this.generateJson()
       var httpFormData = new FormData()
       httpFormData.append('metadata', JSON.stringify(this.metadata))
@@ -246,10 +248,14 @@ export default {
         if (json.alerts && json.alerts.length > 0) {
           self.$store.commit('setAlerts', json.alerts)
         }
+        self.$router.push({ name: 'detail', params: { pid: json.pid } })
+        self.$vuetify.goTo(0)
       })
       .catch(function (error) {
         self.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
         console.error('Error:', error)
+        self.loading = false
+        self.$vuetify.goTo(0)
       })
     },
     generateJson: function () {

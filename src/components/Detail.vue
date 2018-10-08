@@ -124,11 +124,20 @@
             </v-container>
           </v-flex>
 
-          <v-flex v-for="(desc,i) in descriptions" :key="'desc'+i" class="mt-3">
+          <v-flex v-if="dshash['UWMETADATA']" v-for="(desc,i) in descriptions" :key="'desc'+i" class="mt-3">
             <v-container fluid>
               <v-layout row>
                 <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
                 <v-flex xs9>{{ desc.value }}</v-flex>
+              </v-layout>
+            </v-container>
+          </v-flex>
+
+          <v-flex v-if="dshash['JSON-LD']" v-for="(desc,i) in parsedDescriptions" :key="'desc'+i" class="mt-3">
+            <v-container fluid>
+              <v-layout row>
+                <v-flex class="caption grey--text" xs2>{{ $t(desc['@type']) }} ({{ desc['rdfs:label']['@language'] }})</v-flex>
+                <v-flex xs9>{{ desc['rdfs:label']['@value'] }}</v-flex>
               </v-layout>
             </v-container>
           </v-flex>
@@ -289,10 +298,13 @@
                     <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
                   </v-flex>
                   <v-flex>
+                    <router-link  v-if="canWrite" :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
+                  </v-flex>
+                  <v-flex v-if="dshash['UWMETADATA']">
                     <a :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
                   </v-flex>
                   <v-flex>
-                    <a :href="instance.api + '/object/' + doc.pid + '/dc?format=xml'" target="_blank">{{ $t('Dublin Core') }}</a>
+                    <a :href="instance.api + '/object/' + doc.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
                   </v-flex>
                   <v-flex>
                     <a :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
@@ -303,7 +315,6 @@
             <v-card-actions>
               <v-btn v-if="viewable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</v-btn>
               <v-btn v-if="downloadable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</v-btn>
-              <v-btn v-if="canWrite" :to="{ name: 'metadata' }" primary>{{ $t('Edit metadata') }}</v-btn>
               <a :href="'/?#/search/?collection=' + doc.pid" target="_blank"><v-btn v-if="doc.cmodel === 'Collection'" primary>{{ $t('Show members') }}</v-btn></a>
             </v-card-actions>
           </v-card>
@@ -396,6 +407,13 @@ export default {
     owner: function () {
       return this.$store.state.object.owner
     },
+    dshash: function () {
+      var dshash = {}
+      for (var i = 0; i < this.$store.state.object.doc.datastreams.length; i++) {
+        dshash[this.$store.state.object.doc.datastreams[i]] = true
+      }
+      return dshash
+    },
     identifiers: function () {
       // TODO: add id from
       // https://services.phaidra.univie.ac.at/api/object/<pid>/id
@@ -458,6 +476,11 @@ export default {
     parsedRoles: function () {
       if (this.$store.state.object.doc.roles_json) {
         return JSON.parse(this.$store.state.object.doc.roles_json)
+      }
+    },
+    parsedDescriptions: function () {
+      if (this.$store.state.object.doc.descriptions_json) {
+        return JSON.parse(this.$store.state.object.doc.descriptions_json)
       }
     },
     coverPid: function () {

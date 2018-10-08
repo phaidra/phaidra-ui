@@ -5,6 +5,7 @@ import Login from '@/components/Login'
 import Search from '@/components/Search'
 import Detail from '@/components/Detail'
 import Metadata from '@/components/Metadata'
+import MetadataEditor from '@/components/MetadataEditor'
 import Submit from '@/components/Submit'
 import SubmitKsaPhoto from '@/components/SubmitKsaPhoto'
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/metadata/:pid',
       name: 'metadata',
       component: Metadata
+    },
+    {
+      path: '/metadata/:pid/edit',
+      name: 'metadataeditor',
+      component: MetadataEditor
     },
     {
       path: '/submit',

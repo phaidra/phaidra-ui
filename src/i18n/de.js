@@ -4,6 +4,12 @@ export default {
   'English': 'Englisch',
   'Italian': 'Italienisch',
 
+  'bf:Note': 'Beschreibung',
+  'phaidra:Remark': 'Notiz',
+  'phaidra:ConditionNote': 'Zustand',
+  'phaidra:ReproductionNote': 'Reproduction note',
+  'phaidra:DigitizationNote': 'Digitization note',
+
   'Language': 'Sprache',
 
   'Browse': 'Blättern',

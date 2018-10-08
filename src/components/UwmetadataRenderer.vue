@@ -8,7 +8,7 @@
             <v-card>
               <v-card-text>
                 <v-flex class="caption grey--text" xs4>{{ $t(nodepath) }}</v-flex>
-                <metadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="nodepath"></metadata-renderer>
+                <uwmetadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="nodepath"></uwmetadata-renderer>
               </v-card-text>
             </v-card>
           </v-flex>
@@ -45,7 +45,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs2>
-        <metadata-renderer v-for="(a,j) in node.attributes" :key="j" :node="a" :path="nodepath"></metadata-renderer>
+        <uwmetadata-renderer v-for="(a,j) in node.attributes" :key="j" :node="a" :path="nodepath"></uwmetadata-renderer>
       </v-flex>
     </v-layout>
   </v-container>
@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  name: 'metadata-renderer',
+  name: 'uwmetadata-renderer',
   props: {
     node: Object,
     path: {
