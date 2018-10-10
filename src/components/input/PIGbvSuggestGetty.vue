@@ -42,7 +42,7 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-gbv-suggest-getty',
+  name: 'p-i-gbv-suggest-getty',
   props: {
     value: {
       type: String,
@@ -116,7 +116,7 @@ export default {
           }
           self.rdfslabel = json[uri]['rdfs:label']
           self.coordinates = json[uri]['schema:GeoCoordinates']
-          self.$emit('resolve', { 'skos:prefLabel': [{ '@value': self.preflabel }], 'rdfs:label': [{ '@value': self.rdfslabel }], coordinates: self.coordinates })
+          self.$emit('resolve', { 'skos:prefLabel': self.preflabel, 'rdfs:label': self.rdfslabel, coordinates: self.coordinates })
         })
         .catch(function (error) {
           console.log(error)

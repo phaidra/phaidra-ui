@@ -3,7 +3,7 @@
   <v-container>
     <v-layout row>
       <v-flex >
-        hula
+        editor
       </v-flex>
     </v-layout>
   </v-container>

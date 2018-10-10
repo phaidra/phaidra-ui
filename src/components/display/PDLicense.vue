@@ -3,14 +3,14 @@
 
     <v-layout row v-if="license.url">
       <v-flex>
-        <img v-if="license.type === 'CC BY'" src="../assets/cc-by.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'CC BY-SA'" src="../assets/cc-by-sa.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'CC BY-NC'" src="../assets/cc-by-nc.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'CC BY-ND'" src="../assets/cc-by-nd.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'CC BY-NC-SA'" src="../assets/cc-by-nc-sa.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'CC BY-NC-ND'" src="../assets/cc-by-nc-nd.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'GPLv3'" src="../assets/gplv3.png" :alt="license.type" class="license-icon"/>
-        <img v-if="license.type === 'Public Domain Mark'" src="../assets/pdm.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'CC BY'" src="../../assets/cc-by.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'CC BY-SA'" src="../../assets/cc-by-sa.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'CC BY-NC'" src="../../assets/cc-by-nc.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'CC BY-ND'" src="../../assets/cc-by-nd.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'CC BY-NC-SA'" src="../../assets/cc-by-nc-sa.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'CC BY-NC-ND'" src="../../assets/cc-by-nc-nd.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'GPLv3'" src="../../assets/gplv3.png" :alt="license.type" class="license-icon"/>
+        <img v-if="license.type === 'Public Domain Mark'" src="../../assets/pdm.png" :alt="license.type" class="license-icon"/>
         <a :href="license.url" target="_blank" class="mr-2 license-label">
           <span v-if="license.version" :title="license.type + license.version">{{ $t(license.type) + ' ' + license.version }}</span>
           <span v-if="!license.version" :title="license.type">{{ $t(license.type) }}</span>
@@ -30,9 +30,10 @@
 <script>
 
 export default {
-  name: 'license-view',
+  name: 'p-d-license',
   props: {
-    dclicense: String
+    dclicense: String,
+    required: true
   },
   computed: {
     license () {

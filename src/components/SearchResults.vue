@@ -69,7 +69,7 @@
                 <v-flex class="pt-3">
                   <v-layout row>
                     <v-flex>
-                      <license-view class="pa-0" v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></license-view>
+                      <p-license-view class="pa-0" v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></p-license-view>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex class="text-xs-right">
@@ -88,12 +88,12 @@
 </template>
 
 <script>
-import LicenseView from '@/components/LicenseView'
+import PDLicense from '@/components/display/PDLicense'
 
 export default {
   name: 'search-results',
   components: {
-    LicenseView
+    PDLicense
   },
   computed: {
     docs () {

@@ -44,27 +44,27 @@
               <v-layout v-for="(f) in s.fields" :key="f.id" row wrap>
 
                 <v-flex offset-xs1 v-if="f.component == 'p-text-field'" >
-                  <p-text-field             
+                  <p-i-text-field             
                     v-bind.sync="f"
                     v-on:input="f.value=$event"
                     v-on:input-language="f.language=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-text-field>
+                  ></p-i-text-field>
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-text-field-suggest'" >
-                  <p-text-field-suggest
+                  <p-i-text-field-suggest
                     v-bind.sync="f"
                     v-on:input="f.value=$event"
                     v-on:input-language="f.language=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-text-field-suggest>
+                  ></p-i-text-field-suggest>
                 </v-flex>
 
                 <v-flex offset-xs1 v-if="f.component == 'p-title'" >
-                  <p-title            
+                  <p-i-title            
                     v-bind.sync="f"
                     v-on:input-title="f.title=$event"
                     v-on:input-subtitle="f.subtitle=$event"
@@ -73,20 +73,20 @@
                     v-on:remove="removeField(s.fields, f)"
                     v-on:up="sortFieldUp(s.fields, f)"
                     v-on:down="sortFieldDown(s.fields, f)"
-                  ></p-title>
+                  ></p-i-title>
                 </v-flex>
 
                 <v-flex offset-xs1 xs4 v-else-if="f.component == 'p-select'" >
-                  <p-select 
+                  <p-i-select 
                     v-bind.sync="f" 
                     v-on:input="selectInput(f, $event)"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-select>        
+                  ></p-i-select>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-entity'" >
-                  <p-entity
+                  <p-i-entity
                     v-bind.sync="f"
                     v-on:input-firstname="f.firstname=$event"
                     v-on:input-lastname="f.lastname=$event"
@@ -98,31 +98,31 @@
                     v-on:remove="removeField(s.fields, f)"
                     v-on:up="sortFieldUp(s.fields, f)"
                     v-on:down="sortFieldDown(s.fields, f)"
-                  ></p-entity>
+                  ></p-i-entity>
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-gbv-suggest-getty'" >
-                  <p-gbv-suggest-getty
+                  <p-i-gbv-suggest-getty
                     v-bind.sync="f" 
                     v-on:input="f.value=$event"
                     v-on:resolve="updatePlace(f, $event)"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-gbv-suggest-getty>        
+                  ></p-i-gbv-suggest-getty>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-dimension'" >
-                  <p-dimension
+                  <p-i-dimension
                     v-bind.sync="f" 
                     v-on:input-value="f.value=$event"
                     v-on:input-unit="f.unitCode=$event['@id']"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-dimension>        
+                  ></p-i-dimension>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-project'" >
-                  <p-project
+                  <p-i-project
                     v-bind.sync="f" 
                     v-on:input-name="f.name=$event"
                     v-on:input-name-language="f.nameLanguage=$event['@id']"
@@ -132,18 +132,18 @@
                     v-on:input-homepage="f.homepage=$event"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-project>        
+                  ></p-i-project>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'p-funder'" >
-                  <p-funder
+                  <p-i-funder
                     v-bind.sync="f" 
                     v-on:input-name="f.name=$event"
                     v-on:input-name-language="f.nameLanguage=$event['@id']"
                     v-on:input-identifier="f.identifier=$event"
                     v-on:add="addField(s.fields, f)"
                     v-on:remove="removeField(s.fields, f)"
-                  ></p-funder>        
+                  ></p-i-funder>        
                 </v-flex>
 
                 <v-flex offset-xs1 v-else-if="f.component == 'input-file'" >
@@ -176,28 +176,28 @@ import base64 from 'base-64'
 import VueJsonPretty from 'vue-json-pretty'
 import arrays from '@/utils/arrays'
 import jsonLd from '@/utils/json-ld'
-import PTextField from '@/components/input-fields/PTextField'
-import PTextFieldSuggest from '@/components/input-fields/PTextFieldSuggest'
-import PTitle from '@/components/input-fields/PTitle'
-import PEntity from '@/components/input-fields/PEntity'
-import PSelect from '@/components/input-fields/PSelect'
-import PGbvSuggestGetty from '@/components/input-fields/PGbvSuggestGetty'
-import PDimension from '@/components/input-fields/PDimension'
-import PProject from '@/components/input-fields/PProject'
-import PFunder from '@/components/input-fields/PFunder'
+import PITextField from '@/components/input/PITextField'
+import PITextFieldSuggest from '@/components/input/PITextFieldSuggest'
+import PITitle from '@/components/input/PITitle'
+import PIEntity from '@/components/input/PIEntity'
+import PISelect from '@/components/input/PISelect'
+import PIGbvSuggestGetty from '@/components/input/PIGbvSuggestGetty'
+import PIDimension from '@/components/input/PIDimension'
+import PIProject from '@/components/input/PIProject'
+import PIFunder from '@/components/input/PIFunder'
 
 export default {
   name: 'p-submit-form',
   components: {
-    PTextField,
-    PTextFieldSuggest,
-    PTitle,
-    PEntity,
-    PSelect,
-    PGbvSuggestGetty,
-    PDimension,
-    PProject,
-    PFunder,
+    PITextField,
+    PITextFieldSuggest,
+    PITitle,
+    PIEntity,
+    PISelect,
+    PIGbvSuggestGetty,
+    PIDimension,
+    PIProject,
+    PIFunder,
     VueJsonPretty
   },
   data () {
@@ -218,7 +218,7 @@ export default {
   methods: {
     submit: function () {
       var self = this
-      this.loading = true
+      // this.loading = true
       this.generateJson()
       var httpFormData = new FormData()
       httpFormData.append('metadata', JSON.stringify(this.metadata))
@@ -248,6 +248,7 @@ export default {
         if (json.alerts && json.alerts.length > 0) {
           self.$store.commit('setAlerts', json.alerts)
         }
+        self.loading = false
         self.$router.push({ name: 'detail', params: { pid: json.pid } })
         self.$vuetify.goTo(0)
       })

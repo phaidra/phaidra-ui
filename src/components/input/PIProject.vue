@@ -122,7 +122,7 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-project',
+  name: 'p-i-project',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies

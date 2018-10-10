@@ -1,22 +1,20 @@
 <template>
   <v-layout row>
-    <v-flex xs8>
-      <v-text-field v-if="!multiline"         
-        :value="value" 
-        v-on:input="$emit('input', $event)" 
-        :label="label" 
-        :required="required"
-        :rules="required ? [ v => !!v || 'Required'] : []"
+    <v-flex xs4>
+      <v-text-field
+        :value="title"
+        :label="'Title'"
+        v-on:input="$emit('input-title', $event)"
         box
       ></v-text-field>
-      <v-textarea v-if="multiline"         
-        :value="value" 
-        v-on:input="$emit('input', $event)" 
-        :label="label" 
-        :required="required"
-        :rules="required ? [ v => !!v || 'Required'] : []"
+    </v-flex>
+    <v-flex xs4>
+      <v-text-field
+        :value="subtitle"
+        :label="'Subtitle'"
+        v-on:input="$emit('input-subtitle', $event)"
         box
-      ></v-textarea>
+      ></v-text-field>
     </v-flex>
     <v-flex xs2 v-if="multilingual">
       <v-select 
@@ -27,6 +25,7 @@
         :items="vocabularies['lang'].terms" 
         :value="getLangTerm(language)"
         box
+        return-object
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
@@ -41,15 +40,21 @@
         </template>
       </v-select>                      
     </v-flex>
-    <v-flex xs2 v-if="multiplicable" >
+    <v-flex xs2>
       <v-container fill-height>
         <v-layout row>
           <v-flex>
-            <v-btn flat icon slot="activator" v-on:click.native="$emit('add', $event)">
+            <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('add', $event)">
               <icon name="material-content-add" width="24px" height="24px"></icon>
             </v-btn>
-            <v-btn flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
+            <v-btn v-if="multiplicable" flat icon slot="activator" v-on:click.native="$emit('remove', $event)">
               <icon name="material-content-remove" width="24px" height="24px"></icon>
+            </v-btn>
+            <v-btn v-if="ordered" flat icon slot="activator" v-on:click.native="$emit('down', $event)">
+              <icon name="material-hardware-arrow-down" width="24px" height="24px"></icon>
+            </v-btn>
+            <v-btn v-if="ordered" flat icon slot="activator" v-on:click.native="$emit('up', $event)">
+              <icon name="material-hardware-arrow-up" width="24px" height="24px"></icon>
             </v-btn>
           </v-flex>
         </v-layout>
@@ -65,35 +70,39 @@ import '@/compiled-icons/material-hardware-arrow-down'
 import '@/compiled-icons/material-hardware-arrow-up'
 
 export default {
-  name: 'p-text-field',
+  name: 'p-i-title',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }
   },
   props: {
-    value: {
-      type: String,
-      required: true
+    title: {
+      type: String
+    },
+    subtitle: {
+      type: String
     },
     language: {
       type: String
     },
-    label: {
-      type: String,
-      required: true
-    },
     required: {
       type: Boolean
     },
-    multiline: {
+    multiplicable: {
       type: Boolean
     },
     multilingual: {
       type: Boolean
     },
-    multiplicable: {
+    ordered: {
       type: Boolean
+    }
+  },
+  data () {
+    return {
+      datepicker: false,
+      selectedDate: ''
     }
   },
   methods: {

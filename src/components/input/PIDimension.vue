@@ -1,44 +1,34 @@
 <template>
-
   <v-layout row>
-    <v-flex xs4>
+    <v-flex xs2>
       <v-text-field
-        :value="name"
-        :label="'Funder name'"
-        v-on:input="$emit('input-name', $event)"
+        :value="value" 
+        v-on:input="$emit('input-value', $event)" 
+        :label="label"
         box
       ></v-text-field>
     </v-flex>
     <v-flex xs2>
       <v-select 
-        v-on:input="$emit('input-name-language', $event)" 
-        :label="'Language'"
-        :items="vocabularies['lang'].terms" 
-        :value="getLangTerm(nameLanguage)"
+        v-on:input="$emit('input-unit', $event)" 
+        :label="'Unit'"
+        :items="vocabularies['un-cefact'].terms" 
+        :value="getTerm(unit)"
         box
-        return-object
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
-            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
-            <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
+            <v-list-tile-title  v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-sub-title  v-html="`${item['@id']}`"></v-list-tile-sub-title>
           </v-list-tile-content>
         </template>
         <template slot="selection" slot-scope="{ item }">
           <v-list-tile-content>
-            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
           </v-list-tile-content>
         </template>
-      </v-select>                      
-    </v-flex>
-    <v-flex xs4>
-      <v-text-field
-        :value="identifier"
-        :label="'Funder identifier'"
-        v-on:input="$emit('input-identifier', $event)"
-        box
-      ></v-text-field>
-    </v-flex>  
+      </v-select>
+    </v-flex>   
     <v-flex xs2 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
@@ -52,9 +42,8 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </v-flex>  
+    </v-flex>
   </v-layout>
-       
 </template>
 
 <script>
@@ -62,31 +51,32 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-funder',
+  name: 'p-i-dimension',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }
   },
   props: {
-    name: {
+    unit: {
       type: String
     },
-    nameLanguage: {
+    value: {
       type: String
     },
-    identifier: {
-      type: String
+    label: {
+      type: String,
+      required: true
     },
     multiplicable: {
       type: Boolean
     }
   },
   methods: {
-    getLangTerm: function (value) {
-      for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
-        if (this.vocabularies['lang'].terms[i]['@id'] === value) {
-          return this.vocabularies['lang'].terms[i]
+    getTerm: function (value) {
+      for (var i = 0; i < this.vocabularies['un-cefact'].terms.length; i++) {
+        if (this.vocabularies['un-cefact'].terms[i]['@id'] === value) {
+          return this.vocabularies['un-cefact'].terms[i]
         }
       }
     }
@@ -97,8 +87,5 @@ export default {
 <style scoped>
 .v-btn {
   margin: 0;
-}
-.vertical-center {
- align-items: center;
 }
 </style>

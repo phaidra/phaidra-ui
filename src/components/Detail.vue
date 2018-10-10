@@ -20,137 +20,144 @@
             </a>
           </v-flex>
 
-          <v-flex v-for="(title,i) in titles" :key="'title'+i" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Title') }} ({{ title.lang }})</v-flex>
-                <v-flex xs9>{{ title.value }}</v-flex>
-              </v-layout>
-            </v-container>
+          <v-flex v-if="dshash['JSON-LD']">
+            <p-d-jsonld :pid="doc.pid"></p-d-jsonld>
           </v-flex>
+          <v-flex v-else>
 
-          <v-flex v-if="is_jsonld" v-for="(role ,i) in parsedRoles" :key="'role'+i" class="mt-3">
-            <v-container fluid v-for="(value, key ,k) in role" :key="'role'+k">
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ getRoleLabel(key) }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(e,j) in value" :key="j">
-                      {{ e['schema:givenName']['@value'] }} {{ e['schema:familyName']['@value'] }} <span v-if="e['schema:affiliation']" class="grey--text">{{ e['schema:affiliation']['schema:name']['@value'] }}</span>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-for="(title,i) in titles" :key="'title'+i" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Title') }} ({{ title.lang }})</v-flex>
+                  <v-flex xs9>{{ title.value }}</v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="is_uwm" v-for="(role,i) in parsedRolesUwm" :key="'role'+i" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(entity,j) in role.entities" :key="j">
-                      {{ entity.firstname }} {{ entity.lastname }} <span class="grey--text">{{ entity.institution }}</span>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="dshash['JSON-LD']" v-for="(role ,i) in parsedRoles" :key="'role'+i" class="mt-3">
+              <v-container fluid v-for="(value, key ,k) in role" :key="'role'+k">
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ getRoleLabel(key) }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(e,j) in value" :key="j">
+                        {{ e['schema:givenName']['@value'] }} {{ e['schema:familyName']['@value'] }} <span v-if="e['schema:affiliation']" class="grey--text">{{ e['schema:affiliation']['schema:name']['@value'] }}</span>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="doc.bib_journal" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Journal') }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(v,i) in doc.bib_journal" :key="i">{{v}}</v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="dshash['UWMETADATA']" v-for="(role,i) in parsedRolesUwm" :key="'role'+i" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(entity,j) in role.entities" :key="j">
+                        {{ entity.firstname }} {{ entity.lastname }} <span class="grey--text">{{ entity.institution }}</span>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="doc.bib_volume" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Volume') }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(v,i) in doc.bib_volume" :key="i">{{v}}</v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="doc.bib_journal" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Journal') }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(v,i) in doc.bib_journal" :key="i">{{v}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="doc.bib_publisher" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Publisher') }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(v,i) in doc.bib_publisher" :key="i">{{v}}</v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="doc.bib_volume" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Volume') }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(v,i) in doc.bib_volume" :key="i">{{v}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="doc.bib_published" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Published') }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(v,i) in doc.bib_published" :key="i">{{v}}</v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="doc.bib_publisher" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Publisher') }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(v,i) in doc.bib_publisher" :key="i">{{v}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="doc.bib_publisherlocation" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Publisher location') }}</v-flex>
-                <v-flex xs9>
-                  <v-layout column>
-                    <v-flex v-for="(v,i) in doc.bib_publisherlocation" :key="i">{{v}}</v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="doc.bib_published" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Published') }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(v,i) in doc.bib_published" :key="i">{{v}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="dshash['UWMETADATA']" v-for="(desc,i) in descriptions" :key="'desc'+i" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
-                <v-flex xs9>{{ desc.value }}</v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="doc.bib_publisherlocation" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Publisher location') }}</v-flex>
+                  <v-flex xs9>
+                    <v-layout column>
+                      <v-flex v-for="(v,i) in doc.bib_publisherlocation" :key="i">{{v}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex v-if="dshash['JSON-LD']" v-for="(desc,i) in parsedDescriptions" :key="'desc'+i" class="mt-3">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t(desc['@type']) }} ({{ desc['rdfs:label']['@language'] }})</v-flex>
-                <v-flex xs9>{{ desc['rdfs:label']['@value'] }}</v-flex>
-              </v-layout>
-            </v-container>
-          </v-flex>
+            <v-flex v-if="dshash['UWMETADATA']" v-for="(desc,i) in descriptions" :key="'desc'+i" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
+                  <v-flex xs9>{{ desc.value }}</v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
 
-          <v-flex class="mt-3" v-if="doc.dc_license">
-            <v-container fluid>
-              <v-layout row>
-                <v-flex class="caption grey--text" xs2>{{ $t('License') }}</v-flex>
-                <v-flex xs9>
-                  <license-view v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></license-view>
-                </v-flex>
-              </v-layout>
-            </v-container>
+            <v-flex v-if="dshash['JSON-LD']" v-for="(desc,i) in parsedDescriptions" :key="'desc'+i" class="mt-3">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t(desc['@type']) }} ({{ desc['rdfs:label']['@language'] }})</v-flex>
+                  <v-flex xs9>{{ desc['rdfs:label']['@value'] }}</v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
+
+            <v-flex class="mt-3" v-if="doc.dc_license">
+              <v-container fluid>
+                <v-layout row>
+                  <v-flex class="caption grey--text" xs2>{{ $t('License') }}</v-flex>
+                  <v-flex xs9>
+                    <p-d-license v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></p-d-license>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-flex>
+
           </v-flex>
 
         </v-layout>
@@ -338,13 +345,15 @@
 </template>
 
 <script>
-import LicenseView from '@/components/LicenseView'
+import PDLicense from '@/components/display/PDLicense'
+import PDJsonld from '@/components/display/PDJsonld'
 
 export default {
 
   name: 'detail',
   components: {
-    LicenseView
+    PDLicense,
+    PDJsonld
   },
   methods: {
     getRoleLabel: function (role) {
@@ -391,12 +400,6 @@ export default {
     },
     canWrite: function () {
       return true // (this.$store.state.object.rights === 'rw')
-    },
-    is_uwm: function () {
-      return this.$store.state.object.doc.uwm_roles_json
-    },
-    is_jsonld: function () {
-      return this.$store.state.object.doc.roles_json
     },
     doc: function () {
       return this.$store.state.object.doc

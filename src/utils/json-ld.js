@@ -248,16 +248,19 @@ export default {
       }
       if (s.type === 'phaidra:DigitizedObject') {
         jsonldid = 'digitized-object'
-        jsonlds[jsonldid] = {
-          '@type': 'phaidra:DigitizedObject'
-        }
+        jsonlds[jsonldid] = {}
       }
 
       this.form2json(jsonlds[jsonldid], s)
     }
 
     Object.keys(jsonlds).forEach(function (key) {
-      if (key === 'digitized-object' || key.startsWith('subject-')) {
+      if (key === 'digitized-object') {
+        jsonlds['container']['phaidra:digitizedObject'] = jsonlds[key]
+        jsonlds['container']['phaidra:digitizedObject']['@type'] = 'phaidra:DigitizedObject'
+        delete jsonlds[key]
+      }
+      if (key.startsWith('subject-')) {
         if (!jsonlds['container']['dcterms:subject']) {
           jsonlds['container']['dcterms:subject'] = []
         }

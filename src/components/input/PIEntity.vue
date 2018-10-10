@@ -107,7 +107,7 @@ import '@/compiled-icons/material-hardware-arrow-down'
 import '@/compiled-icons/material-hardware-arrow-up'
 
 export default {
-  name: 'p-entity',
+  name: 'p-i-entity',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies

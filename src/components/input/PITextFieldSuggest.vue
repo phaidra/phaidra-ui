@@ -66,7 +66,7 @@
   import '@/compiled-icons/material-content-remove'
 
   export default {
-    name: 'p-text-field-suggest',
+    name: 'p-i-text-field-suggest',
     props: {
       value: {
         type: String,

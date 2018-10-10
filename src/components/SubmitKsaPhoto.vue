@@ -187,6 +187,7 @@ export default {
                 metadataset: 'digital',
                 component: 'p-text-field',
                 label: 'Physical location',
+                multilingual: true,
                 value: ''
               },
               {
@@ -241,7 +242,8 @@ export default {
                 multiplicable: true,
                 label: 'Technique',
                 value: '',
-                language: ''
+                language: '',
+                'rdfs:label': []
               },
               {
                 id: 210,
@@ -415,12 +417,13 @@ export default {
                 id: 308,
                 predicate: 'vra:hasTechnique',
                 type: 'vra:Technique',
-                metadataset: 'subject-represented',
-                component: 'p-select',
-                vocabulary: 'getty-aat-photo',
+                metadataset: 'analog',
+                component: 'p-text-field',
+                multilingual: true,
+                multiplicable: true,
                 label: 'Technique',
                 value: '',
-                'rdfs:label': []
+                language: ''
               },
               {
                 id: 309,

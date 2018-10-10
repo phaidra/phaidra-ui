@@ -1,20 +1,17 @@
 <template>
   <v-layout row>
-    <v-flex xs2>
-      <v-text-field
-        :value="value" 
-        v-on:input="$emit('input-value', $event)" 
+    <v-flex xs8>
+      <v-autocomplete
+        :value="getTerm(value)"
+        :required="required"
+        v-on:input="$emit('input', $event )"
+        :rules="required ? [ v => !!v || 'Required'] : []"
+        :items="vocabularies[vocabulary].terms"
+        :loading="loading"
+        hide-no-data
         :label="label"
         box
-      ></v-text-field>
-    </v-flex>
-    <v-flex xs2>
-      <v-select 
-        v-on:input="$emit('input-unit', $event)" 
-        :label="'Unit'"
-        :items="vocabularies['un-cefact'].terms" 
-        :value="getTerm(unit)"
-        box
+        return-object
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
@@ -27,9 +24,9 @@
             <v-list-tile-title v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
           </v-list-tile-content>
         </template>
-      </v-select>
-    </v-flex>   
-    <v-flex xs2 v-if="multiplicable" >
+      </v-autocomplete>
+    </v-flex>
+    <v-flex xs4 v-if="multiplicable" >
       <v-container fill-height>
         <v-layout row>
           <v-flex>
@@ -51,16 +48,22 @@ import '@/compiled-icons/material-content-add'
 import '@/compiled-icons/material-content-remove'
 
 export default {
-  name: 'p-dimension',
+  name: 'p-i-select',
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }
   },
+  methods: {
+    getTerm: function (value) {
+      for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
+        if (this.vocabularies[this.vocabulary].terms[i]['@id'] === value) {
+          return this.vocabularies[this.vocabulary].terms[i]
+        }
+      }
+    }
+  },
   props: {
-    unit: {
-      type: String
-    },
     value: {
       type: String
     },
@@ -68,18 +71,34 @@ export default {
       type: String,
       required: true
     },
+    required: {
+      type: Boolean
+    },
     multiplicable: {
       type: Boolean
+    },
+    vocabulary: {
+      type: String,
+      required: true
     }
   },
-  methods: {
-    getTerm: function (value) {
-      for (var i = 0; i < this.vocabularies['un-cefact'].terms.length; i++) {
-        if (this.vocabularies['un-cefact'].terms[i]['@id'] === value) {
-          return this.vocabularies['un-cefact'].terms[i]
+  data () {
+    return {
+      loading: false
+    }
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      this.loading = !this.vocabularies[this.vocabulary].loaded
+      // emit input to set rdfs:label in parent
+      if (this.value) {
+        for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
+          if (this.vocabularies[this.vocabulary].terms[i]['@id'] === this.value) {
+            this.$emit('input', this.vocabularies[this.vocabulary].terms[i])
+          }
         }
       }
-    }
+    })
   }
 }
 </script>
