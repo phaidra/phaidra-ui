@@ -10,6 +10,11 @@ export default {
   'phaidra:ReproductionNote': 'Reproduction note',
   'phaidra:DigitizationNote': 'Digitization note',
 
+  'dce:subject': 'Subjekt',
+  'opaque:ethnographic': 'Soziokulturelle Kategorie',
+  'dcterms:language': 'Sprache',
+  'dcterms:type': 'Resource type',
+
   'Language': 'Sprache',
 
   'Browse': 'Blättern',
