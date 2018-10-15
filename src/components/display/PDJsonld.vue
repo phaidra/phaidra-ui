@@ -12,15 +12,15 @@
         </template>
 
         <template v-else-if="p==='bf:note'" slot="bf:note">
-          <p-d-text-field :p="p" :o="item" v-for="(item, j) in o" :key="'text'+j" ></p-d-text-field>
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'text'+j" ></p-d-rdfs-label>
         </template>
 
         <template v-else-if="p==='dce:subject'" slot="dce:subject">
-          <p-d-text-field :p="p" :o="item" v-for="(item, j) in o" :key="'subject'+j" ></p-d-text-field>
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'subject'+j" ></p-d-rdfs-label>
         </template>
 
         <template v-else-if="p==='opaque:ethnographic'" slot="dce:subject">
-          <p-d-text-field :p="p" :o="item" v-for="(item, j) in o" :key="'et'+j" ></p-d-text-field>
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'et'+j" ></p-d-rdfs-label>
         </template>
 
         <template v-else-if="p==='dcterms:language'" slot="dcterms:language">
@@ -31,18 +31,75 @@
           <p-d-uri :p="p" :o="item" v-for="(item, j) in o" :key="'type'+j" ></p-d-uri>
         </template>
 
+        <template v-else-if="p==='frapo:isOutputOf'" slot="frapo:isOutputOf">
+          <p-d-project :p="p" :o="item" v-for="(item, j) in o" :key="'project'+j" ></p-d-project>
+        </template>
+
         <template v-else-if="p==='frapo:hasFundingAgency'" slot="frapo:hasFundingAgency">
           <p-d-funder :p="p" :o="item" v-for="(item, j) in o" :key="'funder'+j" ></p-d-funder>
         </template>
 
-        <template v-else-if="p==='frapo:isOutputOf'" slot="frapo:isOutputOf">
-          <p-d-project :p="p" :o="item" v-for="(item, j) in o" :key="'project'+j" ></p-d-project>
+        <template v-else-if="p==='opaque:ethnographic'" slot="dce:subject">
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'et'+j" ></p-d-rdfs-label>
+        </template>
+
+        <template v-else-if="p==='bf:physicalLocation'" slot="bf:physicalLocation">
+          <p-d-lang-value :p="p" :o="item" v-for="(item, j) in o" :key="'physloc'+j" ></p-d-lang-value>
+        </template>
+
+        <template v-else-if="p==='bf:shelfMark'" slot="bf:shelfMark">
+          <p-d-value :p="p" :o="item" v-for="(item, j) in o" :key="'callnr'+j" ></p-d-value>
+        </template>
+
+        <template v-else-if="p==='schema:temporalCoverage'" slot="schema:temporalCoverage">
+          <p-d-lang-value :p="p" :o="item" v-for="(item, j) in o" :key="'temporal'+j" ></p-d-lang-value>
+        </template>
+
+        <template v-else-if="p==='dcterms:spatial'" slot="dcterms:spatial">
+          <p-d-georeference :p="p" :o="item" v-for="(item, j) in o" :key="'geo'+j" ></p-d-georeference>
+        </template>
+
+        <template v-else-if="p==='dcterms:provenance'" slot="dcterms:provenance">
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'prov'+j" ></p-d-rdfs-label>
+        </template>
+
+        <template v-else-if="p==='opaque:cco_accessionNumber'" slot="opaque:cco_accessionNumber">
+          <p-d-value :p="p" :o="item" v-for="(item, j) in o" :key="'accnr'+j" ></p-d-value>
+        </template>
+
+        <template v-else-if="p==='vra:hasInscription'" slot="vra:hasInscription">
+          <p-d-rdfs-label v-if="item['rdfs:label']" :p="p" :o="item" v-for="(item, j) in o" :key="'inscr'+j" ></p-d-rdfs-label>
+          <p-d-exact-match v-if="item['skos:exactMatch']" :p="p" :o="item" v-for="(item, j) in o" :key="'inscrem'+j" ></p-d-exact-match>
+        </template>
+
+        <template v-else-if="p==='vra:material'" slot="vra:material">
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'material'+j" ></p-d-rdfs-label>
+        </template>
+
+        <template v-else-if="p==='vra:hasTechnique'" slot="vra:hasTechnique">
+          <p-d-rdfs-label :p="p" :o="item" v-for="(item, j) in o" :key="'techn'+j" ></p-d-rdfs-label>
+        </template>
+
+        <template v-else-if="p==='schema:width'" slot="schema:width">
+          <p-d-dimension :p="p" :o="item" v-for="(item, j) in o" :key="'width'+j" ></p-d-dimension>
+        </template>
+
+        <template v-else-if="p==='schema:height'" slot="schema:height">
+          <p-d-dimension :p="p" :o="item" v-for="(item, j) in o" :key="'height'+j" ></p-d-dimension>
+        </template>
+
+        <template v-else-if="p==='schema:depth'" slot="schema:depth">
+          <p-d-dimension :p="p" :o="item" v-for="(item, j) in o" :key="'depth'+j" ></p-d-dimension>
+        </template>
+
+        <template v-else-if="p==='schema:weight'" slot="schema:weight">
+          <p-d-dimension :p="p" :o="item" v-for="(item, j) in o" :key="'weight'+j" ></p-d-dimension>
         </template>
 
         <template v-else-if="p==='dcterms:subject'" slot="phaidra:Subject">
           <template v-for="(subject, j) in o">
             <p-d-jsonld v-if="subject['@type']==='phaidra:Subject'" :jsonld="subject" :key="'psubject'+j"></p-d-jsonld>
-            <p-d-text-field v-else :p="p" :o="subject" :key="'subject'+j" ></p-d-text-field>
+            <p-d-rdfs-label v-else :p="p" :o="subject" :key="'subject'+j" ></p-d-rdfs-label>
           </template>
         </template>
 
@@ -65,9 +122,14 @@
 <script>
 import PDLicense from '@/components/display/PDLicense'
 import PDTitle from '@/components/display/PDTitle'
-import PDTextField from '@/components/display/PDTextField'
+import PDRdfsLabel from '@/components/display/PDRdfsLabel'
+import PDLangValue from '@/components/display/PDLangValue'
+import PDValue from '@/components/display/PDValue'
+import PDDimension from '@/components/display/PDDimension'
+import PDGeoreference from '@/components/display/PDGeoreference'
 import PDEntity from '@/components/display/PDEntity'
 import PDUri from '@/components/display/PDUri'
+import PDExactMatch from '@/components/display/PDExactMatch'
 import PDFunder from '@/components/display/PDFunder'
 import PDProject from '@/components/display/PDProject'
 import PDJsonldLayout from '@/components/display/PDJsonldLayout'
@@ -89,8 +151,13 @@ export default {
     PDLicense,
     PDEntity,
     PDJsonldLayout,
-    PDTextField,
+    PDRdfsLabel,
+    PDLangValue,
+    PDValue,
+    PDDimension,
+    PDGeoreference,
     PDUri,
+    PDExactMatch,
     PDFunder,
     PDProject
   },

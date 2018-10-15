@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'p-d-text-field',
+  name: 'p-d-rdfs-label',
   props: {
     o: {
       type: Object,
