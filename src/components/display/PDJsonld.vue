@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <p-d-jsonld-layout>
-      <template v-for="(o, p) in objectjson" class="mt-3">
+      <template v-for="(o, p) in objectjson" >
 
         <template v-if="p==='dce:title'" slot="dce:title">
           <p-d-title :o="t" v-for="(t, j) in o" :key="'title'+j"></p-d-title>
@@ -29,6 +29,14 @@
 
         <template v-else-if="p==='dcterms:type'" slot="dcterms:type">
           <p-d-uri :p="p" :o="item" v-for="(item, j) in o" :key="'type'+j" ></p-d-uri>
+        </template>
+
+        <template v-else-if="p==='edm:rights'" slot="edm:type">
+          <p-d-license :dclicense="item" :key="p"></p-d-license>
+        </template>
+
+        <template v-else-if="p==='dce:rights'" slot="dce:rights">
+          <p-d-lang-value :p="p" :o="item" v-for="(item, j) in o" :key="'type'+j" ></p-d-lang-value>
         </template>
 
         <template v-else-if="p==='frapo:isOutputOf'" slot="frapo:isOutputOf">
@@ -97,14 +105,22 @@
         </template>
 
         <template v-else-if="p==='dcterms:subject'" slot="phaidra:Subject">
+          
           <template v-for="(subject, j) in o">
-            <p-d-jsonld v-if="subject['@type']==='phaidra:Subject'" :jsonld="subject" :key="'psubject'+j"></p-d-jsonld>
+            <v-card flat v-if="subject['@type']==='phaidra:Subject'" :key="'psubject'+j" class="ma-3">
+              <h3 class="display-2 grey--text">Subject</h3>
+              <v-card-text class="ma-2"><p-d-jsonld  :jsonld="subject" ></p-d-jsonld></v-card-text>
+            </v-card>
             <p-d-rdfs-label v-else :p="p" :o="subject" :key="'subject'+j" ></p-d-rdfs-label>
           </template>
+            
         </template>
 
         <template v-else-if="p==='phaidra:digitizedObject'" slot="phaidra:digitizedObject">
-          <p-d-jsonld :jsonld="o" :key="p"></p-d-jsonld>
+          <v-card flat :key="p" class="ma-3">
+            <h3 class="display-2 grey--text">Digitized object</h3>
+            <v-card-text class="ma-2"><p-d-jsonld :jsonld="o" :key="p"></p-d-jsonld></v-card-text>
+          </v-card>
         </template>
 
         <template v-else-if="p==='@type'"></template>
@@ -170,19 +186,37 @@ export default {
           return roleTerms[i]['rdfs:label'][0]['@value']
         }
       }
+    },
+    loadMetadata: function (pid) {
+      var url = this.$store.state.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
+      var promise = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        this.metadata = json.metadata
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
+      return promise
+    }
+  },
+  data () {
+    return {
+      metadata: []
     }
   },
   computed: {
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     },
-    metadata: function () {
-      return this.$store.state.object.metadata
-    },
     objectjson: function () {
       if (this.pid) {
-        if (this.$store.state.object.metadata) {
-          return this.$store.state.object.metadata['JSON-LD']
+        if (this.metadata) {
+          return this.metadata['JSON-LD']
         }
       } else {
         return this.jsonld
@@ -190,12 +224,15 @@ export default {
     },
     instance () {
       return this.$store.state.settings.instance
+    },
+    metadata () {
+      return this.metadata
     }
   },
   mounted: function () {
     this.$store.dispatch('loadRoles')
     if (this.pid) {
-      this.$store.dispatch('loadMetadata', this.pid)
+      this.loadMetadata(this.pid)
     }
   }
 }

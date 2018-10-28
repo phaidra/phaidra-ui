@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-flex>
 
     <v-layout row v-if="license.url">
       <v-flex>
@@ -24,7 +24,7 @@
       </v-flex>
     </v-layout>
 
-  </v-container>
+  </v-flex>
 </template>
 
 <script>

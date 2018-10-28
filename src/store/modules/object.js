@@ -4,6 +4,7 @@ const state = {
   pid: '',
   doc: null,
   metadata: null,
+  members: [],
   owner: '',
   rights: ''
 }
@@ -18,6 +19,9 @@ const mutations = {
   setMetadata (state, data) {
     state.metadata = data
   },
+  setMembers (state, members) {
+    state.members = members
+  },
   setOwner (state, owner) {
     state.owner = owner
   },
@@ -28,13 +32,14 @@ const mutations = {
     state.pid = ''
     state.doc = null
     state.metadata = null
+    state.members = []
     state.owner = ''
     state.rights = ''
   }
 }
 
 const actions = {
-  loadDoc ({ dispatch, commit, state, rootState }, pid) {
+  loadDetail ({ dispatch, commit, state, rootState }, pid) {
     commit('setPid', pid)
 
     // TODO: if this is a page, load the index from api
@@ -58,8 +63,42 @@ const actions = {
         commit('setDoc', json.response.docs[0])
         dispatch('loadOwner', json.response.docs[0].owner)
         dispatch('loadRights', pid)
+        dispatch('loadMembers', pid)
       } else {
         commit('setDoc', false)
+      }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+
+    return promise
+  },
+  loadMembers ({ dispatch, commit, state, rootState }, pid) {
+    commit('setMembers', [])
+
+    // TODO: if this is a page, load the index from api
+
+    var params = {
+      q: 'ismemberof:"' + pid + '"',
+      defType: 'edismax',
+      wt: 'json',
+      qf: 'ismemberof^5',
+      fl: 'pid'
+    }
+
+    var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
+    var url = rootState.settings.instance.solr + '/select?' + query
+    var promise = fetch(url, {
+      method: 'GET',
+      mode: 'cors'
+    })
+    .then(function (response) { return response.json() })
+    .then(function (json) {
+      if (json.response.numFound > 0) {
+        commit('setMembers', json.response.docs)
+      } else {
+        commit('setMembers', [])
       }
     })
     .catch(function (error) {
@@ -119,22 +158,6 @@ const actions = {
     .catch(function (error) {
       console.log(error)
     })
-  },
-  loadMetadata ({ commit, state, rootState }, pid) {
-    var url = rootState.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
-    var promise = fetch(url, {
-      method: 'GET',
-      mode: 'cors'
-    })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      commit('setMetadata', json.metadata)
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-
-    return promise
   }
 }
 

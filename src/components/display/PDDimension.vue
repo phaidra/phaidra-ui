@@ -1,10 +1,10 @@
 <template>
-  <v-container fluid>
+  <v-flex>
     <v-layout row>
-      <v-flex class="caption grey--text" xs2>{{ $t(p) }}</v-flex>
+      <v-flex class="primary--text" xs3>{{ $t(p) }}</v-flex>
       <v-flex xs9>{{ o['schema:value'] }} {{ getTerm(o['schema:unitCode']) }}</v-flex>
     </v-layout>
-  </v-container>
+  </v-flex>
 </template>
 
 <script>

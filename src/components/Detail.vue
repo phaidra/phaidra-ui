@@ -23,141 +23,18 @@
           <v-flex v-if="dshash['JSON-LD']">
             <p-d-jsonld :pid="doc.pid"></p-d-jsonld>
           </v-flex>
+
+          <v-flex v-if="dshash['UWMETADATA']">
+            <p-d-uwmetadata :indexdata="doc"></p-d-uwmetadata>
+          </v-flex>
+
+          <v-flex v-if="members">
+            <p-d-jsonld v-for="(member) in members" :key="'member_'+member.pid" :pid="member.pid"></p-d-jsonld>
+          </v-flex>
+
           <v-flex v-else>
 
-            <v-flex v-for="(title,i) in titles" :key="'title'+i" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Title') }} ({{ title.lang }})</v-flex>
-                  <v-flex xs9>{{ title.value }}</v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="dshash['JSON-LD']" v-for="(role ,i) in parsedRoles" :key="'role'+i" class="mt-3">
-              <v-container fluid v-for="(value, key ,k) in role" :key="'role'+k">
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ getRoleLabel(key) }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(e,j) in value" :key="j">
-                        {{ e['schema:givenName']['@value'] }} {{ e['schema:familyName']['@value'] }} <span v-if="e['schema:affiliation']" class="grey--text">{{ e['schema:affiliation']['schema:name']['@value'] }}</span>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="dshash['UWMETADATA']" v-for="(role,i) in parsedRolesUwm" :key="'role'+i" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ role.label }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(entity,j) in role.entities" :key="j">
-                        {{ entity.firstname }} {{ entity.lastname }} <span class="grey--text">{{ entity.institution }}</span>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="doc.bib_journal" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Journal') }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(v,i) in doc.bib_journal" :key="i">{{v}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="doc.bib_volume" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Volume') }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(v,i) in doc.bib_volume" :key="i">{{v}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="doc.bib_publisher" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Publisher') }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(v,i) in doc.bib_publisher" :key="i">{{v}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="doc.bib_published" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Published') }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(v,i) in doc.bib_published" :key="i">{{v}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="doc.bib_publisherlocation" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Publisher location') }}</v-flex>
-                  <v-flex xs9>
-                    <v-layout column>
-                      <v-flex v-for="(v,i) in doc.bib_publisherlocation" :key="i">{{v}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="dshash['UWMETADATA']" v-for="(desc,i) in descriptions" :key="'desc'+i" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('Description') }} ({{ desc.lang }})</v-flex>
-                  <v-flex xs9>{{ desc.value }}</v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex v-if="dshash['JSON-LD']" v-for="(desc,i) in parsedDescriptions" :key="'desc'+i" class="mt-3">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t(desc['@type']) }} ({{ desc['rdfs:label']['@language'] }})</v-flex>
-                  <v-flex xs9>{{ desc['rdfs:label']['@value'] }}</v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
-            <v-flex class="mt-3" v-if="doc.dc_license">
-              <v-container fluid>
-                <v-layout row>
-                  <v-flex class="caption grey--text" xs2>{{ $t('License') }}</v-flex>
-                  <v-flex xs9>
-                    <p-d-license v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></p-d-license>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-flex>
-
+            
           </v-flex>
 
         </v-layout>
@@ -347,24 +224,15 @@
 <script>
 import PDLicense from '@/components/display/PDLicense'
 import PDJsonld from '@/components/display/PDJsonld'
+import PDUwmetadata from '@/components/display/PDUwmetadata'
 
 export default {
 
   name: 'detail',
   components: {
     PDLicense,
-    PDJsonld
-  },
-  methods: {
-    getRoleLabel: function (role) {
-      var id = role.substring(role.indexOf(':') + 1)
-      var roleTerms = this.vocabularies['https://phaidra.org/vocabulary/role'].terms
-      for (var i = 0; i < roleTerms.length; i++) {
-        if (roleTerms[i]['@id'] === id) {
-          return roleTerms[i]['rdfs:label'][0]['@value']
-        }
-      }
-    }
+    PDJsonld,
+    PDUwmetadata
   },
   computed: {
     vocabularies: function () {
@@ -404,6 +272,9 @@ export default {
     doc: function () {
       return this.$store.state.object.doc
     },
+    members: function () {
+      return this.$store.state.object.members
+    },
     instance () {
       return this.$store.state.settings.instance
     },
@@ -420,71 +291,8 @@ export default {
     identifiers: function () {
       // TODO: add id from
       // https://services.phaidra.univie.ac.at/api/object/<pid>/id
-      // in loadDoc and return store value
+      // in loadDetail and return store value
       return this.$store.state.object.doc.dc_identifier
-    },
-    titles: function () {
-      var titles = []
-      var doc = this.$store.state.object.doc
-      Object.keys(doc).forEach(function (field) {
-        if (field.startsWith('dc_title_')) {
-          for (var i = 0; i < doc[field].length; i++) {
-            titles.push({ value: doc[field][i], lang: field.substr(field.length - 3) })
-          }
-        }
-      })
-      return titles
-    },
-    descriptions: function () {
-      var descriptions = []
-      var doc = this.$store.state.object.doc
-      Object.keys(doc).forEach(function (field) {
-        if (field.startsWith('dc_description_')) {
-          for (var i = 0; i < doc[field].length; i++) {
-            descriptions.push({ value: doc[field][i], lang: field.substr(field.length - 3) })
-          }
-        }
-      })
-      return descriptions
-    },
-    parsedRolesUwm: function () {
-      var rolesHash = {}
-      if (this.$store.state.object.doc.uwm_roles_json) {
-        var sortedContr = JSON.parse(this.$store.state.object.doc.uwm_roles_json).sort(function (a, b) {
-          return a.data_order - b.data_order
-        })
-        for (var i = 0; i < sortedContr.length; i++) {
-          sortedContr[i].entities = sortedContr[i].entities.sort(function (a, b) {
-            return a.data_order - b.data_order
-          })
-          // merge multiple entities and multiple contributions if they have the same role
-          if (!rolesHash[sortedContr[i].role]) {
-            rolesHash[sortedContr[i].role] = {
-              role: sortedContr[i].role,
-              label: sortedContr[i].role === 'aut' ? this.$t('Author') : this.$t(this.$store.state.search.marcRoles[sortedContr[i].role]),
-              entities: []
-            }
-          }
-          for (var j = 0; j < sortedContr[i].entities.length; j++) {
-            rolesHash[sortedContr[i].role]['entities'].push(sortedContr[i].entities[j])
-          }
-        }
-      }
-      var roles = []
-      Object.keys(rolesHash).forEach(function (r) {
-        roles.push(rolesHash[r])
-      })
-      return roles
-    },
-    parsedRoles: function () {
-      if (this.$store.state.object.doc.roles_json) {
-        return JSON.parse(this.$store.state.object.doc.roles_json)
-      }
-    },
-    parsedDescriptions: function () {
-      if (this.$store.state.object.doc.descriptions_json) {
-        return JSON.parse(this.$store.state.object.doc.descriptions_json)
-      }
     },
     coverPid: function () {
       // HACK
@@ -495,13 +303,13 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
-      vm.$store.dispatch('loadDoc', to.params.pid).then(() => {
+      vm.$store.dispatch('loadDetail', to.params.pid).then(() => {
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
-    this.$store.dispatch('loadDoc', to.params.pid).then(() => {
+    this.$store.dispatch('loadDetail', to.params.pid).then(() => {
       next()
     })
   },

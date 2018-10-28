@@ -1,10 +1,10 @@
 <template>
-  <v-container fluid>
+  <v-flex>
     <v-layout>
-      <v-flex class="caption grey--text" xs2>{{ $t(p) }}</v-flex>
+      <v-flex class="primary--text" xs3>{{ $t(p) }}</v-flex>
       <v-flex xs9>{{ resolve(p, o) }}</v-flex>
     </v-layout>
-  </v-container>
+  </v-flex>
 </template>
 
 <script>

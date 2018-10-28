@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid>
+  <v-flex>
     <v-layout v-if="entity" row>
-      <v-flex class="caption grey--text" xs2>{{ getRoleLabel(this.role) }}</v-flex>
+      <v-flex class="primary--text" xs3>{{ getRoleLabel(this.role) }}</v-flex>
       <v-flex xs9>
         <v-layout column>
           <v-flex>
@@ -10,7 +10,7 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </v-flex>
 </template>
 
 <script>

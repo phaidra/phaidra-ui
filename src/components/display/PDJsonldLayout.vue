@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container  grid-list-lg>
     <v-layout column>
       <slot name="dce:title"></slot>
       <slot name="role"></slot>
@@ -10,10 +10,12 @@
       <slot name="schema:temporalCoverage"></slot>
       <slot name="dcterms:spatial"></slot>
 
+      <slot name="dcterms:type"></slot>
+
       <slot name="edm:rights"></slot>
       <slot name="dce:rights"></slot>
-      <slot name="frapo:isOutputOf"></slot>
       <slot name="frapo:hasFundingAgency"></slot>
+      <slot name="frapo:isOutputOf"></slot>
       <slot name="dcterms:provenance"></slot>
 
       <slot name="phaidra:Subject"></slot>
@@ -32,8 +34,6 @@
       
       <slot name="ebucore:filename"></slot>
       <slot name="ebucore:hasMimeType"></slot>
-
-      <slot name="dcterms:type"></slot>
 
       <slot name="phaidra:digitizedObject"></slot>
       
