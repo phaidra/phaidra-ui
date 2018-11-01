@@ -3,8 +3,8 @@
     <v-flex xs8>
       <v-combobox
         v-model="model"
-        v-on:input="$emit('input', $event)"
-        v-on:change="$emit('input', $event)"
+        v-on:input="$emit('input', htmlToPlaintext($event))"
+        v-on:change="$emit('input', htmlToPlaintext($event))"
         :items="items"
         :loading="loading"
         :search-input.sync="search"
@@ -17,7 +17,18 @@
         item-value="value"
         :label="label"
         box
-      ></v-combobox>
+      >
+        <template slot="item" slot-scope="{ item }">
+          <v-list-tile-content two-line>
+            <v-list-tile-title inset v-html="item"></v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+        <template slot="selection" slot-scope="{ item }">
+          <v-list-tile-content>
+            <v-list-tile-title inset>{{ htmlToPlaintext(item) }}</v-list-tile-title>
+          </v-list-tile-content>
+        </template>
+      </v-combobox>
     </v-flex>
     <v-flex xs2 v-if="multilingual">
       <v-select 
@@ -116,6 +127,9 @@
       }
     },
     methods: {
+      htmlToPlaintext: function (text) {
+        return text ? String(text).replace(/<[^>]+>/gm, '') : ''
+      },
       getLangTerm: function (value) {
         for (var i = 0; i < this.vocabularies['lang'].terms.length; i++) {
           if (this.vocabularies['lang'].terms[i]['@id'] === value) {

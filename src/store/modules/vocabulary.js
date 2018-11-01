@@ -78,12 +78,6 @@ const state = {
         { '@id': 'copy', 'rdfs:label': [{'@value': 'copy', '@language': 'eng'}] }
       ],
       loaded: true
-    },
-    'https://phaidra.org/vocabulary/stamp': {
-      terms: [
-        { '@id': 'https://phaidra.org/vocabulary/stamp/10891', 'rdfs:label': [{'@value': 'Aus dem Nachlass Frh. Heinrich v. Ferstel', '@language': 'deu'}] }
-      ],
-      loaded: true
     }
   }
 }
