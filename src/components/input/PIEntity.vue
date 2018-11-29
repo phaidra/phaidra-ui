@@ -33,27 +33,29 @@
       ></v-text-field>                    
     </v-flex>
     <v-flex xs2>
-      <v-select
+      <v-autocomplete
         :disabled="disablerole" 
         v-on:input="$emit('input-role', $event)" 
         :label="'Role'" 
         :items="vocabularies['https://phaidra.org/vocabulary/role'].terms" 
         :value="getTerm(role)"
+        :filter="autocompleteFilter"
         box
         return-object
+        clearable
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
-            <v-list-tile-title  v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title  v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
             <v-list-tile-sub-title  v-html="`${item['@id']}`"></v-list-tile-sub-title>
           </v-list-tile-content>
         </template>
         <template slot="selection" slot-scope="{ item }">
           <v-list-tile-content>
-            <v-list-tile-title v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
           </v-list-tile-content>
         </template>
-      </v-select>                      
+      </v-autocomplete>                      
     </v-flex>
     <v-flex xs2 v-if="showdate">
       <v-menu
@@ -160,6 +162,11 @@ export default {
           return this.vocabularies[this.vocabulary].terms[i]
         }
       }
+    },
+    autocompleteFilter: function (item, queryText, itemText) {
+      const lab = item['skos:prefLabel'][this.$i18n.locale] ? item['skos:prefLabel'][this.$i18n.locale].toLowerCase() : item['skos:prefLabel']['eng'].toLowerCase()
+      const query = queryText.toLowerCase()
+      return lab.indexOf(query) > -1
     }
   },
   data () {
@@ -173,7 +180,7 @@ export default {
   mounted: function () {
     this.$nextTick(function () {
       this.loading = !this.vocabularies[this.vocabulary].loaded
-      // emit input to set rdfs:label in parent
+      // emit input to set skos:prefLabel in parent
       if (this.role) {
         for (var i = 0; i < this.vocabularies[this.vocabulary].terms.length; i++) {
           if (this.vocabularies[this.vocabulary].terms[i]['@id'] === this.role) {

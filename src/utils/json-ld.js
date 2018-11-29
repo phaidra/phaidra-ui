@@ -2,19 +2,23 @@ export default {
   get_json_dce_title (title, subtitle, language) {
     var h = {
       '@type': 'bf:Title',
-      'bf:mainTitle': {
-        '@value': title
-      }
+      'bf:mainTitle': [
+        {
+          '@value': title
+        }
+      ]
     }
     if (language) {
-      h['bf:mainTitle']['@language'] = language
+      h['bf:mainTitle'][0]['@language'] = language
     }
     if (subtitle) {
-      h['bf:subtitle'] = {
-        '@value': subtitle
-      }
+      h['bf:subtitle'] = [
+        {
+          '@value': subtitle
+        }
+      ]
       if (language) {
-        h['bf:subtitle']['@language'] = language
+        h['bf:subtitle'][0]['@language'] = language
       }
     }
     return h
@@ -26,12 +30,14 @@ export default {
       h['@type'] = type
     }
 
-    h['rdfs:label'] = {
-      '@value': value
-    }
+    h['skos:prefLabel'] = [
+      {
+        '@value': value
+      }
+    ]
 
     if (language) {
-      h['rdfs:label']['@language'] = language
+      h['skos:prefLabel'][0]['@language'] = language
     }
 
     return h
@@ -53,9 +59,9 @@ export default {
     }
 
     if (rdfslabels) {
-      h['rdfs:label'] = []
+      h['skos:prefLabel'] = []
       for (var i = 0; i < rdfslabels.length; i++) {
-        h['rdfs:label'].push(rdfslabels[i])
+        h['skos:prefLabel'].push(rdfslabels[i])
       }
     }
 
@@ -71,9 +77,9 @@ export default {
       h['@type'] = type
     }
 
-    h['rdfs:label'] = []
+    h['skos:prefLabel'] = []
     for (var i = 0; i < rdfslabels.length; i++) {
-      h['rdfs:label'].push(rdfslabels[i])
+      h['skos:prefLabel'].push(rdfslabels[i])
     }
 
     if (preflabels) {
@@ -90,11 +96,17 @@ export default {
     }
 
     if (coordinates) {
-      h['schema:geo'] = {
-        '@type': 'schema:GeoCoordinates',
-        'schema:latitude': coordinates['schema:latitude'],
-        'schema:longitude': coordinates['schema:longitude']
-      }
+      h['schema:geo'] = [
+        {
+          '@type': 'schema:GeoCoordinates',
+          'schema:latitude': [
+            coordinates['schema:latitude']
+          ],
+          'schema:longitude': [
+            coordinates['schema:longitude']
+          ]
+        }
+      ]
     }
 
     return h
@@ -113,8 +125,12 @@ export default {
   get_json_quantitativevalue (value, unitCode) {
     var h = {
       '@type': 'schema:QuantitativeValue',
-      'schema:unitCode': unitCode,
-      'schema:value': value
+      'schema:unitCode': [
+        unitCode
+      ],
+      'schema:value': [
+        value
+      ]
     }
 
     return h
@@ -124,22 +140,30 @@ export default {
       '@type': type
     }
     if (firstname) {
-      h['schema:givenName'] = {
-        '@value': firstname
-      }
+      h['schema:givenName'] = [
+        {
+          '@value': firstname
+        }
+      ]
     }
     if (lastname) {
-      h['schema:familyName'] = {
-        '@value': lastname
-      }
+      h['schema:familyName'] = [
+        {
+          '@value': lastname
+        }
+      ]
     }
     if (institution) {
-      h['schema:name'] = {
-        '@value': institution
-      }
+      h['schema:name'] = [
+        {
+          '@value': institution
+        }
+      ]
     }
     if (date) {
-      h['dcterms:date'] = date
+      h['dcterms:date'] = [
+        date
+      ]
     }
     if (identifiers) {
       h['skos:exactMatch'] = identifiers
@@ -151,26 +175,32 @@ export default {
       '@type': 'foaf:Project'
     }
     if (name) {
-      h['rdfs:label'] = {
-        '@value': name
-      }
+      h['skos:prefLabel'] = [
+        {
+          '@value': name
+        }
+      ]
     }
     if (nameLanguage) {
-      h['rdfs:label']['@language'] = nameLanguage
+      h['skos:prefLabel'][0]['@language'] = nameLanguage
     }
     if (description) {
-      h['rdfs:comment'] = {
-        '@value': description
-      }
+      h['rdfs:comment'] = [
+        {
+          '@value': description
+        }
+      ]
     }
     if (descriptionLanguage) {
-      h['rdfs:comment']['@language'] = descriptionLanguage
+      h['rdfs:comment'][0]['@language'] = descriptionLanguage
     }
     if (identifiers) {
       h['skos:exactMatch'] = identifiers
     }
     if (homepage) {
-      h['foaf:homepage'] = homepage
+      h['foaf:homepage'] = [
+        homepage
+      ]
     }
     return h
   },
@@ -179,12 +209,14 @@ export default {
       '@type': 'frapo:FundingAgency'
     }
     if (name) {
-      h['rdfs:label'] = {
-        '@value': name
-      }
+      h['skos:prefLabel'] = [
+        {
+          '@value': name
+        }
+      ]
     }
     if (nameLanguage) {
-      h['rdfs:label']['@language'] = nameLanguage
+      h['skos:prefLabel'][0]['@language'] = nameLanguage
     }
     if (identifiers) {
       h['skos:exactMatch'] = identifiers
@@ -206,28 +238,17 @@ export default {
       jsonld[predicate].push(object)
     }
   },
-  set_object (jsonld, predicate, object) {
-    if (this.validate_object(object)) {
-      jsonld[predicate] = object
-    }
-  },
   push_literal (jsonld, predicate, value) {
     if (!jsonld[predicate]) {
       jsonld[predicate] = []
     }
     jsonld[predicate].push(value)
   },
-  set_literal (jsonld, predicate, value) {
-    jsonld[predicate] = value
-  },
   push_value (jsonld, predicate, valueobject) {
     if (!jsonld[predicate]) {
       jsonld[predicate] = []
     }
     jsonld[predicate].push(valueobject)
-  },
-  set_value (jsonld, predicate, valueobject) {
-    jsonld[predicate] = valueobject
   },
   containerForm2json (formData) {
     var jsonlds = {}
@@ -256,8 +277,8 @@ export default {
 
     Object.keys(jsonlds).forEach(function (key) {
       if (key === 'digitized-object') {
-        jsonlds['container']['phaidra:digitizedObject'] = jsonlds[key]
-        jsonlds['container']['phaidra:digitizedObject']['@type'] = 'phaidra:DigitizedObject'
+        jsonlds['container']['prov:wasDerivedFrom'] = jsonlds[key]
+        jsonlds['container']['prov:wasDerivedFrom']['@type'] = 'phaidra:DigitizedObject'
         delete jsonlds[key]
       }
       if (key.startsWith('subject-')) {
@@ -309,7 +330,7 @@ export default {
 
         case 'edm:rights':
           if (f.value) {
-            this.set_literal(jsonld, f.predicate, f.value)
+            this.push_literal(jsonld, f.predicate, f.value)
           }
           break
 
@@ -375,7 +396,7 @@ export default {
 
         case 'vra:hasTechnique':
           if (f.component === 'p-select' && f.value) {
-            this.push_object(jsonld, f.predicate, this.get_json_object(f['rdfs:label'], null, 'vra:Technique', f.value))
+            this.push_object(jsonld, f.predicate, this.get_json_object(f['skos:prefLabel'], null, 'vra:Technique', f.value))
           } else {
             if (f.value) {
               this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'vra:Technique'))
@@ -400,7 +421,7 @@ export default {
 
         case 'dcterms:spatial':
           if (f.component === 'p-gbv-suggest-getty' && f.value) {
-            this.push_object(jsonld, f.predicate, this.get_json_spatial(f['rdfs:label'], f['skos:prefLabel'], f.coordinates, 'schema:Place', [f.value]))
+            this.push_object(jsonld, f.predicate, this.get_json_spatial(f['skos:prefLabel'], f['skos:prefLabel'], f.coordinates, 'schema:Place', [f.value]))
           } else {
             if (f.value) {
               this.push_object(jsonld, f.predicate, this.get_json_object([{ '@value': f.value, '@language': f.language }], null, 'schema:Place'))
@@ -410,13 +431,13 @@ export default {
 
         case 'ebucore:filename':
           if (f.value) {
-            this.set_literal(jsonld, f.predicate, f.value)
+            this.push_literal(jsonld, f.predicate, f.value)
           }
           break
 
         case 'ebucore:hasMimeType':
           if (f.value) {
-            this.set_literal(jsonld, f.predicate, f.value)
+            this.push_literal(jsonld, f.predicate, f.value)
           }
           break
 

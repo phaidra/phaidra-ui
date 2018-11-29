@@ -31,6 +31,10 @@
           <p-d-uri :p="p" :o="item" v-for="(item, j) in o" :key="'type'+j" ></p-d-uri>
         </template>
 
+        <template v-else-if="p==='dcterms:issued'" slot="dcterms:issued">
+          <p-d-value :p="p" :o="item" v-for="(item, j) in o" :key="'issued'+j" ></p-d-value>
+        </template>
+
         <template v-else-if="p==='edm:rights'" slot="edm:type">
           <p-d-license :dclicense="item" :key="p"></p-d-license>
         </template>
@@ -76,8 +80,7 @@
         </template>
 
         <template v-else-if="p==='vra:hasInscription'" slot="vra:hasInscription">
-          <p-d-rdfs-label v-if="item['rdfs:label']" :p="p" :o="item" v-for="(item, j) in o" :key="'inscr'+j" ></p-d-rdfs-label>
-          <p-d-exact-match v-if="item['skos:exactMatch']" :p="p" :o="item" v-for="(item, j) in o" :key="'inscrem'+j" ></p-d-exact-match>
+          <p-d-rdfs-label v-if="item['skos:prefLabel']" :p="p" :o="item" v-for="(item, j) in o" :key="'inscr'+j" ></p-d-rdfs-label>
         </template>
 
         <template v-else-if="p==='vra:material'" slot="vra:material">
@@ -104,6 +107,14 @@
           <p-d-dimension :p="p" :o="item" v-for="(item, j) in o" :key="'weight'+j" ></p-d-dimension>
         </template>
 
+        <template v-else-if="p==='ebucore:filename'" slot="ebucore:filename">
+          <p-d-value :p="p" :o="o" :key="p" ></p-d-value>
+        </template>
+
+        <template v-else-if="p==='ebucore:hasMimeType'" slot="ebucore:hasMimeType">
+          <p-d-value :p="p" :o="o" :key="p"></p-d-value>
+        </template>
+
         <template v-else-if="p==='dcterms:subject'" slot="phaidra:Subject">
           
           <template v-for="(subject, j) in o">
@@ -116,7 +127,7 @@
             
         </template>
 
-        <template v-else-if="p==='phaidra:digitizedObject'" slot="phaidra:digitizedObject">
+        <template v-else-if="p==='prov:wasDerivedFrom'" slot="prov:wasDerivedFrom">
           <v-card flat :key="p" class="ma-3">
             <h3 class="display-2 grey--text">Digitized object</h3>
             <v-card-text class="ma-2"><p-d-jsonld :jsonld="o" :key="p"></p-d-jsonld></v-card-text>
@@ -183,19 +194,20 @@ export default {
       var roleTerms = this.vocabularies['https://phaidra.org/vocabulary/role'].terms
       for (var i = 0; i < roleTerms.length; i++) {
         if (roleTerms[i]['@id'] === id) {
-          return roleTerms[i]['rdfs:label'][0]['@value']
+          return roleTerms[i]['skos:prefLabel'][0]['@value']
         }
       }
     },
     loadMetadata: function (pid) {
-      var url = this.$store.state.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
+      var self = this
+      var url = self.$store.state.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
       })
       .then(function (response) { return response.json() })
       .then(function (json) {
-        this.metadata = json.metadata
+        self.metadata = json.metadata
       })
       .catch(function (error) {
         console.log(error)
@@ -224,9 +236,6 @@ export default {
     },
     instance () {
       return this.$store.state.settings.instance
-    },
-    metadata () {
-      return this.metadata
     }
   },
   mounted: function () {

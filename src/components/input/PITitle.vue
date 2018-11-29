@@ -19,7 +19,7 @@
     <v-flex xs2 v-if="multilingual">
       <v-select 
         v-on:input="$emit('input-language', $event)" 
-        :label="'Language'"
+        :label="$t('Language')"
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 
@@ -29,13 +29,13 @@
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
-            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title inset v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
             <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
           </v-list-tile-content>
         </template>
         <template slot="selection" slot-scope="{ item }">
           <v-list-tile-content>
-            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title inset v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
           </v-list-tile-content>
         </template>
       </v-select>                      

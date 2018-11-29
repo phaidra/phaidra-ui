@@ -12,6 +12,7 @@
 
       <slot name="dcterms:type"></slot>
 
+      <slot name="dcterms:issued"></slot>
       <slot name="edm:rights"></slot>
       <slot name="dce:rights"></slot>
       <slot name="frapo:hasFundingAgency"></slot>
@@ -35,7 +36,7 @@
       <slot name="ebucore:filename"></slot>
       <slot name="ebucore:hasMimeType"></slot>
 
-      <slot name="phaidra:digitizedObject"></slot>
+      <slot name="prov:wasDerivedFrom"></slot>
       
       <slot name="unknown-predicate"></slot>
     </v-layout>

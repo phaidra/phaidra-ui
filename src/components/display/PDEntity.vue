@@ -37,7 +37,7 @@ export default {
       var roleTerms = this.vocabularies['https://phaidra.org/vocabulary/role'].terms
       for (var i = 0; i < roleTerms.length; i++) {
         if (roleTerms[i]['@id'] === id) {
-          return roleTerms[i]['rdfs:label'][0]['@value']
+          return roleTerms[i]['skos:prefLabel'][0]['@value']
         }
       }
     }

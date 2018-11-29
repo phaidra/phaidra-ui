@@ -33,7 +33,7 @@ export default {
                 multiplicable: false,
                 label: 'Resource type',
                 value: 'http://purl.org/coar/resource_type/c_ecc8',
-                'rdfs:label': []
+                'skos:prefLabel': []
               },
               {
                 id: 101,
@@ -47,7 +47,7 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 102,
@@ -60,7 +60,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 103,
@@ -71,19 +71,20 @@ export default {
                 multiplicable: true,
                 multilingual: true,
                 label: 'Sociocultural category',
-                value: ''
+                value: '',
+                language: 'deu'
               },
               {
                 id: 104,
                 predicate: 'dcterms:language',
                 metadataset: 'digital',
                 component: 'p-select',
-                vocabulary: 'http://id.loc.gov/vocabulary/iso639-2',
+                vocabulary: 'iso639-2',
                 required: true,
                 multiplicable: true,
                 label: 'Language',
-                value: '',
-                'rdfs:label': []
+                value: 'deu',
+                'skos:prefLabel': []
               },
               {
                 id: 105,
@@ -110,7 +111,7 @@ export default {
                 multiline: true,
                 label: 'Note',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 107,
@@ -122,7 +123,7 @@ export default {
                 multilingual: true,
                 label: 'Keyword',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 108,
@@ -130,9 +131,9 @@ export default {
                 metadataset: 'digital',
                 component: 'p-project',
                 name: '',
-                nameLanguage: '',
+                nameLanguage: 'deu',
                 description: '',
-                descriptionLanguage: '',
+                descriptionLanguage: 'deu',
                 identifier: '',
                 homepage: ''
               },
@@ -142,7 +143,7 @@ export default {
                 metadataset: 'digital',
                 component: 'p-funder',
                 name: '',
-                nameLanguage: '',
+                nameLanguage: 'deu',
                 identifier: ''
               }
             ]
@@ -168,7 +169,8 @@ export default {
                 component: 'p-text-field',
                 label: 'Temporal coverage',
                 multilingual: true,
-                value: ''
+                value: '',
+                language: 'deu'
               },
               {
                 id: 202,
@@ -179,7 +181,7 @@ export default {
                 multilingual: true,
                 label: 'Provenance',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 203,
@@ -188,7 +190,8 @@ export default {
                 component: 'p-text-field',
                 label: 'Physical location',
                 multilingual: true,
-                value: ''
+                value: '',
+                language: 'deu'
               },
               {
                 id: 204,
@@ -208,7 +211,7 @@ export default {
                 multiline: true,
                 label: 'Condition',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 206,
@@ -219,7 +222,7 @@ export default {
                 vocabulary: 'original-copy',
                 label: 'Reproduction note',
                 value: '',
-                'rdfs:label': []
+                'skos:prefLabel': []
               },
               {
                 id: 208,
@@ -229,8 +232,8 @@ export default {
                 component: 'p-select',
                 vocabulary: 'getty-aat-photo',
                 label: 'Technique',
-                value: 'http://vocab.getty.edu/aat/300162056',
-                'rdfs:label': []
+                value: '',
+                'skos:prefLabel': []
               },
               {
                 id: 209,
@@ -242,8 +245,8 @@ export default {
                 multiplicable: true,
                 label: 'Technique',
                 value: '',
-                language: '',
-                'rdfs:label': []
+                language: 'deu',
+                'skos:prefLabel': []
               },
               {
                 id: 210,
@@ -255,7 +258,7 @@ export default {
                 multiplicable: true,
                 label: 'Material description',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 211,
@@ -263,7 +266,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Height',
-                unitCode: 'CMT',
+                unit: 'CMT',
                 value: ''
               },
               {
@@ -272,30 +275,20 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Width',
-                unitCode: 'CMT',
+                unit: 'CMT',
                 value: ''
               },
               {
                 id: 213,
                 predicate: 'vra:hasInscription',
                 metadataset: 'analog',
-                component: 'p-text-field',
-                multiline: true,
-                multiplicable: true,
-                multilingual: true,
-                label: 'Inscription',
-                value: '',
-                language: ''
-              },
-              {
-                id: 214,
-                predicate: 'vra:hasInscription',
-                metadataset: 'analog',
                 component: 'p-text-field-suggest',
                 suggester: 'inscriptionsuggester',
-                label: 'Stamp',
+                multiplicable: true,
+                multilingual: true,
+                label: 'Inscription/Stamp',
                 value: '',
-                'rdfs:label': []
+                language: 'deu'
               },
               {
                 id: 215,
@@ -317,7 +310,7 @@ export default {
                 multiplicable: true,
                 label: 'Place (native name)',
                 value: '',
-                language: ''
+                language: 'deu'
               }
             ]
           },
@@ -338,11 +331,12 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 301,
                 predicate: 'bf:note',
+                type: 'bf:Note',
                 metadataset: 'subject-represented',
                 component: 'p-text-field',
                 multiplicable: true,
@@ -350,7 +344,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 302,
@@ -368,7 +362,8 @@ export default {
                 component: 'p-text-field',
                 multilingual: true,
                 label: 'Temporal coverage',
-                value: ''
+                value: '',
+                language: 'deu'
               },
               {
                 id: 304,
@@ -379,7 +374,7 @@ export default {
                 multilingual: true,
                 label: 'Provenance',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 305,
@@ -387,7 +382,8 @@ export default {
                 metadataset: 'subject-represented',
                 component: 'p-text-field',
                 label: 'Physical location',
-                value: ''
+                value: '',
+                language: 'deu'
               },
               {
                 id: 306,
@@ -423,7 +419,7 @@ export default {
                 multiplicable: true,
                 label: 'Technique',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 309,
@@ -435,7 +431,7 @@ export default {
                 multiplicable: true,
                 label: 'Material description',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 310,
@@ -443,7 +439,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Height',
-                unitCode: 'CMT',
+                unit: 'CMT',
                 value: ''
               },
               {
@@ -452,7 +448,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Width',
-                unitCode: 'CMT',
+                unit: 'CMT',
                 value: ''
               },
               {
@@ -461,7 +457,7 @@ export default {
                 metadataset: 'analog',
                 component: 'p-dimension',
                 label: 'Depth',
-                unitCode: 'CMT',
+                unit: 'CMT',
                 value: ''
               }
             ]
@@ -492,11 +488,12 @@ export default {
                 label: 'Title',
                 title: '',
                 subtitle: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 502,
                 predicate: 'bf:note',
+                type: 'bf:Note',
                 metadataset: 'digital',
                 component: 'p-text-field',
                 multiplicable: true,
@@ -504,7 +501,7 @@ export default {
                 multiline: true,
                 label: 'Description',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 504,
@@ -514,7 +511,7 @@ export default {
                 vocabulary: 'mime-types',
                 label: 'MIME type',
                 value: 'image/tiff',
-                'rdfs:label': []
+                'skos:prefLabel': []
               },
               {
                 id: 505,
@@ -526,7 +523,7 @@ export default {
                 multiline: true,
                 label: 'Digitization note',
                 value: '',
-                language: ''
+                language: 'deu'
               },
               {
                 id: 506,
@@ -551,7 +548,7 @@ export default {
                 vocabulary: 'licenses',
                 label: 'License',
                 value: '',
-                'rdfs:label': []
+                'skos:prefLabel': []
               },
               {
                 id: 508,
@@ -562,7 +559,7 @@ export default {
                 multilingual: true,
                 label: 'Rights statement',
                 value: '',
-                language: ''
+                language: 'deu'
               }
             ]
           }

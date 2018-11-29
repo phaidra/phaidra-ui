@@ -14,6 +14,7 @@
         item-value="value"
         :label="label"
         box
+        clearable
       ></v-autocomplete>
     </v-flex>
     <v-flex xs4>

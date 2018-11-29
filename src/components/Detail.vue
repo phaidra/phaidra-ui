@@ -29,7 +29,10 @@
           </v-flex>
 
           <v-flex v-if="members">
-            <p-d-jsonld v-for="(member) in members" :key="'member_'+member.pid" :pid="member.pid"></p-d-jsonld>
+            <v-card flat :key="p" class="ma-3">
+              <h3 class="display-2 grey--text">Members ({{members.length}})</h3>
+              <v-card-text class="ma-2"><p-d-jsonld v-for="(member) in members" :key="'member_'+member.pid" :pid="member.pid"></p-d-jsonld></v-card-text>
+            </v-card>
           </v-flex>
 
           <v-flex v-else>

@@ -218,7 +218,7 @@ export default {
   methods: {
     submit: function () {
       var self = this
-      // this.loading = true
+      this.loading = true
       this.generateJson()
       var httpFormData = new FormData()
       httpFormData.append('metadata', JSON.stringify(this.metadata))
@@ -314,11 +314,11 @@ export default {
     },
     selectInput: function (f, event) {
       f.value = event['@id']
-      f['rdfs:label'] = event['rdfs:label']
+      f['skos:prefLabel'] = event['skos:prefLabel']
     },
     roleInput: function (f, event) {
       f.role = event['@id']
-      f['rdfs:label'] = event['rdfs:label']
+      f['skos:prefLabel'] = event['skos:prefLabel']
     },
     setFilename: function (f, event) {
       f.value = event.target.files[0].name
@@ -327,6 +327,7 @@ export default {
   },
   mounted: function () {
     this.$store.dispatch('loadRoles')
+    this.$store.dispatch('loadIso6392')
   }
 }
 </script>

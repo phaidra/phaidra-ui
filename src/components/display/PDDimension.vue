@@ -28,7 +28,7 @@ export default {
     getTerm: function (value) {
       for (var i = 0; i < this.vocabularies['un-cefact'].terms.length; i++) {
         if (this.vocabularies['un-cefact'].terms[i]['@id'] === value) {
-          return this.vocabularies['un-cefact'].terms[i]['rdfs:label'][0]['@value']
+          return this.vocabularies['un-cefact'].terms[i]['skos:prefLabel'][0]['@value']
         }
       }
     }

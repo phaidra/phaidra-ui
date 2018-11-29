@@ -1,7 +1,7 @@
 <template>
   <v-layout row>
     <v-flex xs8>
-      <v-combobox
+      <v-autocomplete
         v-model="model"
         v-on:input="$emit('input', htmlToPlaintext($event))"
         v-on:change="$emit('input', htmlToPlaintext($event))"
@@ -10,6 +10,7 @@
         :search-input.sync="search"
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
+        :filter="autocompleteFilter"
         cache-items
         hide-no-data
         hide-selected
@@ -17,6 +18,7 @@
         item-value="value"
         :label="label"
         box
+        clearable
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
@@ -28,7 +30,7 @@
             <v-list-tile-title inset>{{ htmlToPlaintext(item) }}</v-list-tile-title>
           </v-list-tile-content>
         </template>
-      </v-combobox>
+      </v-autocomplete>
     </v-flex>
     <v-flex xs2 v-if="multilingual">
       <v-select 
@@ -43,13 +45,13 @@
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
-            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title inset v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
             <v-list-tile-sub-title inset v-html="`${item['@id']}`"></v-list-tile-sub-title>
           </v-list-tile-content>
         </template>
         <template slot="selection" slot-scope="{ item }">
           <v-list-tile-content>
-            <v-list-tile-title inset v-html="`${item['rdfs:label'][0]['@value']}`"></v-list-tile-title>
+            <v-list-tile-title inset v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
           </v-list-tile-content>
         </template>
       </v-select>                      
@@ -136,6 +138,11 @@
             return this.vocabularies['lang'].terms[i]
           }
         }
+      },
+      autocompleteFilter: function (item, queryText, itemText) {
+        const lab = item['skos:prefLabel'][this.$i18n.locale] ? item['skos:prefLabel'][this.$i18n.locale].toLowerCase() : item['skos:prefLabel']['eng'].toLowerCase()
+        const query = queryText.toLowerCase()
+        return lab.indexOf(query) > -1
       },
       querySuggestionsDebounce (value) {
         this.showList = true

@@ -7,9 +7,9 @@ import App from './App'
 import router from './router'
 import store from './store'
 import * as svgicon from 'vue-svgicon'
-import en from './i18n/en'
-import de from './i18n/de'
-import it from './i18n/it'
+import eng from './i18n/eng'
+import deu from './i18n/deu'
+import ita from './i18n/ita'
 import moment from 'moment'
 
 Vue.config.productionTip = false
@@ -23,9 +23,9 @@ Vue.use(svgicon, {
   defaultHeight: '1em'
 })
 
-const messages = { en, de, it }
+const messages = { eng, deu, ita }
 const i18n = new VueI18n({
-  locale: 'de',
+  locale: 'deu',
   messages
 })
 

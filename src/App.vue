@@ -41,13 +41,13 @@
                           <icon name="univie-sprache" class="lang-icon"></icon>
                         </v-btn>
                         <v-list>
-                          <v-list-tile @click="$i18n.locale='en'">
+                          <v-list-tile @click="$i18n.locale='eng'">
                             <v-list-tile-title>English</v-list-tile-title>
                           </v-list-tile>
-                          <v-list-tile @click="$i18n.locale='de'">
+                          <v-list-tile @click="$i18n.locale='deu'">
                             <v-list-tile-title>Deutsch</v-list-tile-title>
                           </v-list-tile>
-                          <v-list-tile @click="$i18n.locale='it'">
+                          <v-list-tile @click="$i18n.locale='ita'">
                             <v-list-tile-title>Italiano</v-list-tile-title>
                           </v-list-tile>
                         </v-list>

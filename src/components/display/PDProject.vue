@@ -1,8 +1,8 @@
 <template>
   <v-flex>
     <v-layout row>
-      <v-flex class="primary--text" xs3>{{ $t('Project') }} ({{ o['rdfs:label']['@language'] }})</v-flex>
-      <v-flex v-if="o['rdfs:label']" xs9>{{ o['rdfs:label']['@value'] }} <template v-if="o['skos:exactMatch']">[<template v-for="id in o['skos:exactMatch']">{{ id }}</template>]</template></v-flex>
+      <v-flex class="primary--text" xs3>{{ $t('Project') }} ({{ o['skos:prefLabel']['@language'] }})</v-flex>
+      <v-flex v-if="o['skos:prefLabel']" xs9>{{ o['skos:prefLabel']['@value'] }} <template v-if="o['skos:exactMatch']">[<template v-for="id in o['skos:exactMatch']">{{ id }}</template>]</template></v-flex>
     </v-layout>
     <v-layout row>
       <v-flex class="primary--text" xs3>{{ $t('Project description') }} ({{ o['rdfs:comment']['@language'] }})</v-flex>
