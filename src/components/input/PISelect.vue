@@ -10,7 +10,7 @@
         :loading="loading"
         :filter="autocompleteFilter"
         hide-no-data
-        :label="label"
+        :label="$t(label)"
         box
         return-object
         clearable

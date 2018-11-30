@@ -12,7 +12,7 @@
         hide-selected
         item-text="text"
         item-value="value"
-        :label="label"
+        :label="$t(label)"
         box
         clearable
       ></v-autocomplete>

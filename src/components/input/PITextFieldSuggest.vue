@@ -16,7 +16,7 @@
         hide-selected
         item-text="text"
         item-value="value"
-        :label="label"
+        :label="$t(label)"
         box
         clearable
       >
@@ -35,7 +35,7 @@
     <v-flex xs2 v-if="multilingual">
       <v-select 
         v-on:input="$emit('input-language', $event)" 
-        :label="'Language'"
+        :label="$t('Language')"
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 

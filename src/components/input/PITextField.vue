@@ -4,7 +4,7 @@
       <v-text-field v-if="!multiline"         
         :value="value" 
         v-on:input="$emit('input', $event)" 
-        :label="label" 
+        :label="$t(label)" 
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         box
@@ -12,7 +12,7 @@
       <v-textarea v-if="multiline"         
         :value="value" 
         v-on:input="$emit('input', $event)" 
-        :label="label" 
+        :label="$t(label)" 
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         box
@@ -21,7 +21,7 @@
     <v-flex xs2 v-if="multilingual">
       <v-select 
         v-on:input="$emit('input-language', $event)" 
-        :label="'Language'"
+        :label="$t('Language')"
         :required="required"
         :rules="required ? [ v => !!v || 'Required'] : []"
         :items="vocabularies['lang'].terms" 

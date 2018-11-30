@@ -4,27 +4,27 @@
       <v-text-field
         :value="value" 
         v-on:input="$emit('input-value', $event)" 
-        :label="label"
+        :label="$t(label)"
         box
       ></v-text-field>
     </v-flex>
     <v-flex xs2>
       <v-select 
         v-on:input="$emit('input-unit', $event)" 
-        :label="'Unit'"
+        :label="$t('Unit')"
         :items="vocabularies['un-cefact'].terms" 
         :value="getTerm(unit)"
         box
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-tile-content two-line>
-            <v-list-tile-title  v-html="`${item['skos:prefLabel'][$i18n.locale]}`"></v-list-tile-title>
+            <v-list-tile-title  v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
             <v-list-tile-sub-title  v-html="`${item['@id']}`"></v-list-tile-sub-title>
           </v-list-tile-content>
         </template>
         <template slot="selection" slot-scope="{ item }">
           <v-list-tile-content>
-            <v-list-tile-title v-html="`${item['skos:prefLabel'][$i18n.locale]}`"></v-list-tile-title>
+            <v-list-tile-title v-html="`${item['skos:prefLabel'][$i18n.locale] ? item['skos:prefLabel'][$i18n.locale] : item['skos:prefLabel']['eng']}`"></v-list-tile-title>
           </v-list-tile-content>
         </template>
       </v-select>

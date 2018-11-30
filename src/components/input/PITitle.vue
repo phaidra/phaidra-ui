@@ -3,7 +3,7 @@
     <v-flex xs4>
       <v-text-field
         :value="title"
-        :label="'Title'"
+        :label="$t('Title')"
         v-on:input="$emit('input-title', $event)"
         box
       ></v-text-field>
@@ -11,7 +11,7 @@
     <v-flex xs4>
       <v-text-field
         :value="subtitle"
-        :label="'Subtitle'"
+        :label="$t('Subtitle')"
         v-on:input="$emit('input-subtitle', $event)"
         box
       ></v-text-field>

@@ -10,7 +10,7 @@
             <v-flex xs6>
               <v-text-field
                 :value="name"
-                :label="'Project name'"
+                :label="$t('Project name')"
                 v-on:input="$emit('input-name', $event)"
                 box
               ></v-text-field>
@@ -18,7 +18,7 @@
             <v-flex xs2>
               <v-select 
                 v-on:input="$emit('input-name-language', $event)" 
-                :label="'Language'"
+                :label="$t('Language')"
                 :items="vocabularies['lang'].terms" 
                 :value="getLangTerm(nameLanguage)"
                 box

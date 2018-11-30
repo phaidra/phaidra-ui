@@ -3,7 +3,7 @@
     <v-flex xs2 v-if="type === 'schema:Person'">
       <v-text-field
         :value="firstname"
-        :label="'Firstname'"
+        :label="$t('Firstname')"
         v-on:input="$emit('input-firstname', $event)"
         box
       ></v-text-field>
@@ -11,7 +11,7 @@
     <v-flex xs2 v-if="type === 'schema:Person'">
       <v-text-field
         :value="lastname"
-        :label="'Lastname'"
+        :label="$t('Lastname')"
         v-on:input="$emit('input-lastname', $event)"
         box
       ></v-text-field>
@@ -24,10 +24,10 @@
         box
       ></v-text-field>
     </v-flex>
-    <v-flex xs2>
+    <v-flex xs2 v-if="showidentifier">
       <v-text-field
         :value="identifier"
-        :label="'Identifier'"
+        :label="$t('Identifier')"
         v-on:input="$emit('input-identifier', $event)"
         box
       ></v-text-field>                    
@@ -36,7 +36,7 @@
       <v-autocomplete
         :disabled="disablerole" 
         v-on:input="$emit('input-role', $event)" 
-        :label="'Role'" 
+        :label="$t('Role')" 
         :items="vocabularies['https://phaidra.org/vocabulary/role'].terms" 
         :value="getTerm(role)"
         :filter="autocompleteFilter"
@@ -72,7 +72,7 @@
         <v-text-field
           slot="activator"
           v-model="selectedDate"
-          :label="'Date'"
+          :label="$t('Date')"
           append-icon="event"
           box
         ></v-text-field>
@@ -151,6 +151,10 @@ export default {
       default: false
     },
     showdate: {
+      type: Boolean,
+      default: true
+    },
+    showidentifier: {
       type: Boolean,
       default: true
     }
