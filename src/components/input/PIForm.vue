@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-lg class="ksa-submit">
+  <v-container grid-list-lg>
 
     <v-toolbar color="primary lighten-3" tabs dark>
       <v-toolbar-title>KSA Submit - Photo</v-toolbar-title>
@@ -187,7 +187,7 @@ import PIProject from '@/components/input/PIProject'
 import PIFunder from '@/components/input/PIFunder'
 
 export default {
-  name: 'p-submit-form',
+  name: 'p-i-form',
   components: {
     PITextField,
     PITextFieldSuggest,

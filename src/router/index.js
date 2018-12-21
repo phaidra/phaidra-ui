@@ -7,7 +7,7 @@ import Detail from '@/components/Detail'
 import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
 import Submit from '@/components/Submit'
-import SubmitKsaPhoto from '@/components/SubmitKsaPhoto'
+import SubmitKsaContainer from '@/components/SubmitKsaContainer'
 
 Vue.use(Router)
 
@@ -49,9 +49,9 @@ export default new Router({
       component: Submit
     },
     {
-      path: '/submit/ksa-photo',
-      name: 'submit-ksa-photo',
-      component: SubmitKsaPhoto
+      path: '/submit/ksa-container',
+      name: 'submit-ksa-container',
+      component: SubmitKsaContainer
     }
   ]
 })

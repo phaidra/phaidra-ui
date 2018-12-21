@@ -1,6 +1,6 @@
 <template>
   <div>    
-    <v-btn raised :to="'submit/ksa-photo'">{{ $t("KSA Submit form - Photo") }}</v-btn>
+    <v-btn raised :to="'submit/ksa-container'">{{ $t("KSA Submit - Container") }}</v-btn>
   </div>
 </template>
 

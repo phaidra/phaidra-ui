@@ -537,7 +537,6 @@ export default {
   'Reproduction note': 'Original/Kopie',
   'Condition': 'Zustand',
   'Inscription/Stamp': 'Inschrift/Stempel',
-  'Stamp': 'Stempel',
   'Production information': 'Entstehungsinformation',
   'Material description': 'Materialbeschreibung',
   'Digitizing information': 'Digitalisierungsinformation',

@@ -1,19 +1,19 @@
 <template>
   <v-container grid-list-lg class="ksa-submit" >
 
-    <p-submit-form :definition="form"></p-submit-form>
+    <p-i-form :definition="form"></p-i-form>
 
   </v-container>
  
 </template>
 
 <script>
-import PSubmitForm from '@/components/PSubmitForm'
+import PIForm from '@/components/input/PIForm'
 
 export default {
-  name: 'submit-ksa-photo',
+  name: 'submit-ksa-container',
   components: {
-    PSubmitForm
+    PIForm
   },
   data () {
     return {
