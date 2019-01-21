@@ -225,22 +225,11 @@
 </template>
 
 <script>
-import PDLicense from '@/components/display/PDLicense'
-import PDJsonld from '@/components/display/PDJsonld'
-import PDUwmetadata from '@/components/display/PDUwmetadata'
 
 export default {
 
   name: 'detail',
-  components: {
-    PDLicense,
-    PDJsonld,
-    PDUwmetadata
-  },
   computed: {
-    vocabularies: function () {
-      return this.$store.state.vocabulary.vocabularies
-    },
     downloadable: function () {
       switch (this.$store.state.object.doc.cmodel) {
         case 'PDFDocument':

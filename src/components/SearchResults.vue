@@ -88,13 +88,8 @@
 </template>
 
 <script>
-import PDLicense from '@/components/display/PDLicense'
-
 export default {
   name: 'search-results',
-  components: {
-    PDLicense
-  },
   computed: {
     docs () {
       return this.$store.state.search.docs

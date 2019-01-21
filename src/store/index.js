@@ -5,8 +5,8 @@ import alerts from './modules/alerts'
 import search from './modules/search'
 import groups from './modules/groups'
 import object from './modules/object'
-import vocabulary from './modules/vocabulary'
 import settings from './modules/settings'
+import vocabulary from 'phaidra-vue-components/src/store/modules/vocabulary'
 import config from '../config/phaidra-ui'
 
 Vue.use(Vuex)

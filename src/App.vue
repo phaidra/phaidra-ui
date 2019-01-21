@@ -108,9 +108,9 @@
 
         <v-flex xs12 md8 offset-md2 class="content">
 
-          <v-alert v-for="alert in alerts" :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" v-if="alert.msg" transition="slide-y-transition" :key="alert.msg">
-            <v-layout>{{$t(alert.msg)}}<v-spacer></v-spacer><icon name="material-navigation-close" color="grey lighten-1" @click.native="dismiss(alert)"></icon></v-layout>
-          </v-alert>
+          <v-alert v-for="(alert, i) in alerts" :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition" :key="i">
+              <v-layout row><v-flex class="pa-3">{{alert.msg}}</v-flex><v-spacer></v-spacer><v-btn icon @click.native="dismiss(alert)"><v-icon>close</v-icon></v-btn></v-layout>
+            </v-alert>
             <transition name="fade" mode="out-in">
               <keep-alive>
                 <router-view class="mt-5 mb-3"></router-view>

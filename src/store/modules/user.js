@@ -37,7 +37,7 @@ const mutations = {
 const actions = {
   login ({ commit, dispatch, state, rootState }, credentials) {
     return new Promise((resolve, reject) => {
-      dispatch('initStore')
+      commit('initStore')
 
       commit('setUsername', credentials.username)
 
