@@ -43,6 +43,12 @@ Vue.filter('time', function (value) {
   }
 })
 
+Vue.filter('unixtime', function (value) {
+  if (value) {
+    return moment.unix(String(value)).format('DD.MM.YYYY hh:mm:ss')
+  }
+})
+
 Vue.filter('capitalize', function (value) {
   if (!value) return ''
   value = value.toString()
