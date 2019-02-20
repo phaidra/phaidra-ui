@@ -190,6 +190,14 @@
       logout: function () {
         this.$store.dispatch('logout')
       },
+      getCookie: function (name) {
+        var value = '; ' + document.cookie
+        var parts = value.split('; ' + name + '=')
+        if (parts.length === 2) {
+          var val = parts.pop().split(';').shift()
+          return val === ' ' ? null : val
+        }
+      },
       dismiss: function (alert) {
         this.$store.commit('clearAlert', alert)
       },
@@ -201,6 +209,12 @@
           this.$store.dispatch('search')
           this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
         })
+      }
+    },
+    mounted: function () {
+      var token = this.getCookie('X-XSRF-TOKEN')
+      if (token) {
+        this.$store.commit('setToken', token)
       }
     },
     created: function () {

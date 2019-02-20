@@ -3,7 +3,13 @@
   <v-container>
     <v-layout row>
       <v-flex >
-        <p-i-form :mode="'edit'" ref="edit" v-on:object-saved="objectSaved($event)"></p-i-form>
+        <p-i-form 
+          :pid="pid"
+          :form="editform"
+          :templating="false"
+          v-on:load-form="editform = $event"
+          v-on:object-saved="objectSaved($event)"
+        ></p-i-form>
       </v-flex>
     </v-layout>
   </v-container>
@@ -13,6 +19,11 @@
 <script>
 export default {
   name: 'metadata-editor',
+  data () {
+    return {
+      editform: {}
+    }
+  },
   computed: {
     pid: function () {
       return this.$route.params.pid
@@ -24,9 +35,6 @@ export default {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     }
-  },
-  mounted: function () {
-    this.$refs.edit.loadMetadata(this.pid)
   }
 }
 </script>

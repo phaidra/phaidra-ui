@@ -1,6 +1,6 @@
 <template>
   <div>    
-    <v-btn raised :to="'submit/ksa-container'">{{ $t("KSA Submit - Container") }}</v-btn>
+    <v-btn raised :to="'submit/ksa-eda'">{{ $t("KSA EDA") }}</v-btn>
   </div>
 </template>
 

@@ -4,21 +4,25 @@
     <v-layout row wrap>
 
       <v-flex xs4 offset-xs4>
-        <v-form @submit="login">
+        <v-form v-model="valid" @submit="login">
           <v-card>
             <v-card-text>
               <v-flex xs10 offset-xs1>
-                <v-form v-model="valid">
-                  <v-text-field :label="$t('Username')" v-model="credentials.username" required></v-text-field>
-                  <v-text-field
-                    :label="$t('Password')"
-                    v-model="credentials.password"
-                    required
-                    :append-icon="e1 ? 'visibility' : 'visibility_off'"
-                    :append-icon-cb="toggleVisibility"
-                    :type="e1 ? 'password' : 'text'"
-                  ></v-text-field>
-                </v-form>
+                <v-text-field 
+                  :label="$t('Username')" 
+                  v-model="credentials.username" 
+                  required
+                  :browser-autocomplete="'username'"
+                ></v-text-field>
+                <v-text-field
+                  :label="$t('Password')"
+                  v-model="credentials.password"
+                  required
+                  :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                  @click:append="toggleVisibility"
+                  :type="e1 ? 'password' : 'text'"
+                  :browser-autocomplete="'current-password'"
+                ></v-text-field>
               </v-flex>
             </v-card-text>
             <v-divider class="mt-5"></v-divider>
@@ -27,7 +31,7 @@
               <v-btn type="submit" color="primary" flat>Login</v-btn>
             </v-card-actions>
           </v-card>
-        </v-form>
+          </v-form>
       </v-flex>
 
     </v-layout>
@@ -51,7 +55,9 @@ export default {
   methods: {
     login: function () {
       this.$store.dispatch('login', this.credentials).then(() => {
-        this.$router.push('/')
+        this.$store.dispatch('getUserData').then(() => {
+          this.$router.push('/')
+        })
       })
     },
     toggleVisibility: function () {

@@ -20,6 +20,9 @@ const mutations = {
     state.metadata = data
   },
   setMembers (state, members) {
+    for (var i = 0; i < members.length; i++) {
+      members[i]['jsonld'] = {}
+    }
     state.members = members
   },
   setOwner (state, owner) {
@@ -84,7 +87,7 @@ const actions = {
       defType: 'edismax',
       wt: 'json',
       qf: 'ismemberof^5',
-      fl: 'pid'
+      fl: 'pid,cmodel'
     }
 
     var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })

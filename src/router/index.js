@@ -7,7 +7,7 @@ import Detail from '@/components/Detail'
 import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
 import Submit from '@/components/Submit'
-import SubmitKsaContainer from '@/components/SubmitKsaContainer'
+import SubmitKsaEda from '@/components/SubmitKsaEda'
 
 Vue.use(Router)
 
@@ -49,9 +49,9 @@ export default new Router({
       component: Submit
     },
     {
-      path: '/submit/ksa-container',
-      name: 'submit-ksa-container',
-      component: SubmitKsaContainer
+      path: '/submit/ksa-eda',
+      name: 'submit-ksa-eda',
+      component: SubmitKsaEda
     }
   ]
 })

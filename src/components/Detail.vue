@@ -21,17 +21,34 @@
           </v-flex>
 
           <v-flex v-if="dshash['JSON-LD']">
-            <p-d-jsonld :pid="doc.pid"></p-d-jsonld>
+            <p-d-jsonld 
+              ref="display"
+              :pid="doc.pid"
+              :jsonld="displayjsonld"
+              v-on:load-jsonld="displayjsonld = $event"
+            ></p-d-jsonld>
           </v-flex>
 
           <v-flex v-if="dshash['UWMETADATA']">
             <p-d-uwmetadata :indexdata="doc"></p-d-uwmetadata>
           </v-flex>
 
+          <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{members.length}})</h3> 
+
           <v-flex v-if="members">
-            <v-card flat :key="p" class="ma-3">
-              <h3 class="display-2 grey--text">Members ({{members.length}})</h3>
-              <v-card-text class="ma-2"><p-d-jsonld v-for="(member) in members" :key="'member_'+member.pid" :pid="member.pid"></p-d-jsonld></v-card-text>
+            <v-card class="ma-3" v-for="(member) in members" :key="'member_'+member.pid">
+              <a :href="instance.api + '/object/' + member.pid + '/diss/Content/get'">
+                <v-img max-height="400" contain v-if="(member.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
+                <v-img max-height="400" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
+                <v-img max-height="400" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+              </a>
+              <v-card-text class="ma-2"  >
+                <p-d-jsonld 
+                  :pid="member.pid"
+                  :jsonld="member['jsonld']"
+                  v-on:load-jsonld="member['jsonld'] = $event"
+                ></p-d-jsonld>
+              </v-card-text>
             </v-card>
           </v-flex>
 
@@ -55,11 +72,11 @@
                 <v-flex>
                   <v-container grid-list-md fluid>
                     <v-layout row wrap>
-                      <v-flex class="caption grey--text" xs2>PID</v-flex>
+                      <v-flex class="caption grey--text" xs2>{{ $t('PID') }}</v-flex>
                       <v-flex xs10>{{ 'https://' + instance.baseurl + '/' + doc.pid }}</v-flex>
                     </v-layout>
                     <v-layout v-if="identifiers.length > 1" row wrap>
-                      <v-flex class="caption grey--text" xs2>Other</v-flex>
+                      <v-flex class="caption grey--text" xs2>{{ $t('Other') }}</v-flex>
                       <v-layout column>
                         <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + instance.baseurl + '/' + doc.pid">
                           {{ id }}
@@ -81,18 +98,18 @@
                 <v-flex>
                   <v-container fluid grid-list-md>
                     <v-layout row>
-                      <v-flex class="caption grey--text" xs4>Owner</v-flex>
+                      <v-flex class="caption grey--text" xs4>{{ $t('Owner') }}</v-flex>
                       <v-flex v-if="owner" xs8>
                         <a :href="'mailto:' + owner.email">{{ owner.firstname }} {{ owner.lastname }}</a>
                       </v-flex>
                       <v-flex v-else xs8>{{ doc.owner }}</v-flex>
                     </v-layout>
                     <v-layout row>
-                      <v-flex class="caption grey--text" xs4>Object Type</v-flex>
+                      <v-flex class="caption grey--text" xs4>{{ $t('Object Type') }}</v-flex>
                       <v-flex xs8>{{ doc.cmodel }}</v-flex>
                     </v-layout>
                     <v-layout row v-if="doc.dc_format">
-                      <v-flex class="caption grey--text" xs4>Format</v-flex>
+                      <v-flex class="caption grey--text" xs4>{{ $t('Format') }}</v-flex>
                       <v-flex xs8>
                         <v-layout column>
                           <v-flex v-for="(v,i) in doc.dc_format" :key="i">{{ v }}</v-flex>
@@ -100,7 +117,7 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row>
-                      <v-flex class="caption grey--text" xs4>Created</v-flex>
+                      <v-flex class="caption grey--text" xs4>{{ $t('Created') }}</v-flex>
                       <v-flex xs8>{{ doc.created | time }}</v-flex>
                     </v-layout>
                   </v-container>
@@ -229,6 +246,12 @@
 export default {
 
   name: 'detail',
+  data () {
+    return {
+      displayjsonld: {},
+      memberdisplayjsonld: {}
+    }
+  },
   computed: {
     downloadable: function () {
       switch (this.$store.state.object.doc.cmodel) {
@@ -304,9 +327,6 @@ export default {
     this.$store.dispatch('loadDetail', to.params.pid).then(() => {
       next()
     })
-  },
-  mounted: function () {
-    this.$store.dispatch('loadRoles')
   }
 }
 </script>
