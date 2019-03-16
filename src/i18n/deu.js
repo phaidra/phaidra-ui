@@ -547,6 +547,9 @@ export default {
   'phaidra:dateAccessioned': 'Date accessioned',
   'edm:rights': 'Lizenz',
 
+  'rdau:P60193': 'Journal/Series',
+  'rdau:P60227': 'Adaptation of',
+
   'dcterms:spatial': 'Depicted/Represented place',
   'vra:placeOfCreation': 'Place of creation',
   'vra:placeOfRepository': 'Place of repository',
@@ -555,6 +558,7 @@ export default {
   'dce:subject': 'Stichwort',
   'dcterms:subject': 'Subjekt',
   'dcterms:language': 'Sprache',
+  'schema:subtitleLanguage': 'Untertitel-Sprache',
   'dcterms:type': 'Resource Type',
   'edm:hasType': 'Typ/Genre',
   'bf:physicalLocation': 'Standort',
@@ -562,6 +566,10 @@ export default {
   'dcterms:provenance': 'Provenienz',
 
   'schema:numberOfPages': 'Seitenanzahl',
+  'bf:soundCharacteristic': 'Sound characteristic',
+  'bf:supplementaryContent': 'Supplementary content',
+  'bf:awards': 'Award',
+  'dcterms:audience': 'Audience',
 
   'ebucore:filename': 'Dateiname',
   'ebucore:hasMimeType': 'MIME Typ',
@@ -571,6 +579,7 @@ export default {
   'schema:height': 'Höhe',
   'schema:depth': 'Tiefe',
   'schema:weight': 'Gewicht',
+  'schema:duration': 'Dauer',
   'dcterms:temporal': 'Zeitliche Abdeckung',
   'vra:hasTechnique': 'Technik',
   'vra:material': 'Material',
