@@ -41,31 +41,31 @@ export default {
   },
   data () {
     return {
-      contentmodel: 'https://pid.phaidra.org/vocabulary/resourcetype/HS9G-WDM9',
+      contentmodel: 'https://pid.phaidra.org/vocabulary/44TN-P1S0',
       contentmodels: [
-        {
-          text: 'Data',
-          value: 'https://pid.phaidra.org/vocabulary/resourcetype/VR5J-0CBC'
-        },
-        {
-          text: 'Picture',
-          value: 'https://pid.phaidra.org/vocabulary/resourcetype/HMJ4-EW36'
-        },
-        {
-          text: 'Audio',
-          value: 'https://pid.phaidra.org/vocabulary/resourcetype/MXND-R5ZY'
-        },
-        {
-          text: 'Video',
-          value: 'https://pid.phaidra.org/vocabulary/resourcetype/S7JC-WBBH'
-        },
-        {
+        { 
+          text: 'Data', 
+          value: 'https://pid.phaidra.org/vocabulary/7AVS-Y482',
+        }, 
+        { 
+          text: 'Picture', 
+          value: 'https://pid.phaidra.org/vocabulary/44TN-P1S0' 
+        }, 
+        { 
+          text: 'Audio', 
+          value: 'https://pid.phaidra.org/vocabulary/8YB5-1M0J' 
+        }, 
+        { 
+          text: 'Video', 
+          value: 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8' 
+        }, 
+        { 
           text: 'Document',
-          value: 'https://pid.phaidra.org/vocabulary/resourcetype/B4CB-FN5F'
-        },
-        {
+           value: 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX' 
+        }, 
+        { 
           text: 'Container',
-          value: 'https://pid.phaidra.org/vocabulary/resourcetype/HS9G-WDM9'
+           value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ' 
         }
       ],
       form: { sections: [] }
@@ -92,18 +92,18 @@ export default {
         case 'image/png':
         case 'image/x-ms-bmp':
           // picture
-          return 'https://pid.phaidra.org/vocabulary/resourcetype/HMJ4-EW36'
+          return 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
 
         case 'audio/wav':
         case 'audio/mpeg':
         case 'audio/flac':
         case 'audio/ogg':
           // audio
-          return 'https://pid.phaidra.org/vocabulary/resourcetype/MXND-R5ZY'
+          return 'https://pid.phaidra.org/vocabulary/8YB5-1M0J'
 
         case 'application/pdf':
           // document
-          return 'https://pid.phaidra.org/vocabulary/resourcetype/B4CB-FN5F'
+          return 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
 
         case 'video/mpeg':
         case 'video/avi':
@@ -111,12 +111,12 @@ export default {
         case 'video/quicktime':
         case 'video/x-matroska':
           // video
-          return 'https://pid.phaidra.org/vocabulary/resourcetype/S7JC-WBBH'
+          return 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8'
 
         // should currently not happen, nothing else is in the selectbox
         default:
           // data
-          return 'https://pid.phaidra.org/vocabulary/resourcetype/VR5J-0CBC'
+          return 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
       }
     },
     handleSelect: function (val) {
@@ -160,7 +160,7 @@ export default {
       this.$vuetify.goTo(0)
     },
     resetForm: function (cm) {
-      if (cm === 'https://pid.phaidra.org/vocabulary/resourcetype/HS9G-WDM9') {
+      if (cm === 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ') {
         this.createContainerForm()
         this.setLangGerman()
       } else {
