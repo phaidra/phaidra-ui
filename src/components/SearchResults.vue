@@ -69,7 +69,7 @@
                 <v-flex class="pt-3">
                   <v-layout row>
                     <v-flex>
-                      <p-d-license class="pa-0" v-if="doc.dc_license" :dclicense="doc.dc_license[0]"></p-d-license>
+                      <p-d-license class="pa-0" v-if="doc.dc_license" :o="doc.dc_license[0]"></p-d-license>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <v-flex class="text-xs-right">
@@ -90,17 +90,17 @@
 <script>
 export default {
   name: 'search-results',
+  data () {
+    return {
+      docstoggle: {}
+    }
+  },
   computed: {
     docs () {
       return this.$store.state.search.docs
     },
     instance () {
       return this.$store.state.settings.instance
-    }
-  },
-  methods: {
-    toggleShowMore: function (index) {
-      this.$store.commit('toggleShowMore', index)
     }
   }
 }

@@ -21,11 +21,8 @@
           </v-flex>
 
           <v-flex v-if="dshash['JSON-LD']">
-            <p-d-jsonld 
-              ref="display"
-              :pid="doc.pid"
-              :jsonld="displayjsonld"
-              v-on:load-jsonld="displayjsonld = $event"
+            <p-d-jsonld
+              :jsonld="displayjsonld[doc.pid]"
             ></p-d-jsonld>
           </v-flex>
 
@@ -43,10 +40,8 @@
                 <v-img max-height="400" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
               </a>
               <v-card-text class="ma-2"  >
-                <p-d-jsonld 
-                  :pid="member.pid"
-                  :jsonld="member['jsonld']"
-                  v-on:load-jsonld="member['jsonld'] = $event"
+                <p-d-jsonld
+                  :jsonld="displayjsonld[member.pid]"
                 ></p-d-jsonld>
               </v-card-text>
             </v-card>
@@ -242,19 +237,26 @@
 </template>
 
 <script>
+import qs from 'qs'
+import Vue from 'vue'
 
 export default {
 
   name: 'detail',
   data () {
     return {
+      pid: '',
       displayjsonld: {},
-      memberdisplayjsonld: {}
+      doc: null,
+      metadata: null,
+      members: [],
+      owner: '',
+      rights: ''
     }
   },
   computed: {
     downloadable: function () {
-      switch (this.$store.state.object.doc.cmodel) {
+      switch (this.doc.cmodel) {
         case 'PDFDocument':
         case 'Video':
         case 'Audio':
@@ -267,7 +269,7 @@ export default {
       }
     },
     viewable: function () {
-      switch (this.$store.state.object.doc.cmodel) {
+      switch (this.doc.cmodel) {
         case 'PDFDocument':
         case 'Video':
         case 'Audio':
@@ -284,22 +286,13 @@ export default {
     canWrite: function () {
       return true // (this.$store.state.object.rights === 'rw')
     },
-    doc: function () {
-      return this.$store.state.object.doc
-    },
-    members: function () {
-      return this.$store.state.object.members
-    },
     instance () {
       return this.$store.state.settings.instance
     },
-    owner: function () {
-      return this.$store.state.object.owner
-    },
     dshash: function () {
       var dshash = {}
-      for (var i = 0; i < this.$store.state.object.doc.datastreams.length; i++) {
-        dshash[this.$store.state.object.doc.datastreams[i]] = true
+      for (var i = 0; i < this.doc.datastreams.length; i++) {
+        dshash[this.doc.datastreams[i]] = true
       }
       return dshash
     },
@@ -307,24 +300,170 @@ export default {
       // TODO: add id from
       // https://services.phaidra.univie.ac.at/api/object/<pid>/id
       // in loadDetail and return store value
-      return this.$store.state.object.doc.dc_identifier
+      return this.doc.dc_identifier
     },
     coverPid: function () {
       // HACK
-      var pidNumStr = this.$store.state.object.doc.pid.substr(2)
+      var pidNumStr = this.doc.pid.substr(2)
       var coverPidNum = parseInt(pidNumStr) + 1
       return 'o:' + coverPidNum
     }
   },
+  methods: {
+    loadDetail (self, pid) {
+      self.pid = pid
+
+      self.displayjsonld = {}
+      self.members = []
+
+      self.loadRights(self, pid)
+
+      var params = {
+        q: 'pid:"' + pid + '"',
+        defType: 'edismax',
+        wt: 'json',
+        qf: 'pid^5'
+      }
+
+      var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
+      var url = self.$store.state.settings.instance.solr + '/select?' + query
+      var promise = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        if (json.response.numFound > 0) {
+          self.doc = json.response.docs[0]
+          self.loadOwner(self, json.response.docs[0].owner)
+          if (self.dshash['JSON-LD']) {
+            self.loadJsonld(self, pid)
+            self.loadMembers(self, pid)
+          }
+        } else {
+          self.doc = null
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
+      return promise
+    },
+    loadJsonld (self, pid) {
+      var url = self.$store.state.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
+      var promise = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        Vue.set(self.displayjsonld, pid, json.metadata['JSON-LD'])
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
+      return promise
+    },
+    loadMembers (self, pid) {
+      for (let member of self.members) {
+        member['jsonld'] = {}
+      }
+
+      var params = {
+        q: 'ismemberof:"' + pid + '"',
+        defType: 'edismax',
+        wt: 'json',
+        qf: 'ismemberof^5',
+        fl: 'pid,cmodel'
+      }
+
+      var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
+      var url = self.$store.state.settings.instance.solr + '/select?' + query
+      var promise = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        if (json.response.numFound > 0) {
+          self.members = json.response.docs
+          for (let mem of self.members) {
+            self.loadJsonld(self, mem.pid)
+          }
+        } else {
+          self.members = []
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
+      return promise
+    },
+    loadOwner (self, username) {
+      var url = self.$store.state.settings.instance.api + '/directory/user/' + username + '/data'
+      var promise = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        self.owner = json.user_data
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
+      return promise
+    },
+    loadRights (self, pid) {
+      var url = self.$store.state.settings.instance.api + '/authz/check/' + pid
+      // check if we have write rights
+      fetch(url + '/rw/', {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'X-XSRF-TOKEN': self.$store.state.user.token
+        }
+      })
+      .then(function (response) {
+        if (response.status === 200) {
+          self.rights = 'rw'
+        } else {
+          // if not, check if we have read rights
+          fetch(url + '/ro/', {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+              'X-XSRF-TOKEN': self.$store.state.user.token
+            }
+          })
+          .then(function (response) {
+            if (response.status === 200) {
+              self.rights = 'ro'
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    }
+  },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
-      vm.$store.dispatch('loadDetail', to.params.pid).then(() => {
+      vm.loadDetail(vm, to.params.pid).then(() => {
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
-    this.$store.dispatch('loadDetail', to.params.pid).then(() => {
+    this.loadDetail(this, to.params.pid).then(() => {
       next()
     })
   }

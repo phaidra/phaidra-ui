@@ -19,7 +19,7 @@
       <v-list>
         <v-list-tile v-for="(data, i) in suggestions" :class="activeClass(i)" :key="i" @click.prevent="selectList(data)">
           <v-list-tile-content>
-            <v-list-tile-title v-text="data.term"></v-list-tile-title>
+            <v-list-tile-title v-html="data.term"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -197,7 +197,7 @@
         // Deep clone of the original object
         const clean = this.cleanUp(data)
         // Put the selected data to type (model)
-        this.type = clean['term']
+        this.type = clean['payload']
         // Hide List
         this.showList = false
 

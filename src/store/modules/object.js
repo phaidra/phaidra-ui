@@ -110,6 +110,22 @@ const actions = {
 
     return promise
   },
+  loadJsonld ({ dispatch, commit, state, rootState }, pid) {
+    var url = rootState.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
+    var promise = fetch(url, {
+      method: 'GET',
+      mode: 'cors'
+    })
+    .then(function (response) { return response.json() })
+    .then(function (json) {
+      commit('setJsonld', json.metadata['JSON-LD'])
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+
+    return promise
+  },
   loadOwner ({ commit, state, rootState }, username) {
     var url = rootState.settings.instance.api + '/directory/user/' + username + '/data'
     var promise = fetch(url, {

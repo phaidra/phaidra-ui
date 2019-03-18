@@ -17,7 +17,6 @@
       <v-card-text>
         <p-i-form 
           :form="form" 
-          :contentmodel="contentmodel" 
           v-on:load-form="form = $event" 
           v-on:object-created="objectCreated($event)"
           v-on:form-input-p-select="handleSelect($event)"
@@ -43,29 +42,29 @@ export default {
     return {
       contentmodel: 'https://pid.phaidra.org/vocabulary/44TN-P1S0',
       contentmodels: [
-        { 
-          text: 'Data', 
-          value: 'https://pid.phaidra.org/vocabulary/7AVS-Y482',
-        }, 
-        { 
-          text: 'Picture', 
-          value: 'https://pid.phaidra.org/vocabulary/44TN-P1S0' 
-        }, 
-        { 
-          text: 'Audio', 
-          value: 'https://pid.phaidra.org/vocabulary/8YB5-1M0J' 
-        }, 
-        { 
-          text: 'Video', 
-          value: 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8' 
-        }, 
-        { 
+        {
+          text: 'Data',
+          value: 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
+        },
+        {
+          text: 'Picture',
+          value: 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
+        },
+        {
+          text: 'Audio',
+          value: 'https://pid.phaidra.org/vocabulary/8YB5-1M0J'
+        },
+        {
+          text: 'Video',
+          value: 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8'
+        },
+        {
           text: 'Document',
-           value: 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX' 
-        }, 
-        { 
+          value: 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
+        },
+        {
           text: 'Container',
-           value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ' 
+          value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ'
         }
       ],
       form: { sections: [] }
@@ -220,14 +219,14 @@ export default {
       this.form.sections[0].fields.push(fields.getField('description'))
       var gnd = fields.getField('gnd-subject')
       gnd.exactvoc = 'EthnographicName'
-      gnd.label = 'Ethnografikum (GND)'
+      gnd.label = 'Soziokulturelle Kategorie (GND)'
       this.form.sections[0].fields.push(gnd)
+      this.form.sections[0].fields.push(fields.getField('keyword'))
       var lang = fields.getField('language')
       lang.value = 'deu'
       this.form.sections[0].fields.push(lang)
       this.form.sections[0].fields.push(fields.getField('role'))
       this.form.sections[0].fields.push(fields.getField('note'))
-      this.form.sections[0].fields.push(fields.getField('keyword'))
       this.form.sections[0].fields.push(fields.getField('project'))
       this.form.sections[0].fields.push(fields.getField('funder'))
 
