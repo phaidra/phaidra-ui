@@ -1,10 +1,14 @@
 <template>
 
   <v-container>
-    <v-layout row>
+    <v-layout column>
+      <v-flex>
+        <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ $t('Back to detail') }} {{pid}}</router-link>
+      </v-flex>
       <v-flex >
         <p-i-form
           :form="editform"
+          :targetpid="pid"
           :templating="false"
           v-on:object-saved="objectSaved($event)"
         ></p-i-form>
