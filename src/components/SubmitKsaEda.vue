@@ -40,7 +40,7 @@ export default {
   },
   data () {
     return {
-      contentmodel: 'https://pid.phaidra.org/vocabulary/44TN-P1S0',
+      contentmodel: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ',
       contentmodels: [
         {
           text: 'Data',
