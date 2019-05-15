@@ -308,7 +308,5 @@ export default {
 </script>
 
 <style>
-.ksa-submit .v-label {
-  color: rgba(0, 0, 0, 0.8) !important;
-}
+
 </style>

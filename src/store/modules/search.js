@@ -935,6 +935,12 @@ const actions = {
       searchdefarr.push('collection=' + state.collection)
     }
 
+    // show only latest versions
+    ands.push('-hassuccessor:*')
+
+    // don't show container members
+    ands.push('-ismemberof:["" TO *]')
+
     commit('setSearchDef', searchdefarr.join('&'))
 
     if (ands.length > 0) {

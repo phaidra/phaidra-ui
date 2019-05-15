@@ -2,22 +2,28 @@
 
   <v-container fluid grid-list-md>
 
-    <v-layout v-if="doc !== false" row>
+    <v-layout v-if="doc !== false" row wrap>
 
-      <v-flex xs12 md9 v-if="doc">
+      <v-flex xs12 md8 v-if="doc" class="pr-1">
         <v-layout column>
 
           <v-flex>
             <router-link :to="{ name: 'search' }">&laquo; {{ $t('Back to search results') }}</router-link>
           </v-flex>
 
-          <v-flex class="text-xs-center">
+          <v-flex class="text-xs-center my-4">
             <a :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'">
               <img v-if="(doc.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
               <img v-else-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/Document/preview/480'" />
               <img v-else-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
               <img v-else-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
             </a>
+            <center v-if="(doc.cmodel === 'Audio')">
+              <audio controls>
+                <source :src="'https://' + instance.baseurl + '/open/' + doc.pid">
+                Your browser does not support the audio element.
+              </audio>
+            </center>
           </v-flex>
 
           <v-flex v-if="dshash['JSON-LD']">
@@ -33,13 +39,19 @@
           <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{members.length}})</h3> 
 
           <v-flex v-if="members">
-            <v-card class="ma-3" v-for="(member) in members" :key="'member_'+member.pid">
+            <v-card class="mb-3 pt-4" v-for="(member) in members" :key="'member_'+member.pid">
               <a :href="instance.api + '/object/' + member.pid + '/diss/Content/get'">
-                <v-img max-height="400" contain v-if="(member.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
-                <v-img max-height="400" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
-                <v-img max-height="400" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+                <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
+                <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
+                <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
               </a>
-              <v-card-text class="ma-2"  >
+              <center v-if="(member.cmodel === 'Audio')">
+                <audio controls>
+                  <source :src="'https://' + instance.baseurl + '/open/' + member.pid">
+                  Your browser does not support the audio element.
+                </audio>
+              </center>
+              <v-card-text class="ma-2">
                 <p-d-jsonld
                   :jsonld="displayjsonld[member.pid]"
                 ></p-d-jsonld>
@@ -55,7 +67,7 @@
         </v-layout>
       </v-flex>
 
-      <v-flex xs12 md3 v-if="doc">
+      <v-flex xs12 md3 offset-xs0 offset-md1 v-if="doc">
         <v-layout column grid-list-md>
 
           <v-card flat>
@@ -82,6 +94,7 @@
                 </v-flex>
               </v-layout>
             </v-card-text>
+            <v-divider></v-divider>
           </v-card>
 
           <v-card flat>
@@ -119,6 +132,7 @@
                 </v-flex>
               </v-layout>
             </v-card-text>
+            <v-divider></v-divider>
           </v-card>
 
           <v-card flat v-if="doc.ispartof || doc.hassuccessor || doc.isalternativeformatof || doc.isalternativeversionof || doc.isbacksideof">
@@ -183,41 +197,61 @@
                 </v-flex>
               </v-layout>
             </v-card-text>
+            <v-divider></v-divider>
           </v-card>
-
 
           <v-card flat>
             <v-card-text>
               <v-layout column>
                 <v-flex>
-                  <h3 class="display-2">{{ $t('Links') }}</h3>
+                  <h3 class="display-2">{{ $t('Metadata') }}</h3>
                 </v-flex>
-                <v-flex class="pa-2">
-                  <v-flex>
-                    <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
-                  </v-flex>
-                  <v-flex>
-                    <router-link  v-if="canWrite" :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
-                  </v-flex>
-                  <v-flex v-if="dshash['UWMETADATA']">
-                    <a :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
-                  </v-flex>
-                  <v-flex>
-                    <a :href="instance.api + '/object/' + doc.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
-                  </v-flex>
-                  <v-flex>
-                    <a :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
-                  </v-flex>
+                <v-flex class="ma-2">
+                  <v-layout column>
+                    <router-link class="mb-1" :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
+                    <a class="mb-1" v-if="dshash['UWMETADATA']" :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                    <a class="mb-1" :href="instance.api + '/object/' + doc.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
+                    <a class="mb-1" :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                  </v-layout>
                 </v-flex>
               </v-layout>
             </v-card-text>
-            <v-card-actions>
-              <v-btn v-if="viewable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</v-btn>
-              <v-btn v-if="downloadable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</v-btn>
-              <a :href="'/?#/search/?collection=' + doc.pid" target="_blank"><v-btn v-if="doc.cmodel === 'Collection'" primary>{{ $t('Show members') }}</v-btn></a>
-            </v-card-actions>
+            <v-divider></v-divider>
           </v-card>
 
+          <v-card flat  v-if="canWrite">
+            <v-card-text>
+              <v-layout column>
+                <v-flex>
+                  <h3 class="display-2">{{ $t('Edit') }}</h3>
+                </v-flex>
+                <v-flex class="ma-2">
+                  <v-layout column>
+                    <router-link class="mb-1" :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
+                    <router-link class="mb-1" :to="{ name: 'manage' }">{{ $t('Manage object') }}</router-link>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+            <v-divider></v-divider>
+          </v-card>
+
+          <v-card flat v-if="viewable || downloadable || (doc.cmodel === 'Collection')">
+            <v-card-text>
+              <v-layout column>
+                <v-flex>
+                  <h3 class="display-2">{{ $t('Links') }}</h3>
+                </v-flex>
+                <v-flex class="ma-2">
+                  <v-layout column>
+                    <a class="mb-1" v-if="viewable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
+                    <a class="mb-1" v-if="downloadable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
+                    <a class="mb-1" v-if="doc.cmodel === 'Collection'" :href="'/?#/search/?collection=' + doc.pid" target="_blank">{{ $t('Show members') }}</a>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+          </v-card>
 
         </v-layout>
 
@@ -281,10 +315,13 @@ export default {
       }
     },
     canRead: function () {
-      return true // (this.$store.state.object.rights === 'ro' || this.$store.state.object.rights === 'rw')
+      return this.signedin & true // (this.$store.state.object.rights === 'ro' || this.$store.state.object.rights === 'rw')
     },
     canWrite: function () {
-      return true // (this.$store.state.object.rights === 'rw')
+      return this.signedin & true // (this.$store.state.object.rights === 'rw')
+    },
+    signedin () {
+      return this.$store.state.user.token ? 1 : 0
     },
     instance () {
       return this.$store.state.settings.instance
@@ -376,7 +413,8 @@ export default {
         defType: 'edismax',
         wt: 'json',
         qf: 'ismemberof^5',
-        fl: 'pid,cmodel'
+        fl: 'pid,cmodel',
+        sort: 'pos_in_' + pid.replace(':', '_') + ' asc'
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })

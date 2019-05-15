@@ -11,7 +11,7 @@ export default {
   'PHAIDRA_IS': 'Phaidra is the repository for the permanent secure storage of digital assets at the University of Vienna.',
 
   'bf:Title': 'Title',
-  'bf:ParallelTitle': 'Translated title',
+  'bf:ParallelTitle': 'Parallel title',
 
   'bf:Note': 'Description',
   'bf:Summary': 'Abstract',
@@ -29,6 +29,7 @@ export default {
   'bf:physicalLocation': 'Physical location',
   'bf:shelfMark': 'Call number',
   'edm:rights': 'License',
+  'dce:rights': 'Rights statement',
 
   'dcterms:date': 'Date',
   'dcterms:created': 'Date created',
@@ -39,10 +40,11 @@ export default {
   'dcterms:dateAccepted': 'Date accepted',
   'dcterms:dateCopyrighted': 'Date copyrighted',
   'dcterms:dateSubmitted': 'Date submitted',
+  'rdau:P60071': 'Date of production',
   'phaidra:dateAccessioned': 'Date accessioned',
 
   'rdau:P60193': 'Journal/Series',
-  'rdau:P60227': 'Adaptation of',
+  'rdau:P60227': 'Is motion picture adaptation of',
 
   'dcterms:spatial': 'Depicted/Represented place',
   'vra:placeOfCreation': 'Place of creation',
@@ -56,6 +58,7 @@ export default {
   'bf:supplementaryContent': 'Supplementary content',
   'bf:awards': 'Award',
   'dcterms:audience': 'Audience',
+  'rdau:P60059': 'Regional encoding',
 
   'ebucore:filename': 'Filename',
   'ebucore:hasMimeType': 'MIME Type',
@@ -66,10 +69,16 @@ export default {
   'schema:depth': 'Depth',
   'schema:weight': 'Weight',
   'schema:duration': 'Duration',
+  'schema:genre': 'Genre',
   'dcterms:temporal': 'Temporal coverage',
   'vra:hasTechnique': 'Technique',
+  'dce:format': 'Format',
   'vra:material': 'Material',
   'vra:hasInscription': 'Inscription',
+
+  'MEMBERS_DELETE_ALERT_CONTAINER': 'This object is a Container with {nrmembers} members. Only an empty Container can be deleted. If you want to delete this object, you need to remove all members from this Container or delete them first.',
+  'DELETE_OBJECT': 'Here you can delete object {pid}.',
+  'DELETE_OBJECT_CONFIRM': 'Are you sure you want to permanently delete object {pid}?',
 
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',

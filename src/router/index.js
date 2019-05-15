@@ -4,10 +4,12 @@ import Home from '@/components/Home'
 import Login from '@/components/Login'
 import Search from '@/components/Search'
 import Detail from '@/components/Detail'
+import Manage from '@/components/Manage'
 import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
 import Submit from '@/components/Submit'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
+import SubmitEmpty from '@/components/SubmitEmpty'
 
 Vue.use(Router)
 
@@ -34,6 +36,11 @@ export default new Router({
       component: Detail
     },
     {
+      path: '/manage/:pid',
+      name: 'manage',
+      component: Manage
+    },
+    {
       path: '/metadata/:pid',
       name: 'metadata',
       component: Metadata
@@ -52,6 +59,11 @@ export default new Router({
       path: '/submit/ksa-eda',
       name: 'submit-ksa-eda',
       component: SubmitKsaEda
+    },
+    {
+      path: '/submit/empty',
+      name: 'submit-empty',
+      component: SubmitEmpty
     }
   ]
 })

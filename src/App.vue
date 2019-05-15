@@ -92,7 +92,7 @@
                       <v-btn flat v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</v-btn>
-                      <v-btn flat v-if="!signedin && settings.enablelogin" :to="'/login'">{{ $t("Login") }}</v-btn>
+                      <v-btn flat v-if="!signedin && settings.global.enablelogin" :to="'/login'">{{ $t("Login") }}</v-btn>
                       <v-btn flat v-if="signedin" :to="''" @click="logout" >{{ $t("Logout") }}</v-btn>
                     </v-toolbar-items>
                   </v-toolbar>
@@ -368,7 +368,13 @@ address {
   border-top: 1px solid #bdbdbd;
 }
 
-
+#app .v-btn {
+  text-transform: none;
+}
+#app .v-tabs__div {
+  text-transform: none;
+  font-weight: 300;
+}
 </style>
 
 <style scoped>
