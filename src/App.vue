@@ -233,6 +233,10 @@
 
 <style>
 
+.svg-icon {
+  fill: currentColor;
+}
+
 .ie-fixMinHeight {
     display:flex;
 }

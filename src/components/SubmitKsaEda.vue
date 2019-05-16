@@ -1,6 +1,8 @@
 <template>
   <v-container grid-list-lg class="ksa-submit" >
-
+    <v-flex>
+      <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
+    </v-flex>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>Submit</v-toolbar-title>
@@ -34,6 +36,20 @@ import fields from 'phaidra-vue-components/src/utils/fields'
 export default {
   name: 'submit-ksa-eda',
   computed: {
+    breadcrumbs: function () {
+      let bc = [
+        {
+          text: this.$t('Submit'),
+          to: { name: 'submit', path: '/' }
+        },
+        {
+          text: this.$t('Submit - KSA EDA'),
+          disabled: true,
+          to: { name: 'submit-ksa-eda', path: 'submit/ksa-eda' }
+        }
+      ]
+      return bc
+    },
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }

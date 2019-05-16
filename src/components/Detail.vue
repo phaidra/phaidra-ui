@@ -8,7 +8,7 @@
         <v-layout column>
 
           <v-flex>
-            <router-link :to="{ name: 'search' }">&laquo; {{ $t('Back to search results') }}</router-link>
+            <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
           </v-flex>
 
           <v-flex class="text-xs-center my-4">
@@ -289,6 +289,20 @@ export default {
     }
   },
   computed: {
+    breadcrumbs: function () {
+      let bc = [
+        {
+          text: this.$t('Search'),
+          to: { name: 'search', path: '/' }
+        },
+        {
+          text: this.$t('Detailpage') + ' ' + this.$route.params.pid,
+          disabled: true,
+          to: { name: 'detail', params: { pid: this.$route.params.pid } }
+        }
+      ]
+      return bc
+    },
     downloadable: function () {
       switch (this.doc.cmodel) {
         case 'PDFDocument':

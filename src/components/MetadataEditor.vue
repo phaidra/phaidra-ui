@@ -3,7 +3,7 @@
   <v-container>
     <v-layout column>
       <v-flex>
-        <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ $t('Back to detail') }} {{pid}}</router-link>
+        <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
       </v-flex>
       <v-flex >
         <p-i-form
@@ -25,10 +25,29 @@ export default {
   name: 'metadata-editor',
   data () {
     return {
-      editform: {}
+      editform: {},
+      parentpid: ''
     }
   },
   computed: {
+    breadcrumbs: function () {
+      let bc = [
+        {
+          text: this.$t('Search'),
+          to: { name: 'search', path: '/' }
+        },
+        {
+          text: this.$t('Detailpage') + ' ' + this.parentpid,
+          to: { name: 'detail', params: { pid: this.parentpid } }
+        },
+        {
+          text: this.$t('Edit metadata') + ' ' + this.$route.params.pid,
+          disabled: true,
+          to: { name: 'manage', params: { pid: this.$route.params.pid } }
+        }
+      ]
+      return bc
+    },
     pid: function () {
       return this.$route.params.pid
     }
@@ -61,12 +80,14 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
+      vm.parentpid = from.params.pid
       vm.loadJsonld(vm, to.params.pid).then(() => {
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
+    this.parentpid = from.params.pid
     this.loadJsonld(this, to.params.pid).then(() => {
       next()
     })

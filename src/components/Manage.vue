@@ -25,7 +25,7 @@ export default {
     pid () {
       return this.$route.params.pid
     },
-    breadcrumbs () {
+    breadcrumbs: function () {
       let bc = [
         {
           text: this.$t('Search'),

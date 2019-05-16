@@ -600,6 +600,7 @@ export default {
   'Remove': 'Löschen',
   'Duplicate': 'Duplizieren',
   'Save as template': 'Als Vorlage speichern',
+  'File to upload': 'Datei zum Hochladen',
 
   'DELETE_OBJECT': 'Hier können Sie das Objekt {pid} löschen.',
   'DELETE_OBJECT_CONFIRM': 'Sind Sie sicher, dass Sie das Objekt {pid} unwiderruflich löschen wollen?',
