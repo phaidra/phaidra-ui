@@ -22,6 +22,7 @@
           v-on:load-form="form = $event" 
           v-on:object-created="objectCreated($event)"
           v-on:form-input-p-select="handleSelect($event)"
+          v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
         ></p-i-form>
       </v-card-text>
     </v-card>
@@ -203,6 +204,7 @@ export default {
         sections: [
           {
             title: 'General metadata',
+            type: 'digitalobject',
             id: 1,
             fields: []
           },
@@ -314,6 +316,17 @@ export default {
       this.form.sections[3].fields.push(fields.getField('role'))
       this.form.sections[3].fields.push(fields.getField('license'))
       this.form.sections[3].fields.push(fields.getField('rights'))
+    },
+    addPhaidrasubjectSection: function (afterSection) {
+      let s = {
+        title: 'Subject',
+        type: 'phaidra:Subject',
+        id: this.form.sections.length + 1,
+        removable: true,
+        multiplicable: true,
+        fields: []
+      }
+      this.form.sections.splice(this.form.sections.indexOf(afterSection) + 1, 0, s)
     }
   },
   mounted: function () {

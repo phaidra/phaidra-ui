@@ -19,6 +19,7 @@
           :form="form"
           v-on:load-form="form = $event" 
           v-on:object-created="objectCreated($event)"
+          v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
         ></p-i-form>
       </v-card-text>
     </v-card>
@@ -127,6 +128,17 @@ export default {
           return 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
       }
     },
+    addPhaidrasubjectSection: function (afterSection) {
+      let s = {
+        title: 'Subject',
+        type: 'phaidra:Subject',
+        id: this.form.sections.length + 1,
+        removable: true,
+        multiplicable: true,
+        fields: []
+      }
+      this.form.sections.splice(this.form.sections.indexOf(afterSection) + 1, 0, s)
+    },
     objectCreated: function (event) {
       this.$store.commit('setAlerts', [{ type: 'success', msg: 'Object ' + event + ' created' }])
       this.$router.push({ name: 'detail', params: { pid: event } })
@@ -137,14 +149,8 @@ export default {
         sections: [
           {
             title: 'Digital object',
+            type: 'digitalobject',
             id: 1,
-            fields: []
-          },
-          {
-            title: 'Subject',
-            type: 'phaidra:Subject',
-            id: 2,
-            multiplicable: true,
             fields: []
           }
         ]

@@ -19,7 +19,7 @@
     "es6-promise": "^4.2.5",
     "growl": "^1.10.5",
     "moment": "^2.24.0",
-    "phaidra-vue-components": "^0.3.33",
+    "phaidra-vue-components": "^0.3.34",
     "qs": "^6.6.0",
     "vue": "^2.6.6",
     "vue-i18n": "^7.8.1",

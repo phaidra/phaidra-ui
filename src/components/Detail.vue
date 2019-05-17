@@ -28,7 +28,7 @@
 
           <v-flex v-if="dshash['JSON-LD']">
             <p-d-jsonld
-              :jsonld="displayjsonld[doc.pid]"
+              :jsonld="displayjsonld[doc.pid]" :pid="doc.pid"
             ></p-d-jsonld>
           </v-flex>
 
@@ -53,9 +53,28 @@
               </center>
               <v-card-text class="ma-2">
                 <p-d-jsonld
-                  :jsonld="displayjsonld[member.pid]"
+                  :jsonld="displayjsonld[member.pid]" :pid="member.pid"
                 ></p-d-jsonld>
               </v-card-text>
+              <v-divider light v-if="canRead"></v-divider>
+              <v-card-actions class="pa-3" v-if="canRead">
+                <v-spacer></v-spacer>
+                <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instance.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
+                <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
+                <v-menu offset-y v-if="canWrite">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-tile :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
+                      <v-list-tile-title>{{ $t('Edit metadata') }}</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile :to="{ name: 'manage', params: { pid: member.pid } }">
+                      <v-list-tile-title>{{ $t('Manage object') }}</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+              </v-card-actions>
             </v-card>
           </v-flex>
 
@@ -219,7 +238,7 @@
             <v-divider></v-divider>
           </v-card>
 
-          <v-card flat  v-if="canWrite">
+          <v-card flat v-if="canWrite">
             <v-card-text>
               <v-layout column>
                 <v-flex>
@@ -229,6 +248,7 @@
                   <v-layout column>
                     <router-link class="mb-1" :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
                     <router-link class="mb-1" :to="{ name: 'manage' }">{{ $t('Manage object') }}</router-link>
+                    <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload container member') }}</router-link>
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -505,6 +525,13 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
+    },
+    getMemberDownloadUrl: function (member) {
+      if (member.cmodel === 'Asset' || member.cmodel === 'Video') {
+        return this.instance.fedora + '/objects/' + member.pid + '/methods/bdef:Content/download'
+      } else {
+        return this.instance.api + '/object/' + member.pid + '/diss/Content/download'
+      }
     }
   },
   beforeRouteEnter: function (to, from, next) {

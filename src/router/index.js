@@ -10,6 +10,7 @@ import MetadataEditor from '@/components/MetadataEditor'
 import Submit from '@/components/Submit'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
 import SubmitEmpty from '@/components/SubmitEmpty'
+import AddMember from '@/components/AddMember'
 
 Vue.use(Router)
 
@@ -64,6 +65,11 @@ export default new Router({
       path: '/submit/empty',
       name: 'submit-empty',
       component: SubmitEmpty
+    },
+    {
+      path: '/addmember/:pid',
+      name: 'addmember',
+      component: AddMember
     }
   ]
 })
