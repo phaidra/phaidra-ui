@@ -21,14 +21,14 @@ npm install
 
 ## Configure
 
-/etc/phaidra/phaidra-ui.json
+/etc/phaidra/phaidra-ui.js
 ```js
 export default {
   defaultinstance: 'myinstance.example.com',
   global: {
     showinstanceswitch: 1,
     enablelogin: 1
-  },  
+  },
   instances: {
     'myinstance.example.com': {
       baseurl: 'myinstance.example.com',
