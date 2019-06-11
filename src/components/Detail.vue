@@ -36,7 +36,7 @@
             <p-d-uwmetadata :indexdata="doc"></p-d-uwmetadata>
           </v-flex>
 
-          <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{members.length}})</h3> 
+          <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{members.length}})</h3>
 
           <v-flex v-if="members">
             <v-card class="mb-3 pt-4" v-for="(member) in members" :key="'member_'+member.pid">
@@ -80,7 +80,6 @@
 
           <v-flex v-else>
 
-            
           </v-flex>
 
         </v-layout>
@@ -277,7 +276,6 @@
 
       </v-flex>
 
-
     </v-layout>
 
     <v-layout v-else>
@@ -402,22 +400,22 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (json.response.numFound > 0) {
-          self.doc = json.response.docs[0]
-          self.loadOwner(self, json.response.docs[0].owner)
-          if (self.dshash['JSON-LD']) {
-            self.loadJsonld(self, pid)
-            self.loadMembers(self, pid)
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (json.response.numFound > 0) {
+            self.doc = json.response.docs[0]
+            self.loadOwner(self, json.response.docs[0].owner)
+            if (self.dshash['JSON-LD']) {
+              self.loadJsonld(self, pid)
+              self.loadMembers(self, pid)
+            }
+          } else {
+            self.doc = null
           }
-        } else {
-          self.doc = null
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },
@@ -427,13 +425,13 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        Vue.set(self.displayjsonld, pid, json.metadata['JSON-LD'])
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          Vue.set(self.displayjsonld, pid, json.metadata['JSON-LD'])
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },
@@ -457,20 +455,20 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (json.response.numFound > 0) {
-          self.members = json.response.docs
-          for (let mem of self.members) {
-            self.loadJsonld(self, mem.pid)
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (json.response.numFound > 0) {
+            self.members = json.response.docs
+            for (let mem of self.members) {
+              self.loadJsonld(self, mem.pid)
+            }
+          } else {
+            self.members = []
           }
-        } else {
-          self.members = []
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },
@@ -480,13 +478,13 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        self.owner = json.user_data
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          self.owner = json.user_data
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },
@@ -500,31 +498,31 @@ export default {
           'X-XSRF-TOKEN': self.$store.state.user.token
         }
       })
-      .then(function (response) {
-        if (response.status === 200) {
-          self.rights = 'rw'
-        } else {
+        .then(function (response) {
+          if (response.status === 200) {
+            self.rights = 'rw'
+          } else {
           // if not, check if we have read rights
-          fetch(url + '/ro/', {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-              'X-XSRF-TOKEN': self.$store.state.user.token
-            }
-          })
-          .then(function (response) {
-            if (response.status === 200) {
-              self.rights = 'ro'
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+            fetch(url + '/ro/', {
+              method: 'GET',
+              mode: 'cors',
+              headers: {
+                'X-XSRF-TOKEN': self.$store.state.user.token
+              }
+            })
+              .then(function (response) {
+                if (response.status === 200) {
+                  self.rights = 'ro'
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     getMemberDownloadUrl: function (member) {
       if (member.cmodel === 'Asset' || member.cmodel === 'Video') {

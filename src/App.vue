@@ -7,9 +7,8 @@
           <quicklinks v-if="isUnivie" :showquicklinks="quicklinksenabled"></quicklinks>
         </v-flex>
 
-
         <v-flex xs12 md8 offset-md2 class="header">
-       
+
           <v-layout row wrap>
             <v-flex xs3 text-xs-left>
               <router-link :to="'/'">
@@ -26,7 +25,6 @@
 
             <v-flex xs9>
 
-            
               <v-layout column>
                 <v-flex>
                   <v-layout row wrap >
@@ -60,7 +58,7 @@
                 <v-layout row wrap >
                   <v-flex v-if="settings.global.showinstanceswitch" xs4 text-xs-left class="select-instance">
                     <v-select :items="instances" @input="switchInstance" :value="settings.instance.baseurl" item-text="baseurl" single-line></v-select>
-                  </v-flex>                
+                  </v-flex>
                   <v-flex text-xs-left v-else-if="settings.instance.title">
                     <router-link :to="'/'"><h2 class="display-3 primary--text pt-3">{{ settings.instance.title }}</h2></router-link>
                   </v-flex>
@@ -98,13 +96,11 @@
                   </v-toolbar>
                 </v-flex>
               </v-layout>
-            
+
             </v-flex>
           </v-layout>
-        
+
         </v-flex>
-
-
 
         <v-flex xs12 md8 offset-md2 class="content">
 
@@ -134,95 +130,94 @@
           </v-layout>
         </v-flex>
 
-
       </v-layout>
     </v-container>
   </v-app>
 </template>
 
 <script>
-  import '@/assets/css/material-icons.css'
-  import Quicklinks from '@/components/Quicklinks'
-  import QuicklinksFooter from '@/components/QuicklinksFooter'
-  import '@/compiled-icons/material-social-person'
-  import '@/compiled-icons/material-navigation-menu'
-  import '@/compiled-icons/univie-sprache'
+import '@/assets/css/material-icons.css'
+import Quicklinks from '@/components/Quicklinks'
+import QuicklinksFooter from '@/components/QuicklinksFooter'
+import '@/compiled-icons/material-social-person'
+import '@/compiled-icons/material-navigation-menu'
+import '@/compiled-icons/univie-sprache'
 
-  export default {
-    name: 'app',
-    components: {
-      Quicklinks,
-      QuicklinksFooter
-    },
-    data () {
-      return {
-        quicklinksenabled: 0
-      }
-    },
-    computed: {
-      signedin () {
-        return this.$store.state.user.token ? 1 : 0
-      },
-      user () {
-        return this.$store.state.user
-      },
-      alerts () {
-        return this.$store.state.alerts.alerts
-      },
-      settings () {
-        return this.$store.state.settings
-      },
-      instances () {
-        return Object.keys(this.$store.state.config.instances)
-      },
-      isUnivie () {
-        switch (this.$store.state.settings.instance.baseurl) {
-          case 'phaidra.univie.ac.at':
-          case 'phaidra-sandbox.univie.ac.at':
-          case 'phaidra-entw.univie.ac.at':
-            return true
-          default:
-            return false
-        }
-      }
-    },
-    methods: {
-      logout: function () {
-        this.$store.dispatch('logout')
-      },
-      getCookie: function (name) {
-        var value = '; ' + document.cookie
-        var parts = value.split('; ' + name + '=')
-        if (parts.length === 2) {
-          var val = parts.pop().split(';').shift()
-          return val === ' ' ? null : val
-        }
-      },
-      dismiss: function (alert) {
-        this.$store.commit('clearAlert', alert)
-      },
-      switchInstance: function (e) {
-        this.$store.dispatch('switchInstance', e).then(() => {
-          // this commits initStore in every store module which has it
-          this.$store.commit('initStore')
-          this.$router.push('/search')
-          this.$store.dispatch('search')
-          this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
-        })
-      }
-    },
-    mounted: function () {
-      var token = this.getCookie('X-XSRF-TOKEN')
-      if (token) {
-        this.$store.commit('setToken', token)
-      }
-    },
-    created: function () {
-      this.$store.dispatch('initSettings')
-      this.$store.commit('initStore')
-      this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
+export default {
+  name: 'app',
+  components: {
+    Quicklinks,
+    QuicklinksFooter
+  },
+  data () {
+    return {
+      quicklinksenabled: 0
     }
+  },
+  computed: {
+    signedin () {
+      return this.$store.state.user.token ? 1 : 0
+    },
+    user () {
+      return this.$store.state.user
+    },
+    alerts () {
+      return this.$store.state.alerts.alerts
+    },
+    settings () {
+      return this.$store.state.settings
+    },
+    instances () {
+      return Object.keys(this.$store.state.config.instances)
+    },
+    isUnivie () {
+      switch (this.$store.state.settings.instance.baseurl) {
+        case 'phaidra.univie.ac.at':
+        case 'phaidra-sandbox.univie.ac.at':
+        case 'phaidra-entw.univie.ac.at':
+          return true
+        default:
+          return false
+      }
+    }
+  },
+  methods: {
+    logout: function () {
+      this.$store.dispatch('logout')
+    },
+    getCookie: function (name) {
+      var value = '; ' + document.cookie
+      var parts = value.split('; ' + name + '=')
+      if (parts.length === 2) {
+        var val = parts.pop().split(';').shift()
+        return val === ' ' ? null : val
+      }
+    },
+    dismiss: function (alert) {
+      this.$store.commit('clearAlert', alert)
+    },
+    switchInstance: function (e) {
+      this.$store.dispatch('switchInstance', e).then(() => {
+        // this commits initStore in every store module which has it
+        this.$store.commit('initStore')
+        this.$router.push('/search')
+        this.$store.dispatch('search')
+        this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
+      })
+    }
+  },
+  mounted: function () {
+    var token = this.getCookie('X-XSRF-TOKEN')
+    if (token) {
+      this.$store.commit('setToken', token)
+    }
+  },
+  created: function () {
+    this.$store.dispatch('initSettings')
+    this.$store.commit('initStore')
+    this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
   }
+}
 </script>
 
 <style lang="stylus">

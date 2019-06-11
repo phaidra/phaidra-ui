@@ -15,9 +15,9 @@
         ></v-select>
       </v-toolbar>
       <v-card-text>
-        <p-i-form 
+        <p-i-form
           :form="form"
-          v-on:load-form="form = $event" 
+          v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
         ></p-i-form>
@@ -25,7 +25,7 @@
     </v-card>
 
   </v-container>
- 
+
 </template>
 
 <script>
@@ -166,4 +166,3 @@ export default {
   }
 }
 </script>
-

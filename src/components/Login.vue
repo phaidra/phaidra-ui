@@ -8,9 +8,9 @@
           <v-card>
             <v-card-text>
               <v-flex xs10 offset-xs1>
-                <v-text-field 
-                  :label="$t('Username')" 
-                  v-model="credentials.username" 
+                <v-text-field
+                  :label="$t('Username')"
+                  v-model="credentials.username"
                   required
                   :browser-autocomplete="'username'"
                 ></v-text-field>

@@ -269,7 +269,7 @@ export default {
       this.$store.dispatch('setRoleFilterValues', role)
     },
     removeRoleFilterValue: function (role, value) {
-      this.$store.dispatch('removeRoleFilterValue', {role: role, value: value})
+      this.$store.dispatch('removeRoleFilterValue', { role: role, value: value })
     }
   },
   mounted () {
@@ -301,6 +301,5 @@ svg
 </style>
 
 <style scoped>
-
 
 </style>

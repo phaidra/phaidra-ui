@@ -258,5 +258,4 @@ h2.md-headline {
   font-weight: 300;
 }
 
-
 </style>

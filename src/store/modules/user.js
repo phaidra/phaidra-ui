@@ -47,21 +47,21 @@ const actions = {
           'Authorization': 'Basic ' + btoa(credentials.username + ':' + credentials.password)
         }
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (json.alerts && json.alerts.length > 0) {
-          commit('setAlerts', json.alerts)
-        }
-        if (json.status === 200) {
-          commit('setToken', json['XSRF-TOKEN'])
-          document.cookie = 'X-XSRF-TOKEN=' + json['XSRF-TOKEN']
-          resolve()
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-        reject()
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (json.alerts && json.alerts.length > 0) {
+            commit('setAlerts', json.alerts)
+          }
+          if (json.status === 200) {
+            commit('setToken', json['XSRF-TOKEN'])
+            document.cookie = 'X-XSRF-TOKEN=' + json['XSRF-TOKEN']
+            resolve()
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+          reject()
+        })
     })
   },
   getUserData ({ commit, dispatch, state, rootState }) {
@@ -74,24 +74,24 @@ const actions = {
           'X-XSRF-TOKEN': state.token
         }
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (json.alerts && json.alerts.length > 0) {
-          commit('setAlerts', json.alerts)
-        }
-        if (json.status === 200) {
-          commit('setLoginData', {
-            firstname: json.user_data.firstname,
-            lastname: json.user_data.lastname,
-            email: json.user_data.email
-          })
-          resolve()
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-        reject()
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (json.alerts && json.alerts.length > 0) {
+            commit('setAlerts', json.alerts)
+          }
+          if (json.status === 200) {
+            commit('setLoginData', {
+              firstname: json.user_data.firstname,
+              lastname: json.user_data.lastname,
+              email: json.user_data.email
+            })
+            resolve()
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+          reject()
+        })
     })
   },
   logout ({ commit, dispatch, state, rootState }) {
@@ -104,19 +104,19 @@ const actions = {
           'X-XSRF-TOKEN': state.token
         }
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        commit('initStore')
-        if (json.alerts && json.alerts.length > 0) {
-          commit('setAlerts', json.alerts)
-        }
-        resolve()
-      })
-      .catch(function (error) {
-        console.log(error)
-        commit('initStore')
-        resolve()
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          commit('initStore')
+          if (json.alerts && json.alerts.length > 0) {
+            commit('setAlerts', json.alerts)
+          }
+          resolve()
+        })
+        .catch(function (error) {
+          console.log(error)
+          commit('initStore')
+          resolve()
+        })
     })
   }
 }

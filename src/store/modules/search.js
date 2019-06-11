@@ -953,17 +953,17 @@ const actions = {
       method: 'GET',
       mode: 'cors'
     })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      commit('setDocs', json.response.docs)
-      commit('setTotal', json.response.numFound)
-      commit('setFacetCounts', json.facet_counts)
-      commit('updateFacetQueries', json.facet_counts)
-      commit('resetFacets')
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        commit('setDocs', json.response.docs)
+        commit('setTotal', json.response.numFound)
+        commit('setFacetCounts', json.facet_counts)
+        commit('updateFacetQueries', json.facet_counts)
+        commit('resetFacets')
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
     return promise
   },
@@ -982,15 +982,15 @@ const actions = {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        commit('setSuggestions', { suggester: inputdata.suggester, suggestions: json.suggest[inputdata.suggester][inputdata.value].suggestions })
-        resolve()
-      })
-      .catch(function (error) {
-        console.log(error)
-        reject()
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          commit('setSuggestions', { suggester: inputdata.suggester, suggestions: json.suggest[inputdata.suggester][inputdata.value].suggestions })
+          resolve()
+        })
+        .catch(function (error) {
+          console.log(error)
+          reject()
+        })
     })
   }
 }

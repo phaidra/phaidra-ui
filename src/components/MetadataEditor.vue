@@ -64,13 +64,13 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        self.editform = self.json2form(json.metadata['JSON-LD'])
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          self.editform = self.json2form(json.metadata['JSON-LD'])
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },

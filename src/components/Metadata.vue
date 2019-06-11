@@ -7,10 +7,10 @@
         <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ pid }}</router-link>
       </v-flex>
 
-      <v-flex v-if="metadata['uwmetadata']">  
+      <v-flex v-if="metadata['uwmetadata']">
         <v-tabs v-model="active" slider-color="primary" color="lighten-3">
           <v-tab v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tab>
-        </v-tabs>  
+        </v-tabs>
         <v-tabs-items v-model="active">
           <v-tab-item v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" class="pa-3">
             <v-card flat class="grey lighten-5">
@@ -25,7 +25,7 @@
       <v-flex v-if="metadata['JSON-LD']">
         <vue-json-pretty :data="metadata['JSON-LD']"></vue-json-pretty>
       </v-flex>
-      
+
     </v-layout>
 
   </v-container>
@@ -77,5 +77,3 @@ export default {
   }
 }
 </script>
-
-
