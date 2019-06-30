@@ -29,6 +29,7 @@ const messages = { eng, deu, ita }
 const i18n = new VueI18n({
   locale: 'deu',
   fallbackLocale: 'eng',
+  silentTranslationWarn: true,
   messages
 })
 
