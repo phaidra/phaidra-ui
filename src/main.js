@@ -11,7 +11,8 @@ import eng from './i18n/eng'
 import deu from './i18n/deu'
 import ita from './i18n/ita'
 import moment from 'moment'
-import PhaidraVueComponents from 'phaidra-vue-components'
+// import PhaidraVueComponents from 'phaidra-vue-components'
+import PhaidraVueComponents from 'phaidra-vue-components/src/components'
 
 Vue.config.productionTip = false
 
