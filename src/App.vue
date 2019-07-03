@@ -142,6 +142,7 @@ import QuicklinksFooter from '@/components/QuicklinksFooter'
 import '@/compiled-icons/material-social-person'
 import '@/compiled-icons/material-navigation-menu'
 import '@/compiled-icons/univie-sprache'
+import 'phaidra-vue-components/dist/phaidra-vue-components.css' // XXX
 
 export default {
   name: 'app',
