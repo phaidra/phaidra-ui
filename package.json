@@ -11,7 +11,7 @@
     "svg": "vsvg -s ./svg-icons -t ./src/compiled-icons"
   },
   "dependencies": {
-    "core-js": "^3.1.4",
+    "core-js": "^2.6.9",
     "moment": "^2.24.0",
     "phaidra-vue-components": "^0.3.37",
     "vue": "^2.6.10",
