@@ -2,6 +2,9 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'core-js'
 
+// fetch polyfill for older browsers (Google Crawler with Chrome 41)
+import 'whatwg-fetch'
+
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueI18n from 'vue-i18n'
