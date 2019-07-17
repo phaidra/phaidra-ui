@@ -9,5 +9,10 @@ module.exports = {
     resolve: {
       symlinks: false
     }
+  },
+  pluginOptions: {
+    webpackBundleAnalyzer: {
+      openAnalyzer: false
+    }
   }
 }
