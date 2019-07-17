@@ -8,6 +8,9 @@ module.exports = {
     // See https://github.com/vuejs/vue-cli/issues/2675
     resolve: {
       symlinks: false
+    },
+    externals: {
+      moment: 'moment'
     }
   },
   pluginOptions: {
