@@ -57,7 +57,10 @@
     }
   },
   "browserslist": [
+    "cover 95% in AT",
     "> 1%",
+    "not ie <= 8",
+    "Chrome >= 41",
     "last 2 versions"
   ]
 }
