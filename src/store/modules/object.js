@@ -60,20 +60,20 @@ const actions = {
       method: 'GET',
       mode: 'cors'
     })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      if (json.response.numFound > 0) {
-        commit('setDoc', json.response.docs[0])
-        dispatch('loadOwner', json.response.docs[0].owner)
-        dispatch('loadRights', pid)
-        dispatch('loadMembers', pid)
-      } else {
-        commit('setDoc', false)
-      }
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        if (json.response.numFound > 0) {
+          commit('setDoc', json.response.docs[0])
+          dispatch('loadOwner', json.response.docs[0].owner)
+          dispatch('loadRights', pid)
+          dispatch('loadMembers', pid)
+        } else {
+          commit('setDoc', false)
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
     return promise
   },
@@ -96,17 +96,17 @@ const actions = {
       method: 'GET',
       mode: 'cors'
     })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      if (json.response.numFound > 0) {
-        commit('setMembers', json.response.docs)
-      } else {
-        commit('setMembers', [])
-      }
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        if (json.response.numFound > 0) {
+          commit('setMembers', json.response.docs)
+        } else {
+          commit('setMembers', [])
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
     return promise
   },
@@ -116,13 +116,13 @@ const actions = {
       method: 'GET',
       mode: 'cors'
     })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      commit('setJsonld', json.metadata['JSON-LD'])
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        commit('setJsonld', json.metadata['JSON-LD'])
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
     return promise
   },
@@ -132,13 +132,13 @@ const actions = {
       method: 'GET',
       mode: 'cors'
     })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      commit('setOwner', json.user_data)
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        commit('setOwner', json.user_data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
 
     return promise
   },
@@ -152,31 +152,31 @@ const actions = {
         'X-XSRF-TOKEN': rootState.user.token
       }
     })
-    .then(function (response) {
-      if (response.status === 200) {
-        commit('setRights', 'rw')
-      } else {
+      .then(function (response) {
+        if (response.status === 200) {
+          commit('setRights', 'rw')
+        } else {
         // if not, check if we have read rights
-        fetch(url + '/ro/', {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'X-XSRF-TOKEN': rootState.user.token
-          }
-        })
-        .then(function (response) {
-          if (response.status === 200) {
-            commit('setRights', 'ro')
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-      }
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+          fetch(url + '/ro/', {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+              'X-XSRF-TOKEN': rootState.user.token
+            }
+          })
+            .then(function (response) {
+              if (response.status === 200) {
+                commit('setRights', 'ro')
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   }
 }
 

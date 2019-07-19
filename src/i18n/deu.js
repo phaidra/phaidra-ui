@@ -143,6 +143,9 @@ export default {
   'Uploader': 'Uploader',
   'Founder': 'GründerIn',
 
+  'Impressum': 'Impressum',
+  'Servicepage': 'Servicepage',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Interne Notiz 2',
   uwm_etheses_note_1: 'Interne Notiz 1',

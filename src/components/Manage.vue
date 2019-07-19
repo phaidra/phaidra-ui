@@ -60,9 +60,9 @@ export default {
   methods: {
     loadManagement: function (self, pid) {
       return self.loadDoc(self, pid)
-      .then(function (response) {
-        return self.loadMembers(self, pid)
-      })
+        .then(function (response) {
+          return self.loadMembers(self, pid)
+        })
     },
     loadDoc: function (self, pid) {
       this.members = []
@@ -80,17 +80,17 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (json.response.numFound > 0) {
-          self.doc = json.response.docs[0]
-        } else {
-          self.doc = {}
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (json.response.numFound > 0) {
+            self.doc = json.response.docs[0]
+          } else {
+            self.doc = {}
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },
@@ -112,17 +112,17 @@ export default {
         method: 'GET',
         mode: 'cors'
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (json.response.numFound > 0) {
-          self.members = json.response.docs
-        } else {
-          self.members = []
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (json.response.numFound > 0) {
+            self.members = json.response.docs
+          } else {
+            self.members = []
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
 
       return promise
     },

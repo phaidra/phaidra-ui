@@ -22,12 +22,12 @@ const actions = {
         'X-XSRF-TOKEN': rootState.user.token
       }
     })
-    .then(function (response) { return response.json() })
-    .then(function (json) {
-      commit('setAlerts', json.alerts)
-      commit('setGroups', json.groups)
-    })
-    .catch(function (error) { console.log(error) })
+      .then(function (response) { return response.json() })
+      .then(function (json) {
+        commit('setAlerts', json.alerts)
+        commit('setGroups', json.groups)
+      })
+      .catch(function (error) { console.log(error) })
   }
 }
 

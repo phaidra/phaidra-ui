@@ -1,7 +1,59 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import 'core-js'
+
+// fetch polyfill for older browsers (Google Crawler with Chrome 41)
+import 'whatwg-fetch'
+
 import Vue from 'vue'
-import Vuetify from 'vuetify'
+
+// import only required Vuetify components
+import Vuetify, {
+  VAlert,
+  VApp, // VApp is required
+  VBreadcrumbs,
+  VBtn,
+  VCard,
+  VCardActions,
+  VCardText,
+  VCardTitle,
+  VCheckbox,
+  VChip,
+  VContainer,
+  VDialog,
+  VDivider,
+  VExpansionPanel,
+  VExpansionPanelContent,
+  VFlex,
+  VFooter,
+  VForm,
+  VIcon,
+  VImg,
+  VItem,
+  VLayout,
+  VList,
+  VListTile,
+  VListTileContent,
+  VListTileSubTitle,
+  VListTileTitle,
+  VMenu,
+  VNavigationDrawer,
+  VPagination,
+  VProgressCircular,
+  VSelect,
+  VSpacer,
+  VTab,
+  VTabItem,
+  VTabs,
+  VTabsItems,
+  VTextField,
+  VToolbar,
+  VToolbarItems,
+  VToolbarSideIcon,
+  VToolbarTitle,
+  VTooltip,
+  VWindow
+} from 'vuetify/lib'
 import VueI18n from 'vue-i18n'
 import App from './App'
 import router from './router'
@@ -11,11 +63,58 @@ import eng from './i18n/eng'
 import deu from './i18n/deu'
 import ita from './i18n/ita'
 import moment from 'moment'
-import PhaidraVueComponents from 'phaidra-vue-components'
+import PhaidraVueComponents from 'phaidra-vue-components/src/components'
 
 Vue.config.productionTip = false
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  components: {
+    VAlert,
+    VApp, // VApp is required
+    VBreadcrumbs,
+    VBtn,
+    VCard,
+    VCardActions,
+    VCardText,
+    VCardTitle,
+    VCheckbox,
+    VChip,
+    VContainer,
+    VDialog,
+    VDivider,
+    VExpansionPanel,
+    VExpansionPanelContent,
+    VFlex,
+    VFooter,
+    VForm,
+    VIcon,
+    VImg,
+    VItem,
+    VLayout,
+    VList,
+    VListTile,
+    VListTileContent,
+    VListTileSubTitle,
+    VListTileTitle,
+    VMenu,
+    VNavigationDrawer,
+    VPagination,
+    VProgressCircular,
+    VSelect,
+    VSpacer,
+    VTab,
+    VTabItem,
+    VTabs,
+    VTabsItems,
+    VTextField,
+    VToolbar,
+    VToolbarItems,
+    VToolbarSideIcon,
+    VToolbarTitle,
+    VTooltip,
+    VWindow
+  }
+})
 Vue.use(VueI18n)
 Vue.use(PhaidraVueComponents)
 
@@ -29,6 +128,7 @@ const messages = { eng, deu, ita }
 const i18n = new VueI18n({
   locale: 'deu',
   fallbackLocale: 'eng',
+  silentTranslationWarn: true,
   messages
 })
 
@@ -90,6 +190,6 @@ new Vue({
   store,
   i18n,
   template: '<App/>',
+  render: h => h(App),
   components: { App }
 })
-

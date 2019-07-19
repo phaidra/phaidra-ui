@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import Login from '@/components/Login'
-import Search from '@/components/Search'
+import PSearch from 'phaidra-vue-components/src/components/search/PSearch'
 import Detail from '@/components/Detail'
 import Manage from '@/components/Manage'
 import Metadata from '@/components/Metadata'
@@ -29,7 +29,7 @@ export default new Router({
     {
       path: '/search',
       name: 'search',
-      component: Search
+      component: PSearch
     },
     {
       path: '/detail/:pid',

@@ -5,7 +5,7 @@
     </v-flex>
     <v-card>
       <v-toolbar flat>
-        <v-toolbar-title>{{ $t('Add member of') }} {{this.parentpid}}</v-toolbar-title>        
+        <v-toolbar-title>{{ $t('Add member of') }} {{this.parentpid}}</v-toolbar-title>
         <v-divider class="mx-3" inset vertical></v-divider>
         <v-checkbox class="pt-4 pl-4" v-model="isthumbnail" :label="$t('Container thumbnail')"></v-checkbox>
         <v-spacer></v-spacer>
@@ -158,39 +158,39 @@ export default {
         },
         body: httpFormData
       })
-      .then(function (response) { return response.json() })
-      .then(function (json) {
-        if (self.isthumbnail) {
-          httpFormData = new FormData()
-          httpFormData.append('predicate', 'http://phaidra.org/XML/V1.0/relations#isThumbnailFor')
-          httpFormData.append('object', 'info:fedora/' + self.parentpid)
-          url = self.$store.state.settings.instance.api + '/object/' + self.memberpid + '/relationship/add'
-          var promise2 = fetch(url, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-              'X-XSRF-TOKEN': self.$store.state.user.token
-            },
-            body: httpFormData
-          })
-          .then(function (response) { return response.json() })
-          .then(function (json) {
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          if (self.isthumbnail) {
+            httpFormData = new FormData()
+            httpFormData.append('predicate', 'http://phaidra.org/XML/V1.0/relations#isThumbnailFor')
+            httpFormData.append('object', 'info:fedora/' + self.parentpid)
+            url = self.$store.state.settings.instance.api + '/object/' + self.memberpid + '/relationship/add'
+            var promise2 = fetch(url, {
+              method: 'POST',
+              mode: 'cors',
+              headers: {
+                'X-XSRF-TOKEN': self.$store.state.user.token
+              },
+              body: httpFormData
+            })
+              .then(function (response) { return response.json() })
+              .then(function (json) {
+                self.loading = false
+                self.$router.push({ name: 'detail', params: { pid: self.parentpid } })
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+
+            return promise2
+          } else {
             self.loading = false
             self.$router.push({ name: 'detail', params: { pid: self.parentpid } })
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-
-          return promise2
-        } else {
-          self.loading = false
-          self.$router.push({ name: 'detail', params: { pid: self.parentpid } })
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
       return promise
     }
   },
@@ -219,4 +219,3 @@ export default {
   }
 }
 </script>
-
