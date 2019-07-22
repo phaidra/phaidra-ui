@@ -254,10 +254,6 @@ a {
   text-decoration: none;
 }
 
-.container {
-  padding: 0px;
-}
-
 .logo {
   height: auto;
   width: auto;
@@ -375,9 +371,11 @@ address {
 </style>
 
 <style scoped>
-
 .content {
   min-height: 800px;
 }
 
+.container {
+  padding: 0px;
+}
 </style>
