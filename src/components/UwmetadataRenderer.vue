@@ -1,5 +1,4 @@
 <template>
-
   <v-container>
     <v-layout row>
       <v-flex xs10>
@@ -49,7 +48,6 @@
       </v-flex>
     </v-layout>
   </v-container>
-
 </template>
 
 <script>
@@ -81,14 +79,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-
-@require '../stylus/main'
-
-</style>
-
 <style scoped>
-
 .container {
   padding-top: 4px;
   padding-bottom: 0px;
@@ -97,5 +88,4 @@ export default {
 .v-input__slot {
   background-color: #fff;
 }
-
 </style>

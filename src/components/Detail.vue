@@ -1,5 +1,4 @@
 <template>
-
   <v-container fluid grid-list-md>
 
     <v-layout v-if="doc !== false" row wrap>
@@ -285,7 +284,6 @@
     </v-layout>
 
   </v-container>
-
 </template>
 
 <script>
@@ -293,7 +291,6 @@ import qs from 'qs'
 import Vue from 'vue'
 
 export default {
-
   name: 'detail',
   data () {
     return {
@@ -548,17 +545,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
-@require '../stylus/main'
+@require '../stylus/colors'
 
 h3
   color: $phaidragrey.darken-4
 </style>
 
 <style scoped>
-
 .container {
   padding: 0px;
 }
-
 </style>

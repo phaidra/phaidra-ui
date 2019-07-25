@@ -142,7 +142,6 @@ import QuicklinksFooter from '@/components/QuicklinksFooter'
 import '@/compiled-icons/material-social-person'
 import '@/compiled-icons/material-navigation-menu'
 import '@/compiled-icons/univie-sprache'
-import 'phaidra-vue-components/dist/phaidra-vue-components.css' // XXX
 
 export default {
   name: 'app',
@@ -222,9 +221,7 @@ export default {
 </script>
 
 <style lang="stylus">
-
   @require './stylus/main'
-
 </style>
 
 <style>
@@ -255,10 +252,6 @@ section { overflow: auto; }
 
 a {
   text-decoration: none;
-}
-
-.container {
-  padding: 0px;
 }
 
 .logo {
@@ -378,9 +371,11 @@ address {
 </style>
 
 <style scoped>
-
 .content {
   min-height: 800px;
 }
 
+.container {
+  padding: 0px;
+}
 </style>
