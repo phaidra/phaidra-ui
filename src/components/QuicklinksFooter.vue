@@ -199,7 +199,7 @@
 import '@/compiled-icons/univie-right'
 
 export default {
-  name: 'quicklinks'
+  name: 'quicklinks-footer'
 }
 </script>
 

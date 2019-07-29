@@ -4,6 +4,10 @@ export default {
   'English': 'Englisch',
   'Italian': 'Italienisch',
 
+  'University of Vienna': 'Universität Wien',
+
+  'You are here': 'Sie sind hier',
+
   'Language': 'Sprache',
 
   'Browse': 'Blättern',

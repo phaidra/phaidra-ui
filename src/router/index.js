@@ -7,9 +7,11 @@ import Detail from '@/components/Detail'
 import Manage from '@/components/Manage'
 import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
-import Submit from '@/components/Submit'
+import SubmitResource from '@/components/SubmitResource'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
 import SubmitEmpty from '@/components/SubmitEmpty'
+import Submitform from '@/components/Submitform'
+import Submit from '@/components/Submit'
 import AddMember from '@/components/AddMember'
 
 Vue.use(Router)
@@ -55,6 +57,16 @@ export default new Router({
       path: '/submit',
       name: 'submit',
       component: Submit
+    },
+    {
+      path: '/submit/:cmodel',
+      name: 'submitresource',
+      component: SubmitResource
+    },
+    {
+      path: '/submit/:cmodel/:form',
+      name: 'submitform',
+      component: Submitform
     },
     {
       path: '/submit/ksa-eda',

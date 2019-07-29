@@ -7,7 +7,7 @@
           <quicklinks v-if="isUnivie" :showquicklinks="quicklinksenabled"></quicklinks>
         </v-flex>
 
-        <v-flex xs12 md8 offset-md2 class="header">
+        <v-flex xs12 md10 offset-md1 class="header">
 
           <v-layout row wrap>
             <v-flex xs3 text-xs-left>
@@ -25,7 +25,7 @@
 
             <v-flex xs9>
 
-              <v-layout column>
+              <v-layout column fill-height>
                 <v-flex>
                   <v-layout row wrap >
                     <v-flex text-xs-right>
@@ -55,12 +55,13 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-layout row wrap >
+                <v-layout >
                   <v-flex v-if="settings.global.showinstanceswitch" xs4 text-xs-left class="select-instance">
                     <v-select :items="instances" @input="switchInstance" :value="settings.instance.baseurl" item-text="baseurl" single-line></v-select>
                   </v-flex>
-                  <v-flex text-xs-left v-else-if="settings.instance.title">
-                    <router-link :to="'/'"><h2 class="display-3 primary--text pt-3">{{ settings.instance.title }}</h2></router-link>
+                  <v-flex xs10 offset-xs1 text-xs-left v-else-if="settings.instance.title">
+                    <icon left dark name="univie-right" color="#a4a4a4" width="14px" height="14px"></icon>
+                    <router-link class="subheading primary--text mx-3" :to="'/'">{{ settings.instance.title }}</router-link>
                   </v-flex>
                 </v-layout>
                 <v-flex>
@@ -71,7 +72,6 @@
                         <v-list>
                           <v-list-tile @click="$router.push('search')"><v-list-tile-title>{{ $t("Search") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
-                          <!--<v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>-->
                           <v-list-tile v-if="signedin" @click="$router.push('myobjects')"><v-list-tile-title>{{ $t("My objects") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
                           <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
@@ -82,16 +82,15 @@
                       </v-menu>
                     </v-toolbar-side-icon>
                     <v-spacer></v-spacer>
-                    <v-toolbar-items class="hidden-sm-and-down">
-                      <v-btn flat :to="{ name: 'search'}">{{ $t("Search") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</v-btn>
-                      <!--<v-btn flat v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</v-btn>-->
-                      <v-btn flat v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</v-btn>
-                      <v-btn flat v-if="!signedin && settings.global.enablelogin" :to="'/login'">{{ $t("Login") }}</v-btn>
-                      <v-btn flat v-if="signedin" :to="''" @click="logout" >{{ $t("Logout") }}</v-btn>
+                    <v-toolbar-items class="hidden-sm-and-down no-height-inherit">
+                      <router-link class="ph-button" :to="{ name: 'search'}">{{ $t("Search") }}</router-link>
+                      <router-link class="ph-button"  :to="'/submit'">{{ $t("Submit") }}</router-link>
+                      <router-link class="ph-button" v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</router-link>
+                      <router-link class="ph-button" v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</router-link>
+                      <router-link class="ph-button" v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</router-link>
+                      <router-link class="ph-button" v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</router-link>
+                      <router-link class="ph-button" v-if="!signedin && settings.global.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>
+                      <router-link class="ph-button" v-if="signedin" :to="''" @click="logout" >{{ $t("Logout") }}</router-link>
                     </v-toolbar-items>
                   </v-toolbar>
                 </v-flex>
@@ -102,14 +101,14 @@
 
         </v-flex>
 
-        <v-flex xs12 md8 offset-md2 class="content">
+        <v-flex xs12 md10 offset-md1 class="content">
 
           <v-alert v-for="(alert, i) in alerts" :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition" :key="i">
               <v-layout row><v-flex class="pa-3">{{alert.msg}}</v-flex><v-spacer></v-spacer><v-btn icon @click.native="dismiss(alert)"><v-icon>close</v-icon></v-btn></v-layout>
             </v-alert>
             <transition name="fade" mode="out-in">
               <keep-alive>
-                <router-view class="mt-5 mb-3"></router-view>
+                <router-view class="mt-4 mb-3"></router-view>
               </keep-alive>
             </transition>
 
@@ -119,7 +118,7 @@
           <quicklinks-footer></quicklinks-footer>
         </v-flex>
 
-        <v-flex xs12 md8 offset-md2>
+        <v-flex xs12 md10 offset-md1>
           <v-layout row wrap class="my-5">
             <v-flex text-xs-left>
               <span class="grey--text text--darken-2"><address>{{ settings.instance.address }} | <abbr title="Telefon">T</abbr> {{ settings.instance.phone }}</address></span>
@@ -226,6 +225,10 @@ export default {
 
 <style>
 
+.no-padding {
+  padding: 0px;
+}
+
 .svg-icon {
   fill: currentColor;
 }
@@ -292,7 +295,7 @@ address {
 
 .ph-button  {
   background-color: #909090;
-  color: white;
+  color: white !important;
   box-sizing: border-box;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -301,13 +304,15 @@ address {
   position: relative;
   outline: 0;
   border: 0;
+  border-radius: 0px;
   display: inline-block;
   -ms-flex-align: center;
   align-items: center;
   padding: 0 6px;
   margin: 6px 1px 6px 0px;
-  line-height: 36px;
-  min-height: 36px;
+  height: 30px;
+  line-height: 30px;
+  min-height: 30px;
   white-space: nowrap;
   min-width: 88px;
   text-align: center;
@@ -377,5 +382,9 @@ address {
 
 .container {
   padding: 0px;
+}
+
+.no-height-inherit {
+  height: unset;
 }
 </style>

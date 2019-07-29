@@ -10,6 +10,7 @@ import Vue from 'vue'
 // import only required Vuetify components
 import Vuetify, {
   VAlert,
+  VAutocomplete,
   VApp, // VApp is required
   VBreadcrumbs,
   VBtn,
@@ -21,6 +22,7 @@ import Vuetify, {
   VChip,
   VContainer,
   VCombobox,
+  VDataTable,
   VDialog,
   VDivider,
   VExpansionPanel,
@@ -47,6 +49,7 @@ import Vuetify, {
   VTabItem,
   VTabs,
   VTabsItems,
+  VTextarea,
   VTextField,
   VToolbar,
   VToolbarItems,
@@ -71,6 +74,7 @@ Vue.config.productionTip = false
 Vue.use(Vuetify, {
   components: {
     VAlert,
+    VAutocomplete,
     VApp, // VApp is required
     VBreadcrumbs,
     VBtn,
@@ -82,6 +86,7 @@ Vue.use(Vuetify, {
     VCheckbox,
     VChip,
     VContainer,
+    VDataTable,
     VDialog,
     VDivider,
     VExpansionPanel,
@@ -108,6 +113,7 @@ Vue.use(Vuetify, {
     VTabItem,
     VTabs,
     VTabsItems,
+    VTextarea,
     VTextField,
     VToolbar,
     VToolbarItems,
