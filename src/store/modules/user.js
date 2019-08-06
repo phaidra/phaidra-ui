@@ -31,7 +31,7 @@ const mutations = {
     state.lastname = ''
     state.email = ''
     state.token = ''
-    document.cookie = 'X-XSRF-TOKEN='
+    // document.cookie = 'X-XSRF-TOKEN='
   }
 }
 
@@ -54,13 +54,13 @@ const actions = {
           }
           if (json.status === 200) {
             commit('setToken', json['XSRF-TOKEN'])
-            document.cookie = 'X-XSRF-TOKEN=' + json['XSRF-TOKEN']
+            // document.cookie = 'X-XSRF-TOKEN=' + json['XSRF-TOKEN']
             resolve()
           }
         })
         .catch(function (error) {
           console.log(error)
-          reject()
+          reject(error)
         })
     })
   },
@@ -90,12 +90,12 @@ const actions = {
         })
         .catch(function (error) {
           console.log(error)
-          reject()
+          reject(error)
         })
     })
   },
   logout ({ commit, dispatch, state, rootState }) {
-    document.cookie = 'X-XSRF-TOKEN='
+    // document.cookie = 'X-XSRF-TOKEN='
     return new Promise((resolve, reject) => {
       fetch(rootState.settings.instance.api + '/signout', {
         method: 'GET',

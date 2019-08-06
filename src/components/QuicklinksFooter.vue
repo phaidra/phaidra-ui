@@ -3,7 +3,7 @@
 
     <v-layout column class="grey lighten-4 quicklinksfooter">
 
-      <v-flex xs12 md8 offset-md2>
+      <v-flex xs12 md10 offset-md1>
 
         <h2 class="underline md-headline footer-headline">{{ $t('Information about') }} ...</h2>
 
@@ -68,7 +68,7 @@
 
       </v-flex>
 
-      <v-flex xs12 md8 offset-md2 >
+      <v-flex xs12 md10 offset-md1 >
 
         <h2 class="underline md-headline footer-headline">{{ $t('Most searched-for services') }} ...</h2>
 

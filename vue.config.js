@@ -1,10 +1,34 @@
 const path = require('path')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
+  pluginOptions: {
+    ssr: {
+      defaultTitle: 'phaidra-ui-ssr',
+      favicon: './static/favicon.ico',
+    }
+  },
   transpileDependencies: [
     'phaidra-vue-components'
   ],
   configureWebpack: {
+    /*
+    plugins: [
+      new ExtractTextPlugin({ filename: 'common.[chunkhash].css' })
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.vue$/,
+          loader: 'vue-loader',
+          options: {
+            extractCSS: isProduction
+          }
+        }
+      ]
+    },
+    */
     resolve: {
       // Using 'npm link' to symlink the PVC library may cause webpack issues
       // like: Cannot assign to read only property 'exports' of object '#<Object>'
@@ -20,11 +44,6 @@ module.exports = {
     },
     externals: {
       moment: 'moment'
-    }
-  },
-  pluginOptions: {
-    webpackBundleAnalyzer: {
-      openAnalyzer: false
     }
   }
 }

@@ -66,21 +66,23 @@
                 </v-layout>
                 <v-flex>
                   <v-toolbar flat color="white" dense>
-                    <v-toolbar-side-icon class="hidden-md-and-up">
-                      <v-menu offset-y>
-                        <v-btn flat icon color="grey lighten-1" slot="activator"><icon name="material-navigation-menu" width="24px" height="24px"></icon></v-btn>
-                        <v-list>
-                          <v-list-tile @click="$router.push('search')"><v-list-tile-title>{{ $t("Search") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('myobjects')"><v-list-tile-title>{{ $t("My objects") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('templates')"><v-list-tile-title>{{ $t("Templates") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="!signedin && settings.global.enablelogin" @click="$router.push('login')"><v-list-tile-title>{{ $t("Login") }}</v-list-tile-title></v-list-tile>
-                          <v-list-tile v-if="signedin" @click="$router.push('/')"><v-list-tile-title>{{ $t("Logout") }}</v-list-tile-title></v-list-tile>
-                        </v-list>
-                      </v-menu>
-                    </v-toolbar-side-icon>
+                    <client-only placeholder="loading" placeholder-tag="span">
+                      <v-toolbar-side-icon class="hidden-md-and-up">
+                        <v-menu offset-y>
+                          <v-btn flat icon color="grey lighten-1" slot="activator"><icon name="material-navigation-menu" width="24px" height="24px"></icon></v-btn>
+                          <v-list>
+                            <v-list-tile @click="$router.push('search')"><v-list-tile-title>{{ $t("Search") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="$router.push('submit')"><v-list-tile-title>{{ $t("Submit") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="$router.push('myobjects')"><v-list-tile-title>{{ $t("My objects") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="$router.push('templates')"><v-list-tile-title>{{ $t("Templates") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="!signedin && settings.global.enablelogin" @click="$router.push('login')"><v-list-tile-title>{{ $t("Login") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="$router.push('/')"><v-list-tile-title>{{ $t("Logout") }}</v-list-tile-title></v-list-tile>
+                          </v-list>
+                        </v-menu>
+                      </v-toolbar-side-icon>
+                    </client-only>
                     <v-spacer></v-spacer>
                     <v-toolbar-items class="hidden-sm-and-down no-height-inherit">
                       <router-link class="ph-button" :to="{ name: 'search'}">{{ $t("Search") }}</router-link>
@@ -141,12 +143,14 @@ import QuicklinksFooter from '@/components/QuicklinksFooter'
 import '@/compiled-icons/material-social-person'
 import '@/compiled-icons/material-navigation-menu'
 import '@/compiled-icons/univie-sprache'
+import ClientOnly from 'vue-client-only'
 
 export default {
   name: 'app',
   components: {
     Quicklinks,
-    QuicklinksFooter
+    QuicklinksFooter,
+    ClientOnly
   },
   data () {
     return {
@@ -213,7 +217,7 @@ export default {
   },
   created: function () {
     this.$store.dispatch('initSettings')
-    this.$store.commit('initStore')
+    // this.$store.commit('initStore')
     this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
   }
 }

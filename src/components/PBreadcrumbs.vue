@@ -2,12 +2,12 @@
   <v-layout column>
     <v-flex>
       <span class="youarehere">{{$t('You are here')}}:</span>
-      <template v-for="(item) in items">
-        <icon left dark name="univie-right" color="#a4a4a4" width="8px" height="8px" class="mx-1"></icon>
-        <span v-if="item.disabled" class="text">{{item.text}}</span>
+      <template v-for="(item, index) in items">
+        <icon :key="index" left dark name="univie-right" color="#a4a4a4" width="8px" height="8px" class="mx-1"></icon>
+        <span :key="index" v-if="item.disabled" class="text">{{item.text}}</span>
         <template v-else>
-          <a v-if="item.external" :href="item.to" class="text">{{item.text}}</a>
-          <router-link v-else :to="item.to" class="text">{{item.text}}</router-link>
+          <a :key="index" v-if="item.external" :href="item.to" class="text">{{item.text}}</a>
+          <router-link :key="index" v-else :to="item.to" class="text">{{item.text}}</router-link>
         </template>
       </template>
     </v-flex>

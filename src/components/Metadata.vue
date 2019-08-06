@@ -23,7 +23,6 @@
       </v-flex>
 
       <v-flex v-if="metadata['JSON-LD']">
-        <vue-json-pretty :data="metadata['JSON-LD']"></vue-json-pretty>
       </v-flex>
 
     </v-layout>
@@ -34,14 +33,12 @@
 
 <script>
 import UwmetadataRenderer from '@/components/UwmetadataRenderer'
-import VueJsonPretty from 'vue-json-pretty'
 
 export default {
 
   name: 'metadata',
   components: {
-    UwmetadataRenderer,
-    VueJsonPretty
+    UwmetadataRenderer
   },
   computed: {
     pid: function () {

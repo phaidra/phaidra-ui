@@ -5,7 +5,7 @@
         <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
       </v-flex>
       <template v-if="cmodelparam === 'picture'">
-        <v-flex>  
+        <v-flex>
           <v-btn raised color="primary" :to="{ name: 'submitform', params: { cmodel: 'picture', submitform: 'digital' } }">
             {{$t('Born-digital')}}
           </v-btn>
@@ -60,7 +60,7 @@ export default {
       )
       this.breadcrumbs.push(
         {
-          text: this.$t('Submit') + " " + this.$t(this.cmodel.text),
+          text: this.$t('Submit') + ' ' + this.$t(this.cmodel.text),
           disabled: true,
           to: { name: 'submitresource', params: { cmodel: this.cmodel } }
         }
@@ -110,6 +110,6 @@ export default {
   beforeRouteUpdate: function (to, from, next) {
     this.updateBreadcrumbs()
   }
-    
+
 }
 </script>

@@ -16,7 +16,9 @@ import AddMember from '@/components/AddMember'
 
 Vue.use(Router)
 
-export default new Router({
+export function createRouter () {
+          return new Router({
+            mode: 'history',
   routes: [
     {
       path: '/',
@@ -85,3 +87,4 @@ export default new Router({
     }
   ]
 })
+        }
