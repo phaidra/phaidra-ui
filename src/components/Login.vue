@@ -28,7 +28,7 @@
             <v-divider class="mt-5"></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn type="submit" color="primary" flat>Login</v-btn>
+              <v-btn type="submit" color="primary" flat>{{ $t('Login') }}</v-btn>
             </v-card-actions>
           </v-card>
           </v-form>
@@ -40,8 +40,11 @@
 </template>
 
 <script>
+import { context } from '../mixins/context'
+
 export default {
   name: 'login',
+  mixins: [ context ],
   data () {
     return {
       e1: true,
@@ -53,12 +56,9 @@ export default {
     }
   },
   methods: {
-    login: function () {
-      this.$store.dispatch('login', this.credentials).then(() => {
-        this.$store.dispatch('getUserData').then(() => {
-          this.$router.push('/')
-        })
-      })
+    async login () {
+      await this.$store.dispatch('login', this.credentials)
+      // this.$router.push('/')
     },
     toggleVisibility: function () {
       this.e1 = !this.e1

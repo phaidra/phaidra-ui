@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import { breadcrumbs } from '../mixins/breadcrumbs'
+import { context } from '../mixins/context'
 
 export default {
   name: 'submitform',
-  mixins: [ breadcrumbs ],
+  mixins: [ context ],
   computed: {
     cmodelparam: function () {
       return this.$route.params.cmodel

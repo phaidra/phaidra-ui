@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { breadcrumbs } from '../mixins/breadcrumbs'
+import { context } from '../mixins/context'
 import '@/compiled-icons/fontello-music'
 import '@/compiled-icons/fontello-doc'
 import '@/compiled-icons/fontello-doc-text'
@@ -93,7 +93,7 @@ import '@/compiled-icons/material-action-account-balance'
 
 export default {
   name: 'submit',
-  mixins: [ breadcrumbs ],
+  mixins: [ context ],
   methods: {
     updateBreadcrumbs: function () {
       this.breadcrumbs = this.getRootBreadcrumbs()
@@ -105,7 +105,7 @@ export default {
       )
     }
   },
-  mounted: function () {
+  created: function () {
     this.updateBreadcrumbs()
   }
 }

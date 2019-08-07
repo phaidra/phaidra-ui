@@ -7,34 +7,34 @@
           <v-layout column>
 
             <v-flex>
-              <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
+              <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
             </v-flex>
 <!--
             <v-flex class="text-xs-center my-4">
-              <a :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'">
-                <img v-if="(doc.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + doc.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
-                <img v-else-if="doc.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/Document/preview/480'" />
-                <img v-else-if="doc.cmodel === 'Picture' || doc.cmodel === 'Page'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + doc.pid + '/ImageManipulator/boxImage/480/png'" />
-                <img v-else-if="doc.cmodel === 'Book'" class="elevation-1" :src="'https://' + instance.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
+              <a :href="instance.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
+                <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
+                <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
+                <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
+                <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
               </a>
-              <center v-if="(doc.cmodel === 'Audio')">
+              <center v-if="(objectInfo.cmodel === 'Audio')">
                 <audio controls>
-                  <source :src="'https://' + instance.baseurl + '/open/' + doc.pid">
+                  <source :src="'https://' + instanceconfig.baseurl + '/open/' + objectInfo.pid">
                   Your browser does not support the audio element.
                 </audio>
               </center>
             </v-flex>
 -->
             <!--
-            <v-flex v-if="dshash['JSON-LD']">
+            <v-flex v-if="objectInfo.dshash['JSON-LD']">
               <p-d-jsonld
-                :jsonld="displayjsonld[doc.pid]" :pid="doc.pid"
+                :jsonld="displayjsonld[objectInfo.pid]" :pid="objectInfo.pid"
               ></p-d-jsonld>
             </v-flex>
             -->
 
             <!--
-            <v-flex v-if="dshash['UWMETADATA']">
+            <v-flex v-if="objectInfo.dshash['UWMETADATA']">
               <p-d-uwmetadata :indexdata="doc"></p-d-uwmetadata>
             </v-flex>
             -->
@@ -44,13 +44,13 @@
             <v-flex v-if="members">
               <v-card class="mb-3 pt-4" v-for="(member) in members" :key="'member_'+member.pid">
                 <a :href="instance.api + '/object/' + member.pid + '/diss/Content/get'">
-                  <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instance.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instance.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+                  <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
+                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
+                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
                 </a>
                 <center v-if="(member.cmodel === 'Audio')">
                   <audio controls>
-                    <source :src="'https://' + instance.baseurl + '/open/' + member.pid">
+                    <source :src="'https://' + instanceconfig.baseurl + '/open/' + member.pid">
                     Your browser does not support the audio element.
                   </audio>
                 </center>
@@ -59,12 +59,12 @@
                     :jsonld="displayjsonld[member.pid]" :pid="member.pid"
                   ></p-d-jsonld>
                 </v-card-text>
-                <v-divider light v-if="canRead"></v-divider>
-                <v-card-actions class="pa-3" v-if="canRead">
+                <v-divider light v-if="objectInfo.readrights"></v-divider>
+                <v-card-actions class="pa-3" v-if="objectInfo.readrights">
                   <v-spacer></v-spacer>
-                  <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instance.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
+                  <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
                   <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
-                  <v-menu offset-y v-if="canWrite">
+                  <v-menu offset-y v-if="objectInfo.writerights">
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
                     </template>
@@ -102,20 +102,17 @@
                     <v-container grid-list-md fluid>
                       <v-layout row wrap>
                         <v-flex class="caption grey--text" xs2>{{ $t('PID') }}</v-flex>
-                        <v-flex xs10 v-if="objectInfo">{{ 'https://' + instance.baseurl + '/' + objectInfo.pid }}</v-flex>
-                        <!-- keep else here to keep the same number of children, otherwise hydration fails -->
+                        <v-flex xs10 v-if="objectInfo">{{ 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid }}</v-flex>
                         <v-flex xs10 v-else>...</v-flex>
                       </v-layout>
-                      <!--
-                      <v-layout v-if="identifiers.length > 1" row wrap>
+                      <v-layout v-if="objectInfo && (objectInfo.dc_identifier.length > 1)" row wrap>
                         <v-flex class="caption grey--text" xs2>{{ $t('Other') }}</v-flex>
                         <v-layout column>
-                          <v-flex xs10 v-for="(id,i) in identifiers" :key="i" v-show="id !== 'http://' + instance.baseurl + '/' + doc.pid">
+                          <v-flex xs10 v-for="(id,i) in objectInfo.dc_identifier" :key="i" v-show="id !== 'http://' + instanceconfig.baseurl + '/' + objectInfo.pid">
                             {{ id }}
                           </v-flex>
                         </v-layout>
                       </v-layout>
-                      -->
                     </v-container>
                   </v-flex>
                 </v-layout>
@@ -135,25 +132,25 @@
                       <v-layout row>
                         <v-flex class="caption grey--text" xs4>{{ $t('Owner') }}</v-flex>
                         <v-flex xs8>
-                          <a :href="'mailto:' + owner.email">{{ owner.firstname }} {{ owner.lastname }}</a>
+                          <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
                         </v-flex>
-                        <v-flex xs8 v-if="doc">{{ doc.owner }}</v-flex>
+                        <v-flex xs8 v-if="doc">{{ objectInfo.owner }}</v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex class="caption grey--text" xs4>{{ $t('Object Type') }}</v-flex>
-                        <v-flex xs8>{{ doc.cmodel }}</v-flex>
+                        <v-flex xs8>{{ objectInfo.cmodel }}</v-flex>
                       </v-layout>
-                      <v-layout row v-if="doc.dc_format">
+                      <v-layout row v-if="objectInfo.dc_format">
                         <v-flex class="caption grey--text" xs4>{{ $t('Format') }}</v-flex>
                         <v-flex xs8>
                           <v-layout column>
-                            <v-flex v-for="(v,i) in doc.dc_format" :key="i">{{ v }}</v-flex>
+                            <v-flex v-for="(v,i) in objectInfo.dc_format" :key="i">{{ v }}</v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex class="caption grey--text" xs4>{{ $t('Created') }}</v-flex>
-                        <v-flex xs8>{{ doc.created | time }}</v-flex>
+                        <v-flex xs8>{{ objectInfo.created | time }}</v-flex>
                       </v-layout>
                       -->
                     </v-container>
@@ -164,7 +161,7 @@
             </v-card>
 
 <!--
-            <v-card flat v-if="doc.ispartof || doc.hassuccessor || doc.isalternativeformatof || doc.isalternativeversionof || doc.isbacksideof">
+            <v-card flat v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
               <v-card-text>
                 <v-layout column>
                   <v-flex>
@@ -172,51 +169,51 @@
                   </v-flex>
                   <v-flex>
                     <v-container fluid grid-list-md>
-                      <v-layout row v-if="doc.ispartof">
+                      <v-layout row v-if="objectInfo.ispartof">
                         <v-flex class="caption grey--text" xs4>{{ $t('Is in collection') }}</v-flex>
                         <v-flex xs8>
                           <v-layout column>
-                            <v-flex v-for="(v,i) in doc.ispartof" :key="i">
+                            <v-flex v-for="(v,i) in objectInfo.ispartof" :key="i">
                               <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
                             </v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
-                      <v-layout row v-if="doc.hassuccessor">
+                      <v-layout row v-if="objectInfo.hassuccessor">
                         <v-flex class="caption grey--text" xs4>{{ $t('Has newer version') }}</v-flex>
                         <v-flex xs8>
                           <v-layout column>
-                            <v-flex v-for="(v,i) in doc.hassuccessor" :key="i">
+                            <v-flex v-for="(v,i) in objectInfo.hassuccessor" :key="i">
                               <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
                             </v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
-                      <v-layout row v-if="doc.isalternativeformatof">
+                      <v-layout row v-if="objectInfo.isalternativeformatof">
                         <v-flex class="caption grey--text" xs4>{{ $t('Is alternative format of') }}</v-flex>
                         <v-flex xs8>
                           <v-layout column>
-                            <v-flex v-for="(v,i) in doc.isalternativeformatof" :key="i">
+                            <v-flex v-for="(v,i) in objectInfo.isalternativeformatof" :key="i">
                               <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
                             </v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
-                      <v-layout row v-if="doc.isalternativeversionof">
+                      <v-layout row v-if="objectInfo.isalternativeversionof">
                         <v-flex class="caption grey--text" xs4>{{ $t('Is alternative version of') }}</v-flex>
                         <v-flex xs8>
                           <v-layout column>
-                            <v-flex v-for="(v,i) in doc.isalternativeversionof" :key="i">
+                            <v-flex v-for="(v,i) in objectInfo.isalternativeversionof" :key="i">
                               <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
                             </v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
-                      <v-layout row v-if="doc.isbacksideof">
+                      <v-layout row v-if="objectInfo.isbacksideof">
                         <v-flex class="caption grey--text" xs4>{{ $t('Is back side of') }}</v-flex>
                         <v-flex xs8>
                           <v-layout column>
-                            <v-flex v-for="(v,i) in doc.isbacksideof" :key="i">
+                            <v-flex v-for="(v,i) in objectInfo.isbacksideof" :key="i">
                               <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
                             </v-flex>
                           </v-layout>
@@ -238,9 +235,9 @@
                   <v-flex class="ma-2">
                     <v-layout column>
                       <router-link class="mb-1" :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
-                      <a class="mb-1" v-if="dshash['UWMETADATA']" :href="instance.api + '/object/' + doc.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
-                      <a class="mb-1" :href="instance.api + '/object/' + doc.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
-                      <a class="mb-1" :href="instance.api + '/object/' + doc.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                      <a class="mb-1" v-if="objectInfo.dshash['UWMETADATA']" :href="instance.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                      <a class="mb-1" :href="instance.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
+                      <a class="mb-1" :href="instance.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -248,7 +245,7 @@
               <v-divider></v-divider>
             </v-card>
 
-            <v-card flat v-if="canWrite">
+            <v-card flat v-if="objectInfo.writerights">
               <v-card-text>
                 <v-layout column>
                   <v-flex>
@@ -266,7 +263,7 @@
               <v-divider></v-divider>
             </v-card>
 
-            <v-card flat v-if="viewable || downloadable || (doc.cmodel === 'Collection')">
+            <v-card flat v-if="viewable || downloadable || (objectInfo.cmodel === 'Collection')">
               <v-card-text>
                 <v-layout column>
                   <v-flex>
@@ -274,9 +271,9 @@
                   </v-flex>
                   <v-flex class="ma-2">
                     <v-layout column>
-                      <a class="mb-1" v-if="viewable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
-                      <a class="mb-1" v-if="downloadable && canRead" :href="instance.api + '/object/' + doc.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
-                      <a class="mb-1" v-if="doc.cmodel === 'Collection'" :href="'/?#/search/?collection=' + doc.pid" target="_blank">{{ $t('Show members') }}</a>
+                      <a class="mb-1" v-if="viewable && objectInfo.readrights" :href="instance.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
+                      <a class="mb-1" v-if="downloadable && objectInfo.readrights" :href="instance.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
+                      <a class="mb-1" v-if="objectInfo.cmodel === 'Collection'" :href="'/?#/search/?collection=' + objectInfo.pid" target="_blank">{{ $t('Show members') }}</a>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -299,41 +296,21 @@
 </template>
 
 <script>
-import qs from 'qs'
-import Vue from 'vue'
+import { context } from '../mixins/context'
+import { config } from '../mixins/config'
 
 export default {
   name: 'detail',
-  data () {
-    return {
-      displayjsonld: {},
-      docdata: null,
-      metadata: null,
-      members: [],
-      // owner: '',
-      rights: ''
-    }
-  },
+  mixins: [ context, config ],
   computed: {
     objectInfo: function () {
       return this.$store.state.objectInfo
     },
-    breadcrumbs: function () {
-      let bc = [
-        {
-          text: this.$t('Search'),
-          to: { name: 'search', path: '/' }
-        },
-        {
-          text: this.$t('Detailpage') + ' ' + this.$route.params.pid,
-          disabled: true,
-          to: { name: 'detail', params: { pid: this.$route.params.pid } }
-        }
-      ]
-      return bc
+    objectMembers: function () {
+      return this.$store.state.objectMembers
     },
     downloadable: function () {
-      switch (this.doc.cmodel) {
+      switch (this.objectInfo.cmodel) {
         case 'PDFDocument':
         case 'Video':
         case 'Audio':
@@ -346,7 +323,7 @@ export default {
       }
     },
     viewable: function () {
-      switch (this.doc.cmodel) {
+      switch (this.objectInfo.cmodel) {
         case 'PDFDocument':
         case 'Video':
         case 'Audio':
@@ -357,176 +334,54 @@ export default {
           return false
       }
     },
-    canRead: function () {
-      return this.signedin & true // (this.$store.state.object.rights === 'ro' || this.$store.state.object.rights === 'rw')
-    },
-    canWrite: function () {
-      return this.signedin & true // (this.$store.state.object.rights === 'rw')
-    },
-    signedin () {
-      return this.$store.state.user.token ? 1 : 0
-    },
-    instance () {
-      return this.$store.state.settings.instance
-    },
-    dshash: function () {
-      var dshash = {}
-      for (var i = 0; i < this.doc.datastreams.length; i++) {
-        dshash[this.doc.datastreams[i]] = true
-      }
-      return dshash
-    },
-    /*
-    identifiers: function () {
-      // TODO: add id from
-      // https://services.phaidra.univie.ac.at/api/object/<pid>/id
-      // in loadDetail and return store value
-      return this.doc.dc_identifier
-    },
-    */
     coverPid: function () {
       // HACK
-      var pidNumStr = this.doc.pid.substr(2)
+      var pidNumStr = this.objectInfo.pid.substr(2)
       var coverPidNum = parseInt(pidNumStr) + 1
       return 'o:' + coverPidNum
-    },
-    owner: function () {
-      return this.$store.state.currentOwner
     }
   },
   methods: {
-    async loadDetail (self, pid) {
-      self.pid = pid
-
-      self.displayjsonld = {}
-      self.members = []
-
-      await self.loadRights(self, pid)
-
-      var params = {
-        q: 'pid:"' + pid + '"',
-        defType: 'edismax',
-        wt: 'json',
-        qf: 'pid^5'
-      }
-
-      var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = self.$store.state.settings.instance.solr + '/select?' + query
-
-      let promise = this.$http.get(url)
-
-      promise.then(async function (response) {
-        if (response.data.response.numFound > 0) {
-          console.log('[' + pid + '] loaded doc')
-          self.docdata = response.data.response.docs[0]
-          try {
-            // await self.loadOwner(self, response.data.response.docs[0].owner)
-            if (self.dshash['JSON-LD']) {
-              await self.loadJsonld(self, pid)
-              await self.loadMembers(self, pid)
-            }
-          } catch (error) {
-            console.log(error)
-          }
-        } else {
-          self.docdata = null
+    updateBreadcrumbs: function () {
+      this.breadcrumbs = this.getRootBreadcrumbs()
+      this.breadcrumbs.push(
+        {
+          text: this.$t('Detail') + ' ' + this.$store.state.route.params.pid,
+          disabled: true
         }
-      }).catch(function (error) {
-        console.log(error)
-      })
-
-      return promise
+      )
     },
-    async loadJsonld (self, pid) {
-      var url = self.$store.state.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
-      try {
-        let response = await this.$http.get(url)
-        console.log('[' + pid + '] loaded jsonld')
-        Vue.set(self.displayjsonld, pid, response.data.metadata['JSON-LD'])
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    async loadMembers (self, pid) {
-      for (let member of self.members) {
-        member['jsonld'] = {}
-      }
-
-      var params = {
-        q: 'ismemberof:"' + pid + '"',
-        defType: 'edismax',
-        wt: 'json',
-        qf: 'ismemberof^5',
-        fl: 'pid,cmodel',
-        sort: 'pos_in_' + pid.replace(':', '_') + ' asc'
-      }
-
-      var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = self.$store.state.settings.instance.solr + '/select?' + query
-      try {
-        let response = await this.$http.get(url)
-        console.log('[' + pid + '] loaded members[' + response.data.response.numFound + ']')
-        if (response.data.response.numFound > 0) {
-          self.members = response.data.response.docs
-          for (let mem of self.members) {
-            await self.loadJsonld(self, mem.pid)
-          }
-        } else {
-          self.members = []
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    fetchOwner (self, username) {
-      console.log('[' + self.pid + '] loading owner for username[' + username + ']')
-      return self.$store.dispatch('fetchOwner', username)
-    },
-    fetchObjectInfo (self, pid) {
-      return self.$store.dispatch('fetchObjectInfo', pid)
-    },
-    async loadRights (self, pid) {
-      var url = self.$store.state.settings.instance.api + '/authz/check/' + pid
-      // check if we have write rights
-      try {
-        let response = await this.$http.get(url + '/rw/', { headers: { 'X-XSRF-TOKEN': self.$store.state.user.token } })
-        if (response.status === 200) {
-          self.rights = 'rw'
-        } else {
-          // if not, check if we have read rights
-          let response2 = await this.$http.get(url + '/ro/', { headers: { 'X-XSRF-TOKEN': self.$store.state.user.token } })
-          if (response2.status === 200) {
-            self.rights = 'ro'
-          }
-        }
-      } catch (error) {
-        console.log('[' + pid + '] checking rw rights: ' + error.response.status)
-      }
+    async fetchAsyncData (self, pid) {
+      await self.$store.dispatch('fetchObjectInfo', pid)
+      await self.$store.dispatch('fetchObjectMembers', pid)
     },
     getMemberDownloadUrl: function (member) {
       if (member.cmodel === 'Asset' || member.cmodel === 'Video') {
-        return this.instance.fedora + '/objects/' + member.pid + '/methods/bdef:Content/download'
+        return this.instanceconfig.fedora + '/objects/' + member.pid + '/methods/bdef:Content/download'
       } else {
-        return this.instance.api + '/object/' + member.pid + '/diss/Content/download'
+        return this.instanceconfig.api + '/object/' + member.pid + '/diss/Content/download'
       }
     }
   },
+  created () {
+    this.updateBreadcrumbs()
+  },
   serverPrefetch () {
     console.log('[' + this.$store.state.route.params.pid + '] prefetch')
-    return this.fetchObjectInfo(this, this.$store.state.route.params.pid)
+    return this.fetchAsyncData(this, this.$store.state.route.params.pid)
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
       if (typeof window !== 'undefined') {
         let fetch = true
-        if (vm.$store.state.currentDoc) {
-          console.log('beforeRouteEnter currentpid[' + vm.$store.state.currentDoc.pid + '] routepid[' + to.params.pid + ']')
-          if (vm.$store.state.currentDoc.pid === to.params.pid) {
+        if (vm.$store.state.objectInfo) {
+          console.log('beforeRouteEnter currentpid[' + vm.$store.state.objectInfo.pid + '] routepid[' + to.params.pid + ']')
+          if (vm.$store.state.objectInfo.pid === to.params.pid) {
             fetch = false
           }
         }
         if (fetch) {
-          vm.fetchObjectInfo(vm, to.params.pid).then(() => {
+          vm.fetchAsyncData(vm, to.params.pid).then(() => {
             next()
           })
         } else {
@@ -538,9 +393,9 @@ export default {
     })
   },
   beforeRouteUpdate: function (to, from, next) {
-    console.log('client[' + typeof window + '] [' + to.params.pid + '] beforeRouteUpdate doc[' + this.$store.state.currentDoc + ']')
-    if (!this.$store.state.currentDoc) {
-      this.fetchObjectInfo(this, to.params.pid).then(() => {
+    console.log('[' + to.params.pid + '] beforeRouteUpdate doc[' + this.$store.state.objectInfo + ']')
+    if (!this.$store.state.objectInfo) {
+      this.fetchAsyncData(this, to.params.pid).then(() => {
         next()
       })
     } else {

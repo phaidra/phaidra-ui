@@ -20,9 +20,11 @@
 
 <script>
 import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
+import { context } from '../mixins/context'
 
 export default {
   name: 'metadata-editor',
+  mixins: [ context ],
   data () {
     return {
       editform: {},

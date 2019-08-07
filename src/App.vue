@@ -13,13 +13,13 @@
             <v-flex xs3 text-xs-left>
               <router-link :to="'/'">
                 <img v-if="isUnivie" src="./assets/Uni_Logo_2016.png" class="logo" alt="logo" />
-                <img v-if="settings.instance.baseurl === 'volare.vorarlberg.at'" src="./assets/logo_vorarlberg_land.png" class="logo" alt="logo" />
-                <img v-if="settings.instance.baseurl === 'phaidra.kug.ac.at'" src="./assets/kug_logo.gif" class="logo" alt="logo" />
-                <img v-if="settings.instance.baseurl === 'phaidra.bibliothek.uni-ak.ac.at'" src="./assets/uniak_logo.png" class="logo pt-5" alt="logo" />
-                <img v-if="settings.instance.baseurl === 'phaidra.ufg.at'" src="./assets/logo_ufg.gif" class="logo pt-5" alt="logo" />
-                <img v-if="settings.instance.baseurl === 'e-book.fwf.ac.at'" src="./assets/fwf_logo.png" class="logo pt-5 pb-4" alt="logo" />
-                <img v-if="settings.instance.baseurl === 'phaidra.fhstp.ac.at'" src="./assets/fhstp_logo.svg" class="logo" alt="logo" />
-                <v-flex v-if="settings.instance.baseurl === 'phaidra.cab.unipd.it'" style="width: 165px; height: 54px; background-color: #EB001E; margin-top: 50px;"><img src="./assets/unipd_logo.png" class="logo" alt="logo" /></v-flex>
+                <img v-if="instanceconfig.baseurl === 'volare.vorarlberg.at'" src="./assets/logo_vorarlberg_land.png" class="logo" alt="logo" />
+                <img v-if="instanceconfig.baseurl === 'phaidra.kug.ac.at'" src="./assets/kug_logo.gif" class="logo" alt="logo" />
+                <img v-if="instanceconfig.baseurl === 'phaidra.bibliothek.uni-ak.ac.at'" src="./assets/uniak_logo.png" class="logo pt-5" alt="logo" />
+                <img v-if="instanceconfig.baseurl === 'phaidra.ufg.at'" src="./assets/logo_ufg.gif" class="logo pt-5" alt="logo" />
+                <img v-if="instanceconfig.baseurl === 'e-book.fwf.ac.at'" src="./assets/fwf_logo.png" class="logo pt-5 pb-4" alt="logo" />
+                <img v-if="instanceconfig.baseurl === 'phaidra.fhstp.ac.at'" src="./assets/fhstp_logo.svg" class="logo" alt="logo" />
+                <v-flex v-if="instanceconfig.baseurl === 'phaidra.cab.unipd.it'" style="width: 165px; height: 54px; background-color: #EB001E; margin-top: 50px;"><img src="./assets/unipd_logo.png" class="logo" alt="logo" /></v-flex>
               </router-link>
             </v-flex>
 
@@ -29,7 +29,7 @@
                 <v-flex>
                   <v-layout row wrap >
                     <v-flex text-xs-right>
-                      <router-link v-if="settings.global.enablelogin" :to="'/login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
+                      <router-link v-if="appconfig.enablelogin" :to="'/login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
 
                       <span v-if="signedin" class="subheading displayname grey--text text--lighten-1">{{ user.firstname }} {{ user.lastname }}</span>
 
@@ -56,12 +56,12 @@
                   </v-layout>
                 </v-flex>
                 <v-layout >
-                  <v-flex v-if="settings.global.showinstanceswitch" xs4 text-xs-left class="select-instance">
-                    <v-select :items="instances" @input="switchInstance" :value="settings.instance.baseurl" item-text="baseurl" single-line></v-select>
+                  <v-flex v-if="appconfig.showinstanceswitch" xs4 text-xs-left class="select-instance">
+                    <v-select :items="instances" @input="switchInstance" :value="instanceconfig.baseurl" item-text="baseurl" single-line></v-select>
                   </v-flex>
-                  <v-flex xs10 offset-xs1 text-xs-left v-else-if="settings.instance.title">
+                  <v-flex xs10 offset-xs1 text-xs-left v-else-if="instanceconfig.title">
                     <icon left dark name="univie-right" color="#a4a4a4" width="14px" height="14px"></icon>
-                    <router-link class="subheading primary--text mx-3" :to="'/'">{{ settings.instance.title }}</router-link>
+                    <router-link class="subheading primary--text mx-3" :to="'/'">{{ instanceconfig.title }}</router-link>
                   </v-flex>
                 </v-layout>
                 <v-flex>
@@ -77,7 +77,7 @@
                             <v-list-tile v-if="signedin" @click="$router.push('bookmarks')"><v-list-tile-title>{{ $t("Bookmarks") }}</v-list-tile-title></v-list-tile>
                             <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
                             <v-list-tile v-if="signedin" @click="$router.push('templates')"><v-list-tile-title>{{ $t("Templates") }}</v-list-tile-title></v-list-tile>
-                            <v-list-tile v-if="!signedin && settings.global.enablelogin" @click="$router.push('login')"><v-list-tile-title>{{ $t("Login") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="!signedin && appconfig.enablelogin" @click="$router.push('login')"><v-list-tile-title>{{ $t("Login") }}</v-list-tile-title></v-list-tile>
                             <v-list-tile v-if="signedin" @click="$router.push('/')"><v-list-tile-title>{{ $t("Logout") }}</v-list-tile-title></v-list-tile>
                           </v-list>
                         </v-menu>
@@ -91,7 +91,7 @@
                       <router-link class="ph-button" v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</router-link>
-                      <router-link class="ph-button" v-if="!signedin && settings.global.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>
+                      <router-link class="ph-button" v-if="!signedin && appconfig.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="''" @click="logout" >{{ $t("Logout") }}</router-link>
                     </v-toolbar-items>
                   </v-toolbar>
@@ -123,7 +123,7 @@
         <v-flex xs12 md10 offset-md1>
           <v-layout row wrap class="my-5">
             <v-flex text-xs-left>
-              <span class="grey--text text--darken-2"><address>{{ settings.instance.address }} | <abbr title="Telefon">T</abbr> {{ settings.instance.phone }}</address></span>
+              <span class="grey--text text--darken-2"><address>{{ instanceconfig.address }} | <abbr title="Telefon">T</abbr> {{ instanceconfig.phone }}</address></span>
             </v-flex>
             <v-flex text-xs-right>
               <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link>
@@ -144,9 +144,12 @@ import '@/compiled-icons/material-social-person'
 import '@/compiled-icons/material-navigation-menu'
 import '@/compiled-icons/univie-sprache'
 import ClientOnly from 'vue-client-only'
+import { context } from '@/mixins/context'
+import { config } from '@/mixins/config'
 
 export default {
   name: 'app',
+  mixins: [ context, config ],
   components: {
     Quicklinks,
     QuicklinksFooter,
@@ -158,23 +161,14 @@ export default {
     }
   },
   computed: {
-    signedin () {
-      return this.$store.state.user.token ? 1 : 0
-    },
-    user () {
-      return this.$store.state.user
-    },
     alerts () {
       return this.$store.state.alerts.alerts
-    },
-    settings () {
-      return this.$store.state.settings
     },
     instances () {
       return Object.keys(this.$store.state.config.instances)
     },
     isUnivie () {
-      switch (this.$store.state.settings.instance.baseurl) {
+      switch (this.instanceconfig.baseurl) {
         case 'phaidra.univie.ac.at':
         case 'phaidra-sandbox.univie.ac.at':
         case 'phaidra-entw.univie.ac.at':
@@ -201,11 +195,10 @@ export default {
     },
     switchInstance: function (e) {
       this.$store.dispatch('switchInstance', e).then(() => {
-        // this commits initStore in every store module which has it
-        this.$store.commit('initStore')
+        this.$store.commit('clearStore')
         this.$router.push('/search')
         this.$store.dispatch('search')
-        this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
+        this.$vuetify.theme.primary = this.$store.state.instanceconfig.primary
       })
     }
   },
@@ -216,9 +209,7 @@ export default {
     }
   },
   created: function () {
-    this.$store.dispatch('initSettings')
-    // this.$store.commit('initStore')
-    this.$vuetify.theme.primary = this.$store.state.settings.instance.primary
+    this.$vuetify.theme.primary = this.$store.state.instanceconfig.primary
   }
 }
 </script>

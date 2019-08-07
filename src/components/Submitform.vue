@@ -18,8 +18,11 @@
 </template>
 
 <script>
+import { context } from '../mixins/context'
+
 export default {
   name: 'submitform',
+  mixins: [ context ],
   computed: {
     breadcrumbs: function () {
       let bc = [

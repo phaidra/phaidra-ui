@@ -5,8 +5,11 @@
 </template>
 
 <script>
+import { context } from '../mixins/context'
+
 export default {
-  name: 'home'
+  name: 'home',
+  mixins: [ context ]
 }
 </script>
 

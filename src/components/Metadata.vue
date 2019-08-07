@@ -33,10 +33,11 @@
 
 <script>
 import UwmetadataRenderer from '@/components/UwmetadataRenderer'
+import { context } from '../mixins/context'
 
 export default {
-
   name: 'metadata',
+  mixins: [ context ],
   components: {
     UwmetadataRenderer
   },
