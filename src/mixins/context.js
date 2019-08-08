@@ -10,26 +10,6 @@ export const context = {
     },
     user () {
       return this.$store.state.user
-    },
-    getRootBreadcrumbs: function () {
-      return [
-        {
-          text: this.$t(this.$store.state.instanceconfig.institution),
-          disabled: false,
-          external: true,
-          to: 'https://www.univie.ac.at'
-        },
-        {
-          text: this.$t(this.$store.state.instanceconfig.title),
-          disabled: false,
-          to: '/'
-        }
-      ]
-    }
-  },
-  data () {
-    return {
-      breadcrumbs: []
     }
   }
 }

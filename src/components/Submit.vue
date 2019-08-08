@@ -2,9 +2,6 @@
   <v-container>
     <v-layout column>
       <v-flex>
-        <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
-      </v-flex>
-      <v-flex>
         <v-layout row>
           <v-flex xs2 class="mx-2">
             <v-btn fab color="primary" :to="{ name: 'submitresource', params: { cmodel: 'picture' } }">
@@ -80,7 +77,6 @@
 </template>
 
 <script>
-import { context } from '../mixins/context'
 import '@/compiled-icons/fontello-music'
 import '@/compiled-icons/fontello-doc'
 import '@/compiled-icons/fontello-doc-text'
@@ -92,22 +88,7 @@ import '@/compiled-icons/material-social-school'
 import '@/compiled-icons/material-action-account-balance'
 
 export default {
-  name: 'submit',
-  mixins: [ context ],
-  methods: {
-    updateBreadcrumbs: function () {
-      this.breadcrumbs = this.getRootBreadcrumbs()
-      this.breadcrumbs.push(
-        {
-          text: this.$t('Submit'),
-          disabled: true
-        }
-      )
-    }
-  },
-  created: function () {
-    this.updateBreadcrumbs()
-  }
+  name: 'submit'
 }
 </script>
 

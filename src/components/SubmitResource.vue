@@ -1,9 +1,6 @@
 <template>
   <v-container>
     <v-layout column>
-      <v-flex>
-        <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
-      </v-flex>
       <template v-if="cmodelparam === 'picture'">
         <v-flex>
           <v-btn raised color="primary" :to="{ name: 'submitform', params: { cmodel: 'picture', submitform: 'digital' } }">
@@ -31,11 +28,8 @@
 </template>
 
 <script>
-import { context } from '../mixins/context'
-
 export default {
   name: 'submitform',
-  mixins: [ context ],
   computed: {
     cmodelparam: function () {
       return this.$route.params.cmodel
@@ -47,24 +41,6 @@ export default {
         }
       }
       return { text: '' }
-    }
-  },
-  methods: {
-    updateBreadcrumbs: function () {
-      this.breadcrumbs = this.getRootBreadcrumbs()
-      this.breadcrumbs.push(
-        {
-          text: this.$t('Submit'),
-          to: '/submit'
-        }
-      )
-      this.breadcrumbs.push(
-        {
-          text: this.$t('Submit') + ' ' + this.$t(this.cmodel.text),
-          disabled: true,
-          to: { name: 'submitresource', params: { cmodel: this.cmodel } }
-        }
-      )
     }
   },
   data () {
@@ -103,13 +79,6 @@ export default {
       ],
       form: { sections: [] }
     }
-  },
-  beforeRouteEnter: function (to, from, next) {
-    next(vm => { vm.updateBreadcrumbs() })
-  },
-  beforeRouteUpdate: function (to, from, next) {
-    this.updateBreadcrumbs()
   }
-
 }
 </script>

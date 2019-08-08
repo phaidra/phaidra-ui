@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import actions from './actions'
 import mutations from './mutations'
-import groups from './modules/groups'
 import vocabulary from 'phaidra-vue-components/src/store/modules/vocabulary'
 import config from '../config/phaidra-ui'
 
@@ -18,10 +17,11 @@ export function createStore () {
       alerts: [],
       objectInfo: null,
       objectMembers: [],
-      user: {}
+      user: {},
+      groups: [],
+      breadcrumbs: []
     }),
     modules: {
-      groups,
       vocabulary
     },
     mutations,

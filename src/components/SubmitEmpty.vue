@@ -49,9 +49,6 @@ export default {
         }
       ]
       return bc
-    },
-    vocabularies: function () {
-      return this.$store.state.vocabulary.vocabularies
     }
   },
   data () {

@@ -14,7 +14,7 @@ export default {
   },
   async fetchObjectMembers ({ dispatch, commit, state }, pid) {
     console.log('[' + pid + '] fetching object members')
-    commit('setMembers', [])
+    commit('setObjectMembers', [])
     let params = {
       q: 'ismemberof:"' + pid + '"',
       defType: 'edismax',
@@ -89,6 +89,22 @@ export default {
       }
     } catch (error) {
       commit('clearStore')
+      console.log(error)
+    }
+  },
+  async getUserGroups ({ commit, state }) {
+    commit('clearAlerts')
+    try {
+      let response = await axios.get(state.instanceconfig.api + '/groups', {
+        headers: {
+          'X-XSRF-TOKEN': state.user.token
+        }
+      })
+      if (response.data.alerts && response.data.alerts.length > 0) {
+        commit('setAlerts', response.data.alerts)
+      }
+      commit('setGroups', response.data.groups)
+    } catch (error) {
       console.log(error)
     }
   },

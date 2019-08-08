@@ -197,18 +197,19 @@ export function createApp () {
   const router = createRouter()
   const store = createStore()
 
+  router.afterEach((to, from) => {
+    store.commit('updateBreadcrumbs', { to, from })
+  })
+
   // sync so that route state is available as part of the store
   sync(store, router)
 
   /* eslint-disable no-new */
   const app = new Vue({
-    el: '#app',
     router,
     store,
     i18n,
-    template: '<App/>',
-    render: h => h(App),
-    components: { App }
+    render: h => h(App)
   })
 
   // expose the app, the router and the store.

@@ -6,12 +6,12 @@
         <v-flex xs12 md8 class="pr-1">
           <v-layout column>
 
-            <v-flex>
-              <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
-            </v-flex>
+            <!--<h1 v-if="objectInfo">X</h1>-->
+            <h1>{{objectInfo.pid}}</h1>
+
 <!--
-            <v-flex class="text-xs-center my-4">
-              <a :href="instance.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
+            <v-flex v-if="objectInfo" class="text-xs-center my-4">
+              <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
                 <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
                 <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
                 <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
@@ -24,15 +24,11 @@
                 </audio>
               </center>
             </v-flex>
--->
-            <!--
-            <v-flex v-if="objectInfo.dshash['JSON-LD']">
-              <p-d-jsonld
-                :jsonld="displayjsonld[objectInfo.pid]" :pid="objectInfo.pid"
-              ></p-d-jsonld>
-            </v-flex>
-            -->
 
+            <v-flex v-if="objectInfo && objectInfo.dshash['JSON-LD']">
+              <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
+            </v-flex>
+-->
             <!--
             <v-flex v-if="objectInfo.dshash['UWMETADATA']">
               <p-d-uwmetadata :indexdata="doc"></p-d-uwmetadata>
@@ -342,15 +338,6 @@ export default {
     }
   },
   methods: {
-    updateBreadcrumbs: function () {
-      this.breadcrumbs = this.getRootBreadcrumbs()
-      this.breadcrumbs.push(
-        {
-          text: this.$t('Detail') + ' ' + this.$store.state.route.params.pid,
-          disabled: true
-        }
-      )
-    },
     async fetchAsyncData (self, pid) {
       await self.$store.dispatch('fetchObjectInfo', pid)
       await self.$store.dispatch('fetchObjectMembers', pid)
@@ -362,9 +349,6 @@ export default {
         return this.instanceconfig.api + '/object/' + member.pid + '/diss/Content/download'
       }
     }
-  },
-  created () {
-    this.updateBreadcrumbs()
   },
   serverPrefetch () {
     console.log('[' + this.$store.state.route.params.pid + '] prefetch')

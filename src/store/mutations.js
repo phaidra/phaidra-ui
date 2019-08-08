@@ -1,6 +1,48 @@
 import Vue from 'vue'
 
 export default {
+  updateBreadcrumbs (state, transition) {
+    state.breadcrumbs = [
+      {
+        text: state.instanceconfig.institution,
+        external: true,
+        to: 'https://www.univie.ac.at'
+      },
+      {
+        text: state.instanceconfig.title,
+        to: '/'
+      }
+    ]
+    if (transition.to.name === 'search') {
+      state.breadcrumbs.push(
+        {
+          text: 'Search',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'detail') {
+      if (transition.from.name === 'search') {
+        state.breadcrumbs.push(
+          {
+            text: 'Search',
+            to: '/search'
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Detail ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
+  },
+  setGroups (state, groups) {
+    state.groups = groups
+  },
   setObjectInfo (state, objectInfo) {
     state.objectInfo = objectInfo
   },
@@ -37,6 +79,7 @@ export default {
     state.objectInfo = null
     state.objectMembers = []
     state.user = {}
+    state.groups = []
     // document.cookie = 'X-XSRF-TOKEN='
   }
 }
