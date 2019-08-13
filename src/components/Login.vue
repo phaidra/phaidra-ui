@@ -4,7 +4,7 @@
     <v-layout row wrap>
 
       <v-flex xs4 offset-xs4>
-        <v-form v-model="valid" @submit="login">
+        <v-form v-model="valid">
           <v-card>
             <v-card-text>
               <v-flex xs10 offset-xs1>
@@ -28,7 +28,7 @@
             <v-divider class="mt-5"></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn type="submit" color="primary" flat>{{ $t('Login') }}</v-btn>
+              <v-btn @click="login" color="primary" flat>{{ $t('Login') }}</v-btn>
             </v-card-actions>
           </v-card>
           </v-form>
@@ -58,7 +58,7 @@ export default {
   methods: {
     async login () {
       await this.$store.dispatch('login', this.credentials)
-      // this.$router.push('/')
+      this.$router.push('/')
     },
     toggleVisibility: function () {
       this.e1 = !this.e1

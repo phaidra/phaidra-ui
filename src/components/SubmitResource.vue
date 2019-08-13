@@ -1,12 +1,19 @@
 <template>
   <v-container>
     <v-layout column>
-      <template v-if="cmodelparam === 'picture'">
+      <template v-if="$route.params.cmodel === 'picture'">
         <v-flex>
           <v-btn raised color="primary" :to="{ name: 'submitform', params: { cmodel: 'picture', submitform: 'digital' } }">
             {{$t('Born-digital')}}
           </v-btn>
           {{$t('This material originates in digital form.')}}
+        </v-flex>
+        <v-divider class="my-4"></v-divider>
+        <v-flex>
+          <v-btn raised color="primary" :to="{ name: 'submitform', params: { cmodel: 'picture', submitform: 'physicalobject' } }">
+            {{$t('Physical object')}}
+          </v-btn>
+          {{$t('This image represents a physical object.')}}
         </v-flex>
         <v-divider class="my-4"></v-divider>
         <v-flex>
@@ -29,56 +36,6 @@
 
 <script>
 export default {
-  name: 'submitform',
-  computed: {
-    cmodelparam: function () {
-      return this.$route.params.cmodel
-    },
-    cmodel: function () {
-      for (let cm of this.contentmodels) {
-        if (cm.cmodelparam === this.cmodelparam) {
-          return cm
-        }
-      }
-      return { text: '' }
-    }
-  },
-  data () {
-    return {
-      contentmodels: [
-        {
-          text: 'Data',
-          cmodelparam: 'data',
-          value: 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
-        },
-        {
-          text: 'Picture',
-          cmodelparam: 'picture',
-          value: 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
-        },
-        {
-          text: 'Audio',
-          cmodelparam: 'audio',
-          value: 'https://pid.phaidra.org/vocabulary/8YB5-1M0J'
-        },
-        {
-          text: 'Video',
-          cmodelparam: 'video',
-          value: 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8'
-        },
-        {
-          text: 'Document',
-          cmodelparam: 'document',
-          value: 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
-        },
-        {
-          text: 'Resource',
-          cmodelparam: 'resource',
-          value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ'
-        }
-      ],
-      form: { sections: [] }
-    }
-  }
+  name: 'submitform'
 }
 </script>

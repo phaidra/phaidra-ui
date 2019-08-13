@@ -1,16 +1,12 @@
 <template>
   <v-container fluid grid-list-md>
 
-    <v-layout row wrap>
+    <v-layout v-if="objectInfo" row wrap>
 
         <v-flex xs12 md8 class="pr-1">
           <v-layout column>
 
-            <!--<h1 v-if="objectInfo">X</h1>-->
-            <h1>{{objectInfo.pid}}</h1>
-
-<!--
-            <v-flex v-if="objectInfo" class="text-xs-center my-4">
+            <v-flex class="text-xs-center my-4">
               <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
                 <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
                 <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
@@ -25,21 +21,19 @@
               </center>
             </v-flex>
 
-            <v-flex v-if="objectInfo && objectInfo.dshash['JSON-LD']">
+            <v-flex v-if="objectInfo.dshash['JSON-LD']">
               <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
             </v-flex>
--->
-            <!--
-            <v-flex v-if="objectInfo.dshash['UWMETADATA']">
-              <p-d-uwmetadata :indexdata="doc"></p-d-uwmetadata>
-            </v-flex>
-            -->
-<!--
-            <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{members.length}})</h3>
 
-            <v-flex v-if="members">
-              <v-card class="mb-3 pt-4" v-for="(member) in members" :key="'member_'+member.pid">
-                <a :href="instance.api + '/object/' + member.pid + '/diss/Content/get'">
+            <v-flex v-if="objectInfo.dshash['UWMETADATA']">
+              <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
+            </v-flex>
+
+            <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{objectMembers.length}})</h3>
+
+            <v-flex v-if="objectMembers">
+              <v-card class="mb-3 pt-4" v-for="(member) in objectMembers" :key="'member_'+member.pid">
+                <a :href="instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
                   <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
                   <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
                   <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
@@ -52,7 +46,7 @@
                 </center>
                 <v-card-text class="ma-2">
                   <p-d-jsonld
-                    :jsonld="displayjsonld[member.pid]" :pid="member.pid"
+                    :jsonld="member.metadata['JSON-LD']" :pid="member.pid"
                   ></p-d-jsonld>
                 </v-card-text>
                 <v-divider light v-if="objectInfo.readrights"></v-divider>
@@ -80,7 +74,7 @@
             <v-flex v-else>
 
             </v-flex>
--->
+
           </v-layout>
 
         </v-flex>
@@ -124,13 +118,12 @@
                   </v-flex>
                   <v-flex>
                     <v-container fluid grid-list-md>
-                      <!--
                       <v-layout row>
                         <v-flex class="caption grey--text" xs4>{{ $t('Owner') }}</v-flex>
-                        <v-flex xs8>
+                        <v-flex v-if="objectInfo.owner.firstname" xs8>
                           <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
                         </v-flex>
-                        <v-flex xs8 v-if="doc">{{ objectInfo.owner }}</v-flex>
+                        <v-flex v-else xs8>{{ objectInfo.owner }}</v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex class="caption grey--text" xs4>{{ $t('Object Type') }}</v-flex>
@@ -148,7 +141,6 @@
                         <v-flex class="caption grey--text" xs4>{{ $t('Created') }}</v-flex>
                         <v-flex xs8>{{ objectInfo.created | time }}</v-flex>
                       </v-layout>
-                      -->
                     </v-container>
                   </v-flex>
                 </v-layout>
@@ -156,7 +148,6 @@
               <v-divider></v-divider>
             </v-card>
 
-<!--
             <v-card flat v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
               <v-card-text>
                 <v-layout column>
@@ -221,7 +212,7 @@
               </v-card-text>
               <v-divider></v-divider>
             </v-card>
--
+
             <v-card flat>
               <v-card-text>
                 <v-layout column>
@@ -231,9 +222,9 @@
                   <v-flex class="ma-2">
                     <v-layout column>
                       <router-link class="mb-1" :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
-                      <a class="mb-1" v-if="objectInfo.dshash['UWMETADATA']" :href="instance.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
-                      <a class="mb-1" :href="instance.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
-                      <a class="mb-1" :href="instance.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                      <a class="mb-1" v-if="objectInfo.dshash['UWMETADATA']" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                      <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
+                      <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -267,27 +258,27 @@
                   </v-flex>
                   <v-flex class="ma-2">
                     <v-layout column>
-                      <a class="mb-1" v-if="viewable && objectInfo.readrights" :href="instance.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
-                      <a class="mb-1" v-if="downloadable && objectInfo.readrights" :href="instance.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
+                      <a class="mb-1" v-if="viewable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
+                      <a class="mb-1" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
                       <a class="mb-1" v-if="objectInfo.cmodel === 'Collection'" :href="'/?#/search/?collection=' + objectInfo.pid" target="_blank">{{ $t('Show members') }}</a>
                     </v-layout>
                   </v-flex>
                 </v-layout>
               </v-card-text>
             </v-card>
-            -->
+
           </v-layout>
 
         </v-flex>
 
     </v-layout>
-<!--
+
     <v-layout v-else>
       <v-flex>
         <v-alert :value="true" transition="slide-y-transition">{{$t('Object not found')}}</v-alert>
       </v-flex>
     </v-layout>
--->
+
   </v-container>
 </template>
 

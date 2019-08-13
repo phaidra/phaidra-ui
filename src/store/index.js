@@ -13,6 +13,7 @@ export function createStore () {
   return new Vuex.Store({
     state: () => ({
       config: config,
+      appconfig: config.global,
       instanceconfig: config.instances[config.defaultinstance],
       alerts: [],
       objectInfo: null,

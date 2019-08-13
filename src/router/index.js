@@ -66,7 +66,7 @@ export function createRouter () {
         component: SubmitResource
       },
       {
-        path: '/submit/:cmodel/:form',
+        path: '/submit/:cmodel/:submitform',
         name: 'submitform',
         component: Submitform
       },

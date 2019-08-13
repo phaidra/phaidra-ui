@@ -39,6 +39,48 @@ export default {
         }
       )
     }
+    if (transition.to.name === 'submit') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submitresource') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Submit ' + transition.to.params.cmodel,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submitform') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Submit ' + transition.to.params.cmodel,
+          to: { name: transition.from.name, params: { cmodel: transition.from.params.cmodel } }
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Submit ' + transition.to.params.cmodel + ' ' + transition.to.params.submitform,
+          disabled: true
+        }
+      )
+    }
   },
   setGroups (state, groups) {
     state.groups = groups

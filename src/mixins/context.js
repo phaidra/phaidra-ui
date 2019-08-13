@@ -4,7 +4,7 @@ export const context = {
   components: {
     PBreadcrumbs
   },
-  methods: {
+  computed: {
     signedin () {
       return this.$store.state.user.token ? 1 : 0
     },
