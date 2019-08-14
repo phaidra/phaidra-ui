@@ -351,9 +351,10 @@ export default {
     return this.fetchAsyncData(this, this.$store.state.route.params.pid)
   },
   beforeRouteEnter: async function (to, from, next) {
-    // here the component does not exist yet so we don't have 'this' and access to the store
+    // see https://router.vuejs.org/guide/advanced/data-fetching.html#fetching-before-navigation
+    // here the component does not exist yet so we don't have 'this' or access to the store
     let response = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
-    // on next the component will be rendered, so no async
+    // on next() the component will be rendered, waits for no async calls, but we can put data to store since we already have them
     next(vm => vm.$store.commit('setObjectInfo', response.data.info))
   },
   beforeRouteUpdate: async function (to, from, next) {

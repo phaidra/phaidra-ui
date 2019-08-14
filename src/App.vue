@@ -29,12 +29,11 @@
                 <v-flex>
                   <v-layout row wrap >
                     <v-flex text-xs-right>
-                      <router-link v-if="appconfig.enablelogin" :to="'/login'"><v-btn flat icon color="grey lighten-1" class="v-align-top top-margin-3"><icon name="material-social-person" width="24px" height="24px"></icon></v-btn></router-link>
-
+                      <icon v-if="signedin" class="personicon mr-1" color="grey" name="material-social-person" width="24px" height="24px"></icon>
                       <span v-if="signedin" class="subheading displayname grey--text text--lighten-1">{{ user.firstname }} {{ user.lastname }}</span>
 
                       <v-menu bottom transition="slide-y-transition" class="v-align-top">
-                        <v-btn flat icon slot="activator" color="grey lighten-1" class="top-margin-3">
+                        <v-btn flat slot="activator" color="grey lighten-1" class="top-margin-lang">
                           {{$i18n.locale}}
                           <icon name="univie-sprache" class="lang-icon"></icon>
                         </v-btn>
@@ -78,7 +77,7 @@
                             <v-list-tile v-if="signedin" @click="$router.push('groups')"><v-list-tile-title>{{ $t("Groups") }}</v-list-tile-title></v-list-tile>
                             <v-list-tile v-if="signedin" @click="$router.push('templates')"><v-list-tile-title>{{ $t("Templates") }}</v-list-tile-title></v-list-tile>
                             <v-list-tile v-if="!signedin && appconfig.enablelogin" @click="$router.push('login')"><v-list-tile-title>{{ $t("Login") }}</v-list-tile-title></v-list-tile>
-                            <v-list-tile v-if="signedin" @click="$router.push('/')"><v-list-tile-title>{{ $t("Logout") }}</v-list-tile-title></v-list-tile>
+                            <v-list-tile v-if="signedin" @click="logout"><v-list-tile-title>{{ $t("Logout") }}</v-list-tile-title></v-list-tile>
                           </v-list>
                         </v-menu>
                       </v-toolbar-side-icon>
@@ -86,13 +85,13 @@
                     <v-spacer></v-spacer>
                     <v-toolbar-items class="hidden-sm-and-down no-height-inherit">
                       <router-link class="ph-button" :to="{ name: 'search'}">{{ $t("Search") }}</router-link>
-                      <router-link class="ph-button"  :to="'/submit'">{{ $t("Submit") }}</router-link>
+                      <router-link class="ph-button" v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</router-link>
                       <router-link class="ph-button" v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</router-link>
                       <router-link class="ph-button" v-if="!signedin && appconfig.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>
-                      <router-link class="ph-button" v-if="signedin" :to="''" @click="logout" >{{ $t("Logout") }}</router-link>
+                      <a class="flat dark ph-button" v-if="signedin" @click="logout" >{{ $t("Logout") }}</a>
                     </v-toolbar-items>
                   </v-toolbar>
                 </v-flex>
@@ -279,10 +278,6 @@ address {
   vertical-align: top;
 }
 
-.top-margin-3 {
-  margin-top: 3px;
-}
-
 .lang-icon {
   margin-left: 5px;
 }
@@ -376,6 +371,10 @@ address {
 </style>
 
 <style scoped>
+.top-margin-lang {
+  margin-top: 0px;
+}
+
 .content {
   min-height: 800px;
 }
@@ -386,5 +385,9 @@ address {
 
 .no-height-inherit {
   height: unset;
+}
+
+.personicon {
+  vertical-align: super;
 }
 </style>
