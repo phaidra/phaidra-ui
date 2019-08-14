@@ -4,8 +4,8 @@ import qs from 'qs'
 export default {
   async fetchObjectInfo ({ commit, state }, pid) {
     console.log('[' + pid + '] fetching object info')
-    let response = await axios.get(state.instanceconfig.api + '/object/' + pid + '/info')
     try {
+      let response = await axios.get(state.instanceconfig.api + '/object/' + pid + '/info')
       console.log('[' + pid + '] fetching object info done')
       commit('setObjectInfo', response.data.info)
     } catch (error) {
@@ -24,8 +24,8 @@ export default {
       sort: 'pos_in_' + pid.replace(':', '_') + ' asc'
     }
     let query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-    let response = await axios.get(state.instanceconfig.solr + '/select?' + query)
     try {
+      let response = await axios.get(state.instanceconfig.solr + '/select?' + query)
       console.log('[' + pid + '] fetching object members done')
       if (response.data.response.numFound > 0) {
         let members = []
