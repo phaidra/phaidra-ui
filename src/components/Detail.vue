@@ -285,6 +285,8 @@
 <script>
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
+import configjs from '../config/phaidra-ui'
+import axios from 'axios'
 
 export default {
   name: 'detail',
@@ -349,7 +351,10 @@ export default {
     return this.fetchAsyncData(this, this.$store.state.route.params.pid)
   },
   beforeRouteEnter: async function (to, from, next) {
-    next(async (vm) => vm.fetchAsyncData(vm, to.params.pid))
+    // here the component does not exist yet so we don't have 'this' and access to the store
+    let response = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
+    // on next the component will be rendered, so no async
+    next(vm => vm.$store.commit('setObjectInfo', response.data.info))
   },
   beforeRouteUpdate: async function (to, from, next) {
     await this.fetchAsyncData(this, to.params.pid)
