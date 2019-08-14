@@ -287,6 +287,7 @@ import { context } from '../mixins/context'
 import { config } from '../mixins/config'
 import configjs from '../config/phaidra-ui'
 import axios from 'axios'
+import qs from 'qs'
 
 export default {
   name: 'detail',
@@ -353,9 +354,39 @@ export default {
   beforeRouteEnter: async function (to, from, next) {
     // see https://router.vuejs.org/guide/advanced/data-fetching.html#fetching-before-navigation
     // here the component does not exist yet so we don't have 'this' or access to the store
-    let response = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
+    let inforesponse
+    let members = []
+    try {
+      console.log('[' + to.params.pid + '] fetching object info')
+      inforesponse = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
+      console.log('[' + to.params.pid + '] fetching object info done, querying object members')
+      let params = {
+        q: 'ismemberof:"' + to.params.pid + '"',
+        defType: 'edismax',
+        wt: 'json',
+        qf: 'ismemberof^5',
+        fl: 'pid',
+        sort: 'pos_in_' + to.params.pid.replace(':', '_') + ' asc'
+      }
+      let query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
+      let membersresponse = await axios.get(configjs.instances[configjs.defaultinstance].solr + '/select?' + query)
+      console.log('[' + to.params.pid + '] object has ' + membersresponse.data.response.numFound + ' members')
+      if (membersresponse.data.response.numFound > 0) {
+        for (let doc of membersresponse.data.response.docs) {
+          console.log('[' + to.params.pid + '] fetching object info of member ' + doc.pid)
+          let memresponse = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + doc.pid + '/info')
+          console.log('[' + to.params.pid + '] fetching object info of member ' + doc.pid + ' done')
+          members.push(memresponse.data.info)
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
     // on next() the component will be rendered, waits for no async calls, but we can put data to store since we already have them
-    next(vm => vm.$store.commit('setObjectInfo', response.data.info))
+    next(vm => {
+      vm.$store.commit('setObjectInfo', inforesponse.data.info)
+      vm.$store.commit('setObjectMembers', members)
+    })
   },
   beforeRouteUpdate: async function (to, from, next) {
     await this.fetchAsyncData(this, to.params.pid)
