@@ -285,8 +285,6 @@
 <script>
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
-import axios from 'axios'
-import configjs from '../config/phaidra-ui'
 
 export default {
   name: 'detail',
@@ -351,47 +349,11 @@ export default {
     return this.fetchAsyncData(this, this.$store.state.route.params.pid)
   },
   beforeRouteEnter: async function (to, from, next) {
-    let response = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
-    next(vm => vm.$store.commit('setObjectInfo', response.data.info))
-    /*
-    next(vm => {
-      if (typeof window !== 'undefined') {
-        let fetch = true
-        if (vm.$store.state.objectInfo) {
-          console.log('beforeRouteEnter currentpid[' + vm.$store.state.objectInfo.pid + '] routepid[' + to.params.pid + ']')
-          if (vm.$store.state.objectInfo.pid === to.params.pid) {
-            fetch = false
-          }
-        }
-        if (fetch) {
-          vm.fetchAsyncData(vm, to.params.pid).then(() => {
-            next()
-          })
-        } else {
-          next()
-        }
-      } else {
-        next()
-      }
-    })
-    */
+    next(async (vm) => vm.fetchAsyncData(vm, to.params.pid))
   },
-  beforeRouteUpdate: function (to, from, next) {
-    console.log('[' + to.params.pid + '] beforeRouteUpdate doc[' + this.$store.state.objectInfo + ']')
-    let fetch = true
-    if (this.$store.state.objectInfo) {
-      console.log('beforeRouteUpdate currentpid[' + this.$store.state.objectInfo.pid + '] routepid[' + to.params.pid + ']')
-      if (this.$store.state.objectInfo.pid === to.params.pid) {
-        fetch = false
-      }
-    }
-    if (fetch) {
-      this.fetchAsyncData(this, to.params.pid).then(() => {
-        next()
-      })
-    } else {
-      next()
-    }
+  beforeRouteUpdate: async function (to, from, next) {
+    await this.fetchAsyncData(this, to.params.pid)
+    next()
   }
 }
 </script>
