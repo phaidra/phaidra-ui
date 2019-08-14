@@ -25,9 +25,11 @@
 
 <script>
 import fields from 'phaidra-vue-components/src/utils/fields'
+import { context } from '../mixins/context'
 
 export default {
   name: 'add-member',
+  mixins: [ context ],
   data () {
     return {
       parentpid: '',

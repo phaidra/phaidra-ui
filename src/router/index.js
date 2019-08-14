@@ -16,72 +16,75 @@ import AddMember from '@/components/AddMember'
 
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
-    {
-      path: '/search',
-      name: 'search',
-      component: PSearch
-    },
-    {
-      path: '/detail/:pid',
-      name: 'detail',
-      component: Detail
-    },
-    {
-      path: '/manage/:pid',
-      name: 'manage',
-      component: Manage
-    },
-    {
-      path: '/metadata/:pid',
-      name: 'metadata',
-      component: Metadata
-    },
-    {
-      path: '/metadata/:pid/edit',
-      name: 'metadataeditor',
-      component: MetadataEditor
-    },
-    {
-      path: '/submit',
-      name: 'submit',
-      component: Submit
-    },
-    {
-      path: '/submit/:cmodel',
-      name: 'submitresource',
-      component: SubmitResource
-    },
-    {
-      path: '/submit/:cmodel/:form',
-      name: 'submitform',
-      component: Submitform
-    },
-    {
-      path: '/submit/ksa-eda',
-      name: 'submit-ksa-eda',
-      component: SubmitKsaEda
-    },
-    {
-      path: '/submit/empty',
-      name: 'submit-empty',
-      component: SubmitEmpty
-    },
-    {
-      path: '/addmember/:pid',
-      name: 'addmember',
-      component: AddMember
-    }
-  ]
-})
+export function createRouter () {
+  return new Router({
+    mode: 'history',
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: Home
+      },
+      {
+        path: '/login',
+        name: 'login',
+        component: Login
+      },
+      {
+        path: '/search',
+        name: 'search',
+        component: PSearch
+      },
+      {
+        path: '/detail/:pid',
+        name: 'detail',
+        component: Detail
+      },
+      {
+        path: '/manage/:pid',
+        name: 'manage',
+        component: Manage
+      },
+      {
+        path: '/metadata/:pid',
+        name: 'metadata',
+        component: Metadata
+      },
+      {
+        path: '/metadata/:pid/edit',
+        name: 'metadataeditor',
+        component: MetadataEditor
+      },
+      {
+        path: '/submit',
+        name: 'submit',
+        component: Submit
+      },
+      {
+        path: '/submit/:cmodel',
+        name: 'submitresource',
+        component: SubmitResource
+      },
+      {
+        path: '/submit/:cmodel/:submitform',
+        name: 'submitform',
+        component: Submitform
+      },
+      {
+        path: '/submit/ksa-eda',
+        name: 'submit-ksa-eda',
+        component: SubmitKsaEda
+      },
+      {
+        path: '/submit/empty',
+        name: 'submit-empty',
+        component: SubmitEmpty
+      },
+      {
+        path: '/addmember/:pid',
+        name: 'addmember',
+        component: AddMember
+      }
+    ]
+  })
+}

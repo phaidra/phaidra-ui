@@ -30,9 +30,11 @@
 
 <script>
 import fields from 'phaidra-vue-components/src/utils/fields'
+import { context } from '../mixins/context'
 
 export default {
   name: 'submit-empty',
+  mixins: [ context ],
   computed: {
     breadcrumbs: function () {
       let bc = [
@@ -47,9 +49,6 @@ export default {
         }
       ]
       return bc
-    },
-    vocabularies: function () {
-      return this.$store.state.vocabulary.vocabularies
     }
   },
   data () {

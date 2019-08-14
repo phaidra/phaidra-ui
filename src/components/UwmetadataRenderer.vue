@@ -51,8 +51,11 @@
 </template>
 
 <script>
+import { context } from '../mixins/context'
+
 export default {
   name: 'uwmetadata-renderer',
+  mixins: [ context ],
   props: {
     node: Object,
     path: {

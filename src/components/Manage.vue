@@ -5,22 +5,22 @@
     </v-flex>
     <v-flex v-if="signedin">
       <p-m-sort v-if="members.length > 0" :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members=$event" @order-saved="orderSaved($event)"></p-m-sort>
-      <p-m-delete v-if="settings.global.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
+      <p-m-delete v-if="appsettings.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import qs from 'qs'
+import { context } from '../mixins/context'
+import { config } from '../mixins/config'
 
 export default {
   name: 'manage',
+  mixins: [ context, config ],
   computed: {
     loadedcmodel: function () {
       return 'cmodel' in this.doc ? this.doc.cmodel : 'unknown'
-    },
-    signedin () {
-      return this.$store.state.user.token ? 1 : 0
     },
     pid () {
       return this.$route.params.pid
@@ -42,12 +42,6 @@ export default {
         }
       ]
       return bc
-    },
-    instance () {
-      return this.$store.state.settings.instance
-    },
-    settings () {
-      return this.$store.state.settings
     }
   },
   data () {
