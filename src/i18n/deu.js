@@ -562,6 +562,7 @@ export default {
   'edm:rights': 'Lizenz',
 
   'rdau:P60193': 'Journal/Series',
+  'rdau:P60101': 'Series/Part of',
   'rdau:P60227': 'Is motion picture adaptation of',
 
   'dcterms:spatial': 'Depicted/Represented place',
