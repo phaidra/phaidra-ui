@@ -4,12 +4,6 @@
       <v-flex>
         <v-layout row>
           <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">
-              <icon left dark name="fontello-doc-text" width="28px" height="28px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">{{ $t("Document") }}</router-link>
-          </v-flex>
-          <v-flex xs2 class="mx-2">
             <v-btn fab color="primary" :to="{ name: 'submitresource', params: { cmodel: 'picture' } }">
               <icon left dark name="material-image-image" width="36px" height="36px"></icon>
             </v-btn>
@@ -21,24 +15,13 @@
             </v-btn>
             <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'audio' } }">{{ $t("Audio") }}</router-link>
           </v-flex>
-          <v-flex xs3 class="mx-2">
+          <v-flex xs2 class="mx-2">
             <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'video' } }">
               <icon left dark name="material-movie-creation" width="36px" height="36px"></icon>
             </v-btn>
             <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'video' } }">{{ $t("Video") }}</router-link>
           </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-divider class="my-4"></v-divider>
-      <v-flex>
-        <v-layout row>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">
-              <icon left dark name="material-content-link" width="36px" height="36px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">{{ $t("Resource") }}</router-link>
-          </v-flex>
-          <v-flex xs2 class="mx-2">
+          <v-flex xs3 class="mx-2">
             <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'data' } }">
               <icon left dark name="fontello-doc" width="28px" height="28px"></icon>
             </v-btn>
@@ -48,21 +31,35 @@
       </v-flex>
       <v-divider class="my-4"></v-divider>
       <v-flex>
-        <v-flex xs3 class="mx-2">
-          <v-btn fab dark color="primary" :to="'/'">
-            <icon left dark name="fontello-layers" width="36px" height="36px"></icon>
-          </v-btn>
-          <router-link class="display-2 submit-link ml-2" :to="'/'">{{ $t("Collection") }}</router-link>
-        </v-flex>
-      </v-flex>
-      <v-divider class="my-4"></v-divider>
-      <v-flex xs2 class="mx-2">
         <v-layout row>
-          <v-flex xs 2class="mx-2">
+          <v-flex xs2 class="mx-2">
             <v-btn fab dark color="primary" :href="'https://uscholar.univie.ac.at/submit/submitform'">
               <icon left dark name="material-social-school" width="36px" height="36px"></icon>
             </v-btn>
-            <a class="display-2 submit-link ml-2" :href="'https://uscholar.univie.ac.at/submit/submitform'" target="_blank">{{ $t("u:scholar") }}</a>
+            <a class="display-2 submit-link ml-2" :href="'https://uscholar.univie.ac.at/submit/submitform'" target="_blank">{{ $t("Publications") }}</a>
+          </v-flex>
+          <v-flex xs2 class="mx-2">
+            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">
+              <icon left dark name="fontello-doc-text" width="28px" height="28px"></icon>
+            </v-btn>
+            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">{{ $t("Other documents") }}</router-link>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-divider class="my-4"></v-divider>
+      <v-flex>
+        <v-layout row>
+          <v-flex xs2 class="mx-2">
+            <v-btn fab dark color="primary" :to="'/'">
+              <icon left dark name="fontello-layers" width="36px" height="36px"></icon>
+            </v-btn>
+            <router-link class="display-2 submit-link ml-2" :to="'/'">{{ $t("Collection") }}</router-link>
+          </v-flex>
+          <v-flex xs2 class="mx-2">
+            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">
+              <icon left dark name="material-content-link" width="36px" height="36px"></icon>
+            </v-btn>
+            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">{{ $t("Resource") }}</router-link>
           </v-flex>
         </v-layout>
       </v-flex>

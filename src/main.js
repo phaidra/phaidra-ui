@@ -4,57 +4,8 @@ import 'core-js'
 
 import Vue from 'vue'
 
-// import only required Vuetify components
-import Vuetify, {
-  VAlert,
-  VAutocomplete,
-  VApp, // VApp is required
-  VBreadcrumbs,
-  VBtn,
-  VCard,
-  VCardActions,
-  VCardText,
-  VCardTitle,
-  VCheckbox,
-  VChip,
-  VContainer,
-  VCombobox,
-  VDataTable,
-  VDialog,
-  VDivider,
-  VExpansionPanel,
-  VExpansionPanelContent,
-  VFlex,
-  VFooter,
-  VForm,
-  VIcon,
-  VImg,
-  VItem,
-  VLayout,
-  VList,
-  VListTile,
-  VListTileContent,
-  VListTileSubTitle,
-  VListTileTitle,
-  VMenu,
-  VNavigationDrawer,
-  VPagination,
-  VProgressCircular,
-  VSelect,
-  VSpacer,
-  VTab,
-  VTabItem,
-  VTabs,
-  VTabsItems,
-  VTextarea,
-  VTextField,
-  VToolbar,
-  VToolbarItems,
-  VToolbarSideIcon,
-  VToolbarTitle,
-  VTooltip,
-  VWindow
-} from 'vuetify/lib'
+// using vuetify from vuetify/lib should enable vuetify-loader, so prod build is a la carte
+import Vuetify from 'vuetify/lib'
 import VueI18n from 'vue-i18n'
 import App from './App'
 import { createRouter } from './router'
@@ -67,62 +18,12 @@ import ita from './i18n/ita'
 import moment from 'moment'
 import axios from 'axios'
 import PhaidraVueComponents from 'phaidra-vue-components/src/components'
+import vuetify from './plugins/vuetify';
 
 export function createApp () {
   Vue.config.productionTip = false
 
-  Vue.use(Vuetify, {
-    components: {
-      VAlert,
-      VAutocomplete,
-      VApp, // VApp is required
-      VBreadcrumbs,
-      VBtn,
-      VCard,
-      VCardActions,
-      VCardText,
-      VCardTitle,
-      VCombobox,
-      VCheckbox,
-      VChip,
-      VContainer,
-      VDataTable,
-      VDialog,
-      VDivider,
-      VExpansionPanel,
-      VExpansionPanelContent,
-      VFlex,
-      VFooter,
-      VForm,
-      VIcon,
-      VImg,
-      VItem,
-      VLayout,
-      VList,
-      VListTile,
-      VListTileContent,
-      VListTileSubTitle,
-      VListTileTitle,
-      VMenu,
-      VNavigationDrawer,
-      VPagination,
-      VProgressCircular,
-      VSelect,
-      VSpacer,
-      VTab,
-      VTabItem,
-      VTabs,
-      VTabsItems,
-      VTextarea,
-      VTextField,
-      VToolbar,
-      VToolbarItems,
-      VToolbarSideIcon,
-      VToolbarTitle,
-      VTooltip,
-      VWindow
-    }
-  })
+  Vue.use(Vuetify)
   Vue.use(VueI18n)
   Vue.use(PhaidraVueComponents)
 
@@ -209,6 +110,7 @@ export function createApp () {
     router,
     store,
     i18n,
+    vuetify,
     render: h => h(App)
   })
 
