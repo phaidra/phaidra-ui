@@ -1,37 +1,40 @@
 <template>
-  <v-container fluid grid-list-md>
+  <v-container fluid>
 
-    <v-layout v-if="objectInfo" row wrap>
+    <v-row v-if="objectInfo">
 
-        <v-flex xs12 md8 class="pr-1">
-          <v-layout column>
+        <v-col cols="12" md="8">
 
-            <v-flex class="text-xs-center my-4">
-              <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
-                <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
-                <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
-                <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
-                <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
-              </a>
-              <center v-if="(objectInfo.cmodel === 'Audio')">
-                <audio controls>
-                  <source :src="'https://' + instanceconfig.baseurl + '/open/' + objectInfo.pid">
-                  Your browser does not support the audio element.
-                </audio>
-              </center>
-            </v-flex>
+          <v-row justify="start">
 
-            <v-flex v-if="objectInfo.dshash['JSON-LD']">
+            <v-col cols="12" class="mb-12">
+              <v-row justify="center">
+                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
+                  <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
+                  <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
+                  <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
+                  <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
+                </a>
+                <template v-if="(objectInfo.cmodel === 'Audio')">
+                  <audio controls>
+                    <source :src="'https://' + instanceconfig.baseurl + '/open/' + objectInfo.pid">
+                    Your browser does not support the audio element.
+                  </audio>
+                </template>
+              </v-row>
+            </v-col>
+
+            <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['JSON-LD']">
               <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
-            </v-flex>
-
-            <v-flex v-if="objectInfo.dshash['UWMETADATA']">
+            </v-col>
+<!--
+            <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['UWMETADATA']">
               <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
-            </v-flex>
+            </v-col>
+-->
+            <h3 class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
 
-            <h3 class="display-2 grey--text ma-4">{{$t('Members')}} ({{objectMembers.length}})</h3>
-
-            <v-flex v-if="objectMembers">
+            <v-col cols="12" v-if="objectMembers">
               <v-card class="mb-3 pt-4" v-for="(member) in objectMembers" :key="'member_'+member.pid">
                 <a :href="instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
                   <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
@@ -59,225 +62,221 @@
                       <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
                     </template>
                     <v-list>
-                      <v-list-tile :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
-                        <v-list-tile-title>{{ $t('Edit metadata') }}</v-list-tile-title>
-                      </v-list-tile>
-                      <v-list-tile :to="{ name: 'manage', params: { pid: member.pid } }">
-                        <v-list-tile-title>{{ $t('Manage object') }}</v-list-tile-title>
-                      </v-list-tile>
+                      <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
+                        <v-list-item-title>{{ $t('Edit metadata') }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item :to="{ name: 'manage', params: { pid: member.pid } }">
+                        <v-list-item-title>{{ $t('Manage object') }}</v-list-item-title>
+                      </v-list-item>
                     </v-list>
                   </v-menu>
                 </v-card-actions>
               </v-card>
-            </v-flex>
+            </v-col>
 
-            <v-flex v-else>
+          </v-row>
 
-            </v-flex>
+        </v-col>
 
-          </v-layout>
+        <v-col cols="12" md="3" offset-md="1" class="col-border">
 
-        </v-flex>
-
-        <v-flex xs12 md3 offset-xs0 offset-md1>
-          <v-layout column grid-list-md>
-
-            <v-card flat>
-              <v-card-text>
-                <v-layout column>
-                  <v-flex>
-                    <h3 class="display-2">{{ $t('Identifiers') }}</h3>
-                  </v-flex>
-                  <v-flex>
-                    <v-container grid-list-md fluid>
-                      <v-layout row wrap>
-                        <v-flex class="caption grey--text" xs2>{{ $t('PID') }}</v-flex>
-                        <v-flex xs10 v-if="objectInfo">{{ 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid }}</v-flex>
-                        <v-flex xs10 v-else>...</v-flex>
-                      </v-layout>
-                      <v-layout v-if="objectInfo && (objectInfo.dc_identifier.length > 1)" row wrap>
-                        <v-flex class="caption grey--text" xs2>{{ $t('Other') }}</v-flex>
-                        <v-layout column>
-                          <v-flex xs10 v-for="(id,i) in objectInfo.dc_identifier" :key="i" v-show="id !== 'http://' + instanceconfig.baseurl + '/' + objectInfo.pid">
-                            {{ id }}
-                          </v-flex>
-                        </v-layout>
-                      </v-layout>
-                    </v-container>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
+          <v-row class="mb-6">
+            <v-col class="pt-0">
+              <v-row>
+                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Identifiers') }}</h3>
+              </v-row>
               <v-divider></v-divider>
-            </v-card>
+              <v-row no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('PID') }}</v-col>
+                <v-col cols="9" offset="1">{{ 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid }}</v-col>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="objectInfo.dc_identifier.length > 1">
+                <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('ID') }}</v-col>
+                <v-col cols="9" offset="1" v-for="(id,i) in objectInfo.dc_identifier" :key="i" v-show="(id !== 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid) && (id !== 'http://' + instanceconfig.baseurl + '/' + objectInfo.pid)">
+                  {{ id }}
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
 
-            <v-card flat>
-              <v-card-text>
-                <v-layout column>
-                  <v-flex>
-                    <h3 class="display-2">{{ $t('Object data') }}</h3>
-                  </v-flex>
-                  <v-flex>
-                    <v-container fluid grid-list-md>
-                      <v-layout row>
-                        <v-flex class="caption grey--text" xs4>{{ $t('Owner') }}</v-flex>
-                        <v-flex v-if="objectInfo.owner.firstname" xs8>
-                          <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
-                        </v-flex>
-                        <v-flex v-else xs8>{{ objectInfo.owner }}</v-flex>
-                      </v-layout>
-                      <v-layout row>
-                        <v-flex class="caption grey--text" xs4>{{ $t('Object Type') }}</v-flex>
-                        <v-flex xs8>{{ objectInfo.cmodel }}</v-flex>
-                      </v-layout>
-                      <v-layout row v-if="objectInfo.dc_format">
-                        <v-flex class="caption grey--text" xs4>{{ $t('Format') }}</v-flex>
-                        <v-flex xs8>
-                          <v-layout column>
-                            <v-flex v-for="(v,i) in objectInfo.dc_format" :key="i">{{ v }}</v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row>
-                        <v-flex class="caption grey--text" xs4>{{ $t('Created') }}</v-flex>
-                        <v-flex xs8>{{ objectInfo.created | time }}</v-flex>
-                      </v-layout>
-                    </v-container>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
+          <v-row class="my-6">
+            <v-col class="pt-0">
+              <v-row>
+                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Object data') }}</h3>
+              </v-row>
               <v-divider></v-divider>
-            </v-card>
+              <v-row no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="3">Depositor</v-col>
+                <v-col cols="8" offset="1" v-if="objectInfo.owner.firstname">
+                  <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
+                </v-col>
+                <v-col v-else cols="8">{{ objectInfo.owner.username }}</v-col>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Object type') }}</v-col>
+                <v-col cols="8" offset="1">{{ objectInfo.cmodel }}</v-col>
+              </v-row>
+              <v-row v-if="objectInfo.dc_format" no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Format') }}</v-col>
+                <v-col cols="8" offset="1">
+                  <template v-if="objectInfo.dc_format.length > 1">
+                    <v-row>
+                      <v-col v-for="(v,i) in objectInfo.dc_format" :key="i">{{ v }}</v-col>
+                    </v-row>
+                  </template>
+                  <template v-else>{{ objectInfo.dc_format[0] }}</template>
+                </v-col>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Created') }}</v-col>
+                <v-col cols="8" offset="1">{{ objectInfo.created | time }}</v-col>
+              </v-row>
+            </v-col>
+          </v-row>
 
-            <v-card flat v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
-              <v-card-text>
-                <v-layout column>
-                  <v-flex>
-                    <h3 class="display-2">{{ $t('Relationships') }}</h3>
-                  </v-flex>
-                  <v-flex>
-                    <v-container fluid grid-list-md>
-                      <v-layout row v-if="objectInfo.ispartof">
-                        <v-flex class="caption grey--text" xs4>{{ $t('Is in collection') }}</v-flex>
-                        <v-flex xs8>
-                          <v-layout column>
-                            <v-flex v-for="(v,i) in objectInfo.ispartof" :key="i">
-                              <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row v-if="objectInfo.hassuccessor">
-                        <v-flex class="caption grey--text" xs4>{{ $t('Has newer version') }}</v-flex>
-                        <v-flex xs8>
-                          <v-layout column>
-                            <v-flex v-for="(v,i) in objectInfo.hassuccessor" :key="i">
-                              <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row v-if="objectInfo.isalternativeformatof">
-                        <v-flex class="caption grey--text" xs4>{{ $t('Is alternative format of') }}</v-flex>
-                        <v-flex xs8>
-                          <v-layout column>
-                            <v-flex v-for="(v,i) in objectInfo.isalternativeformatof" :key="i">
-                              <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row v-if="objectInfo.isalternativeversionof">
-                        <v-flex class="caption grey--text" xs4>{{ $t('Is alternative version of') }}</v-flex>
-                        <v-flex xs8>
-                          <v-layout column>
-                            <v-flex v-for="(v,i) in objectInfo.isalternativeversionof" :key="i">
-                              <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row v-if="objectInfo.isbacksideof">
-                        <v-flex class="caption grey--text" xs4>{{ $t('Is back side of') }}</v-flex>
-                        <v-flex xs8>
-                          <v-layout column>
-                            <v-flex v-for="(v,i) in objectInfo.isbacksideof" :key="i">
-                              <router-link :to="{ name: 'detail', params: { pid: v } }">{{ v }}</router-link>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
+          <v-row class="my-6" v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
+            <v-col class="pt-0">
+              <v-row>
+                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Relationships') }}</h3>
+              </v-row>
               <v-divider></v-divider>
-            </v-card>
+              <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is in collection') }}</v-col>
+                <v-col cols="7" offset="1">
+                  <template v-if="objectInfo.ispartof.length > 1">
+                    <v-row>
+                      <v-col v-for="(oId,i) in objectInfo.ispartof" :key="i">
+                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <template v-else>{{ objectInfo.ispartof[0] }}</template>
+                </v-col>
+              </v-row>
+              <v-row v-if="objectInfo.hassuccessor" no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Has newer version') }}</v-col>
+                <v-col cols="7" offset="1">
+                  <template v-if="objectInfo.hassuccessor.length > 1">
+                    <v-row>
+                      <v-col v-for="(oId,i) in objectInfo.hassuccessor" :key="i">
+                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <router-link :to="{ name: 'detail', params: { pid: objectInfo.hassuccessor[0] } }">{{ objectInfo.hassuccessor[0] }}</router-link>
+                </v-col>
+              </v-row>
+              <v-row v-if="objectInfo.isalternativeformatof" no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative format of') }}</v-col>
+                <v-col cols="7" offset="1">
+                  <template v-if="objectInfo.isalternativeformatof.length > 1">
+                    <v-row>
+                      <v-col v-for="(oId,i) in objectInfo.isalternativeformatof" :key="i">
+                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeformatof[0] } }">{{ objectInfo.isalternativeformatof[0] }}</router-link>
+                </v-col>
+              </v-row>
+              <v-row v-if="objectInfo.isalternativeversionof" no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative version of') }}</v-col>
+                <v-col cols="7" offset="1">
+                  <template v-if="objectInfo.isalternativeversionof.length > 1">
+                    <v-row>
+                      <v-col v-for="(oId,i) in objectInfo.isalternativeversionof" :key="i">
+                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeversionof[0] } }">{{ objectInfo.isalternativeversionof[0] }}</router-link>
+                </v-col>
+              </v-row>
+              <v-row v-if="objectInfo.isbacksideof" no-gutters class="pt-2">
+                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is back side of') }}</v-col>
+                <v-col cols="7" offset="1">
+                  <template v-if="objectInfo.isbacksideof.length > 1">
+                    <v-row>
+                      <v-col v-for="(oId,i) in objectInfo.isbacksideof" :key="i">
+                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                      </v-col>
+                    </v-row>
+                  </template>
+                  <template v-else>
+                    <router-link :to="{ name: 'detail', params: { pid: objectInfo.isbacksideof[0] } }">{{ objectInfo.isbacksideof[0] }}</router-link>
+                  </template>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
 
-            <v-card flat>
-              <v-card-text>
-                <v-layout column>
-                  <v-flex>
-                    <h3 class="display-2">{{ $t('Metadata') }}</h3>
-                  </v-flex>
-                  <v-flex class="ma-2">
-                    <v-layout column>
-                      <router-link class="mb-1" :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
-                      <a class="mb-1" v-if="objectInfo.dshash['UWMETADATA']" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
-                      <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
-                      <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
+          <v-row class="my-6">
+            <v-col class="pt-0">
+              <v-row>
+                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Metadata') }}</h3>
+              </v-row>
               <v-divider></v-divider>
-            </v-card>
+              <v-row no-gutters class="pt-2">
+                <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
+                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
+                <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+              </v-row>
+            </v-col>
+          </v-row>
 
-            <v-card flat v-if="objectInfo.writerights">
-              <v-card-text>
-                <v-layout column>
-                  <v-flex>
-                    <h3 class="display-2">{{ $t('Edit') }}</h3>
-                  </v-flex>
-                  <v-flex class="ma-2">
-                    <v-layout column>
-                      <router-link class="mb-1" :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
-                      <router-link class="mb-1" :to="{ name: 'manage' }">{{ $t('Manage object') }}</router-link>
-                      <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload container member') }}</router-link>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
+          <v-row class="my-6">
+            <v-col class="pt-0">
+              <v-row>
+                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Edit') }}</h3>
+              </v-row>
               <v-divider></v-divider>
-            </v-card>
+              <v-row no-gutters class="pt-2">
+                <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
+                <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <router-link class="mb-1" :to="{ name: 'manage' }">{{ $t('Manage object') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="objectInfo.cmodel === 'Container'">
+                <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload container member') }}</router-link>
+              </v-row>
+            </v-col>
+          </v-row>
 
-            <v-card flat v-if="viewable || downloadable || (objectInfo.cmodel === 'Collection')">
-              <v-card-text>
-                <v-layout column>
-                  <v-flex>
-                    <h3 class="display-2">{{ $t('Links') }}</h3>
-                  </v-flex>
-                  <v-flex class="ma-2">
-                    <v-layout column>
-                      <a class="mb-1" v-if="viewable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
-                      <a class="mb-1" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
-                      <a class="mb-1" v-if="objectInfo.cmodel === 'Collection'" :href="'/?#/search/?collection=' + objectInfo.pid" target="_blank">{{ $t('Show members') }}</a>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
+          <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights) || (objectInfo.cmodel === 'Collection')">
+            <v-col class="pt-0">
+              <v-row>
+                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Links') }}</h3>
+              </v-row>
+              <v-divider></v-divider>
+              <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
+                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights">
+                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="objectInfo.cmodel === 'Collection'">
+                <a :href="'/?#/search/?collection=' + objectInfo.pid" target="_blank">{{ $t('Show members') }}</a>
+              </v-row>
+            </v-col>
+          </v-row>
 
-          </v-layout>
+        </v-col>
 
-        </v-flex>
+    </v-row>
 
-    </v-layout>
-
-    <v-layout v-else>
-      <v-flex>
-        <v-alert :value="true" transition="slide-y-transition">{{$t('Object not found')}}</v-alert>
-      </v-flex>
-    </v-layout>
+    <v-row v-else>
+      <v-alert :value="true" transition="slide-y-transition">{{$t('Object not found')}}</v-alert>
+    </v-row>
 
   </v-container>
 </template>
@@ -405,5 +404,13 @@ h3
 <style scoped>
 .container {
   padding: 0px;
+}
+
+.col-border {
+  display: block;
+  border: solid;
+  border-width: 0 0 0 thin;
+  border-color: rgba(0, 0, 0, 0.12);
+  padding-top: 0px;
 }
 </style>

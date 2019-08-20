@@ -1,12 +1,12 @@
 const path = require('path')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const isProduction = process.env.NODE_ENV === 'production'
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
   pluginOptions: {
     ssr: {
       defaultTitle: 'phaidra-ui-ssr',
-      favicon: './static/favicon.ico',
+      favicon: './static/favicon.ico'
     }
   },
   transpileDependencies: [

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const Vue = require('vue')
 const server = require('express')()
 const renderer = require('vue-server-renderer').createRenderer({
@@ -12,7 +13,7 @@ const context = {
   `
 }
 
-server.use('/img', express.static(path.resolve(__dirname, './src/assets')));
+server.use('/img', express.static(path.resolve(__dirname, './src/assets')))
 
 server.get('*', (req, res) => {
   const app = new Vue({

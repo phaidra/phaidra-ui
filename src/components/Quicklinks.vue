@@ -4,148 +4,144 @@
 
     <v-container v-if="showquicklinks" fluid class="quicklinks-content" id="quicklinks">
 
-      <v-layout row>
+      <v-row>
 
-        <v-flex md2 offset-md4 >
+        <v-col cols="2" offset="4">
 
-          <v-layout column >
-
+          <v-row>
             <h3 class="top-row-header">{{ $t('Information about') }} ...</h3>
+          </v-row>
 
+          <v-row>
             <a href="http://datamanagement.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <span>Datenmanagement</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <span>Datenmanagement</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="https://uscholar.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <span>u:scholar</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <span>u:scholar</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://unidam.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <span>unidam</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <span>unidam</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://datamanagement.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <span>Open Access Office</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <span>Open Access Office</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://datamanagement.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <span>u:cris</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <span>u:cris</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
-        </v-layout>
+        </v-col>
 
-        </v-flex>
+        <v-col cols="1"></v-col>
 
-        <v-flex md1></v-flex>
+        <v-col cols="3">
 
-        <v-flex md3>
-
-          <v-layout column grid-list-md>
-
+          <v-row>
             <h3 class="top-row-header">{{ $t('Most searched-for services') }} ...</h3>
+          </v-row>
 
+          <v-row>
             <a href="http://studentpoint.univie.ac.at" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-studienpoint"></icon>
-                <span>Student Point</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-studienpoint"></icon>
+              <span>Student Point</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://ufind.univie.ac.at/de/search.html" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-lesung"></icon>
-                <span>u:find Vorlesungs-/ Personenverzeichnis</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-lesung"></icon>
+              <span>u:find Vorlesungs-/ Personenverzeichnis</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://uspace.univie.ac.at" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-univis"></icon>
-                <span>u:space</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-univis"></icon>
+              <span>u:space</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://univis.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-univis"></icon>
-                <span>UNIVISonline</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-univis"></icon>
+              <span>UNIVISonline</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://bibliothek.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-biblio"></icon>
-                <span>Bibliotheksservices</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-biblio"></icon>
+              <span>Bibliotheksservices</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://moodle.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-lesung"></icon>
-                <span>Moodle (E-Learning)</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-lesung"></icon>
+              <span>Moodle (E-Learning)</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://www.univie.ac.at/ueber-uns/leitung-organisation/fakultaeten-zentren/" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-fakultaeten"></icon>
-                <span>Fakultäten &amp; Zentren</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-fakultaeten"></icon>
+              <span>Fakultäten &amp; Zentren</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://webmail.univie.ac.at" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-webmail"></icon>
-                <span>Webmail</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-webmail"></icon>
+              <span>Webmail</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://intra.univie.ac.at/" target="_blank">
-              <v-layout row>
-                <icon name="univie-quick-intranet"></icon>
-                <span>Intranet für MitarbeiterInnen</span>
-                <icon name="univie-extern"></icon>
-              </v-layout>
+              <icon name="univie-quick-intranet"></icon>
+              <span>Intranet für MitarbeiterInnen</span>
+              <icon name="univie-extern"></icon>
             </a>
+          </v-row>
 
+          <v-row>
             <a href="http://www.univie.ac.at/ueber-uns/weitere-informationen/kontakt-services-von-a-z/" target="_blank">
-              <v-layout row>
                 <icon name="univie-quick-kontakt"></icon>
                 <span>Kontakt &amp; Services von A-Z</span>
                 <icon name="univie-extern"></icon>
-              </v-layout>
             </a>
+          </v-row>
 
-          </v-layout>
+        </v-col>
 
-        </v-flex>
+        <v-col cols="2"></v-col>
 
-        <v-flex md2></v-flex>
-
-      </v-layout>
+      </v-row>
 
     </v-container>
 

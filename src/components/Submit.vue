@@ -1,75 +1,106 @@
 <template>
   <v-container>
-    <v-layout column>
-      <v-flex>
-        <v-layout row>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab color="primary" :to="{ name: 'submitresource', params: { cmodel: 'picture' } }">
-              <icon left dark name="material-image-image" width="36px" height="36px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'picture' } }">{{ $t("Picture") }}</router-link>
-          </v-flex>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'audio' } }">
-              <icon left dark name="fontello-music" width="28px" height="28px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'audio' } }">{{ $t("Audio") }}</router-link>
-          </v-flex>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'video' } }">
-              <icon left dark name="material-movie-creation" width="36px" height="36px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'video' } }">{{ $t("Video") }}</router-link>
-          </v-flex>
-          <v-flex xs3 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'data' } }">
-              <icon left dark name="fontello-doc" width="28px" height="28px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'data' } }">{{ $t("Data") }}</router-link>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-divider class="my-4"></v-divider>
-      <v-flex>
-        <v-layout row>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :href="'https://uscholar.univie.ac.at/submit/submitform'">
-              <icon left dark name="material-social-school" width="36px" height="36px"></icon>
-            </v-btn>
-            <a class="display-2 submit-link ml-2" :href="'https://uscholar.univie.ac.at/submit/submitform'" target="_blank">{{ $t("Publications") }}</a>
-          </v-flex>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">
-              <icon left dark name="fontello-doc-text" width="28px" height="28px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">{{ $t("Other documents") }}</router-link>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-divider class="my-4"></v-divider>
-      <v-flex>
-        <v-layout row>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="'/'">
-              <icon left dark name="fontello-layers" width="36px" height="36px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="'/'">{{ $t("Collection") }}</router-link>
-          </v-flex>
-          <v-flex xs2 class="mx-2">
-            <v-btn fab dark color="primary" :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">
-              <icon left dark name="material-content-link" width="36px" height="36px"></icon>
-            </v-btn>
-            <router-link class="display-2 submit-link ml-2" :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">{{ $t("Resource") }}</router-link>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-divider class="my-4"></v-divider>
-      <v-flex xs2 class="mx-2">
-        <v-layout row>
-          <v-flex xs2><v-btn raiser dark color="primary" :to="'/submit/ksa-eda'">{{ $t("KSA EDA") }}</v-btn></v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+    <v-row>
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'picture' } }">
+            <v-row align="center">
+              <icon name="material-image-image" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Picture") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'audio' } }">
+            <v-row align="center">
+              <icon name="fontello-music" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Audio") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'video' } }">
+            <v-row align="center">
+              <icon name="material-movie-creation" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Video") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'data' } }">
+            <v-row align="center">
+              <icon name="fontello-doc" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Data") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+    </v-row>
+    <v-divider class="my-4"></v-divider>
+    <v-row >
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'publication' } }">
+            <v-row align="center">
+              <icon name="material-social-school" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Publications") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+      <v-col cols="3" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'document' } }">
+            <v-row align="center">
+              <icon name="fontello-doc-text" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Other documents") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+    </v-row>
+    <v-divider class="my-4"></v-divider>
+    <v-row >
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'collection' } }">
+            <v-row align="center">
+              <icon name="fontello-layers" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Collection") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">
+            <v-row align="center">
+              <icon name="material-content-link" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Resource") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+    </v-row>
+    <v-divider class="my-4"></v-divider>
+    <v-row >
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
+          <router-link :to="'/submit/ksa-eda'">
+            <v-row align="center">
+              <icon name="material-toggle-star" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("KSA EDA") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -83,6 +114,7 @@ import '@/compiled-icons/material-movie-creation'
 import '@/compiled-icons/material-content-link'
 import '@/compiled-icons/material-social-school'
 import '@/compiled-icons/material-action-account-balance'
+import '@/compiled-icons/material-toggle-star'
 
 export default {
   name: 'submit'
@@ -90,7 +122,7 @@ export default {
 </script>
 
 <style scoped>
-.submit-link {
-  color: #333333;
+.v-application a {
+  color: #333
 }
 </style>

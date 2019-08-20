@@ -1,19 +1,19 @@
 <template>
 
   <v-container>
-    <v-layout column>
-      <v-flex>
+    <v-row>
+      <v-col>
         <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-      </v-flex>
-      <v-flex >
+      </v-col>
+      <v-col >
         <p-i-form
           :form="editform"
           :targetpid="pid"
           :templating="false"
           v-on:object-saved="objectSaved($event)"
         ></p-i-form>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 
 </template>

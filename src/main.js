@@ -4,7 +4,6 @@ import 'core-js'
 
 import Vue from 'vue'
 
-// using vuetify from vuetify/lib should enable vuetify-loader, so prod build is a la carte
 import Vuetify from 'vuetify/lib'
 import VueI18n from 'vue-i18n'
 import App from './App'
@@ -18,7 +17,7 @@ import ita from './i18n/ita'
 import moment from 'moment'
 import axios from 'axios'
 import PhaidraVueComponents from 'phaidra-vue-components/src/components'
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify'
 
 export function createApp () {
   Vue.config.productionTip = false

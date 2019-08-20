@@ -1,18 +1,18 @@
 <template>
 
-  <v-container mt-5>
-    <v-layout row wrap>
+  <v-container class="mt-5" >
+    <v-row  >
 
-      <v-flex xs4 offset-xs4>
+      <v-col cols="4" offset="4">
         <v-form v-model="valid">
           <v-card>
             <v-card-text>
-              <v-flex xs10 offset-xs1>
+              <v-col cols="10" offset="1">
                 <v-text-field
                   :label="$t('Username')"
                   v-model="credentials.username"
                   required
-                  :browser-autocomplete="'username'"
+                  :autocomplete="'username'"
                 ></v-text-field>
                 <v-text-field
                   :label="$t('Password')"
@@ -21,20 +21,20 @@
                   :append-icon="e1 ? 'visibility' : 'visibility_off'"
                   @click:append="toggleVisibility"
                   :type="e1 ? 'password' : 'text'"
-                  :browser-autocomplete="'current-password'"
+                  :autocomplete="'current-password'"
                 ></v-text-field>
-              </v-flex>
+              </v-col>
             </v-card-text>
             <v-divider class="mt-5"></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn @click="login" color="primary" flat>{{ $t('Login') }}</v-btn>
+              <v-btn @click="login" color="primary" raised>{{ $t('Login') }}</v-btn>
             </v-card-actions>
           </v-card>
           </v-form>
-      </v-flex>
+      </v-col>
 
-    </v-layout>
+    </v-row>
   </v-container>
 
 </template>

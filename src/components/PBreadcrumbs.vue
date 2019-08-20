@@ -1,6 +1,6 @@
 <template>
-  <v-layout column class="my-4">
-    <v-flex>
+  <v-row>
+    <v-col >
       <span class="youarehere primary--text">{{$t('You are here')}}:</span>
       <template v-for="(item, index) in items">
         <icon :key="'icon'+index" left dark name="univie-right" color="#a4a4a4" width="8px" height="8px" class="mx-1"></icon>
@@ -10,9 +10,9 @@
           <router-link :key="'link'+index" v-else :to="item.to" class="text primary--text">{{item.text}}</router-link>
         </template>
       </template>
-    </v-flex>
-    <v-divider></v-divider>
-  </v-layout>
+      <v-divider></v-divider>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

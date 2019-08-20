@@ -1,8 +1,8 @@
 <template>
-  <v-container grid-list-lg>
-    <v-flex>
+  <v-container>
+    <v-col>
       <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-    </v-flex>
+    </v-col>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>Submit</v-toolbar-title>

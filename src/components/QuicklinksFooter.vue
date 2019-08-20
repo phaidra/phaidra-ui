@@ -1,194 +1,176 @@
 <template>
+
   <v-container fluid >
 
-    <v-layout column class="grey lighten-4 quicklinksfooter">
+    <v-row class="grey lighten-4 quicklinksfooter">
 
-      <v-flex xs12 md10 offset-md1>
+      <v-col cols="12" md="10" offset-md="1">
 
-        <h2 class="underline md-headline footer-headline">{{ $t('Information about') }} ...</h2>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <h2 class="underline md-headline footer-headline">{{ $t('Information about') }} ...</h2>
+          </v-col>
+        </v-row>
 
-        <v-layout row>
+        <v-row no-gutters>
 
-          <v-flex xs12 md3>
-            <v-layout column>
-              <div class="footer-quicklinks-list">
-                <a href="http://datamanagement.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>Datenmanagement</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="https://uscholar.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>u:scholar</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div >
-              <div class="footer-quicklinks-list">
-                <a href="http://unidam.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>unidam</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-            </v-layout>
-          </v-flex>
+          <v-col cols="12" md="3">
+            <div class="footer-quicklinks-list">
+              <a href="http://datamanagement.univie.ac.at/" target="_blank">
+                <div>
+                  <span>Datenmanagement</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="https://uscholar.univie.ac.at/" target="_blank">
+                <div>
+                  <span>u:scholar</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div >
+            <div class="footer-quicklinks-list">
+              <a href="http://unidam.univie.ac.at/" target="_blank">
+                <div>
+                  <span>unidam</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+          </v-col>
 
-          <v-flex xs12 md3>
-            <v-layout column >
-              <div class="footer-quicklinks-list">
-                <a href="http://datamanagement.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>Open Access Office</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://datamanagement.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>u:cris</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-            </v-layout>
-          </v-flex>
+          <v-col cols="12" md="3">
+            <div class="footer-quicklinks-list">
+              <a href="http://datamanagement.univie.ac.at/" target="_blank">
+                <div>
+                  <span>Open Access Office</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://datamanagement.univie.ac.at/" target="_blank">
+                <div>
+                  <span>u:cris</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+          </v-col>
 
-        </v-layout>
+        </v-row>
 
-      </v-flex>
+      </v-col>
 
-      <v-flex xs12 md10 offset-md1 >
+      <v-col cols="12" md="10" offset-md="1">
 
-        <h2 class="underline md-headline footer-headline">{{ $t('Most searched-for services') }} ...</h2>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <h2 class="underline md-headline footer-headline">{{ $t('Most searched-for services') }} ...</h2>
+          </v-col>
+        </v-row>
 
-        <v-layout row>
+        <v-row no-gutters>
 
-          <v-flex xs12 md3>
-            <v-layout column>
-              <div class="footer-quicklinks-list">
-                <a href="http://studentpoint.univie.ac.at" target="_blank">
-                  <v-layout row>
-                    <span>Student Point</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://ufind.univie.ac.at/de/search.html" target="_blank">
-                  <v-layout row>
-                    <span>u:find Vorlesungs-/ Personenverzeichnis</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-            </v-layout>
-          </v-flex>
+          <v-col cols="12" md="3">
+            <div class="footer-quicklinks-list">
+              <a href="http://studentpoint.univie.ac.at" target="_blank">
+                <div>
+                  <span>Student Point</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://ufind.univie.ac.at/de/search.html" target="_blank">
+                <div>
+                  <span>u:find Vorlesungs-/ Personensuche</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+          </v-col>
 
-          <v-flex xs12 md3>
-            <v-layout column>
-              <div class="footer-quicklinks-list">
-                <a href="http://uspace.univie.ac.at" target="_blank">
-                  <v-layout row>
-                    <span>u:space</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://univis.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>UNIVISonline</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://bibliothek.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>Bibliotheksservices</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-            </v-layout>
-          </v-flex>
+          <v-col cols="12" md="3">
+            <div class="footer-quicklinks-list">
+              <a href="http://uspace.univie.ac.at" target="_blank">
+                <div>
+                  <span>u:space</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://univis.univie.ac.at/" target="_blank">
+                <div>
+                  <span>UNIVISonline</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://bibliothek.univie.ac.at/" target="_blank">
+                <div>
+                  <span>Bibliotheksservices</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+          </v-col>
 
-          <v-flex xs12 md3>
-            <v-layout column>
-              <div class="footer-quicklinks-list">
-                <a href="http://moodle.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>Moodle (E-Learning)</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://www.univie.ac.at/ueber-uns/leitung-organisation/fakultaeten-zentren/" target="_blank">
-                  <v-layout row>
-                    <span>Fakultäten &amp; Zentren</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://webmail.univie.ac.at" target="_blank">
-                  <v-layout row>
-                    <span>Webmail</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-            </v-layout>
-          </v-flex>
+          <v-col cols="12" md="3">
+            <div class="footer-quicklinks-list">
+              <a href="http://moodle.univie.ac.at/" target="_blank">
+                <div>
+                  <span>Moodle (E-Learning)</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://www.univie.ac.at/ueber-uns/leitung-organisation/fakultaeten-zentren/" target="_blank">
+                <div>
+                  <span>Fakultäten &amp; Zentren</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://webmail.univie.ac.at" target="_blank">
+                <div>
+                  <span>Webmail</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+          </v-col>
 
-          <v-flex xs12 md3>
-            <v-layout column>
-              <div class="footer-quicklinks-list">
-                <a href="http://intra.univie.ac.at/" target="_blank">
-                  <v-layout row>
-                    <span>Intranet für MitarbeiterInnen</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-              <div class="footer-quicklinks-list">
-                <a href="http://www.univie.ac.at/ueber-uns/weitere-informationen/kontakt-services-von-a-z/" target="_blank">
-                  <v-layout row>
-                    <span>Kontakt &amp; Services von A-Z</span>
-                    <v-spacer></v-spacer>
-                    <icon name="univie-right"></icon>
-                  </v-layout>
-                </a>
-              </div>
-            </v-layout>
-          </v-flex>
+          <v-col cols="12" md="3">
+            <div class="footer-quicklinks-list">
+              <a href="http://intra.univie.ac.at/" target="_blank">
+                <div>
+                  <span>Intranet für MitarbeiterInnen</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+            <div class="footer-quicklinks-list">
+              <a href="http://www.univie.ac.at/ueber-uns/weitere-informationen/kontakt-services-von-a-z/" target="_blank">
+                <div>
+                  <span>Kontakt &amp; Services von A-Z</span>
+                  <icon name="univie-right" class="float-right"></icon>
+                </div>
+              </a>
+            </div>
+          </v-col>
 
-        </v-layout>
+        </v-row>
 
-      </v-flex>
+      </v-col>
 
-    </v-layout>
+    </v-row>
 
   </v-container>
 
@@ -220,7 +202,7 @@ export default {
   background-color: #ffffff;
   font-size: 11pt;
   margin: 4px 20px 0 0;
-  padding-left: 10px;
+  padding: 2px 5px 2px 5px;
   position: relative;
 }
 

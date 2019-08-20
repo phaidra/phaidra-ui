@@ -1,8 +1,8 @@
 <template>
-  <v-flex>
-    <v-flex>
+  <v-col>
+    <v-col>
       <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-    </v-flex>
+    </v-col>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>{{ $t('Add member of') }} {{this.parentpid}}</v-toolbar-title>
@@ -20,7 +20,7 @@
         ></p-i-form>
       </v-card-text>
     </v-card>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>

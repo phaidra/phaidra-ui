@@ -1,13 +1,13 @@
 <template>
 
-  <v-container fluid grid-list-md>
-    <v-layout column v-if="metadata">
+  <v-container fluid>
+    <v-row v-if="metadata">
 
-      <v-flex>
+      <v-col>
         <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ pid }}</router-link>
-      </v-flex>
+      </v-col>
 
-      <v-flex v-if="metadata['uwmetadata']">
+      <v-col v-if="metadata['uwmetadata']">
         <v-tabs v-model="active" slider-color="primary" color="lighten-3">
           <v-tab v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tab>
         </v-tabs>
@@ -20,12 +20,12 @@
             </v-card>
           </v-tab-item>
         </v-tabs-items>
-      </v-flex>
+      </v-col>
 
-      <v-flex v-if="metadata['JSON-LD']">
-      </v-flex>
+      <v-col v-if="metadata['JSON-LD']">
+      </v-col>
 
-    </v-layout>
+    </v-row>
 
   </v-container>
 

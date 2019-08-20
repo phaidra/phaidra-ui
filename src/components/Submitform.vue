@@ -1,15 +1,15 @@
 <template>
   <v-container>
-    <v-layout column>
-      <v-flex>
+    <v-row>
+      <v-col>
         <p-i-form
           :form="form"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
         ></p-i-form>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

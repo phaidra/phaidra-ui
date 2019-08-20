@@ -1,8 +1,8 @@
 <template>
-  <v-container grid-list-lg class="ksa-submit" >
-    <v-flex>
+  <v-container class="ksa-submit" >
+    <v-col>
       <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-    </v-flex>
+    </v-col>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>Submit</v-toolbar-title>
