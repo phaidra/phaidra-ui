@@ -58,7 +58,7 @@
                       <v-select :items="instances" @input="switchInstance" :value="instanceconfig.baseurl" item-text="baseurl" single-line></v-select>
                     </v-col>
                     <v-col class="text-left" cols="10" offset="1" v-else-if="instanceconfig.title">
-                      <icon left dark name="univie-right" color="#a4a4a4" width="14px" height="14px"></icon>
+                      <icon left dark name="univie-right" color="#a4a4a4" width="14px" height="14px" class="mb-1"></icon>
                       <router-link class="subheading primary--text mx-3" :to="'/'">{{ instanceconfig.title }}</router-link>
                     </v-col>
                   </v-row>
@@ -88,13 +88,14 @@
                       <v-spacer></v-spacer>
                       <v-toolbar-items class="hidden-sm-and-down no-height-inherit">
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ name: 'search'}">{{ $t("Search") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search', query: { owner: '' } }">{{ $t("Search") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/myobjects'">{{ $t("My objects") }}</router-link>
+                              <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { owner: user.username } }">{{ $t("My objects") }}</router-link>
+                          <!--<router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ name: 'search', params: { ownerProp: user.username } }">{{ $t("My objects") }}</router-link>-->
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</router-link>
@@ -130,7 +131,7 @@
               </v-alert>
               <transition name="fade" mode="out-in">
                 <keep-alive>
-                  <router-view class="mt-4 mb-3"></router-view>
+                  <router-view class="mb-3"></router-view>
                 </keep-alive>
               </transition>
 
@@ -253,7 +254,34 @@ export default {
 }
 
 .svg-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  color: inherit;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+}
+
+.svg-fill {
   fill: currentColor;
+  stroke: none;
+}
+
+.svg-up {
+  transform: rotate(0deg);
+}
+
+.svg-right {
+  transform: rotate(90deg);
+}
+
+.svg-down {
+  transform: rotate(180deg);
+}
+
+.svg-left {
+  transform: rotate(-90deg);
 }
 
 .ie-fixMinHeight {

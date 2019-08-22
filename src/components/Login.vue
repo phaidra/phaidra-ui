@@ -1,8 +1,7 @@
 <template>
 
   <v-container class="mt-5" >
-    <v-row  >
-
+    <v-row>
       <v-col cols="4" offset="4">
         <v-form v-model="valid">
           <v-card>
@@ -12,13 +11,17 @@
                   :label="$t('Username')"
                   v-model="credentials.username"
                   required
+                  filled
+                  single-line
                   :autocomplete="'username'"
                 ></v-text-field>
                 <v-text-field
                   :label="$t('Password')"
                   v-model="credentials.password"
                   required
-                  :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                  filled
+                  single-line
+                  :append-icon="e1 ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="toggleVisibility"
                   :type="e1 ? 'password' : 'text'"
                   :autocomplete="'current-password'"
@@ -33,7 +36,6 @@
           </v-card>
           </v-form>
       </v-col>
-
     </v-row>
   </v-container>
 
