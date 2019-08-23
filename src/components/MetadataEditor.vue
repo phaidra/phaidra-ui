@@ -1,30 +1,22 @@
 <template>
 
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-      </v-col>
-      <v-col >
-        <p-i-form
-          :form="editform"
-          :targetpid="pid"
-          :templating="false"
-          v-on:object-saved="objectSaved($event)"
-        ></p-i-form>
-      </v-col>
-    </v-row>
-  </v-container>
+  <p-i-form
+    :form="editform"
+    :targetpid="pid"
+    :templating="false"
+    v-on:object-saved="objectSaved($event)"
+  ></p-i-form>
 
 </template>
 
 <script>
 import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
 import { context } from '../mixins/context'
+import { config } from '../mixins/config'
 
 export default {
   name: 'metadata-editor',
-  mixins: [ context ],
+  mixins: [ context, config ],
   data () {
     return {
       editform: {},
@@ -32,24 +24,6 @@ export default {
     }
   },
   computed: {
-    breadcrumbs: function () {
-      let bc = [
-        {
-          text: this.$t('Search'),
-          to: { name: 'search', path: '/' }
-        },
-        {
-          text: this.$t('Detailpage') + ' ' + this.parentpid,
-          to: { name: 'detail', params: { pid: this.parentpid } }
-        },
-        {
-          text: this.$t('Edit metadata') + ' ' + this.$route.params.pid,
-          disabled: true,
-          to: { name: 'manage', params: { pid: this.$route.params.pid } }
-        }
-      ]
-      return bc
-    },
     pid: function () {
       return this.$route.params.pid
     }
@@ -61,7 +35,7 @@ export default {
       this.$vuetify.goTo(0)
     },
     loadJsonld (self, pid) {
-      var url = self.$store.state.settings.instance.api + '/object/' + pid + '/metadata?mode=resolved'
+      var url = self.instanceconfig.api + '/object/' + pid + '/metadata?mode=resolved'
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'

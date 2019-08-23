@@ -88,14 +88,13 @@
                       <v-spacer></v-spacer>
                       <v-toolbar-items class="hidden-sm-and-down no-height-inherit">
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search', query: { owner: '' } }">{{ $t("Search") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search' }">{{ $t("Search") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                               <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { owner: user.username } }">{{ $t("My objects") }}</router-link>
-                          <!--<router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ name: 'search', params: { ownerProp: user.username } }">{{ $t("My objects") }}</router-link>-->
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/bookmarks'">{{ $t("Bookmarks") }}</router-link>
@@ -126,9 +125,20 @@
           <v-row>
             <v-col cols="12" md="10" offset-md="1" class="content">
               <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
-              <v-alert v-for="(alert, i) in alerts" :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition" :key="i">
-                <v-row ><v-col class="pa-3">{{alert.msg}}</v-col><v-spacer></v-spacer><v-btn icon @click.native="dismiss(alert)"><v-icon>close</v-icon></v-btn></v-row>
-              </v-alert>
+
+              <v-row justify="center" v-for="(alert, i) in alerts" :key="i">
+                <v-col cols="12">
+                  <v-alert prominent dense :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
+                    <v-row align="center">
+                      <v-col class="grow">{{alert.msg}}</v-col>
+                      <v-col class="shrink">
+                        <v-btn icon @click.native="dismiss(alert)"><v-icon>mdi-close</v-icon></v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-alert>
+                </v-col>
+              </v-row>
+
               <transition name="fade" mode="out-in">
                 <keep-alive>
                   <router-view class="mb-3"></router-view>
@@ -235,6 +245,9 @@ export default {
     var token = this.getCookie('X-XSRF-TOKEN')
     if (token) {
       this.$store.commit('setToken', token)
+      if (!this.user.username) {
+        // TODO get user from token
+      }
     }
   },
   created: function () {

@@ -59,7 +59,7 @@ export default {
       if (response.status === 200) {
         console.log('[' + state.user.username + '] login successful token[' + response.data['XSRF-TOKEN'] + '], fetching user data')
         commit('setToken', response.data['XSRF-TOKEN'])
-        // document.cookie = 'X-XSRF-TOKEN=' + response.data['XSRF-TOKEN']
+        document.cookie = 'X-XSRF-TOKEN=' + response.data['XSRF-TOKEN']
         let userdatares = await axios.get(state.instanceconfig.api + '/directory/user/' + state.user.username + '/data', {
           headers: {
             'X-XSRF-TOKEN': state.user.token
@@ -76,7 +76,7 @@ export default {
     }
   },
   async logout ({ commit, dispatch, state }) {
-    // document.cookie = 'X-XSRF-TOKEN='
+    document.cookie = 'X-XSRF-TOKEN='
     try {
       let response = await axios.get(state.instanceconfig.api + '/signout', {
         headers: {

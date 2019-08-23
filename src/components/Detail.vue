@@ -6,74 +6,66 @@
         <v-col cols="12" md="8">
 
           <v-row justify="start">
+            <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
+              <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
+              <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
+              <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
+              <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
+            </a>
+            <template v-if="(objectInfo.cmodel === 'Audio')">
+              <audio controls>
+                <source :src="'https://' + instanceconfig.baseurl + '/open/' + objectInfo.pid">
+                Your browser does not support the audio element.
+              </audio>
+            </template>
+          </v-row>
 
-            <v-col cols="12" class="mb-12">
-              <v-row justify="center">
-                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
-                  <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
-                  <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
-                  <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
-                  <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
-                </a>
-                <template v-if="(objectInfo.cmodel === 'Audio')">
-                  <audio controls>
-                    <source :src="'https://' + instanceconfig.baseurl + '/open/' + objectInfo.pid">
-                    Your browser does not support the audio element.
-                  </audio>
-                </template>
-              </v-row>
-            </v-col>
-
-            <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['JSON-LD']">
-              <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
-            </v-col>
+          <v-row v-if="objectInfo.dshash['JSON-LD']">
+            <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
+          </v-row>
 <!--
             <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['UWMETADATA']">
               <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
             </v-col>
 -->
-            <h3 class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
+          <h3 class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
 
-            <v-col cols="12" v-if="objectMembers">
-              <v-card class="mb-3 pt-4" v-for="(member) in objectMembers" :key="'member_'+member.pid">
-                <a :href="instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
-                  <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
-                </a>
-                <center v-if="(member.cmodel === 'Audio')">
-                  <audio controls>
-                    <source :src="'https://' + instanceconfig.baseurl + '/open/' + member.pid">
-                    Your browser does not support the audio element.
-                  </audio>
-                </center>
-                <v-card-text class="ma-2">
-                  <p-d-jsonld
-                    :jsonld="member.metadata['JSON-LD']" :pid="member.pid"
-                  ></p-d-jsonld>
-                </v-card-text>
-                <v-divider light v-if="objectInfo.readrights"></v-divider>
-                <v-card-actions class="pa-3" v-if="objectInfo.readrights">
-                  <v-spacer></v-spacer>
-                  <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
-                  <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
-                  <v-menu offset-y v-if="objectInfo.writerights">
-                    <template v-slot:activator="{ on }">
-                      <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
-                    </template>
-                    <v-list>
-                      <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
-                        <v-list-item-title>{{ $t('Edit metadata') }}</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item :to="{ name: 'manage', params: { pid: member.pid } }">
-                        <v-list-item-title>{{ $t('Manage object') }}</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-
+          <v-row v-if="objectMembers">
+            <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
+              <a :href="instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
+                <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
+                <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
+                <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+              </a>
+              <center v-if="(member.cmodel === 'Audio')">
+                <audio controls>
+                  <source :src="'https://' + instanceconfig.baseurl + '/open/' + member.pid">
+                  Your browser does not support the audio element.
+                </audio>
+              </center>
+              <v-card-text class="ma-2">
+                <p-d-jsonld :jsonld="member.metadata['JSON-LD']" :pid="member.pid"></p-d-jsonld>
+              </v-card-text>
+              <v-divider light v-if="objectInfo.readrights"></v-divider>
+              <v-card-actions class="pa-3" v-if="objectInfo.readrights">
+                <v-spacer></v-spacer>
+                <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
+                <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
+                <v-menu offset-y v-if="objectInfo.writerights">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
+                      <v-list-item-title>{{ $t('Edit metadata') }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item :to="{ name: 'manage', params: { pid: member.pid } }">
+                      <v-list-item-title>{{ $t('Manage object') }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-card-actions>
+            </v-card>
           </v-row>
 
         </v-col>
@@ -237,9 +229,6 @@
                 <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Edit') }}</h3>
               </v-row>
               <v-divider></v-divider>
-              <v-row no-gutters class="pt-2">
-                <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
-              </v-row>
               <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
                 <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
               </v-row>
