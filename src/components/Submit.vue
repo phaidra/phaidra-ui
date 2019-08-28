@@ -79,7 +79,7 @@
       </v-col>
       <v-col cols="2" class="mx-2">
         <v-hover v-slot:default="{ hover }">
-          <router-link :to="{ name: 'submitresource', params: { cmodel: 'resource' } }">
+          <router-link :to="{ name: 'submitform', params: { cmodel: 'resource', submitform: 'general' } }">
             <v-row align="center">
               <icon name="material-content-link" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
               <span class="title font-weight-light ml-2 primary--text">{{ $t("Resource") }}</span>
@@ -94,8 +94,8 @@
         <v-hover v-slot:default="{ hover }">
           <router-link :to="'/submit/ksa-eda'">
             <v-row align="center">
-              <icon name="material-toggle-star" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
-              <span class="title font-weight-light ml-2 primary--text">{{ $t("KSA EDA") }}</span>
+              <v-img src="../assets/EDAlogo_k.png" max-width="50px" class="logo" alt="logo"/>
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("EDA") }}</span>
             </v-row>
           </router-link>
         </v-hover>

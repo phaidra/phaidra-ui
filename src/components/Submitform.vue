@@ -505,7 +505,7 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      // scale
+      s.push(fields.getField('scale'))
 
       let ci = fields.getField('series')
       ci.predicate = 'rdau:P60101'
@@ -1127,6 +1127,47 @@ export default {
 
       return s
     },
+    getResourceGeneralGeneralSection: function () {
+      let s = []
+
+      let rt = fields.getField('resource-type')
+      rt.value = this.cmodel.value
+      s.push(rt)
+
+      let ot = fields.getField('object-type')
+      // TODO: filter
+      s.push(ot)
+
+      s.push(fields.getField('title'))
+
+      s.push(fields.getField('role'))
+
+      s.push(fields.getField('description'))
+
+      s.push(fields.getField('note'))
+
+      s.push(fields.getField('language'))
+
+      let dc = fields.getField('date-edtf')
+      dc.type = 'dcterms:created'
+      s.push(dc)
+
+      let da = fields.getField('date-edtf')
+      da.type = 'dcterms:available'
+      s.push(da)
+
+      s.push(fields.getField('keyword'))
+
+      s.push(fields.getField('gnd-subject'))
+
+      s.push(fields.getField('temporal-coverage'))
+
+      let sc = fields.getField('spatial-getty')
+      sc.type = 'dcterms:spatial'
+      s.push(sc)
+
+      return s
+    },
     initPictureDigital: function (form) {
       form.sections = [
         {
@@ -1396,6 +1437,24 @@ export default {
         }
       ]
     },
+    initResourceGeneral: function (form) {
+      form.sections = [
+        {
+          title: 'Resource link',
+          type: 'resourcelink',
+          disablemenu: true,
+          id: 1,
+          fields: []
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 2,
+          fields: this.getResourceGeneralGeneralSection()
+        }
+      ]
+    },
     initForm: function () {
       this.form = { sections: [] }
       switch (this.cmodelparam) {
@@ -1467,6 +1526,16 @@ export default {
               break
             case 'researchdata':
               this.initDataResearchdata(this.form)
+              break
+            default:
+              console.error('bad submitform param: [' + this.submitformparam + ']')
+              break
+          }
+          break
+        case 'resource':
+          switch (this.submitformparam) {
+            case 'general':
+              this.initResourceGeneral(this.form)
               break
             default:
               console.error('bad submitform param: [' + this.submitformparam + ']')

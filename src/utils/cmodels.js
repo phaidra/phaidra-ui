@@ -25,8 +25,13 @@ export const cmodels = [
     value: 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
   },
   {
+    text: 'Container',
+    cmodelparam: 'container',
+    value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ'
+  },
+  {
     text: 'Resource',
     cmodelparam: 'resource',
-    value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ'
+    value: 'https://pid.phaidra.org/vocabulary/T8GH-F4V8'
   }
 ]

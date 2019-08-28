@@ -561,6 +561,8 @@ export default {
   'phaidra:dateAccessioned': 'Date accessioned',
   'edm:rights': 'Lizenz',
 
+  'schema:pageStart': 'von Seite',
+  'schema:pageEnd': 'bis Seite',
   'rdau:P60193': 'Journal/Series',
   'rdau:P60101': 'Series/Part of',
   'rdau:P60227': 'Is motion picture adaptation of',
@@ -596,6 +598,7 @@ export default {
   'schema:depth': 'Tiefe',
   'schema:weight': 'Gewicht',
   'schema:duration': 'Dauer',
+  'bf:scale': 'Maßstab',
   'schema:genre': 'Genre',
   'dcterms:temporal': 'Zeitliche Abdeckung',
   'vra:hasTechnique': 'Technik',

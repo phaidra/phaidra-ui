@@ -43,6 +43,8 @@ export default {
   'rdau:P60071': 'Date of production',
   'phaidra:dateAccessioned': 'Date accessioned',
 
+  'schema:pageStart': 'From page',
+  'schema:pageEnd': 'To page',
   'rdau:P60193': 'Journal/Series',
   'rdau:P60101': 'Series/Part of',
   'rdau:P60227': 'Is motion picture adaptation of',
@@ -70,6 +72,7 @@ export default {
   'schema:depth': 'Depth',
   'schema:weight': 'Weight',
   'schema:duration': 'Duration',
+  'bf:scale': 'Scale',
   'schema:genre': 'Genre',
   'dcterms:temporal': 'Temporal coverage',
   'vra:hasTechnique': 'Technique',
