@@ -85,18 +85,29 @@ export default {
           to: '/submit'
         }
       )
-      state.breadcrumbs.push(
-        {
-          text: 'Submit ' + transition.to.params.cmodel,
-          to: { name: transition.from.name, params: { cmodel: transition.from.params.cmodel } }
-        }
-      )
-      state.breadcrumbs.push(
-        {
-          text: 'Submit ' + transition.to.params.cmodel + ' ' + transition.to.params.submitform,
-          disabled: true
-        }
-      )
+      if ((transition.to.params.cmodel !== 'resource') && (transition.to.params.cmodel !== 'collection')) {
+        state.breadcrumbs.push(
+          {
+            text: 'Submit ' + transition.to.params.cmodel,
+            to: { name: transition.from.name, params: { cmodel: transition.from.params.cmodel } }
+          }
+        )
+      }
+      if (transition.to.params.submitform !== 'general') {
+        state.breadcrumbs.push(
+          {
+            text: 'Submit ' + transition.to.params.cmodel + ' ' + transition.to.params.submitform,
+            disabled: true
+          }
+        )
+      } else {
+        state.breadcrumbs.push(
+          {
+            text: 'Submit ' + transition.to.params.cmodel,
+            disabled: true
+          }
+        )
+      }
     }
   },
   setGroups (state, groups) {

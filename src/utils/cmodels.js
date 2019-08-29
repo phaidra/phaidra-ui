@@ -33,5 +33,10 @@ export const cmodels = [
     text: 'Resource',
     cmodelparam: 'resource',
     value: 'https://pid.phaidra.org/vocabulary/T8GH-F4V8'
+  },
+  {
+    text: 'Collection',
+    cmodelparam: 'collection',
+    value: 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ'
   }
 ]

@@ -1168,6 +1168,47 @@ export default {
 
       return s
     },
+    getCollectionGeneralGeneralSection: function () {
+      let s = []
+
+      let rt = fields.getField('resource-type')
+      rt.value = this.cmodel.value
+      s.push(rt)
+
+      let ot = fields.getField('object-type')
+      // TODO: filter
+      s.push(ot)
+
+      s.push(fields.getField('title'))
+
+      s.push(fields.getField('role'))
+
+      s.push(fields.getField('description'))
+
+      s.push(fields.getField('note'))
+
+      s.push(fields.getField('language'))
+
+      let dc = fields.getField('date-edtf')
+      dc.type = 'dcterms:created'
+      s.push(dc)
+
+      let da = fields.getField('date-edtf')
+      da.type = 'dcterms:available'
+      s.push(da)
+
+      s.push(fields.getField('keyword'))
+
+      s.push(fields.getField('gnd-subject'))
+
+      s.push(fields.getField('temporal-coverage'))
+
+      let sc = fields.getField('spatial-getty')
+      sc.type = 'dcterms:spatial'
+      s.push(sc)
+
+      return s
+    },
     initPictureDigital: function (form) {
       form.sections = [
         {
@@ -1455,6 +1496,17 @@ export default {
         }
       ]
     },
+    initCollectionGeneral: function (form) {
+      form.sections = [
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getCollectionGeneralGeneralSection()
+        }
+      ]
+    },
     initForm: function () {
       this.form = { sections: [] }
       switch (this.cmodelparam) {
@@ -1536,6 +1588,16 @@ export default {
           switch (this.submitformparam) {
             case 'general':
               this.initResourceGeneral(this.form)
+              break
+            default:
+              console.error('bad submitform param: [' + this.submitformparam + ']')
+              break
+          }
+          break
+        case 'collection':
+          switch (this.submitformparam) {
+            case 'general':
+              this.initCollectionGeneral(this.form)
               break
             default:
               console.error('bad submitform param: [' + this.submitformparam + ']')
