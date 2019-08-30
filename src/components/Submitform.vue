@@ -1168,16 +1168,12 @@ export default {
 
       return s
     },
-    getCollectionGeneralGeneralSection: function () {
+    getCollectionDigitalGeneralSection: function () {
       let s = []
 
       let rt = fields.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
-
-      let ot = fields.getField('object-type')
-      // TODO: filter
-      s.push(ot)
 
       s.push(fields.getField('title'))
 
@@ -1187,15 +1183,11 @@ export default {
 
       s.push(fields.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(fields.getField('table-of-contents'))
 
-      let dc = fields.getField('date-edtf')
-      dc.type = 'dcterms:created'
-      s.push(dc)
+      s.push(fields.getField('association'))
 
-      let da = fields.getField('date-edtf')
-      da.type = 'dcterms:available'
-      s.push(da)
+      s.push(fields.getField('project'))
 
       s.push(fields.getField('keyword'))
 
@@ -1206,6 +1198,68 @@ export default {
       let sc = fields.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
+
+      return s
+    },
+    getCollectionDigitizedGeneralSection: function () {
+      let s = []
+
+      let rt = fields.getField('resource-type')
+      rt.value = this.cmodel.value
+      s.push(rt)
+
+      s.push(fields.getField('title'))
+
+      s.push(fields.getField('role'))
+
+      s.push(fields.getField('description'))
+
+      s.push(fields.getField('note'))
+
+      s.push(fields.getField('digitization-note'))
+
+      s.push(fields.getField('table-of-contents'))
+
+      s.push(fields.getField('association'))
+
+      s.push(fields.getField('project'))
+
+      s.push(fields.getField('keyword'))
+
+      s.push(fields.getField('gnd-subject'))
+
+      s.push(fields.getField('temporal-coverage'))
+
+      let sc = fields.getField('spatial-getty')
+      sc.type = 'dcterms:spatial'
+      s.push(sc)
+
+      return s
+    },
+    getCollectionDigitizedSubjectSection: function () {
+      let s = []
+
+      let ot = fields.getField('object-type')
+      // TODO: filter
+      s.push(ot)
+
+      s.push(fields.getField('title'))
+
+      s.push(fields.getField('role'))
+
+      s.push(fields.getField('provenance'))
+
+      let dc = fields.getField('date-edtf')
+      dc.type = 'dcterms:created'
+      s.push(dc)
+
+      let pc = fields.getField('spatial-getty')
+      pc.type = 'vra:placeOfCreation'
+      s.push(pc)
+
+      s.push(fields.getField('physical-location'))
+
+      s.push(fields.getField('shelf-mark'))
 
       return s
     },
@@ -1496,14 +1550,32 @@ export default {
         }
       ]
     },
-    initCollectionGeneral: function (form) {
+    initCollectionDigital: function (form) {
       form.sections = [
         {
           title: 'General',
           type: 'digitalobject',
           disablemenu: true,
           id: 1,
-          fields: this.getCollectionGeneralGeneralSection()
+          fields: this.getCollectionDigitalGeneralSection()
+        }
+      ]
+    },
+    initCollectionDigitized: function (form) {
+      form.sections = [
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getCollectionDigitizedGeneralSection()
+        },
+        {
+          title: 'Digitized object',
+          type: 'phaidra:Subject',
+          disablemenu: true,
+          id: 2,
+          fields: this.getCollectionDigitizedSubjectSection()
         }
       ]
     },
@@ -1596,8 +1668,11 @@ export default {
           break
         case 'collection':
           switch (this.submitformparam) {
-            case 'general':
-              this.initCollectionGeneral(this.form)
+            case 'digital':
+              this.initCollectionDigital(this.form)
+              break
+            case 'digitized':
+              this.initCollectionDigitized(this.form)
               break
             default:
               console.error('bad submitform param: [' + this.submitformparam + ']')

@@ -69,7 +69,7 @@
     <v-row >
       <v-col cols="2" class="mx-2">
         <v-hover v-slot:default="{ hover }">
-          <router-link :to="{ name: 'submitform', params: { cmodel: 'collection', submitform: 'general' } }">
+          <router-link :to="{ name: 'submitresource', params: { cmodel: 'collection' } }">
             <v-row align="center">
               <icon name="fontello-layers" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
               <span class="title font-weight-light ml-2 primary--text">{{ $t("Collection") }}</span>

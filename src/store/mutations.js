@@ -85,7 +85,7 @@ export default {
           to: '/submit'
         }
       )
-      if ((transition.to.params.cmodel !== 'resource') && (transition.to.params.cmodel !== 'collection')) {
+      if (transition.to.params.cmodel !== 'resource') {
         state.breadcrumbs.push(
           {
             text: 'Submit ' + transition.to.params.cmodel,

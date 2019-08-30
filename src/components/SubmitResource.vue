@@ -72,6 +72,17 @@
           </v-btn>
           {{$t('Research data.')}}
         </template>
+        <template v-if="$route.params.cmodel === 'collection'">
+          <v-btn raised color="primary mr-2" :to="{ name: 'submitform', params: { cmodel: 'collection', submitform: 'digital' } }">
+            {{$t('Digital')}}
+          </v-btn>
+          {{$t('A born-digital ("virtual") collection.')}}
+          <v-divider class="my-4"></v-divider>
+          <v-btn raised color="primary mr-2" :to="{ name: 'submitform', params: { cmodel: 'collection', submitform: 'digitized' } }">
+            {{$t('Digitized')}}
+          </v-btn>
+          {{$t('I.e. a physical collection which needs to be ontologically described in a similar way to a digitized object.')}}
+        </template>
       </v-col>
     </v-row>
   </v-container>
