@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Login from '@/components/Login'
 import PSearch from 'phaidra-vue-components/src/components/search/PSearch'
+import PLists from 'phaidra-vue-components/src/components/lists/PLists'
 import Detail from '@/components/Detail'
 import Manage from '@/components/Manage'
 import Metadata from '@/components/Metadata'
@@ -84,6 +85,11 @@ export function createRouter () {
         path: '/addmember/:pid',
         name: 'addmember',
         component: AddMember
+      },
+      {
+        path: '/lists',
+        name: 'lists',
+        component: PLists
       }
     ]
   })
