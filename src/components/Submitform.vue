@@ -179,6 +179,55 @@ export default {
 
       return s
     },
+    getPictureDigitizedSubjectSection: function () {
+      let s = []
+
+      let ot = fields.getField('object-type')
+      // TODO: filter
+      s.push(ot)
+
+      s.push(fields.getField('role'))
+
+      s.push(fields.getField('condition-note'))
+
+      s.push(fields.getField('reproduction-note'))
+
+      s.push(fields.getField('provenance'))
+
+      let d = fields.getField('date-edtf')
+      d.type = 'dcterms:date'
+      s.push(d)
+
+      let dc = fields.getField('date-edtf')
+      dc.type = 'dcterms:created'
+      s.push(dc)
+
+      let pc = fields.getField('spatial-getty')
+      pc.type = 'vra:placeOfCreation'
+      s.push(pc)
+
+      s.push(fields.getField('physical-location'))
+
+      s.push(fields.getField('accession-number'))
+
+      s.push(fields.getField('shelf-mark'))
+
+      s.push(fields.getField('inscription'))
+
+      s.push(fields.getField('material-text'))
+
+      s.push(fields.getField('material-vocab'))
+
+      s.push(fields.getField('technique-text'))
+
+      s.push(fields.getField('technique-vocab'))
+
+      s.push(fields.getField('width'))
+
+      s.push(fields.getField('height'))
+
+      return s
+    },
     getPictureMapFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
@@ -1316,10 +1365,17 @@ export default {
           fields: this.getPictureDigitizedGeneralSection()
         },
         {
+          title: 'Digitized object',
+          type: 'phaidra:Subject',
+          disablemenu: true,
+          id: 2,
+          fields: this.getPictureDigitizedSubjectSection()
+        },
+        {
           title: 'File',
           type: 'file',
           disablemenu: true,
-          id: 2,
+          id: 3,
           fields: this.getPictureDigitizedFileSection()
         }
       ]
