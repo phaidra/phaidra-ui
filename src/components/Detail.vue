@@ -28,7 +28,11 @@
               <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
             </v-col>
 -->
-          <h3 class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
+          <h3 v-if="objectInfo.cmodel === 'Container'" class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
+
+          <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Collection'">
+            <router-link class="title font-weight-light primary--text showmembers" :to="{ path: '/search', query: { collection: objectInfo.pid } }">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</router-link>
+          </v-row>
 
           <v-row v-if="objectMembers">
             <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
@@ -241,7 +245,7 @@
             </v-col>
           </v-row>
 
-          <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights) || (objectInfo.cmodel === 'Collection')">
+          <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights)">
             <v-col class="pt-0">
               <v-row>
                 <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Links') }}</h3>
@@ -252,9 +256,6 @@
               </v-row>
               <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights">
                 <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="objectInfo.cmodel === 'Collection'">
-                <a :href="'/?#/search/?collection=' + objectInfo.pid" target="_blank">{{ $t('Show members') }}</a>
               </v-row>
             </v-col>
           </v-row>
@@ -401,5 +402,9 @@ h3
   border-width: 0 0 0 thin;
   border-color: rgba(0, 0, 0, 0.12);
   padding-top: 0px;
+}
+
+.showmembers {
+  text-decoration: underline;
 }
 </style>
