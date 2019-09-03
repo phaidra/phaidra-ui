@@ -122,7 +122,15 @@ export default {
   switchInstance (state, instance) {
     state.instance = state.config.instances[instance]
   },
+  hideSnackbar (state) {
+    state.snackbar = false
+  },
   setAlerts (state, alerts) {
+    for (let a of alerts) {
+      if (a.type === 'success') {
+        state.snackbar = true
+      }
+    }
     state.alerts = alerts
   },
   clearAlert (state, alert) {

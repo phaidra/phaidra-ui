@@ -15,6 +15,7 @@ export function createStore () {
       config: config,
       appconfig: config.global,
       instanceconfig: config.instances[config.defaultinstance],
+      snackbar: false,
       alerts: [],
       objectInfo: null,
       objectMembers: [],

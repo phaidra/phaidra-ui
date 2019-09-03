@@ -76,6 +76,8 @@ export default {
   'more 1GB': '> 1GB',
   'PHAIDRA_IS': 'Phaidra ist das Repositorium zur dauerhaften Sicherung von digitalen Beständen an der Universität Wien.',
 
+  'SELECTION_LIMIT': 'Cannot select more than {limit} results.',
+
   'Author': 'AutorIn',
   'Publisher': 'HerausgeberIn',
   'Initiator': 'InitiatorIn',

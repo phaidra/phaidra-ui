@@ -128,7 +128,11 @@
 
               <v-row justify="center" v-for="(alert, i) in alerts" :key="i">
                 <v-col cols="12">
-                  <v-alert prominent dense :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
+                  <v-snackbar class="font-weight-regular" top color="success" v-if="alert.type === 'success'" v-model="showSnackbar">
+                    {{alert.msg}}
+                    <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
+                  </v-snackbar>
+                  <v-alert v-else prominent dense :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
                     <v-row align="center">
                       <v-col class="grow">{{alert.msg}}</v-col>
                       <v-col class="shrink">
@@ -197,6 +201,16 @@ export default {
     }
   },
   computed: {
+    showSnackbar: {
+      get: function () {
+        return this.$store.state.snackbar
+      },
+      set: function (newValue) {
+        if (!newValue) {
+          this.$store.commit('hideSnackbar')
+        }
+      }
+    },
     breadcrumbs () {
       return this.$store.state.breadcrumbs
     },
