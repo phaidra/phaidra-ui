@@ -132,7 +132,7 @@
                     {{alert.msg}}
                     <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
                   </v-snackbar>
-                  <v-alert v-else prominent dense :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
+                  <v-alert v-else prominent :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
                     <v-row align="center">
                       <v-col class="grow">{{alert.msg}}</v-col>
                       <v-col class="shrink">

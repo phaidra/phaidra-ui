@@ -46,7 +46,7 @@
     <v-row >
       <v-col cols="2" class="mx-2">
         <v-hover v-slot:default="{ hover }">
-          <router-link :to="{ name: 'submitresource', params: { cmodel: 'publication' } }">
+          <router-link :to="{ name: 'submit-ir' }">
             <v-row align="center">
               <icon name="material-social-school" :color="hover ? $vuetify.theme.themes.light.primary : 'grey'" width="48px" height="48px"></icon>
               <span class="title font-weight-light ml-2 primary--text">{{ $t("Publications") }}</span>
