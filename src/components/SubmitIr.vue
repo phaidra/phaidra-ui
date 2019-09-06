@@ -149,9 +149,9 @@
         <v-container>
           <v-row justify="center">
             <v-col cols="10">
-              <template v-for="(f) in s.fields">
+              <template v-for="(f, i) in s.fields">
                 <v-row no-gutters :key="f.id">
-                  <v-col v-if="f.component === 'p-text-field'">
+                  <template v-if="f.component === 'p-text-field'">
                     <p-i-text-field
                       v-bind.sync="f"
                       v-on:input="f.value=$event"
@@ -159,9 +159,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-text-field>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-keyword'">
+                  <template v-else-if="f.component === 'p-keyword'">
                     <p-i-keyword
                       v-bind.sync="f"
                       v-on:input="f.value=$event"
@@ -169,9 +169,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-keyword>
-                  </v-col>
+                  </template>
 
-                  <v-col v-if="f.component === 'p-title'">
+                  <template v-if="f.component === 'p-title'">
                     <p-i-title
                       v-bind.sync="f"
                       v-on:input-title="f.title=$event"
@@ -182,9 +182,9 @@
                       v-on:up="sortFieldUp(s.fields, f)"
                       v-on:down="sortFieldDown(s.fields, f)"
                     ></p-i-title>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-select'">
+                  <template v-else-if="f.component === 'p-select'">
                     <p-i-select
                       v-show="f.predicate !== 'dcterms:type'"
                       v-bind.sync="f"
@@ -192,9 +192,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-select>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-date-edtf'">
+                  <template v-else-if="f.component === 'p-date-edtf'">
                     <p-i-date-edtf
                       v-bind.sync="f"
                       v-on:input-date="f.value=$event"
@@ -202,9 +202,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-date-edtf>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-series'">
+                  <template v-else-if="f.component === 'p-series'">
                     <p-i-series
                       v-bind.sync="f"
                       v-on:input-title="f.title=$event"
@@ -217,9 +217,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-series>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-citation'">
+                  <template v-else-if="f.component === 'p-citation'">
                     <p-i-citation
                       v-bind.sync="f"
                       v-on:input-citation-type="setSelected(f, 'type', $event)"
@@ -229,9 +229,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-citation>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-bf-publication'">
+                  <template v-else-if="f.component === 'p-bf-publication'">
                     <p-i-bf-publication
                       v-bind.sync="f"
                       v-on:input-publisher-name="f.publisherName=$event"
@@ -240,10 +240,10 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-bf-publication>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-entity'">
-                    <p-i-entity
+                  <template v-else-if="f.component === 'p-entity-extended'">
+                    <p-i-entity-extended
                       v-bind.sync="f"
                       v-on:input-firstname="f.firstname=$event"
                       v-on:input-lastname="f.lastname=$event"
@@ -255,10 +255,10 @@
                       v-on:remove="removeField(s.fields, f)"
                       v-on:up="sortFieldUp(s.fields, f)"
                       v-on:down="sortFieldDown(s.fields, f)"
-                    ></p-i-entity>
-                  </v-col>
+                    ></p-i-entity-extended>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-subject-gnd'">
+                  <template v-else-if="f.component === 'p-subject-gnd'">
                     <p-i-subject-gnd
                       v-bind.sync="f"
                       v-on:input="f.value=$event"
@@ -266,18 +266,18 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-subject-gnd>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-literal'">
+                  <template v-else-if="f.component === 'p-literal'">
                     <p-i-literal
                       v-bind.sync="f"
                       v-on:input-value="f.value=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-literal>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-project'">
+                  <template v-else-if="f.component === 'p-project'">
                     <p-i-project
                       v-bind.sync="f"
                       v-on:input-name="f.name=$event"
@@ -289,9 +289,9 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-project>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'p-funder'">
+                  <template v-else-if="f.component === 'p-funder'">
                     <p-i-funder
                       v-bind.sync="f"
                       v-on:input-name="f.name=$event"
@@ -300,16 +300,23 @@
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
                     ></p-i-funder>
-                  </v-col>
+                  </template>
 
-                  <v-col v-else-if="f.component === 'input-file'">
-                    <p-i-file
-                      v-bind.sync="f"
-                      v-on:input-file="setFilename(f, $event)"
-                      v-on:add="addField(s.fields, f)"
-                      v-on:remove="removeField(s.fields, f)"
-                    ></p-i-file>
-                  </v-col>
+                  <template v-else-if="f.component === 'input-file'">
+                    <v-col cols="12">
+                      <v-row no-gutters>
+                        <p-i-file
+                          v-bind.sync="f"
+                          v-on:input-file="setFilename(f, $event)"
+                          v-on:add="addField(s.fields, f)"
+                          v-on:remove="removeField(s.fields, f)"
+                        ></p-i-file>
+                      </v-row>
+                      <v-row no-gutters v-if="s.fields[i+1].component !== 'input-file'">
+                        <v-btn @click="addField(s.fields, f)" color="grey" dark class="ml-8 mb-8"><v-icon left dark>mdi-plus-box</v-icon>Add another format</v-btn>
+                      </v-row>
+                    </v-col>
+                  </template>
 
                 </v-row>
 
@@ -389,7 +396,7 @@ export default {
       form: {
         sections: []
       },
-      step: 0,
+      step: 4,
       loadedMetadata: [],
       loading: false,
       templateDialog: '',
@@ -624,13 +631,15 @@ export default {
     rt.value = 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
     smf.push(rt)
 
-    smf.push(fields.getField('file'))
+    let f = fields.getField('file')
+    f.multiplicable = true
+    smf.push(f)
 
     smf.push(fields.getField('title'))
 
-    let role = fields.getField('role')
+    let role = fields.getField('role-extended')
     role.role = 'role:aut'
-    smf.push()
+    smf.push(role)
 
     this.form.sections.push(
       {
