@@ -681,6 +681,15 @@ export default {
     role.ordergroup = 'roles'
     smf.push(role)
 
+    let edtf = fields.getField('date-edtf')
+    edtf.picker = true
+    edtf.type = 'dcterms:issued'
+    // edtf.hideType = true
+    // edtf.dateLabel = this.$t('Date issued')
+    smf.push(edtf)
+
+    smf.push(fields.getField('language'))
+
     this.form.sections.push(
       {
         title: this.$t('Mandatory fields'),
