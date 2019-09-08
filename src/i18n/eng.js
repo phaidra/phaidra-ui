@@ -30,6 +30,8 @@ export default {
   'bf:shelfMark': 'Call number',
   'edm:rights': 'License',
   'dce:rights': 'Rights statement',
+  'oaire:version': 'Version type',
+  'dcterms:accessRights': 'Access right',
 
   'dcterms:date': 'Date',
   'dcterms:created': 'Date created',

@@ -562,6 +562,9 @@ export default {
   'rdau:P60071': 'Produktionsdatum',
   'phaidra:dateAccessioned': 'Date accessioned',
   'edm:rights': 'Lizenz',
+  'dce:rights': 'Rights statement',
+  'oaire:version': 'Version type',
+  'dcterms:accessRights': 'Access right',
 
   'schema:pageStart': 'von Seite',
   'schema:pageEnd': 'bis Seite',
@@ -649,5 +652,6 @@ export default {
   'Many electronically published journals assign persistent names, so called DOIs (Digital Object Identifiers), to their articles.': 'Den Beiträgen vieler elektronisch erscheinender Zeitschriften werden persistente Namen, sogenannte DOIs (Digital Object Identifier), zugeordnet.',
   'If you enter your article\'s DOI here, its metadata can be loaded automatically.': 'Wenn Sie den DOI für Ihren Artikel hier angeben, können wir die Metadaten automatisch laden.',
   'please enter': 'bitte eintragen',
-  'Metadata-Import from a template': 'Metadaten-Import von einer Vorlage'
+  'Metadata-Import from a template': 'Metadaten-Import von einer Vorlage',
+  'The publication type you choose can restrict the possible version type values.': 'Die gewählte Erscheinungsform kann die möglichen Angaben zur Version beschränken.'
 }

@@ -151,6 +151,7 @@
             <v-col cols="10">
               <template v-for="(f, i) in s.fields">
                 <v-row no-gutters :key="f.id">
+
                   <template v-if="f.component === 'p-text-field'">
                     <p-i-text-field
                       v-bind.sync="f"
@@ -185,6 +186,13 @@
                   </template>
 
                   <template v-else-if="f.component === 'p-select'">
+
+                    <template v-if="f.predicate === 'edm:hasType'">
+                      <v-col cols="12">
+                        <p>{{ $t('The publication type you choose can restrict the possible version type values.') }}</p>
+                      </v-col>
+                    </template>
+
                     <p-i-select
                       v-show="f.predicate !== 'dcterms:type'"
                       v-bind.sync="f"
@@ -689,6 +697,16 @@ export default {
     smf.push(edtf)
 
     smf.push(fields.getField('language'))
+
+    let otf = fields.getField('object-type')
+    otf.vocabulary = 'irobjecttype'
+    smf.push(otf)
+
+    smf.push(fields.getField('version-type'))
+
+    smf.push(fields.getField('access-right'))
+
+    smf.push(fields.getField('license'))
 
     this.form.sections.push(
       {
