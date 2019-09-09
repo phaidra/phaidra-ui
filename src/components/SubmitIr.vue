@@ -159,6 +159,7 @@
                       v-on:input-language="setSelected(f, 'language', $event)"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-text-field>
                   </template>
 
@@ -169,6 +170,7 @@
                       v-on:input-language="setSelected(f, 'language', $event)"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-keyword>
                   </template>
 
@@ -182,23 +184,18 @@
                       v-on:remove="removeField(s.fields, f)"
                       v-on:up="sortFieldUp(s.fields, f)"
                       v-on:down="sortFieldDown(s.fields, f)"
+                      class="my-2"
                     ></p-i-title>
                   </template>
 
                   <template v-else-if="f.component === 'p-select'">
-
-                    <template v-if="f.predicate === 'edm:hasType'">
-                      <v-col cols="12">
-                        <p>{{ $t('The publication type you choose can restrict the possible version type values.') }}</p>
-                      </v-col>
-                    </template>
-
                     <p-i-select
                       v-show="f.predicate !== 'dcterms:type'"
                       v-bind.sync="f"
-                      v-on:input="selectInput(f, $event)"
+                      v-on:input="selectInput(s.fields, f, $event)"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-select>
                   </template>
 
@@ -209,6 +206,7 @@
                       v-on:input-date-type="setSelected(f, 'type', $event)"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-date-edtf>
                   </template>
 
@@ -224,6 +222,7 @@
                       v-on:input-identifier="f.identifier=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-series>
                   </template>
 
@@ -236,6 +235,7 @@
                       v-on:input-identifier="f.identifier=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-citation>
                   </template>
 
@@ -247,29 +247,33 @@
                       v-on:input-publishing-date="f.publishingDate=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-bf-publication>
                   </template>
 
                   <template v-else-if="f.component === 'p-entity-extended'">
-                    <p-i-entity-extended
-                      v-bind.sync="f"
-                      v-on:change-type="changeEntityType(f, $event)"
-                      v-on:input-firstname="f.firstname = $event"
-                      v-on:input-lastname="f.lastname = $event"
-                      v-on:input-name="f.name = $event"
-                      v-on:input-identifier="f.identifierText = $event"
-                      v-on:change-affiliation-type="changeEntityAffiliationType(f, $event)"
-                      v-on:input-affiliation-select="affiliationSelectInput(f, $event)"
-                      v-on:input-affiliation-other="f.affiliationText = $event"
-                      v-on:change-organization-type="changeEntityOrganizationType(f, $event)"
-                      v-on:input-organization-select="organizationSelectInput(f, $event)"
-                      v-on:input-organization-other="f.organizationText = $event"
-                      v-on:input-role="roleInput(f, $event)"
-                      v-on:add="addField(s.fields, f)"
-                      v-on:remove="removeField(s.fields, f)"
-                      v-on:up="sortFieldUp(s.fields, f)"
-                      v-on:down="sortFieldDown(s.fields, f)"
-                    ></p-i-entity-extended>
+                    <v-col cols="10">
+                      <p-i-entity-extended
+                        v-bind.sync="f"
+                        v-on:change-type="changeEntityType(f, $event)"
+                        v-on:input-firstname="f.firstname = $event"
+                        v-on:input-lastname="f.lastname = $event"
+                        v-on:input-name="f.name = $event"
+                        v-on:input-identifier="f.identifierText = $event"
+                        v-on:change-affiliation-type="changeEntityAffiliationType(f, $event)"
+                        v-on:input-affiliation-select="affiliationSelectInput(f, $event)"
+                        v-on:input-affiliation-other="f.affiliationText = $event"
+                        v-on:change-organization-type="changeEntityOrganizationType(f, $event)"
+                        v-on:input-organization-select="organizationSelectInput(f, $event)"
+                        v-on:input-organization-other="f.organizationText = $event"
+                        v-on:input-role="roleInput(f, $event)"
+                        v-on:add="addField(s.fields, f)"
+                        v-on:remove="removeField(s.fields, f)"
+                        v-on:up="sortFieldUp(s.fields, f)"
+                        v-on:down="sortFieldDown(s.fields, f)"
+                        class="my-2"
+                      ></p-i-entity-extended>
+                    </v-col>
                   </template>
 
                   <template v-else-if="f.component === 'p-subject-gnd'">
@@ -279,6 +283,7 @@
                       v-on:resolve="updateSubject(f, $event)"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-subject-gnd>
                   </template>
 
@@ -288,6 +293,7 @@
                       v-on:input-value="f.value=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-literal>
                   </template>
 
@@ -302,6 +308,7 @@
                       v-on:input-homepage="f.homepage=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-project>
                   </template>
 
@@ -313,6 +320,7 @@
                       v-on:input-identifier="f.identifier=$event"
                       v-on:add="addField(s.fields, f)"
                       v-on:remove="removeField(s.fields, f)"
+                      class="my-2"
                     ></p-i-funder>
                   </template>
 
@@ -325,10 +333,13 @@
                           v-on:input-mimetype="setSelected(f, 'mimetype', $event)"
                           v-on:add="addField(s.fields, f)"
                           v-on:remove="removeField(s.fields, f)"
+                          class="my-2"
                         ></p-i-file>
                       </v-row>
                       <v-row no-gutters v-if="s.fields[i+1].component !== 'p-file'">
-                        <v-btn @click="addField(s.fields, f)" color="grey" dark class="ml-8 mb-8"><v-icon left dark>mdi-plus-box</v-icon>Add another format</v-btn>
+                        <v-col cols="2" offset="8">
+                          <v-btn @click="addField(s.fields, f)" color="grey" dark class="mb-8"><v-icon left dark>mdi-plus-box</v-icon>Add another format</v-btn>
+                        </v-col>
                       </v-row>
                     </v-col>
                   </template>
@@ -336,6 +347,7 @@
                 </v-row>
 
               </template>
+              <submit-ir-license-info v-if="s.id === 4" :license="license"></submit-ir-license-info>
               <v-divider class="mt-5 mb-7"></v-divider>
               <v-row no-gutters justify="space-between">
                 <v-btn dark color="grey" @click="step = (s.id - 1)">{{ $t('Back') }}</v-btn>
@@ -381,6 +393,7 @@
 </template>
 
 <script>
+import SubmitIrLicenseInfo from '@/components/SubmitIrLicenseInfo'
 import arrays from 'phaidra-vue-components/src/utils/arrays'
 import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
 import fields from 'phaidra-vue-components/src/utils/fields'
@@ -390,6 +403,9 @@ import { config } from '@/mixins/config'
 export default {
   name: 'submit-ir',
   mixins: [ context, config ],
+  components: {
+    SubmitIrLicenseInfo
+  },
   computed: {
     importedMetadata: function () {
       if (this.doiImportData) {
@@ -423,7 +439,8 @@ export default {
       touCheckboxErrors: [],
       doiImportInput: null,
       doiImportData: null,
-      doiImportErrors: []
+      doiImportErrors: [],
+      license: null
     }
   },
   methods: {
@@ -633,7 +650,7 @@ export default {
       f['rdfs:label'] = event['rdfs:label']
       this.$emit('form-input-' + f.component, f)
     },
-    selectInput: function (f, event) {
+    selectInput: function (fields, f, event) {
       if (event) {
         f.value = event['@id']
         if (event['@type']) {
@@ -652,11 +669,140 @@ export default {
           })
         }
         f['skos:notation'] = event['skos:notation']
+
+        if (f.predicate === 'edm:rights') {
+          this.license = f.value
+        }
+
+        this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
+        this.$store.commit('enableAllVocabularyTerms', 'irobjecttype')
+
+        if (f.predicate === 'edm:hasType') {
+          this.filterVocabulary(
+            'versiontypes',
+            'oaire:version',
+            fields,
+            f.value,
+            [
+              {
+                // if object is dataset
+                conditionIds: [
+                  'https://vocab.phaidra.org/vocabulary/KW6N-2VTP'
+                ],
+                // disable version AO and AM
+                disableIds: [
+                  'https://vocab.phaidra.org/vocabulary/TV31-080M',
+                  'https://vocab.phaidra.org/vocabulary/PHXV-R6B3'
+                ]
+              },
+              {
+                // if object is 'dissertation' or 'book' or 'book part' or 'journal article'
+                conditionIds: [
+                  'https://vocab.phaidra.org/vocabulary/1PHE-7VMS',
+                  'https://vocab.phaidra.org/vocabulary/47QB-8QF1',
+                  'https://vocab.phaidra.org/vocabulary/XA52-09WA',
+                  'https://vocab.phaidra.org/vocabulary/VKA6-9XTY'
+                ],
+                // disable version AO and SMUR
+                disableIds: [
+                  'https://vocab.phaidra.org/vocabulary/TV31-080M',
+                  'https://vocab.phaidra.org/vocabulary/JTD4-R26P'
+                ]
+              },
+              {
+                // if object is 'preprint' or 'working paper'
+                conditionIds: [
+                  'https://vocab.phaidra.org/vocabulary/T023-BGTD',
+                  'https://vocab.phaidra.org/vocabulary/489N-Y6VX'
+                ],
+                // disable version AM and VoR and CVoR and EVoR
+                disableIds: [
+                  'https://vocab.phaidra.org/vocabulary/PHXV-R6B3',
+                  'https://vocab.phaidra.org/vocabulary/PMR8-3C8D',
+                  'https://vocab.phaidra.org/vocabulary/MT1G-APSB',
+                  'https://vocab.phaidra.org/vocabulary/SSQW-AP1S'
+                ]
+              }
+            ]
+          )
+        }
+
+        if (f.predicate === 'oaire:version') {
+          this.filterVocabulary(
+            'irobjecttype',
+            'edm:hasType',
+            fields,
+            f.value,
+            [
+              {
+                // if version is AO or AM
+                conditionIds: [
+                  'https://vocab.phaidra.org/vocabulary/TV31-080M',
+                  'https://vocab.phaidra.org/vocabulary/PHXV-R6B3'
+                ],
+                // disable type dataset
+                disableIds: [
+                  'https://vocab.phaidra.org/vocabulary/KW6N-2VTP'
+                ]
+              },
+              {
+                // if version is AO or SMUR
+                conditionIds: [
+                  'https://vocab.phaidra.org/vocabulary/TV31-080M',
+                  'https://vocab.phaidra.org/vocabulary/JTD4-R26P'
+                ],
+                // disable object 'dissertation' and 'book' and 'book part' and 'journal article'
+                disableIds: [
+                  'https://vocab.phaidra.org/vocabulary/1PHE-7VMS',
+                  'https://vocab.phaidra.org/vocabulary/47QB-8QF1',
+                  'https://vocab.phaidra.org/vocabulary/XA52-09WA',
+                  'https://vocab.phaidra.org/vocabulary/VKA6-9XTY'
+                ]
+              },
+              {
+                // if version is AM or VoR or CVoR or EVoR
+                conditionIds: [
+                  'https://vocab.phaidra.org/vocabulary/PHXV-R6B3',
+                  'https://vocab.phaidra.org/vocabulary/PMR8-3C8D',
+                  'https://vocab.phaidra.org/vocabulary/MT1G-APSB',
+                  'https://vocab.phaidra.org/vocabulary/SSQW-AP1S'
+
+                ],
+                // disable object 'preprint' and 'working paper'
+                disableIds: [
+                  'https://vocab.phaidra.org/vocabulary/T023-BGTD',
+                  'https://vocab.phaidra.org/vocabulary/489N-Y6VX'
+                ]
+              }
+            ]
+          )
+        }
       } else {
         f.value = ''
         f['skos:prefLabel'] = []
       }
       this.$emit('form-input-' + f.component, f)
+    },
+    filterVocabulary: function (vocabulary, predicate, fields, selectedValue, filter) {
+      for (let f of filter) {
+        for (let conditionId of f.conditionIds) {
+          if (selectedValue === conditionId) {
+            for (let formfield of fields) {
+              if (formfield.predicate === predicate) {
+                for (let toDisable of f.disableIds) {
+                  if (formfield.value === toDisable) {
+                    formfield.value = null
+                  }
+                }
+              }
+            }
+            this.$store.commit('disableVocabularyTerms', {
+              vocabulary: vocabulary,
+              termids: f.disableIds
+            })
+          }
+        }
+      }
     },
     roleInput: function (f, event) {
       f.role = event['@id']
@@ -670,6 +816,8 @@ export default {
   },
   mounted: function () {
     this.$store.dispatch('loadLanguages')
+    this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
+    this.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
 
     let smf = []
 
@@ -700,11 +848,19 @@ export default {
 
     let otf = fields.getField('object-type')
     otf.vocabulary = 'irobjecttype'
+    otf.label = this.$t('Type of publication')
+    otf.hint = this.$t('The publication type you choose can restrict the possible version type values.')
+    otf.showValueDefinition = true
     smf.push(otf)
 
-    smf.push(fields.getField('version-type'))
+    let vtf = fields.getField('version-type')
+    vtf.showValueDefinition = true
+    smf.push(vtf)
 
-    smf.push(fields.getField('access-right'))
+    let arf = fields.getField('access-right')
+    arf.vocabulary = 'iraccessright'
+    arf.showValueDefinition = true
+    smf.push(arf)
 
     smf.push(fields.getField('license'))
 
@@ -733,6 +889,17 @@ export default {
         fields: sof
       }
     )
+  },
+  beforeRouteEnter: async function (to, from, next) {
+    next(vm => {
+      vm.$store.commit('enableAllVocabularyTerms', 'versiontypes')
+      vm.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+    })
+  },
+  beforeRouteUpdate: async function (to, from, next) {
+    this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
+    this.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+    next()
   }
 }
 </script>
