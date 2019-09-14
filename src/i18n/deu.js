@@ -662,5 +662,8 @@ export default {
   'Access to the resource is offered without any restrictions.': 'Der Zugang zu den Volltexten bzw. Materialien wird ohne jegliche Einschränkung gewährt.',
   'The resource cannot be accessed until a given date on which it will be released for open access. A copy can be requested via e-mail.': 'Auf die Volltexte bzw. Materialien kann nicht zugriffen werden, bis sie an einem definierten Datum frei zugänglich werden. InteressentInnen können via E-Mail eine Kopie anfordern.',
   'Access to full texts and materials is restricted to persons or groups of persons affiliated with the University of Vienna that we can specify as per your instructions. Others may request a copy via e-mail.': 'Der Zugang zu den Volltexten bzw. Materialien ist auf bestimmte Personen(gruppen) der Universität Wien beschränkt, die Sie uns bekannt geben können. Andere InteressentInnen können via E-Mail eine Kopie anfordern.',
-  'Access to full texts and materials is restricted to you.': 'Der Zugang zu den Volltexten bzw. Materialien ist nur Ihnen möglich.'
+  'Access to full texts and materials is restricted to you.': 'Der Zugang zu den Volltexten bzw. Materialien ist nur Ihnen möglich.',
+  'Mandatory fields': 'Pflichteingaben',
+  'Optional fields': 'Optionale Angaben',
+  'Submit': 'Publizieren'
 }

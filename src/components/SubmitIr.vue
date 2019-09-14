@@ -7,11 +7,13 @@
       <v-divider></v-divider>
       <v-stepper-step :complete="step > 3" step="3">{{ $t('Import') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 4" step="4">{{ $t('Mandatory fields') }}</v-stepper-step>
+      <v-stepper-step :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 5" step="5">{{ $t('Optional fields') }}</v-stepper-step>
+      <v-stepper-step :complete="step > 5" step="5">{{ $t('Mandatory fields') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 6" step="6">{{ $t('Submit') }}</v-stepper-step>
+      <v-stepper-step :complete="step > 6" step="7">{{ $t('Optional fields') }}</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step :complete="step > 7" step="7">{{ $t('Submit') }}</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -145,6 +147,53 @@
         </v-container>
       </v-stepper-content>
 
+      <v-stepper-content step="4">
+        <v-container>
+          <v-row no-gutters>
+            <h3 class="title font-weight-light primary--text mb-4">{{ $t('SHERPA/RoMEO') }}</h3>
+          </v-row>
+          <v-row no-gutters>
+            <p>{{ $t('SHERPA RoMEO is an online resource that aggregates and analyses publisher open access policies from around the world and provides summaries of self-archiving permissions and conditions of rights given to authors on a journal-by-journal basis.') }}</p>
+          </v-row>
+          <v-row no-gutters justify="center">
+            <v-col cols="8">
+              <v-combobox
+                v-model="rightsCheckModel"
+                :items="rightsCheckItems"
+                :loading="rightsCheckLoading"
+                :search-input.sync="rightsCheckSearch"
+                :error-messages="rightsCheckErrors"
+                cache-items
+                hide-no-data
+                hide-selected
+                item-text="title"
+                item-value="issn"
+                solo
+                :placeholder="$t('please enter exact journal title or ISSN')"
+                filled
+                clearable
+              >
+                <template slot="item" slot-scope="{ item }">
+                  <v-list-item-content>
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ $t('ISSN') + ': ' + item.issn }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ $t('Publisher') + ': ' + item.romeopub }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </template>
+                <template slot="selection" slot-scope="{ item }">
+                  <v-list-item-content>
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </v-list-item-content>
+                </template>
+              </v-combobox>
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <code>{{ rightsCheckData }}</code>
+          </v-row>
+        </v-container>
+      </v-stepper-content>
+
       <v-stepper-content v-for="(s) in form.sections" :key="'tabitem'+s.id" :step="s.id">
         <v-container>
           <v-row justify="center">
@@ -197,6 +246,41 @@
                       v-on:remove="removeField(s.fields, f)"
                       class="my-2"
                     ></p-i-select>
+                    <template v-if="f.predicate === 'dcterms:accessRights'">
+                      <br/>
+                      <v-col cols="10">
+                        <v-slide-y-transition hide-on-leave>
+                          <v-menu
+                            v-model="embargoDateMenu"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            full-width
+                            max-width="290px"
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on }">
+                              <v-text-field
+                                v-show="showEmbargoDate"
+                                :value="embargoDateModel"
+                                :label="$t('Embargo date')"
+                                :rules="[validationrules.date]"
+                                filled
+                                append-icon="event"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              color="primary"
+                              :show-current="false"
+                              v-model="embargoDateModel"
+                              :locale="$i18n.locale === 'deu' ? 'de-AT' : 'en-GB'"
+                              v-on:input="embargoDateMenu = false"
+                            ></v-date-picker>
+                          </v-menu>
+                        </v-slide-y-transition>
+                      </v-col>
+                    </template>
                   </template>
 
                   <template v-else-if="f.component === 'p-date-edtf'">
@@ -399,10 +483,12 @@ import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
 import fields from 'phaidra-vue-components/src/utils/fields'
 import { context } from '@/mixins/context'
 import { config } from '@/mixins/config'
+import { validationrules } from 'phaidra-vue-components/src/mixins/validationrules'
+import qs from 'qs'
 
 export default {
   name: 'submit-ir',
-  mixins: [ context, config ],
+  mixins: [ context, config, validationrules ],
   components: {
     SubmitIrLicenseInfo
   },
@@ -440,10 +526,192 @@ export default {
       doiImportInput: null,
       doiImportData: null,
       doiImportErrors: [],
-      license: null
+      license: null,
+      showEmbargoDate: false,
+      embargoDateMenu: false,
+      embargoDateModel: null,
+      embargoDate: null,
+      rightsCheckModel: null,
+      rightsCheckItems: [],
+      rightsCheckErrors: [],
+      rightsCheckData: null,
+      rightsCheckLoading: false,
+      rightsCheckSearch: '',
+      rightsCheckDebounce: 500,
+      rightsCheckMinLetters: 3,
+      rightsCheckDebounceTask: null
+    }
+  },
+  watch: {
+    rightsCheckSearch (val) {
+      val && this.queryRightsCheckDebounce(val)
+    },
+    rightsCheckModel (val) {
+      val.issn && this.queryRightsCheckJournal(val.issn)
     }
   },
   methods: {
+    xmlToJson: function (xml) {
+      // Create the return object
+      var obj = {}
+      if (xml.nodeType == 1) { // element
+        // do attributes
+        if (xml.attributes.length > 0) {
+        obj["@attributes"] = {}
+          for (var j = 0; j < xml.attributes.length; j++) {
+            var attribute = xml.attributes.item(j)
+            obj["@attributes"][attribute.nodeName] = attribute.nodeValue
+          }
+        }
+      } else if (xml.nodeType == 3) { // text
+        obj = xml.nodeValue
+      }
+      // do children
+      if (xml.hasChildNodes()) {
+        for(var i = 0; i < xml.childNodes.length; i++) {
+          var item = xml.childNodes.item(i)
+          var nodeName = item.nodeName
+          if (typeof(obj[nodeName]) == "undefined") {
+            obj[nodeName] = this.xmlToJson(item)
+          } else {
+            if (typeof(obj[nodeName].push) == "undefined") {
+              var old = obj[nodeName]
+              obj[nodeName] = []
+              obj[nodeName].push(old)
+            }
+            obj[nodeName].push(this.xmlToJson(item));
+          }
+        }
+      }
+      return obj
+    },
+    htmlToPlaintext: function (text) {
+      return text ? String(text).replace(/<[^>]+>/gm, '') : ''
+    },
+    queryRightsCheckDebounce (value) {
+      this.showList = true
+      if (this.rightsCheckDebounce) {
+        if (this.rightsCheckDebounceTask !== undefined) clearTimeout(this.rightsCheckDebounceTask)
+        this.rightsCheckDebounceTask = setTimeout(() => {
+          return this.suggestJournals(value)
+        }, this.rightsCheckDebounce)
+      } else {
+        return this.suggestJournals(value)
+      }
+    },
+    async suggestJournals (q) {
+      if (q.length < this.rightsCheckMinLetters || !this.appconfig.apis.sherparomeo) return
+
+      this.rightsCheckLoading = true
+      this.rightsCheckItems = []
+
+      var params = {
+        ak: this.appconfig.apis.sherparomeo.key,
+        versions: 'all',
+        qtype: 'contains',
+        jtitle: q
+      }
+
+      var query = qs.stringify(params)
+
+      try {
+        let response = await fetch(this.appconfig.apis.sherparomeo.url + '?' + query, {
+          method: 'GET',
+          mode: 'cors'
+        })
+        let xml = await response.text()
+        let dp = new window.DOMParser()
+        let obj = this.xmlToJson(dp.parseFromString(xml, "text/xml"))
+        for (let j of obj.romeoapi[1].journals.journal) {
+          this.rightsCheckItems.push(
+            {
+              title: j.jtitle['#text'],
+              issn: j.issn['#text'],
+              romeopub: j.romeopub['#text'] ? j.romeopub['#text'] : this.$t('Not available')
+            }
+          )
+        }
+        // console.log(this.rightsCheckItems)
+      } catch (error) {
+        console.log(error)
+        this.rightsCheckErrors.push(error)
+      } finally {
+        this.rightsCheckLoading = false
+      }
+    },
+    async queryRightsCheckJournal (issn) {
+      if (!issn || !this.appconfig.apis.sherparomeo) return
+
+      this.rightsCheckLoading = true
+
+      var params = {
+        ak: this.appconfig.apis.sherparomeo.key,
+        versions: 'all',
+        issn: issn
+      }
+
+      var query = qs.stringify(params)
+
+      try {
+        let response = await fetch(this.appconfig.apis.sherparomeo.url + '?' + query, {
+          method: 'GET',
+          mode: 'cors'
+        })
+        let xml = await response.text()
+        let dp = new window.DOMParser()
+        let obj = this.xmlToJson(dp.parseFromString(xml, "text/xml"))
+        let disclaimer = obj.romeoapi[1].header.disclaimer['#text']
+        let j = obj.romeoapi[1].journals.journal
+        let journal = {
+          title: j.jtitle['#text'],
+          issn: j.issn['#text'],
+          romeopub: j.romeopub['#text'] ? j.romeopub['#text'] : this.$t('Not available')
+        }
+        let p = obj.romeoapi[1].publishers.publisher
+        let publisher = {
+          name: p.name['#text'],
+          homeurl: p.homeurl['#text'],
+          color: p.romeocolour['#text'],
+        }
+        publisher['prearchiving'] = p.preprints.prearchiving['#text']
+        publisher['prerestrictions'] = []
+        if (p.preprints.prerestrictions.prerestriction) {
+          for (let prerestriction of p.preprints.prerestrictions.prerestriction) {
+            publisher['prerestrictions'].push(prerestriction['#text'])
+          }
+        }
+        publisher['postarchiving'] = p.postprints.postarchiving['#text']
+        publisher['postrestrictions'] = []
+        if (p.postprints.postrestrictions.postrestriction) {
+          for (let postrestriction of p.postprints.postrestrictions.postrestriction) {
+            publisher['postrestrictions'].push(postrestriction['#text'])
+          }
+        }
+        publisher['pdfarchiving'] = p.pdfversion.pdfarchiving['#text']
+        publisher['pdfrestrictions'] = []
+        if (p.pdfversion.pdfrestrictions.pdfrestriction) {
+          for (let pdfrestriction of p.pdfversion.pdfrestrictions.pdfrestriction) {
+            publisher['pdfrestrictions'].push(pdfrestriction['#text'])
+          }
+        }
+        publisher['conditions'] = []
+        if (p.conditions.condition) {
+          for (let condition of p.conditions.condition) {
+            publisher['conditions'].push(condition['#text'])
+          }
+        }
+        this.rightsCheckData = {
+          disclaimer: disclaimer,
+          journal: journal,
+          publisher: publisher,
+        }
+      } catch (error) {
+        console.log(error)
+        this.rightsCheckErrors.push(error)
+      } finally {
+        this.rightsCheckLoading = false
+      }
+    },
     importDOI: async function () {
       this.loading = true
       this.doiImportErrors = []
@@ -674,6 +942,10 @@ export default {
           this.license = f.value
         }
 
+        if (f.predicate === 'dcterms:accessRights') {
+          this.showEmbargoDate = f.value === 'https://vocab.phaidra.org/vocabulary/AVFC-ZZSZ'
+        }
+
         this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
         this.$store.commit('enableAllVocabularyTerms', 'irobjecttype')
 
@@ -868,7 +1140,7 @@ export default {
       {
         title: this.$t('Mandatory fields'),
         type: 'digitalobject',
-        id: 4,
+        id: 5,
         fields: smf
       }
     )
@@ -885,7 +1157,7 @@ export default {
       {
         title: this.$t('Optional fields'),
         type: 'digitalobject',
-        id: 5,
+        id: 6,
         fields: sof
       }
     )

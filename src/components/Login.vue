@@ -8,6 +8,7 @@
             <v-card-text>
               <v-col cols="10" offset="1">
                 <v-text-field
+                  :disabled="loading"
                   :label="$t('Username')"
                   v-model="credentials.username"
                   required
@@ -16,6 +17,7 @@
                   :autocomplete="'username'"
                 ></v-text-field>
                 <v-text-field
+                  :disabled="loading"
                   :label="$t('Password')"
                   v-model="credentials.password"
                   required
@@ -31,7 +33,7 @@
             <v-divider class="mt-5"></v-divider>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn @click="login" color="primary" raised>{{ $t('Login') }}</v-btn>
+              <v-btn @click="login" :disabled="loading" :loading="loading" color="primary" raised>{{ $t('Login') }}</v-btn>
             </v-card-actions>
           </v-card>
           </v-form>
@@ -54,13 +56,19 @@ export default {
         username: '',
         password: ''
       },
-      valid: false
+      valid: false,
+      loading: false
     }
   },
   methods: {
     async login () {
+      this.loading = true
       await this.$store.dispatch('login', this.credentials)
-      this.$router.push('/')
+      if (this.signedin) {
+        this.$router.push('/')
+      } else {
+        this.loading = false
+      }
     },
     toggleVisibility: function () {
       this.e1 = !this.e1
