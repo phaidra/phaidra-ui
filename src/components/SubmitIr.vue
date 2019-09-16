@@ -156,7 +156,7 @@
             <p>{{ $t('SHERPA RoMEO is an online resource that aggregates and analyses publisher open access policies from around the world and provides summaries of self-archiving permissions and conditions of rights given to authors on a journal-by-journal basis.') }}</p>
           </v-row>
           <v-row no-gutters justify="center">
-            <v-col cols="8">
+            <v-col cols="12" md="8">
               <v-combobox
                 v-model="rightsCheckModel"
                 :items="rightsCheckItems"
@@ -177,7 +177,7 @@
                   <v-list-item-content>
                     <v-list-item-title>{{ item.title }}</v-list-item-title>
                     <v-list-item-subtitle>{{ $t('ISSN') + ': ' + item.issn }}</v-list-item-subtitle>
-                    <v-list-item-subtitle>{{ $t('Publisher') + ': ' + item.romeopub }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ $t('PUBLISHER_VERLAG') + ': ' + item.romeopub }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </template>
                 <template slot="selection" slot-scope="{ item }">
@@ -188,8 +188,98 @@
               </v-combobox>
             </v-col>
           </v-row>
-          <v-row no-gutters>
-            <code>{{ rightsCheckData }}</code>
+          <v-row no-gutters v-if="rightsCheckData" justify="center">
+            <v-col cols="12" md="8">
+              <v-row v-if="rightsCheckData.journal">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('JOURNAL_ERCHIENENIN') }}</v-col>
+                <v-col md="10" cols="12">{{ rightsCheckData.journal.title }}</v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('PUBLISHER_VERLAG') }}</v-col>
+                <v-col md="10" cols="12">
+                  <template v-if="rightsCheckData.publisher.homeurl">
+                    <a target="_blank" :href="rightsCheckData.publisher.homeurl">{{ rightsCheckData.publisher.name }}</a>
+                  </template>
+                  <template v-else>{{ rightsCheckData.publisher.name }}</template>
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.prearchiving">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('AUTHOR_PREPRINT') }}</v-col>
+                <v-col md="10" cols="12">
+                  <v-icon v-if="rightsCheckData.publisher.prearchiving === 'can'" left color="green">mdi-check</v-icon>
+                  <v-icon v-if="rightsCheckData.publisher.prearchiving === 'cannot'" left color="red">mdi-cancel</v-icon>
+                  <v-icon v-if="rightsCheckData.publisher.prearchiving === 'restricted'" left color="red">mdi-exclamation</v-icon>
+                  {{ rightsCheckData.publisher.prearchiving }}
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.prerestrictions && (rightsCheckData.publisher.prerestrictions.length > 0)">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Restrictions') }}</v-col>
+                <v-col md="10" cols="12">
+                  <ul>
+                    <li v-for="(r, i) in rightsCheckData.publisher.prerestrictions" :key="i">
+                      {{ r }}
+                    </li>
+                  </ul>
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.postarchiving">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('AUTHOR_POSTPRINT') }}</v-col>
+                <v-col md="10" cols="12">
+                  <v-icon v-if="rightsCheckData.publisher.postarchiving === 'can'" left color="green">mdi-check</v-icon>
+                  <v-icon v-if="rightsCheckData.publisher.postarchiving === 'cannot'" left color="red">mdi-cancel</v-icon>
+                  <v-icon v-if="rightsCheckData.publisher.postarchiving === 'restricted'" left color="red">mdi-exclamation</v-icon>
+                  {{ rightsCheckData.publisher.postarchiving }}
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.postrestrictions && (rightsCheckData.publisher.postrestrictions.length > 0)">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Restrictions') }}</v-col>
+                <v-col md="10" cols="12">
+                  <ul>
+                    <li v-for="(r, i) in rightsCheckData.publisher.postrestrictions" :key="i">
+                      {{ r }}
+                    </li>
+                  </ul>
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.pdfarchiving">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('PUBLISHER_PDF') }}</v-col>
+                <v-col md="10" cols="12">
+                  <v-icon v-if="rightsCheckData.publisher.pdfarchiving === 'can'" left color="green">mdi-check</v-icon>
+                  <v-icon v-if="rightsCheckData.publisher.pdfarchiving === 'cannot'" left color="red">mdi-cancel</v-icon>
+                  <v-icon v-if="rightsCheckData.publisher.pdfarchiving === 'restricted'" left color="red">mdi-exclamation</v-icon>
+                  {{ rightsCheckData.publisher.pdfarchiving }}
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.pdfrestrictions && (rightsCheckData.publisher.pdfrestrictions.length > 0)">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Restrictions') }}</v-col>
+                <v-col md="10" cols="12">
+                  <ul>
+                    <li v-for="(r, i) in rightsCheckData.publisher.pdfrestrictions" :key="i">
+                      {{ r }}
+                    </li>
+                  </ul>
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.publisher.conditions">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Further conditions') }}</v-col>
+                <v-col md="10" cols="12">
+                  <ul>
+                    <li v-for="(r, i) in rightsCheckData.publisher.conditions" :key="i">
+                      {{ r }}
+                    </li>
+                  </ul>
+                </v-col>
+              </v-row>
+              <v-row v-if="rightsCheckData.disclaimer">
+                <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Disclaimer') }}</v-col>
+                <v-col md="10" cols="12">{{rightsCheckData.disclaimer}}</v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-divider class="mt-5 mb-7"></v-divider>
+          <v-row no-gutters justify="space-between">
+            <v-btn dark color="grey" @click="step = 3">{{ $t('Back') }}</v-btn>
+            <v-btn color="primary" @click="step = 5">{{ $t('Continue') }}</v-btn>
           </v-row>
         </v-container>
       </v-stepper-content>
@@ -327,6 +417,7 @@
                     <p-i-bf-publication
                       v-bind.sync="f"
                       v-on:input-publisher-name="f.publisherName=$event"
+                      v-on:input-publisher-select="publisherSelectInput(f, $event)"
                       v-on:input-publishing-place="f.publishingPlace=$event"
                       v-on:input-publishing-date="f.publishingDate=$event"
                       v-on:add="addField(s.fields, f)"
@@ -371,7 +462,7 @@
                     ></p-i-subject-gnd>
                   </template>
 
-                  <template v-else-if="f.component === 'p-literal'">
+                  <template v-else-if="(f.component === 'p-literal') || (f.component === 'p-alternate-identifier')">
                     <p-i-literal
                       v-bind.sync="f"
                       v-on:input-value="f.value=$event"
@@ -431,7 +522,7 @@
                 </v-row>
 
               </template>
-              <submit-ir-license-info v-if="s.id === 4" :license="license"></submit-ir-license-info>
+              <submit-ir-license-info v-if="s.id === 5" :license="license"></submit-ir-license-info>
               <v-divider class="mt-5 mb-7"></v-divider>
               <v-row no-gutters justify="space-between">
                 <v-btn dark color="grey" @click="step = (s.id - 1)">{{ $t('Back') }}</v-btn>
@@ -442,12 +533,12 @@
         </v-container>
       </v-stepper-content>
 
-      <v-stepper-content step="6">
+      <v-stepper-content step="7">
         <v-container>
           <p-d-jsonld :jsonld="jsonld"></p-d-jsonld>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters>
-            <v-btn dark color="grey" @click="step = 5">{{ $t('Back') }}</v-btn>
+            <v-btn dark color="grey" @click="step = 6">{{ $t('Back') }}</v-btn>
             <v-spacer></v-spacer>
             <v-dialog v-model="templateDialog" width="500">
               <template v-slot:activator="{ on }">
@@ -485,6 +576,8 @@ import { context } from '@/mixins/context'
 import { config } from '@/mixins/config'
 import { validationrules } from 'phaidra-vue-components/src/mixins/validationrules'
 import qs from 'qs'
+import axios from 'axios'
+var iconv = require('iconv-lite')
 
 export default {
   name: 'submit-ir',
@@ -516,7 +609,7 @@ export default {
       form: {
         sections: []
       },
-      step: 4,
+      step: 6,
       loadedMetadata: [],
       loading: false,
       templateDialog: '',
@@ -554,32 +647,32 @@ export default {
     xmlToJson: function (xml) {
       // Create the return object
       var obj = {}
-      if (xml.nodeType == 1) { // element
+      if (xml.nodeType === 1) { // element
         // do attributes
         if (xml.attributes.length > 0) {
-        obj["@attributes"] = {}
+          obj['@attributes'] = {}
           for (var j = 0; j < xml.attributes.length; j++) {
             var attribute = xml.attributes.item(j)
-            obj["@attributes"][attribute.nodeName] = attribute.nodeValue
+            obj['@attributes'][attribute.nodeName] = attribute.nodeValue
           }
         }
-      } else if (xml.nodeType == 3) { // text
+      } else if (xml.nodeType === 3) { // text
         obj = xml.nodeValue
       }
       // do children
       if (xml.hasChildNodes()) {
-        for(var i = 0; i < xml.childNodes.length; i++) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
           var item = xml.childNodes.item(i)
           var nodeName = item.nodeName
-          if (typeof(obj[nodeName]) == "undefined") {
+          if (typeof (obj[nodeName]) === 'undefined') {
             obj[nodeName] = this.xmlToJson(item)
           } else {
-            if (typeof(obj[nodeName].push) == "undefined") {
+            if (typeof (obj[nodeName].push) === 'undefined') {
               var old = obj[nodeName]
               obj[nodeName] = []
               obj[nodeName].push(old)
             }
-            obj[nodeName].push(this.xmlToJson(item));
+            obj[nodeName].push(this.xmlToJson(item))
           }
         }
       }
@@ -615,13 +708,14 @@ export default {
       var query = qs.stringify(params)
 
       try {
-        let response = await fetch(this.appconfig.apis.sherparomeo.url + '?' + query, {
+        let response = await axios.request({
           method: 'GET',
-          mode: 'cors'
+          url: this.appconfig.apis.sherparomeo.url + '?' + query,
+          responseType: 'arraybuffer'
         })
-        let xml = await response.text()
+        let utfxml = iconv.decode(Buffer.from(response.data), 'ISO-8859-1')
         let dp = new window.DOMParser()
-        let obj = this.xmlToJson(dp.parseFromString(xml, "text/xml"))
+        let obj = this.xmlToJson(dp.parseFromString(utfxml, 'text/xml'))
         for (let j of obj.romeoapi[1].journals.journal) {
           this.rightsCheckItems.push(
             {
@@ -653,13 +747,14 @@ export default {
       var query = qs.stringify(params)
 
       try {
-        let response = await fetch(this.appconfig.apis.sherparomeo.url + '?' + query, {
+        let response = await axios.request({
           method: 'GET',
-          mode: 'cors'
+          url: this.appconfig.apis.sherparomeo.url + '?' + query,
+          responseType: 'arraybuffer'
         })
-        let xml = await response.text()
+        let utfxml = iconv.decode(Buffer.from(response.data), 'ISO-8859-1')
         let dp = new window.DOMParser()
-        let obj = this.xmlToJson(dp.parseFromString(xml, "text/xml"))
+        let obj = this.xmlToJson(dp.parseFromString(utfxml, 'text/xml'))
         let disclaimer = obj.romeoapi[1].header.disclaimer['#text']
         let j = obj.romeoapi[1].journals.journal
         let journal = {
@@ -671,7 +766,7 @@ export default {
         let publisher = {
           name: p.name['#text'],
           homeurl: p.homeurl['#text'],
-          color: p.romeocolour['#text'],
+          color: p.romeocolour['#text']
         }
         publisher['prearchiving'] = p.preprints.prearchiving['#text']
         publisher['prerestrictions'] = []
@@ -703,7 +798,7 @@ export default {
         this.rightsCheckData = {
           disclaimer: disclaimer,
           journal: journal,
-          publisher: publisher,
+          publisher: publisher
         }
       } catch (error) {
         console.log(error)
@@ -887,6 +982,16 @@ export default {
         var preflabels = event['skos:prefLabel']
         Object.entries(preflabels).forEach(([key, value]) => {
           f.affiliationSelectedName.push({ '@value': value, '@language': key })
+        })
+      }
+    },
+    publisherSelectInput: function (f, event) {
+      if (event) {
+        f.publisherOrgUnit = event['@id']
+        f.publisherName = []
+        var preflabels = event['skos:prefLabel']
+        Object.entries(preflabels).forEach(([key, value]) => {
+          f.publisherName.push({ '@value': value, '@language': key })
         })
       }
     },
@@ -1149,9 +1254,33 @@ export default {
 
     sof.push(fields.getField('description'))
 
+    sof.push(fields.getField('funder'))
+
     sof.push(fields.getField('project'))
 
-    sof.push(fields.getField('funder'))
+    let aif = fields.getField('alternate-identifier')
+    aif.label = 'DOI'
+    aif.multiplicable = true
+    sof.push(aif)
+
+    sof.push(fields.getField('citation'))
+
+    sof.push(fields.getField('keyword'))
+
+    let sf = fields.getField('series')
+    sof.push(sf)
+
+    sof.push(fields.getField('page-start'))
+
+    sof.push(fields.getField('page-end'))
+
+    let pf = fields.getField('bf-publication')
+    pf.multiplicable = false
+    sof.push(pf)
+
+    let gndf = fields.getField('gnd-subject')
+    gndf.exactvoc = 'SubjectHeadingSensoStricto'
+    sof.push(gndf)
 
     this.form.sections.push(
       {

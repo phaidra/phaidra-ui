@@ -17,6 +17,7 @@
     "axios": "^0.19.0",
     "core-js": "^2.6.9",
     "express": "^4.17.1",
+    "iconv-lite": "^0.5.0",
     "moment": "^2.24.0",
     "phaidra-vue-components": "^0.4.2",
     "vue": "^2.6.10",

@@ -540,6 +540,8 @@ export default {
   'seconds': 'Sekunden',
   'Language of subtitles': 'Untertitelsprache',
 
+  'datacite:hasIdentifier': 'Alternativer Identifikator',
+
   'bf:Title': 'Titel',
   'bf:ParallelTitle': 'Parallel titel',
 
@@ -665,5 +667,14 @@ export default {
   'Access to full texts and materials is restricted to you.': 'Der Zugang zu den Volltexten bzw. Materialien ist nur Ihnen möglich.',
   'Mandatory fields': 'Pflichteingaben',
   'Optional fields': 'Optionale Angaben',
-  'Submit': 'Publizieren'
+  'Submit': 'Publizieren',
+  'PUBLISHER_HERAUSGEBERIN': 'HerausgeberIn',
+  'PUBLISHER_VERLAG': 'Verlag',
+  'JOURNAL_ERCHIENENIN': 'Erchienen in',
+  'AUTHOR_PREPRINT': 'Manuskript (Preprint)',
+  'Restrictions': 'Einschränkungen',
+  'AUTHOR_POSTPRINT': 'Autorenversion (Postprint)',
+  'PUBLISHER_PDF': 'Veröffentlichte Version',
+  'Further conditions': 'Weitere Bedingungen',
+  'Disclaimer': 'Haftungsausschluss'
 }
