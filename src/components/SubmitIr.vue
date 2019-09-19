@@ -9,7 +9,7 @@
       <v-divider></v-divider>
       <v-stepper-step :editable="step > 4" :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :editable="step > 5" :complete="step > 5" step="5">{{ $t('Mandatory fields') }}</v-stepper-step>
+      <v-stepper-step :editable="step > 5" :complete="step > 5" step="5" :rules="[() => validationStatus !== 'error']">{{ $t('Mandatory fields') }} <small v-if="validationStatus === 'error'">{{ $t('Invalid metadata') }}</small></v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step :editable="step > 6" :complete="step > 6" step="6">{{ $t('Optional fields') }}</v-stepper-step>
       <v-divider></v-divider>
@@ -140,7 +140,7 @@
                         <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Date issued') }}</v-col>
                         <v-col md="10" cols="12">{{ doiImportData.dateIssued }}</v-col>
                       </v-row>
-                      <v-row v-for="(author, i) of doiImportData.authors">
+                      <v-row v-for="(author, i) of doiImportData.authors" :key="'aut'+i">
                         <v-col v-if="i === 0" md="2" cols="12" class="primary--text text-right">{{ $t('Authors') }}</v-col>
                         <v-col v-else md="2" cols="12"></v-col>
                         <v-col md="10" cols="12">{{ author.firstname + ' ' + author.lastname }}</v-col>
@@ -341,6 +341,9 @@
 
       <v-stepper-content v-for="(s) in form.sections" :key="'tabitem'+s.id" :step="s.id">
         <v-container>
+          <v-alert outlined type="error" color="primary" transition="slide-y-transition" v-if="validationErrors.length > 0">
+            <span v-for="(error, i) of validationErrors" :key="'verr'+i">{{ error }}</span>
+          </v-alert>
           <v-row>
             <v-col cols="11" offset="1">
               <template v-for="(f, i) in s.fields">
@@ -591,7 +594,7 @@
               <v-divider class="mt-5 mb-7"></v-divider>
               <v-row no-gutters justify="space-between">
                 <v-btn dark color="grey" @click="step = (s.id - 1); $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
-                <v-btn color="primary" @click="step = (s.id + 1); $vuetify.goTo(1)">{{ $t('Continue') }}</v-btn>
+                <v-btn color="primary" @click="continueForm(s.id)">{{ $t('Continue') }}</v-btn>
               </v-row>
             </v-col>
           </v-row>
@@ -742,7 +745,9 @@ export default {
       rightsCheckDebounce: 500,
       rightsCheckMinLetters: 3,
       rightsCheckDebounceTask: null,
-      doiDuplicate: null
+      doiDuplicate: null,
+      validationStatus: '',
+      validationErrors: []
     }
   },
   watch: {
@@ -888,7 +893,7 @@ export default {
         try {
           let params = {
             wt: 'json',
-            q: 'dc_identifier:"'+ this.doiToImport + '"'
+            q: 'dc_identifier:"' + this.doiToImport + '"'
           }
 
           let query = qs.stringify(params)
@@ -904,7 +909,6 @@ export default {
               title: solrJson.response.docs[0].dc_title[0]
             }
           } else {
-
             let response = await fetch('https://' + this.appconfig.apis.doi.baseurl + '/' + this.doiToImport, {
               method: 'GET',
               mode: 'cors',
@@ -915,6 +919,7 @@ export default {
             let crossrefData = await response.json()
 
             this.doiImportData = {
+              doi: this.doiToImport,
               title: '',
               dateIssued: '',
               authors: [],
@@ -941,7 +946,7 @@ export default {
                 this.doiImportData.dateIssued = crossrefData['issued']['date-parts'][0][0]
               }
             }
-            
+
             let authors = crossrefData['author']
             if (authors.length > 0) {
               for (let author of authors) {
@@ -954,34 +959,39 @@ export default {
             switch (crossrefData['type']) {
               case 'article':
               case 'journal-article':
-                this.doiImportData.publicationType = 'article'
-                break;
               case 'article-journal':
                 this.doiImportData.publicationType = 'article'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/VKA6-9XTY'
                 break
               case 'report':
                 this.doiImportData.publicationType = 'report'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/JMAV-7F3R'
                 break
               case 'book':
               case 'monograph':
               case 'reference-book':
               case 'edited-book':
                 this.doiImportData.publicationType = 'book'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/47QB-8QF1'
                 break
               case 'book-chapter':
               case 'book-part':
               case 'book-section':
                 this.doiImportData.publicationType = 'book_part'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/XA52-09WA'
                 break
               case 'dissertation':
                 this.doiImportData.publicationType = 'doctoral_thesis'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/1PHE-7VMS'
                 break
               case 'proceedings-article':
               case 'proceedings':
                 this.doiImportData.publicationType = 'conference_object'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/QKDF-E5HA'
                 break
               case 'dataset':
                 this.doiImportData.publicationType = 'research_data'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/KW6N-2VTP'
                 break
               case 'other':
               case 'standard':
@@ -996,9 +1006,11 @@ export default {
               case 'journal':
               case 'report-series':
                 this.doiImportData.publicationType = 'other'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/PYRE-RAWJ'
                 break
               default:
                 this.doiImportData.publicationType = 'other'
+                this.doiImportData.publicationTypeId = 'https://vocab.phaidra.org/vocabulary/PYRE-RAWJ'
             }
 
             if (crossrefData['publisher']) {
@@ -1010,9 +1022,9 @@ export default {
             }
 
             if (crossrefData['ISSN']) {
-              if( Array.isArray(crossrefData['ISSN'])) {
+              if (Array.isArray(crossrefData['ISSN'])) {
                 this.doiImportData.journalISSN = crossrefData['ISSN'][0]
-              }else{
+              } else {
                 this.doiImportData.journalISSN = crossrefData['ISSN']
               }
             }
@@ -1039,10 +1051,8 @@ export default {
                 }
               }
             }
-
             this.resetForm(this, this.doiImportData)
           }
-
         } catch (error) {
           this.doiImportErrors.push(error)
         } finally {
@@ -1450,14 +1460,28 @@ export default {
       }
       smf.push(tf)
 
-      let role = fields.getField('role-extended')
-      role.role = 'role:aut'
-      role.ordergroup = 'roles'
-      smf.push(role)
+      if (doiImportData && doiImportData.authors.length > 0) {
+        for (let author of doiImportData.authors) {
+          let role = fields.getField('role-extended')
+          role.role = 'role:aut'
+          role.ordergroup = 'roles'
+          role.firstname = author.firstname
+          role.lastname = author.lastname
+          smf.push(role)
+        }
+      } else {
+        let role = fields.getField('role-extended')
+        role.role = 'role:aut'
+        role.ordergroup = 'roles'
+        smf.push(role)
+      }
 
       let edtf = fields.getField('date-edtf')
       edtf.picker = true
       edtf.type = 'dcterms:issued'
+      if (doiImportData && doiImportData.dateIssued) {
+        edtf.value = doiImportData.dateIssued
+      }
       smf.push(edtf)
 
       smf.push(fields.getField('language'))
@@ -1467,6 +1491,9 @@ export default {
       otf.label = self.$t('Type of publication')
       otf.hint = self.$t('The publication type you choose can restrict the possible version type values.')
       otf.showValueDefinition = true
+      if (doiImportData && doiImportData.publicationTypeId) {
+        otf.value = doiImportData.publicationTypeId
+      }
       smf.push(otf)
 
       let vtf = fields.getField('version-type')
@@ -1500,6 +1527,9 @@ export default {
       let aif = fields.getField('alternate-identifier')
       aif.label = 'DOI'
       aif.multiplicable = true
+      if (doiImportData && doiImportData.doi) {
+        aif.value = doiImportData.doi
+      }
       sof.push(aif)
 
       sof.push(fields.getField('citation'))
@@ -1508,14 +1538,39 @@ export default {
 
       let sf = fields.getField('series')
       sf.journalSuggest = true
+      if (doiImportData) {
+        if (doiImportData.journalTitle) {
+          sf.title = doiImportData.journalTitle
+        }
+        if (doiImportData.journalISSN) {
+          sf.issn = doiImportData.journalISSN
+        }
+        if (doiImportData.journalVolume) {
+          sf.volume = doiImportData.journalVolume
+        }
+        if (doiImportData.journalIssue) {
+          sf.issue = doiImportData.journalIssue
+        }
+      }
       sof.push(sf)
 
-      sof.push(fields.getField('page-start'))
+      let ps = fields.getField('page-start')
+      if (doiImportData && doiImportData.pageStart) {
+        ps.value = doiImportData.pageStart
+      }
+      sof.push(ps)
 
-      sof.push(fields.getField('page-end'))
+      let pe = fields.getField('page-end')
+      if (doiImportData && doiImportData.pageEnd) {
+        pe.value = doiImportData.pageEnd
+      }
+      sof.push(pe)
 
       let pf = fields.getField('bf-publication')
       pf.multiplicable = false
+      if (doiImportData && doiImportData.publisher) {
+        pf.publishername = doiImportData.publisher
+      }
       sof.push(pf)
 
       let gndf = fields.getField('gnd-subject')
@@ -1530,6 +1585,119 @@ export default {
           fields: sof
         }
       )
+    },
+    continueForm: function (step) {
+      if (step === 5) {
+        this.validateMandatory()
+      }
+      if (this.validationStatus !== 'error') {
+        this.step = step + 1
+      }
+      this.$vuetify.goTo(1)
+    },
+    validateMandatory: function () {
+      this.validationStatus = ''
+      this.validationErrors = []
+      let hasLocalAffiliation = false
+      for (let s of this.form.sections) {
+        if (s.id === 5) {
+          for (let f of s.fields) {
+            if (f.component === 'p-title') {
+              f.titleErrorMessages = []
+              if (f.title.length < 1) {
+                f.titleErrorMessages.push(this.$t('Missing title'))
+                this.validationStatus = 'error'
+              }
+            }
+            if (f.component === 'p-entity-extended') {
+              f.firstnameErrorMessages = []
+              f.lastnameErrorMessages = []
+              f.roleErrorMessages = []
+              f.affiliationErrorMessages = []
+              f.affiliationTextErrorMessages = []
+              f.organizationErrorMessages = []
+              f.organizationTextErrorMessages = []
+              if (f.role.length < 1) {
+                f.roleErrorMessages.push(this.$t('Missing role'))
+                this.validationStatus = 'error'
+              }
+              if (f.type === 'schema:Person') {
+                if (f.firstname.length < 1) {
+                  f.firstnameErrorMessages.push(this.$t('Missing firstname'))
+                  this.validationStatus = 'error'
+                }
+                if (f.lastname.length < 1) {
+                  f.lastnameErrorMessages.push(this.$t('Missing lastname'))
+                  this.validationStatus = 'error'
+                }
+                if (f.affiliationType === 'select') {
+                  if (f.affiliation.length < 1) {
+                    f.affiliationErrorMessages.push(this.$t('Missing affiliation'))
+                    this.validationStatus = 'error'
+                  }
+                }
+                if (f.affiliationType === 'other') {
+                  if (f.affiliationText.length < 1) {
+                    f.affiliationTextErrorMessages.push(this.$t('Missing affiliation'))
+                    this.validationStatus = 'error'
+                  }
+                }
+              }
+              if (f.type === 'schema:Organization') {
+                if (f.organizationType === 'select') {
+                  if (f.organization.length < 1) {
+                    f.organizationErrorMessages.push(this.$t('Missing organization'))
+                    this.validationStatus = 'error'
+                  } else {
+                    hasLocalAffiliation = true
+                  }
+                }
+                if (f.organizationType === 'other') {
+                  if (f.organizationText.length < 1) {
+                    f.organizationTextErrorMessages.push(this.$t('Missing organization'))
+                    this.validationStatus = 'error'
+                  }
+                }
+              }
+            }
+            if (f.component === 'p-date-edtf') {
+              f.typeErrorMessages = []
+              f.valueErrorMessages = []
+              if (f.type.length < 1) {
+                f.typeErrorMessages.push(this.$t('Missing date type'))
+                this.validationStatus = 'error'
+              }
+              if (f.value.length < 1) {
+                f.valueErrorMessages.push(this.$t('Missing date'))
+                this.validationStatus = 'error'
+              }
+            }
+            if (f.component === 'p-select') {
+              f.errorMessages = []
+              if (f.value.length < 1) {
+                f.errorMessages.push(this.$t('Please select'))
+                this.validationStatus = 'error'
+              }
+            }
+            if (f.component === 'p-file') {
+              f.fileErrorMessages = []
+              f.mimetypeErrorMessages = []
+              if (!f.file) {
+                f.fileErrorMessages.push(this.$t('Please select'))
+                this.validationStatus = 'error'
+              }
+              if (f.mimetype.length < 1) {
+                f.mimetypeErrorMessages.push(this.$t('Please select'))
+                this.validationStatus = 'error'
+              }
+            }
+          }
+        }
+      }
+      if (!hasLocalAffiliation && (this.user.username !== this.appconfig.iraccount)) {
+        this.validationStatus = 'error'
+        this.validationErrors.push(this.$t('At least one person named must be affiliated with the') + ' ' + this.instanceconfig.institution)
+      }
     },
     resetSubmission: function (self) {
       if (!self) {
