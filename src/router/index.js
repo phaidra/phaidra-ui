@@ -63,6 +63,11 @@ export function createRouter () {
         component: Submit
       },
       {
+        path: '/submit/ksa-eda',
+        name: 'submit-ksa-eda',
+        component: SubmitKsaEda
+      },
+      {
         path: '/submit/:cmodel',
         name: 'submitresource',
         component: SubmitResource
@@ -71,11 +76,6 @@ export function createRouter () {
         path: '/submit/:cmodel/:submitform',
         name: 'submitform',
         component: Submitform
-      },
-      {
-        path: '/submit/ksa-eda',
-        name: 'submit-ksa-eda',
-        component: SubmitKsaEda
       },
       {
         path: '/submit/empty',

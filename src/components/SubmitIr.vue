@@ -1,5 +1,5 @@
 <template>
-  <v-stepper v-if="form.sections.length > 0" v-model="step">
+  <v-stepper v-if="form.sections.length > 0" v-model="step" non-linear>
     <v-stepper-header>
       <v-stepper-step :complete="step > 1" step="1">{{ $t('Start') }}</v-stepper-step>
       <v-divider></v-divider>
@@ -7,11 +7,11 @@
       <v-divider></v-divider>
       <v-stepper-step :complete="step > 3" step="3">{{ $t('Import') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
+      <v-stepper-step :editable="step > 4" :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 5" step="5">{{ $t('Mandatory fields') }}</v-stepper-step>
+      <v-stepper-step :editable="step > 5" :complete="step > 5" step="5">{{ $t('Mandatory fields') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 6" step="7">{{ $t('Optional fields') }}</v-stepper-step>
+      <v-stepper-step :editable="step > 6" :complete="step > 6" step="6">{{ $t('Optional fields') }}</v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step :complete="step > 7" step="7">{{ $t('Submit') }}</v-stepper-step>
     </v-stepper-header>
@@ -30,7 +30,7 @@
           </v-row>
           <v-row no-gutters justify="center">
             <v-col>
-              <v-alert outlined  type="error" color="primary" >
+              <v-alert outlined type="error" color="primary">
                 <h3 class="title font-weight-light mb-4 ml-4">{{ $t('Important notice') }}</h3>
                 <ul class="black--text ml-4">
                   <li>
@@ -64,7 +64,7 @@
           </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters justify="center">
-            <v-btn color="primary" @click="step = 2">{{ $t('Start') }}</v-btn>
+            <v-btn color="primary" @click="step = 2; $vuetify.goTo(1)">{{ $t('Start') }}</v-btn>
           </v-row>
         </v-container>
       </v-stepper-content>
@@ -97,8 +97,8 @@
           </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters justify="space-between">
-            <v-btn dark color="grey" @click="step = 1">{{ $t('Back') }}</v-btn>
-            <v-btn color="primary" @click="checkTou()">{{ $t('Continue') }}</v-btn>
+            <v-btn dark color="grey" @click="step = 1; $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
+            <v-btn color="primary" @click="checkTou(); $vuetify.goTo(1)">{{ $t('Continue') }}</v-btn>
           </v-row>
         </v-container>
       </v-stepper-content>
@@ -122,14 +122,69 @@
               <v-btn :loading="loading" :disabled="loading" color="primary" @click="importDOI()">{{ $t('Import') }}</v-btn>
             </v-col>
           </v-row>
+          <v-alert outlined type="error" color="primary" transition="slide-y-transition" v-if="doiDuplicate">
+            <span class="mr-2 black--text">{{ $t('Possible duplicate found') }}:</span><a target="_blank" :href="'https://' + instanceconfig.baseurl + '/' + doiDuplicate.pid">{{ doiDuplicate.title }}</a>
+          </v-alert>
+          <v-slide-y-transition>
+            <v-row no-gutters v-if="doiImportData">
+              <v-col cols="12" md="7">
+                <v-card>
+                  <v-card-title class="title font-weight-light grey white--text">{{ $t('Folowing metadata were retrieved') }}</v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-row v-if="doiImportData.title">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Title') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.title }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.dateIssued">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Date issued') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.dateIssued }}</v-col>
+                      </v-row>
+                      <v-row v-for="(author, i) of doiImportData.authors">
+                        <v-col v-if="i === 0" md="2" cols="12" class="primary--text text-right">{{ $t('Authors') }}</v-col>
+                        <v-col v-else md="2" cols="12"></v-col>
+                        <v-col md="10" cols="12">{{ author.firstname + ' ' + author.lastname }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.publicationType">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Type of publication') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.publicationType }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.publisher">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('PUBLISHER_VERLAG') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.publisher }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.journalTitle">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Appeared in') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.journalTitle }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.journalISSN">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('ISSN') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.journalISSN }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.journalVolume">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Volume') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.journalVolume }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.journalIssue">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Issue') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.journalIssue }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.pageStart">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('Start page') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.pageStart }}</v-col>
+                      </v-row>
+                      <v-row v-if="doiImportData.pageEnd">
+                        <v-col md="2" cols="12" class="primary--text text-right">{{ $t('End page') }}</v-col>
+                        <v-col md="10" cols="12">{{ doiImportData.pageEnd }}</v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-slide-y-transition>
           <v-row no-gutters>
-            <code>{{ doiImportData }}</code>
-          </v-row>
-          <v-row no-gutters>
-            <p-d-jsonld v-if="importedMetadata" :jsonld="importedMetadata"></p-d-jsonld>
-          </v-row>
-          <v-row no-gutters>
-            <h3 class="title font-weight-light primary--text mb-4">{{ $t('Metadata-Import from a template') }}</h3>
+            <h3 class="title font-weight-light primary--text my-4">{{ $t('Metadata-Import from a template') }}</h3>
           </v-row>
           <v-row no-gutters>
             <p>{{ $t('Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.') }}</p>
@@ -141,8 +196,8 @@
           </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters justify="space-between">
-            <v-btn dark color="grey" @click="step = 2">{{ $t('Back') }}</v-btn>
-            <v-btn color="primary" @click="step = 4">{{ $t('Continue') }}</v-btn>
+            <v-btn dark color="grey" @click="step = 2; $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
+            <v-btn color="primary" @click="step = 4; $vuetify.goTo(1)">{{ $t('Continue') }}</v-btn>
           </v-row>
         </v-container>
       </v-stepper-content>
@@ -278,16 +333,16 @@
           </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters justify="space-between">
-            <v-btn dark color="grey" @click="step = 3">{{ $t('Back') }}</v-btn>
-            <v-btn color="primary" @click="step = 5">{{ $t('Continue') }}</v-btn>
+            <v-btn dark color="grey" @click="step = 3; $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
+            <v-btn color="primary" @click="step = 5; $vuetify.goTo(1)">{{ $t('Continue') }}</v-btn>
           </v-row>
         </v-container>
       </v-stepper-content>
 
       <v-stepper-content v-for="(s) in form.sections" :key="'tabitem'+s.id" :step="s.id">
         <v-container>
-          <v-row justify="center">
-            <v-col cols="10">
+          <v-row>
+            <v-col cols="11" offset="1">
               <template v-for="(f, i) in s.fields">
                 <v-row no-gutters :key="f.id">
 
@@ -345,7 +400,6 @@
                             :close-on-content-click="false"
                             transition="scale-transition"
                             offset-y
-                            full-width
                             max-width="290px"
                             min-width="290px"
                           >
@@ -385,60 +439,69 @@
                   </template>
 
                   <template v-else-if="f.component === 'p-series'">
-                    <p-i-series
-                      v-bind.sync="f"
-                      v-on:input-title="f.title=$event"
-                      v-on:input-title-language="setSelected(f, 'titleLanguage', $event)"
-                      v-on:input-volume="f.volume=$event"
-                      v-on:input-issue="f.issue=$event"
-                      v-on:input-issued="f.issued=$event"
-                      v-on:input-issn="f.issn=$event"
-                      v-on:input-identifier="f.identifier=$event"
-                      v-on:add="addField(s.fields, f)"
-                      v-on:remove="removeField(s.fields, f)"
-                      class="my-2"
-                    ></p-i-series>
+                    <v-col cols="10">
+                      <p-i-series
+                        v-bind.sync="f"
+                        v-on:input-select-journal="selectJournal(s.fields, f, $event)"
+                        v-on:input-title="f.title=$event"
+                        v-on:input-title-language="setSelected(f, 'titleLanguage', $event)"
+                        v-on:input-volume="f.volume=$event"
+                        v-on:input-issue="f.issue=$event"
+                        v-on:input-issued="f.issued=$event"
+                        v-on:input-issn="f.issn=$event"
+                        v-on:input-identifier="f.identifier=$event"
+                        v-on:add="addField(s.fields, f)"
+                        v-on:remove="removeField(s.fields, f)"
+                        class="my-2"
+                      ></p-i-series>
+                    </v-col>
                   </template>
 
                   <template v-else-if="f.component === 'p-citation'">
-                    <p-i-citation
-                      v-bind.sync="f"
-                      v-on:input-citation-type="setSelected(f, 'type', $event)"
-                      v-on:input-citation="f.citation=$event"
-                      v-on:input-citation-language="setSelected(f, 'citationLanguage', $event)"
-                      v-on:input-identifier="f.identifier=$event"
-                      v-on:add="addField(s.fields, f)"
-                      v-on:remove="removeField(s.fields, f)"
-                      class="my-2"
-                    ></p-i-citation>
+                    <v-col cols="10">
+                      <p-i-citation
+                        v-bind.sync="f"
+                        v-on:input-citation-type="setSelected(f, 'type', $event)"
+                        v-on:input-citation="f.citation=$event"
+                        v-on:input-citation-language="setSelected(f, 'citationLanguage', $event)"
+                        v-on:input-identifier="f.identifier=$event"
+                        v-on:add="addField(s.fields, f)"
+                        v-on:remove="removeField(s.fields, f)"
+                        class="my-2"
+                      ></p-i-citation>
+                    </v-col>
                   </template>
 
                   <template v-else-if="f.component === 'p-bf-publication'">
-                    <p-i-bf-publication
-                      v-bind.sync="f"
-                      v-on:input-publisher-name="f.publisherName=$event"
-                      v-on:input-publisher-select="publisherSelectInput(f, $event)"
-                      v-on:input-publishing-place="f.publishingPlace=$event"
-                      v-on:input-publishing-date="f.publishingDate=$event"
-                      v-on:add="addField(s.fields, f)"
-                      v-on:remove="removeField(s.fields, f)"
-                      class="my-2"
-                    ></p-i-bf-publication>
+                    <v-col cols="10">
+                      <p-i-bf-publication
+                        v-bind.sync="f"
+                        v-on:input-suggest-publisher="publisherSuggestInput(f, $event)"
+                        v-on:input-publisher-name="f.publisherName=$event"
+                        v-on:change-type="f.publisherType = $event"
+                        v-on:input-publisher-select="publisherSelectInput(f, $event)"
+                        v-on:input-publishing-place="f.publishingPlace=$event"
+                        v-on:input-publishing-date="f.publishingDate=$event"
+                        v-on:add="addField(s.fields, f)"
+                        v-on:remove="removeField(s.fields, f)"
+                        class="my-2"
+                      ></p-i-bf-publication>
+                    </v-col>
                   </template>
 
                   <template v-else-if="f.component === 'p-entity-extended'">
                     <v-col cols="10">
                       <p-i-entity-extended
                         v-bind.sync="f"
-                        v-on:change-type="changeEntityType(f, $event)"
+                        v-on:change-type="f.type = $event"
                         v-on:input-firstname="f.firstname = $event"
                         v-on:input-lastname="f.lastname = $event"
                         v-on:input-name="f.name = $event"
                         v-on:input-identifier="f.identifierText = $event"
-                        v-on:change-affiliation-type="changeEntityAffiliationType(f, $event)"
+                        v-on:change-affiliation-type="f.affiliationType = $event"
                         v-on:input-affiliation-select="affiliationSelectInput(f, $event)"
                         v-on:input-affiliation-other="f.affiliationText = $event"
-                        v-on:change-organization-type="changeEntityOrganizationType(f, $event)"
+                        v-on:change-organization-type="f.organizationType = $event"
                         v-on:input-organization-select="organizationSelectInput(f, $event)"
                         v-on:input-organization-other="f.organizationText = $event"
                         v-on:input-role="roleInput(f, $event)"
@@ -473,18 +536,20 @@
                   </template>
 
                   <template v-else-if="f.component === 'p-project'">
-                    <p-i-project
-                      v-bind.sync="f"
-                      v-on:input-name="f.name=$event"
-                      v-on:input-name-language="setSelected(f, 'nameLanguage', $event)"
-                      v-on:input-description="f.description=$event"
-                      v-on:input-description-language="setSelected(f, 'descriptionLanguage', $event)"
-                      v-on:input-identifier="f.identifier=$event"
-                      v-on:input-homepage="f.homepage=$event"
-                      v-on:add="addField(s.fields, f)"
-                      v-on:remove="removeField(s.fields, f)"
-                      class="my-2"
-                    ></p-i-project>
+                    <v-col cols="10">
+                      <p-i-project
+                        v-bind.sync="f"
+                        v-on:input-name="f.name=$event"
+                        v-on:input-name-language="setSelected(f, 'nameLanguage', $event)"
+                        v-on:input-description="f.description=$event"
+                        v-on:input-description-language="setSelected(f, 'descriptionLanguage', $event)"
+                        v-on:input-identifier="f.identifier=$event"
+                        v-on:input-homepage="f.homepage=$event"
+                        v-on:add="addField(s.fields, f)"
+                        v-on:remove="removeField(s.fields, f)"
+                        class="my-2"
+                      ></p-i-project>
+                    </v-col>
                   </template>
 
                   <template v-else-if="f.component === 'p-funder'">
@@ -525,8 +590,8 @@
               <submit-ir-license-info v-if="s.id === 5" :license="license"></submit-ir-license-info>
               <v-divider class="mt-5 mb-7"></v-divider>
               <v-row no-gutters justify="space-between">
-                <v-btn dark color="grey" @click="step = (s.id - 1)">{{ $t('Back') }}</v-btn>
-                <v-btn color="primary" @click="step = (s.id + 1)">{{ $t('Continue') }}</v-btn>
+                <v-btn dark color="grey" @click="step = (s.id - 1); $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
+                <v-btn color="primary" @click="step = (s.id + 1); $vuetify.goTo(1)">{{ $t('Continue') }}</v-btn>
               </v-row>
             </v-col>
           </v-row>
@@ -535,14 +600,18 @@
 
       <v-stepper-content step="7">
         <v-container>
-          <p-d-jsonld :jsonld="jsonld"></p-d-jsonld>
+          <v-row>
+            <v-col md="10" offset-md="1">
+              <p-d-jsonld :jsonld="jsonld"></p-d-jsonld>
+            </v-col>
+          </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters>
-            <v-btn dark color="grey" @click="step = 6">{{ $t('Back') }}</v-btn>
+            <v-btn dark color="grey" :disabled="loading" @click="step = 6; $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
             <v-spacer></v-spacer>
             <v-dialog v-model="templateDialog" width="500">
               <template v-slot:activator="{ on }">
-                <v-btn class="mr-3" v-on="on" dark raised :loading="loading" :disabled="loading" color="grey">{{ $t('Save as template') }}</v-btn>
+                <v-btn class="mr-3" v-on="on" dark raised :disabled="loading" color="grey">{{ $t('Save as template') }}</v-btn>
               </template>
               <v-card>
                 <v-card-title class="title font-weight-light grey lighten-2" primary-title>{{ $t('Save as template') }}</v-card-title>
@@ -553,6 +622,42 @@
                   <v-spacer></v-spacer>
                   <v-btn :loading="loading" :disabled="loading" color="grey" dark @click="templateDialog= false">{{ $t('Cancel') }}</v-btn>
                   <v-btn :loading="loading" :disabled="loading" color="primary" @click="saveAsTemplate()">{{ $t('Save') }}</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="resetDialog" max-width="500px">
+              <template v-slot:activator="{ on }">
+                <v-btn class="mr-3" v-on="on" :disabled="loading" dark color="warning">{{ $t('Reset submission') }}</v-btn>
+              </template>
+              <v-card>
+                <v-card-title class="title font-weight-light grey white--text">
+                  {{ $t('Reset submission') }}
+                </v-card-title>
+                <v-card-text>
+                  <p class="mt-6 title font-weight-light grey--text text--darken-3">{{ $t('Reset submission process?') }}</p>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn dark @click="resetDialog = false" color="grey">{{ $t('Cancel') }}</v-btn>
+                  <v-btn @click="resetSubmission(); resetDialog = false" color="primary">{{ $t('Reset submission') }}</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="discardDialog" max-width="500px">
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" class="mr-3" :disabled="loading" dark color="error">{{ $t('Discard submission') }}</v-btn>
+              </template>
+              <v-card>
+                <v-card-title class="title font-weight-light grey white--text">
+                  {{ $t('Discard submission') }}
+                </v-card-title>
+                <v-card-text>
+                  <p class="mt-6 title font-weight-light grey--text text--darken-3">{{ $t('Discard submission process?') }}</p>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn dark @click="discardDialog = false" color="grey">{{ $t('Cancel') }}</v-btn>
+                  <v-btn :to="'/'" @click="discardDialog = false" color="primary">{{ $t('Discard') }}</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -569,6 +674,7 @@
 
 <script>
 import SubmitIrLicenseInfo from '@/components/SubmitIrLicenseInfo'
+import xmlUtils from 'phaidra-vue-components/src/utils/xml'
 import arrays from 'phaidra-vue-components/src/utils/arrays'
 import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
 import fields from 'phaidra-vue-components/src/utils/fields'
@@ -595,6 +701,7 @@ export default {
     },
     doiToImport: function () {
       if (this.doiImportInput) {
+        // TODO clean input
         return this.doiImportInput
       } else {
         return null
@@ -609,11 +716,13 @@ export default {
       form: {
         sections: []
       },
-      step: 6,
+      step: 1,
       loadedMetadata: [],
       loading: false,
-      templateDialog: '',
+      templateDialog: false,
       templateName: '',
+      discardDialog: false,
+      resetDialog: false,
       touCheckbox: false,
       touCheckboxErrors: [],
       doiImportInput: null,
@@ -632,7 +741,8 @@ export default {
       rightsCheckSearch: '',
       rightsCheckDebounce: 500,
       rightsCheckMinLetters: 3,
-      rightsCheckDebounceTask: null
+      rightsCheckDebounceTask: null,
+      doiDuplicate: null
     }
   },
   watch: {
@@ -644,43 +754,6 @@ export default {
     }
   },
   methods: {
-    xmlToJson: function (xml) {
-      // Create the return object
-      var obj = {}
-      if (xml.nodeType === 1) { // element
-        // do attributes
-        if (xml.attributes.length > 0) {
-          obj['@attributes'] = {}
-          for (var j = 0; j < xml.attributes.length; j++) {
-            var attribute = xml.attributes.item(j)
-            obj['@attributes'][attribute.nodeName] = attribute.nodeValue
-          }
-        }
-      } else if (xml.nodeType === 3) { // text
-        obj = xml.nodeValue
-      }
-      // do children
-      if (xml.hasChildNodes()) {
-        for (var i = 0; i < xml.childNodes.length; i++) {
-          var item = xml.childNodes.item(i)
-          var nodeName = item.nodeName
-          if (typeof (obj[nodeName]) === 'undefined') {
-            obj[nodeName] = this.xmlToJson(item)
-          } else {
-            if (typeof (obj[nodeName].push) === 'undefined') {
-              var old = obj[nodeName]
-              obj[nodeName] = []
-              obj[nodeName].push(old)
-            }
-            obj[nodeName].push(this.xmlToJson(item))
-          }
-        }
-      }
-      return obj
-    },
-    htmlToPlaintext: function (text) {
-      return text ? String(text).replace(/<[^>]+>/gm, '') : ''
-    },
     queryRightsCheckDebounce (value) {
       this.showList = true
       if (this.rightsCheckDebounce) {
@@ -715,7 +788,7 @@ export default {
         })
         let utfxml = iconv.decode(Buffer.from(response.data), 'ISO-8859-1')
         let dp = new window.DOMParser()
-        let obj = this.xmlToJson(dp.parseFromString(utfxml, 'text/xml'))
+        let obj = xmlUtils.xmlToJson(dp.parseFromString(utfxml, 'text/xml'))
         for (let j of obj.romeoapi[1].journals.journal) {
           this.rightsCheckItems.push(
             {
@@ -725,7 +798,6 @@ export default {
             }
           )
         }
-        // console.log(this.rightsCheckItems)
       } catch (error) {
         console.log(error)
         this.rightsCheckErrors.push(error)
@@ -810,16 +882,167 @@ export default {
     importDOI: async function () {
       this.loading = true
       this.doiImportErrors = []
+      this.doiDuplicate = null
+      this.doiImportData = null
       if (this.doiImportInput) {
         try {
-          let response = await fetch('https://' + this.appconfig.apis.doi.baseurl + '/' + this.doiToImport, {
+          let params = {
+            wt: 'json',
+            q: 'dc_identifier:"'+ this.doiToImport + '"'
+          }
+
+          let query = qs.stringify(params)
+
+          let solrResponse = await fetch(this.instanceconfig.solr + '/select?' + query, {
             method: 'GET',
-            mode: 'cors',
-            headers: {
-              'Accept': this.appconfig.apis.doi.accept
-            }
+            mode: 'cors'
           })
-          this.doiImportData = await response.json()
+          let solrJson = await solrResponse.json()
+          if (solrJson.response.numFound > 0) {
+            this.doiDuplicate = {
+              pid: solrJson.response.docs[0].pid,
+              title: solrJson.response.docs[0].dc_title[0]
+            }
+          } else {
+
+            let response = await fetch('https://' + this.appconfig.apis.doi.baseurl + '/' + this.doiToImport, {
+              method: 'GET',
+              mode: 'cors',
+              headers: {
+                'Accept': this.appconfig.apis.doi.accept
+              }
+            })
+            let crossrefData = await response.json()
+
+            this.doiImportData = {
+              title: '',
+              dateIssued: '',
+              authors: [],
+              publicationType: '',
+              publisher: '',
+              journalTitle: '',
+              journalISSN: '',
+              journalVolume: '',
+              journalIssue: '',
+              pageStart: '',
+              pageEnd: ''
+            }
+
+            if (crossrefData['title']) {
+              if (Array.isArray(crossrefData['title'])) {
+                this.doiImportData.title = crossrefData['title'][0]
+              } else {
+                this.doiImportData.title = crossrefData['title']
+              }
+            }
+
+            if (crossrefData['issued']) {
+              if (crossrefData['issued']['date-parts']) {
+                this.doiImportData.dateIssued = crossrefData['issued']['date-parts'][0][0]
+              }
+            }
+            
+            let authors = crossrefData['author']
+            if (authors.length > 0) {
+              for (let author of authors) {
+                this.doiImportData.authors.push({ firstname: author['given'], lastname: author['family'] })
+              }
+            }
+
+            // https://github.com/citation-style-language/schema/blob/master/csl-types.rnc
+            // https://wiki.univie.ac.at/display/IR/Mapping+CrossRef-Erscheinungsformen
+            switch (crossrefData['type']) {
+              case 'article':
+              case 'journal-article':
+                this.doiImportData.publicationType = 'article'
+                break;
+              case 'article-journal':
+                this.doiImportData.publicationType = 'article'
+                break
+              case 'report':
+                this.doiImportData.publicationType = 'report'
+                break
+              case 'book':
+              case 'monograph':
+              case 'reference-book':
+              case 'edited-book':
+                this.doiImportData.publicationType = 'book'
+                break
+              case 'book-chapter':
+              case 'book-part':
+              case 'book-section':
+                this.doiImportData.publicationType = 'book_part'
+                break
+              case 'dissertation':
+                this.doiImportData.publicationType = 'doctoral_thesis'
+                break
+              case 'proceedings-article':
+              case 'proceedings':
+                this.doiImportData.publicationType = 'conference_object'
+                break
+              case 'dataset':
+                this.doiImportData.publicationType = 'research_data'
+                break
+              case 'other':
+              case 'standard':
+              case 'standard-series':
+              case 'book-entry':
+              case 'book-series':
+              case 'book-set':
+              case 'book-track':
+              case 'component':
+              case 'journal-issue':
+              case 'journal-volume':
+              case 'journal':
+              case 'report-series':
+                this.doiImportData.publicationType = 'other'
+                break
+              default:
+                this.doiImportData.publicationType = 'other'
+            }
+
+            if (crossrefData['publisher']) {
+              this.doiImportData.publisher = crossrefData['publisher']
+            }
+
+            if (crossrefData['container-title']) {
+              this.doiImportData.journalTitle = crossrefData['container-title']
+            }
+
+            if (crossrefData['ISSN']) {
+              if( Array.isArray(crossrefData['ISSN'])) {
+                this.doiImportData.journalISSN = crossrefData['ISSN'][0]
+              }else{
+                this.doiImportData.journalISSN = crossrefData['ISSN']
+              }
+            }
+
+            if (crossrefData['volume']) {
+              this.doiImportData.journalVolume = crossrefData['volume']
+            }
+
+            if (crossrefData['issue']) {
+              this.doiImportData.journalIssue = crossrefData['issue']
+            }
+
+            if (crossrefData['page']) {
+              let page = crossrefData['page'].split('-')
+              let regexnum = new RegExp('^[0-9]+$')
+              let startpage = page[0]
+              if (regexnum.test(startpage)) {
+                this.doiImportData.pageStart = startpage
+              }
+              if (page.length > 1) {
+                let endpage = page[1]
+                if (regexnum.test(endpage)) {
+                  this.doiImportData.pageEnd = endpage
+                }
+              }
+            }
+
+            this.resetForm(this, this.doiImportData)
+          }
+
         } catch (error) {
           this.doiImportErrors.push(error)
         } finally {
@@ -885,7 +1108,7 @@ export default {
         let s = this.form.sections[i]
         if (s.fields) {
           for (let j = 0; j < s.fields.length; j++) {
-            if (s.fields[j].component === 'input-file') {
+            if (s.fields[j].component === 'p-file') {
               if (s.fields[j].file !== '') {
                 httpFormData.append('file', s.fields[j].file)
               }
@@ -966,15 +1189,6 @@ export default {
         }
       }
     },
-    changeEntityType: function (f, event) {
-      f.type = event
-    },
-    changeEntityAffiliationType: function (f, event) {
-      f.affiliationType = event
-    },
-    changeEntityOrganizationType: function (f, event) {
-      f.organizationType = event
-    },
     affiliationSelectInput: function (f, event) {
       if (event) {
         f.affiliation = event['@id']
@@ -988,11 +1202,16 @@ export default {
     publisherSelectInput: function (f, event) {
       if (event) {
         f.publisherOrgUnit = event['@id']
-        f.publisherName = []
+        f.publisherSelectedName = []
         var preflabels = event['skos:prefLabel']
         Object.entries(preflabels).forEach(([key, value]) => {
-          f.publisherName.push({ '@value': value, '@language': key })
+          f.publisherSelectedName.push({ '@value': value, '@language': key })
         })
+      }
+    },
+    publisherSuggestInput: function (f, event) {
+      if (event) {
+        f.publisherName = event['name']
       }
     },
     organizationSelectInput: function (f, event) {
@@ -1003,6 +1222,22 @@ export default {
         Object.entries(preflabels).forEach(([key, value]) => {
           f.organizationSelectedName.push({ '@value': value, '@language': key })
         })
+      }
+    },
+    selectJournal: function (fields, f, event) {
+      if (event.title) {
+        f.title = event.title
+      }
+      if (event.issn) {
+        f.issn = event.issn
+      }
+      if (event.romeopub) {
+        for (let formfield of fields) {
+          if (formfield.component === 'p-bf-publication') {
+            formfield.publisherType = 'other'
+            formfield.publisherName = event.romeopub
+          }
+        }
       }
     },
     setSelected: function (f, property, event) {
@@ -1189,117 +1424,132 @@ export default {
       f.value = event.name
       f.file = event
       this.$emit('form-input-' + f.component, f)
+    },
+    resetForm: function (self, doiImportData) {
+      self.$store.commit('enableAllVocabularyTerms', 'versiontypes')
+      self.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+
+      self.form = {
+        sections: []
+      }
+
+      let smf = []
+
+      let rt = fields.getField('resource-type')
+      rt.value = 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
+      smf.push(rt)
+
+      let f = fields.getField('file')
+      f.multiplicable = true
+      f.mimetype = 'application/pdf'
+      smf.push(f)
+
+      let tf = fields.getField('title')
+      if (doiImportData && doiImportData.title) {
+        tf.title = doiImportData.title
+      }
+      smf.push(tf)
+
+      let role = fields.getField('role-extended')
+      role.role = 'role:aut'
+      role.ordergroup = 'roles'
+      smf.push(role)
+
+      let edtf = fields.getField('date-edtf')
+      edtf.picker = true
+      edtf.type = 'dcterms:issued'
+      smf.push(edtf)
+
+      smf.push(fields.getField('language'))
+
+      let otf = fields.getField('object-type')
+      otf.vocabulary = 'irobjecttype'
+      otf.label = self.$t('Type of publication')
+      otf.hint = self.$t('The publication type you choose can restrict the possible version type values.')
+      otf.showValueDefinition = true
+      smf.push(otf)
+
+      let vtf = fields.getField('version-type')
+      vtf.showValueDefinition = true
+      smf.push(vtf)
+
+      let arf = fields.getField('access-right')
+      arf.vocabulary = 'iraccessright'
+      arf.showValueDefinition = true
+      smf.push(arf)
+
+      smf.push(fields.getField('license'))
+
+      self.form.sections.push(
+        {
+          title: self.$t('Mandatory fields'),
+          type: 'digitalobject',
+          id: 5,
+          fields: smf
+        }
+      )
+
+      let sof = []
+
+      sof.push(fields.getField('description'))
+
+      sof.push(fields.getField('funder'))
+
+      sof.push(fields.getField('project'))
+
+      let aif = fields.getField('alternate-identifier')
+      aif.label = 'DOI'
+      aif.multiplicable = true
+      sof.push(aif)
+
+      sof.push(fields.getField('citation'))
+
+      sof.push(fields.getField('keyword'))
+
+      let sf = fields.getField('series')
+      sf.journalSuggest = true
+      sof.push(sf)
+
+      sof.push(fields.getField('page-start'))
+
+      sof.push(fields.getField('page-end'))
+
+      let pf = fields.getField('bf-publication')
+      pf.multiplicable = false
+      sof.push(pf)
+
+      let gndf = fields.getField('gnd-subject')
+      gndf.exactvoc = 'SubjectHeadingSensoStricto'
+      sof.push(gndf)
+
+      self.form.sections.push(
+        {
+          title: self.$t('Optional fields'),
+          type: 'digitalobject',
+          id: 6,
+          fields: sof
+        }
+      )
+    },
+    resetSubmission: function (self) {
+      if (!self) {
+        self = this
+      }
+      self.$store.dispatch('loadLanguages')
+      self.step = 1
+      self.resetForm(self, null)
     }
   },
   mounted: function () {
-    this.$store.dispatch('loadLanguages')
-    this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
-    this.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
-
-    let smf = []
-
-    let rt = fields.getField('resource-type')
-    rt.value = 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
-    smf.push(rt)
-
-    let f = fields.getField('file')
-    f.multiplicable = true
-    f.mimetype = 'application/pdf'
-    smf.push(f)
-
-    smf.push(fields.getField('title'))
-
-    let role = fields.getField('role-extended')
-    role.role = 'role:aut'
-    role.ordergroup = 'roles'
-    smf.push(role)
-
-    let edtf = fields.getField('date-edtf')
-    edtf.picker = true
-    edtf.type = 'dcterms:issued'
-    // edtf.hideType = true
-    // edtf.dateLabel = this.$t('Date issued')
-    smf.push(edtf)
-
-    smf.push(fields.getField('language'))
-
-    let otf = fields.getField('object-type')
-    otf.vocabulary = 'irobjecttype'
-    otf.label = this.$t('Type of publication')
-    otf.hint = this.$t('The publication type you choose can restrict the possible version type values.')
-    otf.showValueDefinition = true
-    smf.push(otf)
-
-    let vtf = fields.getField('version-type')
-    vtf.showValueDefinition = true
-    smf.push(vtf)
-
-    let arf = fields.getField('access-right')
-    arf.vocabulary = 'iraccessright'
-    arf.showValueDefinition = true
-    smf.push(arf)
-
-    smf.push(fields.getField('license'))
-
-    this.form.sections.push(
-      {
-        title: this.$t('Mandatory fields'),
-        type: 'digitalobject',
-        id: 5,
-        fields: smf
-      }
-    )
-
-    let sof = []
-
-    sof.push(fields.getField('description'))
-
-    sof.push(fields.getField('funder'))
-
-    sof.push(fields.getField('project'))
-
-    let aif = fields.getField('alternate-identifier')
-    aif.label = 'DOI'
-    aif.multiplicable = true
-    sof.push(aif)
-
-    sof.push(fields.getField('citation'))
-
-    sof.push(fields.getField('keyword'))
-
-    let sf = fields.getField('series')
-    sof.push(sf)
-
-    sof.push(fields.getField('page-start'))
-
-    sof.push(fields.getField('page-end'))
-
-    let pf = fields.getField('bf-publication')
-    pf.multiplicable = false
-    sof.push(pf)
-
-    let gndf = fields.getField('gnd-subject')
-    gndf.exactvoc = 'SubjectHeadingSensoStricto'
-    sof.push(gndf)
-
-    this.form.sections.push(
-      {
-        title: this.$t('Optional fields'),
-        type: 'digitalobject',
-        id: 6,
-        fields: sof
-      }
-    )
+    this.resetSubmission(this)
   },
   beforeRouteEnter: async function (to, from, next) {
     next(vm => {
-      vm.$store.commit('enableAllVocabularyTerms', 'versiontypes')
-      vm.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+      vm.resetSubmission(vm)
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
-    this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
-    this.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+    this.resetSubmission(this)
     next()
   }
 }

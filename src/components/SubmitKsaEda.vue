@@ -1,8 +1,5 @@
 <template>
   <v-container class="ksa-submit" >
-    <v-col>
-      <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-    </v-col>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>Submit</v-toolbar-title>
@@ -39,20 +36,6 @@ export default {
   name: 'submit-ksa-eda',
   mixins: [ context ],
   computed: {
-    breadcrumbs: function () {
-      let bc = [
-        {
-          text: this.$t('Submit'),
-          to: { name: 'submit', path: '/' }
-        },
-        {
-          text: this.$t('Submit - KSA EDA'),
-          disabled: true,
-          to: { name: 'submit-ksa-eda', path: 'submit/ksa-eda' }
-        }
-      ]
-      return bc
-    },
     vocabularies: function () {
       return this.$store.state.vocabulary.vocabularies
     }

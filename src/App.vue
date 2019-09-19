@@ -357,6 +357,10 @@ address {
   vertical-align: top;
 }
 
+.theme--light.v-card > .v-card__text {
+  color: black;
+}
+
 .lang-icon {
   margin-left: 5px;
 }
