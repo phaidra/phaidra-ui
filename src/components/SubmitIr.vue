@@ -5,7 +5,7 @@
       <v-divider></v-divider>
       <v-stepper-step :complete="touCheckbox" step="2">{{ $t('Terms of use') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :complete="step > 3" step="3">{{ $t('Import') }}</v-stepper-step>
+      <v-stepper-step :editable="step > 3" :complete="step > 3" step="3">{{ $t('Import') }}</v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step :editable="step > 4" :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
       <v-divider></v-divider>
@@ -184,6 +184,45 @@
             </v-row>
           </v-slide-y-transition>
           <v-row no-gutters>
+            <h3 class="title font-weight-light primary--text my-4">{{ $t('Metadata-Import from prior version') }}</h3>
+          </v-row>
+          <v-row no-gutters>
+            <p>{{ $t('If this publication is a new version (e.g. a postprint or publisher\'s PDF) of an already uploaded version (e.g. a preprint), the existing metadata can be imported and the two versions can be joined.') }}</p>
+            <p>{{ $t('To do so, please search and select the previously uploaded version.') }}</p>
+          </v-row>
+          <v-row no-gutters>
+            <v-col cols="12">
+              <v-text-field
+                v-model="objectListSearch"
+                append-icon="search"
+                :label="$t('Search...')"
+                single-line
+                hide-details
+                class="mb-4"
+              ></v-text-field>
+              <v-data-table
+                hide-default-header
+                :headers="objectListHeaders"
+                :items="objectList"
+                :search="objectListSearch"
+                :custom-filter="objectListFilterTitle"
+                :loading="loading"
+                :loading-text="$t('Loading...')"
+                :items-per-page="5"
+              >
+                <template v-slot:item.title="{ item }">
+                  <span v-if="item.dc_title">{{ item.dc_title[0] | truncate(50) }}</span>
+                </template>
+                <template v-slot:item.created="{ item }">
+                  {{ item.created | date }}
+                </template>
+                <template v-slot:item.actions="{ item }">
+                  <v-btn text color="primary" @click="loadObjectMetadata(item)">{{ $t('Load') }}</v-btn>
+                </template>
+              </v-data-table>
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
             <h3 class="title font-weight-light primary--text my-4">{{ $t('Metadata-Import from a template') }}</h3>
           </v-row>
           <v-row no-gutters>
@@ -191,7 +230,7 @@
           </v-row>
           <v-row no-gutters>
             <v-col cols="12">
-              <p-templates ref="templates" v-on:load-template="loadTemplate($event)"></p-templates>
+              <p-templates ref="templates" :tag="'ir'" v-on:load-template="loadTemplate($event)"></p-templates>
             </v-col>
           </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
@@ -590,7 +629,11 @@
                 </v-row>
 
               </template>
-              <submit-ir-license-info v-if="s.id === 5" :license="license"></submit-ir-license-info>
+              <v-row>
+                 <v-col cols="12" md="10">
+                  <submit-ir-license-info v-if="s.id === 5" :license="license"></submit-ir-license-info>
+                 </v-col>
+              </v-row>
               <v-divider class="mt-5 mb-7"></v-divider>
               <v-row no-gutters justify="space-between">
                 <v-btn dark color="grey" @click="step = (s.id - 1); $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
@@ -747,7 +790,16 @@ export default {
       rightsCheckDebounceTask: null,
       doiDuplicate: null,
       validationStatus: '',
-      validationErrors: []
+      validationErrors: [],
+      objectListLoading: false,
+      objectList: [],
+      objectListSearch: '',
+      objectListHeaders: [
+        { text: 'Pid', align: 'left', value: 'pid' },
+        { text: 'Title', align: 'left', value: 'title' },
+        { text: 'Created', align: 'right', value: 'created' },
+        { text: 'Actions', align: 'right', value: 'actions', sortable: false }
+      ]
     }
   },
   watch: {
@@ -759,6 +811,63 @@ export default {
     }
   },
   methods: {
+    async loadObjectMetadata (doc) {
+      this.loading = true
+      try {
+        let response = await fetch(this.instanceconfig.api + '/object/' + doc.pid + '/jsonld', {
+          method: 'GET',
+          mode: 'cors'
+        })
+        let json = await response.json()
+        let components = jsonLd.json2components(json)
+        this.setFormFromObject(components)
+        this.step = 5
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.objectListLoading = false
+      }
+    },
+    objectListFilterTitle (value, search, item) {
+      if (item.dc_title) {
+        if (item.dc_title.length > 0) {
+          return item.dc_title[0].indexOf(search) !== -1
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+    objectListLoad: async function () {
+      this.objectListLoading = true
+      try {
+        let params = {
+          q: '*:*',
+          defType: 'edismax',
+          wt: 'json',
+          start: 0,
+          rows: 1000,
+          sort: 'created desc',
+          fq: [ 'edm_hastype_id:"https://vocab.phaidra.org/vocabulary/VKA6-9XTY"', 'owner:' + this.user.username ]
+        }
+        let query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
+        let response = await fetch(this.instanceconfig.solr + '/select', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: query
+        })
+        let json = await response.json()
+        this.objectList = json.response.docs
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.objectListLoading = false
+      }
+    },
     queryRightsCheckDebounce (value) {
       this.showList = true
       if (this.rightsCheckDebounce) {
@@ -1051,7 +1160,7 @@ export default {
                 }
               }
             }
-            this.resetForm(this, this.doiImportData)
+            this.resetForm(this, this.doiImportData, null)
           }
         } catch (error) {
           this.doiImportErrors.push(error)
@@ -1079,36 +1188,36 @@ export default {
       }
     },
     loadTemplate: function (form) {
-      this.$emit('load-form', form)
-      this.activetab = 0
+      this.form = form
+      this.step = 5
+      this.$vuetify.goTo(0)
     },
-    saveAsTemplate: function () {
-      var self = this
-      var httpFormData = new FormData()
+    saveAsTemplate: async function () {
       this.loading = true
-      httpFormData.append('name', this.templatename)
+      var httpFormData = new FormData()
+      httpFormData.append('tag', 'ir')
+      httpFormData.append('name', this.templateName)
       httpFormData.append('form', JSON.stringify(this.form))
-      var url = self.$store.state.instanceconfig.api + '/jsonld/template/add'
-      var promise = fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'X-XSRF-TOKEN': this.$store.state.user.token
-        },
-        body: httpFormData
-      })
-        .then(function (response) { return response.json() })
-        .then(function (json) {
-          if (json.alerts && json.alerts.length > 0) {
-            self.$store.commit('setAlerts', json.alerts)
-          }
-          self.loading = false
-          self.templatedialog = false
+      var url = this.instanceconfig.api + '/jsonld/template/add'
+      try {
+        let response = await fetch(url, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'X-XSRF-TOKEN': this.user.token
+          },
+          body: httpFormData
         })
-        .catch(function (error) {
-          console.log(error)
-        })
-      return promise
+        let json = await response.json()
+        if (json.alerts && json.alerts.length > 0) {
+          this.$store.commit('setAlerts', json.alerts)
+        }
+        this.templateDialog = false
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loading = false
+      }
     },
     submit: function () {
       var self = this
@@ -1435,7 +1544,90 @@ export default {
       f.file = event
       this.$emit('form-input-' + f.component, f)
     },
-    resetForm: function (self, doiImportData) {
+    setFormFromObject: function (importedComponents) {
+      this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
+      this.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+
+      this.form = {
+        sections: []
+      }
+
+      let mandatory = [
+        'resource-type',
+        'file',
+        'title',
+        'role-extended',
+        'date-edtf',
+        'language',
+        'object-type',
+        'version-type',
+        'access-right',
+        'license'
+      ]
+
+      let smf = []
+      for (let fieldId of mandatory) {
+        let field = fields.getField(fieldId)
+        let added = false
+        for (let c of importedComponents) {
+          if (c.predicate === field.predicate) {
+            added = true
+            smf.push(c)
+          }
+        }
+        if (!added) {
+          smf.push(field)
+        }
+      }
+
+      this.form.sections.push(
+        {
+          title: this.$t('Mandatory fields'),
+          type: 'digitalobject',
+          id: 5,
+          fields: smf
+        }
+      )
+
+      let optional = [
+        'description',
+        'funder',
+        'project',
+        'alternate-identifier',
+        'citation',
+        'keyword',
+        'series',
+        'page-start',
+        'page-end',
+        'bf-publication',
+        'gnd-subject'
+      ]
+
+      let sof = []
+      for (let fieldId of optional) {
+        let field = fields.getField(fieldId)
+        let added = false
+        for (let c of importedComponents) {
+          if (c.predicate === field.predicate) {
+            added = true
+            sof.push(c)
+          }
+        }
+        if (!added) {
+          sof.push(field)
+        }
+      }
+
+      this.form.sections.push(
+        {
+          title: this.$t('Optional fields'),
+          type: 'digitalobject',
+          id: 6,
+          fields: sof
+        }
+      )
+    },
+    resetForm: function (self, doiImportData, importedComponents) {
       self.$store.commit('enableAllVocabularyTerms', 'versiontypes')
       self.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
 
@@ -1634,6 +1826,8 @@ export default {
                   if (f.affiliation.length < 1) {
                     f.affiliationErrorMessages.push(this.$t('Missing affiliation'))
                     this.validationStatus = 'error'
+                  } else {
+                    hasLocalAffiliation = true
                   }
                 }
                 if (f.affiliationType === 'other') {
@@ -1704,11 +1898,13 @@ export default {
         self = this
       }
       self.$store.dispatch('loadLanguages')
+      self.loadTemplates()
       self.step = 1
-      self.resetForm(self, null)
+      self.resetForm(self, null, null)
     }
   },
   mounted: function () {
+    this.objectListLoad()
     this.resetSubmission(this)
   },
   beforeRouteEnter: async function (to, from, next) {
