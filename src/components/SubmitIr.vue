@@ -5,15 +5,17 @@
       <v-divider></v-divider>
       <v-stepper-step :complete="touCheckbox" step="2">{{ $t('Terms of use') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :editable="step > 3" :complete="step > 3" step="3">{{ $t('Import') }}</v-stepper-step>
+      <v-stepper-step :editable="(step > 3) && (step < 8)" :complete="step > 3" step="3">{{ $t('Import') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :editable="step > 4" :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
+      <v-stepper-step :editable="(step > 4) && (step < 8)" :complete="step > 4" step="4">{{ $t('Check rights') }}</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :editable="step > 5" :complete="step > 5" step="5" :rules="[() => validationStatus !== 'error']">{{ $t('Mandatory fields') }} <small v-if="validationStatus === 'error'">{{ $t('Invalid metadata') }}</small></v-stepper-step>
+      <v-stepper-step :editable="(step > 5) && (step < 8)" :complete="step > 5" step="5" :rules="[() => validationStatus !== 'error']">{{ $t('Mandatory fields') }} <small v-if="validationStatus === 'error'">{{ $t('Invalid metadata') }}</small></v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step :editable="step > 6" :complete="step > 6" step="6">{{ $t('Optional fields') }}</v-stepper-step>
+      <v-stepper-step :editable="(step > 6) && (step < 8)" :complete="step > 6" step="6">{{ $t('Optional fields') }}</v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step :complete="step > 7" step="7">{{ $t('Submit') }}</v-stepper-step>
+      <v-divider  v-if="submitResponse"></v-divider>
+      <v-stepper-step :complete="step > 8" step="8"  v-if="submitResponse">{{ $t('Acknowledgement') }}</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -433,44 +435,11 @@
                       v-on:remove="removeField(s.fields, f)"
                       class="my-2"
                     ></p-i-select>
-                    <template v-if="f.predicate === 'dcterms:accessRights'">
-                      <br/>
-                      <v-col cols="10">
-                        <v-slide-y-transition hide-on-leave>
-                          <v-menu
-                            v-model="embargoDateMenu"
-                            :close-on-content-click="false"
-                            transition="scale-transition"
-                            offset-y
-                            max-width="290px"
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ on }">
-                              <v-text-field
-                                v-show="showEmbargoDate"
-                                :value="embargoDateModel"
-                                :label="$t('Embargo date')"
-                                :rules="[validationrules.date]"
-                                filled
-                                append-icon="event"
-                                v-on="on"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              color="primary"
-                              :show-current="false"
-                              v-model="embargoDateModel"
-                              :locale="$i18n.locale === 'deu' ? 'de-AT' : 'en-GB'"
-                              v-on:input="embargoDateMenu = false"
-                            ></v-date-picker>
-                          </v-menu>
-                        </v-slide-y-transition>
-                      </v-col>
-                    </template>
                   </template>
 
                   <template v-else-if="f.component === 'p-date-edtf'">
                     <p-i-date-edtf
+                      v-show="f.type === 'dcterms:available' ? showEmbargoDate : true"
                       v-bind.sync="f"
                       v-on:input-date="f.value=$event"
                       v-on:input-date-type="setSelected(f, 'type', $event)"
@@ -658,6 +627,9 @@
               <p-d-jsonld :jsonld="jsonld"></p-d-jsonld>
             </v-col>
           </v-row>
+          <v-row>
+            <code>{{ jsonld }}</code>
+          </v-row>
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters>
             <v-btn dark color="grey" :disabled="loading" @click="step = 6; $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
@@ -715,6 +687,27 @@
               </v-card>
             </v-dialog>
             <v-btn raised color="primary" :loading="loading" :disabled="loading" @click="submit()">{{ $t('Submit') }}</v-btn>
+          </v-row>
+        </v-container>
+      </v-stepper-content>
+
+      <v-stepper-content step="8" v-if="submitResponse">
+        <v-container>
+          <v-row no-gutters>
+            <h3 class="title font-weight-light primary--text mb-4">{{ $t('Thank you for your submission.') }}</h3>
+          </v-row>
+          <v-row no-gutters>
+            <p>{{ $t('The submission process was successful. Your data will be checked as quickly as possible.') }}</p>
+          </v-row>
+          <v-row no-gutters>
+            <p>{{ $t('During the verification process your object has a temporary status, where it can only be accessed according to copyright laws ("all rights reserved"). Furthermore, it cannot yet be found through academic search engines such as BASE.') }}</p>
+          </v-row>
+          <v-row no-gutters>
+            <p>{{ $t('The persistent URL of your object is') }} <a :href="'https://' + instanceconfig.baseurl + '/' + submitResponse.pid">{{ 'https://' + instanceconfig.baseurl + '/' + submitResponse.pid }}</a>.</p>
+          </v-row>
+          <v-row no-gutters v-if="submitResponse.alternatives">
+            <p>{{ $t('The persistent URLs of alternative versions are') }}:</p>
+            <p v-for="(a, i) of submitResponse.alternatives" :key="'alt'+i"><a :href="'https://' + instanceconfig.baseurl + '/' + a">{{ 'https://' + instanceconfig.baseurl + '/' + a }}</a>.</p>
           </v-row>
         </v-container>
       </v-stepper-content>
@@ -785,7 +778,6 @@ export default {
       showEmbargoDate: false,
       embargoDateMenu: false,
       embargoDateModel: null,
-      embargoDate: null,
       rightsCheckModel: null,
       rightsCheckItems: [],
       rightsCheckErrors: [],
@@ -806,7 +798,8 @@ export default {
         { text: 'Title', align: 'left', value: 'title' },
         { text: 'Created', align: 'right', value: 'created' },
         { text: 'Actions', align: 'right', value: 'actions', sortable: false }
-      ]
+      ],
+      submitResponse: null
     }
   },
   watch: {
@@ -1226,8 +1219,7 @@ export default {
         this.loading = false
       }
     },
-    submit: function () {
-      var self = this
+    submit: async function () {
       this.loading = true
       var httpFormData = new FormData()
       for (let i = 0; i < this.form.sections.length; i++) {
@@ -1243,35 +1235,34 @@ export default {
         }
       }
 
-      httpFormData.append('metadata', JSON.stringify(self.getMetadata()))
+      httpFormData.append('metadata', JSON.stringify(this.getMetadata()))
 
-      fetch(self.$store.state.instanceconfig.api + '/document/create', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          // 'Authorization': 'Basic ' + base64.encode(self.$store.state.instanceconfig.adminuser + ':' + self.$store.state.instanceconfig.adminpass),
-          'X-XSRF-TOKEN': this.$store.state.user.token
-        },
-        body: httpFormData
-      })
-        .then(response => response.json())
-        .then(function (json) {
-          if (json.alerts && json.alerts.length > 0) {
-            self.$store.commit('setAlerts', json.alerts)
-          }
-          self.loading = false
-          if (json.status === 200) {
-            if (json.pid) {
-              self.$emit('object-created', json.pid)
-            }
-          }
-          self.$vuetify.goTo(0)
+      try {
+        let response = await fetch(this.$store.state.instanceconfig.api + '/ir/submit', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'X-XSRF-TOKEN': this.$store.state.user.token
+          },
+          body: httpFormData
         })
-        .catch(function (error) {
-          self.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
-          self.loading = false
-          self.$vuetify.goTo(0)
-        })
+
+        let json = await response.json()
+
+        if (json.alerts && json.alerts.length > 0) {
+          this.$store.commit('setAlerts', json.alerts)
+        }
+
+        if (json.status === 200) {
+          this.submitResponse = json
+          this.step = 8
+        }
+      } catch (error) {
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.$vuetify.goTo(0)
+        this.loading = false
+      }
     },
     addField: function (arr, f) {
       var newField = arrays.duplicate(arr, f)
@@ -1726,13 +1717,15 @@ export default {
         smf.push(role)
       }
 
-      let edtf = fields.getField('date-edtf')
-      edtf.picker = true
-      edtf.type = 'dcterms:issued'
+      let issued = fields.getField('date-edtf')
+      issued.picker = true
+      issued.type = 'dcterms:issued'
+      issued.hideType = true
+      issued.dateLabel = self.$t('Date issued')
       if (doiImportData && doiImportData.dateIssued) {
-        edtf.value = doiImportData.dateIssued
+        issued.value = doiImportData.dateIssued
       }
-      smf.push(edtf)
+      smf.push(issued)
 
       smf.push(fields.getField('language'))
 
@@ -1754,6 +1747,13 @@ export default {
       arf.vocabulary = 'iraccessright'
       arf.showValueDefinition = true
       smf.push(arf)
+
+      let embargoDate = fields.getField('date-edtf')
+      embargoDate.picker = true
+      embargoDate.type = 'dcterms:available'
+      embargoDate.hideType = true
+      embargoDate.dateLabel = self.$t('Embargo date')
+      smf.push(embargoDate)
 
       smf.push(fields.getField('license'))
 
@@ -1781,6 +1781,11 @@ export default {
         aif.value = doiImportData.doi
       }
       sof.push(aif)
+
+      let modf = fields.getField('date-edtf')
+      modf.picker = true
+      modf.type = 'dcterms:modified'
+      sof.push(modf)
 
       sof.push(fields.getField('citation'))
 
