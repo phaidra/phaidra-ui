@@ -206,7 +206,7 @@
                 :items="objectList"
                 :search="objectListSearch"
                 :custom-filter="objectListFilterTitle"
-                :loading="loading"
+                :loading="objectListLoading"
                 :loading-text="$t('Loading...')"
                 :items-per-page="5"
               >
@@ -567,6 +567,13 @@
                     ></p-i-subject-gnd>
                   </template>
 
+                  <template v-else-if="f.component === 'p-vocab-ext-readonly'">
+                    <p-i-vocab-ext-readonly
+                      v-bind.sync="f"
+                      v-on:remove="removeField(s.fields, f)"
+                    ></p-i-vocab-ext-readonly>
+                  </template>
+
                   <template v-else-if="(f.component === 'p-literal') || (f.component === 'p-alternate-identifier')">
                     <p-i-literal
                       v-bind.sync="f"
@@ -812,7 +819,7 @@ export default {
   },
   methods: {
     async loadObjectMetadata (doc) {
-      this.loading = true
+      this.objectListLoading = true
       try {
         let response = await fetch(this.instanceconfig.api + '/object/' + doc.pid + '/jsonld', {
           method: 'GET',
@@ -1568,14 +1575,52 @@ export default {
       let smf = []
       for (let fieldId of mandatory) {
         let field = fields.getField(fieldId)
+        if (field.predicate === 'ebucore:filename'){
+          // json2form creates readonly file component so add a normal one instead
+          field.mimetype = 'application/pdf'
+          smf.push(field)
+          continue
+        }
         let added = false
         for (let c of importedComponents) {
           if (c.predicate === field.predicate) {
+            if (c.predicate === 'edm:hasType') {
+              c.vocabulary = 'irobjecttype'
+              c.label = this.$t('Type of publication')
+              c.hint = this.$t('The publication type you choose can restrict the possible version type values.')
+            }
+            if (c.predicate === 'dcterms:accessRights') {
+              c.vocabulary = 'iraccessright'
+            }
+            if (
+              c.predicate === 'edm:hasType' ||
+              c.predicate === 'oaire:version' ||
+              c.predicate === 'dcterms:accessRights'
+
+            ) {
+              c.showValueDefinition = true
+            }
             added = true
             smf.push(c)
           }
         }
         if (!added) {
+          if (field.predicate === 'edm:hasType') {
+            field.vocabulary = 'irobjecttype'
+            field.label = this.$t('Type of publication')
+            field.hint = this.$t('The publication type you choose can restrict the possible version type values.')
+          }
+          if (field.predicate === 'dcterms:accessRights') {
+            field.vocabulary = 'iraccessright'
+          }
+          if (
+            field.predicate === 'edm:hasType' ||
+            field.predicate === 'oaire:version' ||
+            field.predicate === 'dcterms:accessRights'
+
+          ) {
+            field.showValueDefinition = true
+          }
           smf.push(field)
         }
       }
@@ -1609,11 +1654,24 @@ export default {
         let added = false
         for (let c of importedComponents) {
           if (c.predicate === field.predicate) {
+            if (c.predicate === 'datacite:hasIdentifier') {
+              c.label = 'DOI'
+              c.multiplicable = true
+            }
             added = true
             sof.push(c)
+            if (fieldId === 'gnd-subject') {
+              // component added was p-vocab-ext-readonly, add editable one too
+              field.exactvoc = 'SubjectHeadingSensoStricto'
+              sof.push(field)
+            }
           }
         }
         if (!added) {
+          if (field.predicate === 'datacite:hasIdentifier') {
+            field.label = 'DOI'
+            field.multiplicable = true
+          }
           sof.push(field)
         }
       }
@@ -1909,10 +1967,12 @@ export default {
   },
   beforeRouteEnter: async function (to, from, next) {
     next(vm => {
+      vm.objectListLoad()
       vm.resetSubmission(vm)
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
+    this.objectListLoad()
     this.resetSubmission(this)
     next()
   }
