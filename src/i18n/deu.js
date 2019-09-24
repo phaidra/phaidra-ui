@@ -676,5 +676,14 @@ export default {
   'AUTHOR_POSTPRINT': 'Autorenversion (Postprint)',
   'PUBLISHER_PDF': 'Veröffentlichte Version',
   'Further conditions': 'Weitere Bedingungen',
-  'Disclaimer': 'Haftungsausschluss'
+  'Disclaimer': 'Haftungsausschluss',
+  'Thank you for your submission.': 'Vielen Dank für Ihre Eingaben!',
+  'The submission process was successful. Your data will be checked as quickly as possible.': 'Der Prozess wurde erfolgreich abgeschlossen. Wir werden Ihre Eingaben schnellstmöglich prüfen.',
+  'During the verification process your object has a temporary status, where it can only be accessed according to copyright laws ("all rights reserved"). Furthermore, it cannot yet be found through academic search engines such as BASE.': 'In dieser Zeit erhält Ihr Objekt einen temporären Status, in dem es nur im Rahmen des Urheberrechtsgesetzes genutzt werden kann ("alle Rechte vorbehalten"). Außerdem ist es noch nicht über wissenschaftliche Suchmaschinen wie z.B. BASE auffindbar.',
+  'The persistent URL of your object is': 'Die persistente URL Ihres Objekts lautet',
+  'Your publication will be available as soon as the embargo period has expired.': 'Ihre Datei wird nach Ablauf der Embargofrist frei zugänglich sein.',
+  'Please contact me via email': 'Bitte benachrichtigen Sie mich per E-Mail',
+  'as soon as my submission has been successfully verified': 'sobald meine Eingaben erfolgreich geprüft wurden',
+  'as soon as the embargo period has expired': 'sobald die Embargofrist abgelaufen ist',
+  'Please notify me by e-mail as soon as my object is fully accessible.': 'Bitte benachrichtigen Sie mich per E-Mail, sobald mein Objekt voll freigeschaltet ist.'
 }

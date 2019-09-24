@@ -63,10 +63,14 @@ export default {
   methods: {
     async login () {
       this.loading = true
-      await this.$store.dispatch('login', this.credentials)
-      if (this.signedin) {
-        this.$router.push('/')
-      } else {
+      try {
+        await this.$store.dispatch('login', this.credentials)
+        if (this.signedin) {
+          this.$router.push('/')
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
         this.loading = false
       }
     },

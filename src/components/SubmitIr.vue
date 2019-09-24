@@ -14,8 +14,8 @@
       <v-stepper-step :editable="(step > 6) && (step < 8)" :complete="step > 6" step="6">{{ $t('Optional fields') }}</v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step :complete="step > 7" step="7">{{ $t('Submit') }}</v-stepper-step>
-      <v-divider  v-if="submitResponse"></v-divider>
-      <v-stepper-step :complete="step > 8" step="8"  v-if="submitResponse">{{ $t('Acknowledgement') }}</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step :complete="step > 8" step="8">{{ $t('Notifications') }}</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -627,9 +627,22 @@
               <p-d-jsonld :jsonld="jsonld"></p-d-jsonld>
             </v-col>
           </v-row>
+          <v-row v-if="altVersionPid">
+            <v-col md="10" offset-md="1">
+              <v-alert outlined type="info">
+                <p>
+                  {{ $t('This object will be marked as alternative version of object') }}
+                  <a class="mx-4" target="_blank" :href="'https://' + instanceconfig.baseurl + '/' + altVersionPid">{{ 'https://' + instanceconfig.baseurl + '/' + altVersionPid }}</a>
+                  <v-btn @click="altVersionPid = null" color="grey" dark>{{ $t('Remove this relationship') }}</v-btn>
+                </p>
+              </v-alert>
+            </v-col>
+          </v-row>
+          <!--
           <v-row>
             <code>{{ jsonld }}</code>
           </v-row>
+          -->
           <v-divider class="mt-5 mb-7"></v-divider>
           <v-row no-gutters>
             <v-btn dark color="grey" :disabled="loading" @click="step = 6; $vuetify.goTo(1)">{{ $t('Back') }}</v-btn>
@@ -691,8 +704,8 @@
         </v-container>
       </v-stepper-content>
 
-      <v-stepper-content step="8" v-if="submitResponse">
-        <v-container>
+      <v-stepper-content step="8">
+        <v-container v-if="submitResponse">
           <v-row no-gutters>
             <h3 class="title font-weight-light primary--text mb-4">{{ $t('Thank you for your submission.') }}</h3>
           </v-row>
@@ -703,11 +716,44 @@
             <p>{{ $t('During the verification process your object has a temporary status, where it can only be accessed according to copyright laws ("all rights reserved"). Furthermore, it cannot yet be found through academic search engines such as BASE.') }}</p>
           </v-row>
           <v-row no-gutters>
-            <p>{{ $t('The persistent URL of your object is') }} <a :href="'https://' + instanceconfig.baseurl + '/' + submitResponse.pid">{{ 'https://' + instanceconfig.baseurl + '/' + submitResponse.pid }}</a>.</p>
+            <p>{{ $t('The persistent URL of your object is') }} <a target="_blank" :href="'https://' + instanceconfig.baseurl + '/' + submitResponse.pid">{{ 'https://' + instanceconfig.baseurl + '/' + submitResponse.pid }}</a>.</p>
           </v-row>
-          <v-row no-gutters v-if="submitResponse.alternatives">
+          <v-row no-gutters v-if="submitResponse.alternatives && (submitResponse.alternatives.length > 0)">
             <p>{{ $t('The persistent URLs of alternative versions are') }}:</p>
-            <p v-for="(a, i) of submitResponse.alternatives" :key="'alt'+i"><a :href="'https://' + instanceconfig.baseurl + '/' + a">{{ 'https://' + instanceconfig.baseurl + '/' + a }}</a>.</p>
+            <p v-for="(a, i) of submitResponse.alternatives" :key="'alt'+i"><a target="_blank" :href="'https://' + instanceconfig.baseurl + '/' + a">{{ 'https://' + instanceconfig.baseurl + '/' + a }}</a>.</p>
+          </v-row>
+          <template v-if="this.showEmbargoDate">
+            <v-row no-gutters>
+              <p>{{ $t('Your publication will be available as soon as the embargo period has expired.') }}</p>
+            </v-row>
+            <v-row no-gutters>
+              <p>{{ $t('Please contact me via email') }}</p>
+            </v-row>
+            <v-row no-gutters>
+              <v-checkbox v-model="notificationCheckbox" hide-details color="primary" class="mt-0">
+                <template v-slot:label>
+                  <span class="black--text">{{ $t('as soon as my submission has been successfully verified') + ',' }}</span>
+                </template>
+              </v-checkbox>
+            </v-row>
+            <v-row no-gutters>
+              <v-checkbox v-model="embargoNotificationCheckbox" hide-details color="primary">
+                <template v-slot:label>
+                  <span class="black--text">{{ $t('as soon as the embargo period has expired') + '.' }}</span>
+                </template>
+              </v-checkbox>
+            </v-row>
+          </template>
+          <v-row no-gutters v-else>
+            <v-checkbox v-model="notificationCheckbox" hide-details color="primary" class="mt-0">
+              <template v-slot:label>
+                <span class="black--text">{{ $t('Please notify me by e-mail as soon as my object is fully accessible.') }}</span>
+              </template>
+            </v-checkbox>
+          </v-row>
+          <v-divider class="mt-5 mb-7"></v-divider>
+          <v-row no-gutters justify="space-between">
+            <v-btn color="primary" :loading="loading" :disabled="loading" @click="confirm()">{{ $t('Confirm') }}</v-btn>
           </v-row>
         </v-container>
       </v-stepper-content>
@@ -799,7 +845,10 @@ export default {
         { text: 'Created', align: 'right', value: 'created' },
         { text: 'Actions', align: 'right', value: 'actions', sortable: false }
       ],
-      submitResponse: null
+      submitResponse: null,
+      altVersionPid: null,
+      notificationCheckbox: false,
+      embargoNotificationCheckbox: false
     }
   },
   watch: {
@@ -821,9 +870,11 @@ export default {
         let json = await response.json()
         let components = jsonLd.json2components(json)
         this.setFormFromObject(components)
+        this.altVersionPid = doc.pid
         this.step = 5
+        this.$vuetify.goTo(1)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         this.objectListLoading = false
       }
@@ -863,7 +914,7 @@ export default {
         let json = await response.json()
         this.objectList = json.response.docs
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         this.objectListLoading = false
       }
@@ -913,7 +964,7 @@ export default {
           )
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
         this.rightsCheckErrors.push(error)
       } finally {
         this.rightsCheckLoading = false
@@ -987,7 +1038,7 @@ export default {
           publisher: publisher
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
         this.rightsCheckErrors.push(error)
       } finally {
         this.rightsCheckLoading = false
@@ -1214,13 +1265,14 @@ export default {
         }
         this.templateDialog = false
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         this.loading = false
       }
     },
     submit: async function () {
       this.loading = true
+      this.submitResponse = null
       var httpFormData = new FormData()
       for (let i = 0; i < this.form.sections.length; i++) {
         let s = this.form.sections[i]
@@ -1233,6 +1285,10 @@ export default {
             }
           }
         }
+      }
+
+      if (this.altVersionPid) {
+        httpFormData.append('isAlternativeVersionOf', this.altVersionPid)
       }
 
       httpFormData.append('metadata', JSON.stringify(this.getMetadata()))
@@ -1564,11 +1620,20 @@ export default {
       ]
 
       let smf = []
+      let embargoDateComponent = null
       for (let fieldId of mandatory) {
         let field = fields.getField(fieldId)
-        if (field.predicate === 'ebucore:filename'){
+        if (field.predicate === 'ebucore:filename') {
           // json2form creates readonly file component so add a normal one instead
           field.mimetype = 'application/pdf'
+          smf.push(field)
+          continue
+        }
+        if (field.predicate === 'oaire:version') {
+          // do not load version
+          // this submit is supposed to be an alternative version of the loaded object
+          // so version must be changed
+          field.showValueDefinition = true
           smf.push(field)
           continue
         }
@@ -1585,11 +1650,20 @@ export default {
             }
             if (
               c.predicate === 'edm:hasType' ||
-              c.predicate === 'oaire:version' ||
               c.predicate === 'dcterms:accessRights'
-
             ) {
               c.showValueDefinition = true
+            }
+            if (c.predicate === 'date') {
+              if (c.type === 'dcterms:available') {
+                c.picker = true
+                c.hideType = true
+                c.dateLabel = this.$t('Embargo date')
+                this.showEmbargoDate = true
+                embargoDateComponent = c
+                // don't add it now, we have to add it after dcterms:accessRights
+                continue
+              }
             }
             added = true
             smf.push(c)
@@ -1606,14 +1680,22 @@ export default {
           }
           if (
             field.predicate === 'edm:hasType' ||
-            field.predicate === 'oaire:version' ||
             field.predicate === 'dcterms:accessRights'
-
           ) {
             field.showValueDefinition = true
           }
           smf.push(field)
         }
+      }
+
+      if (embargoDateComponent) {
+        let i = 0
+        for (let c of smf) {
+          if (c.predicate === 'dcterms:accessRights') {
+            i = smf.indexOf(c)
+          }
+        }
+        smf.splice(i + 1, 0, embargoDateComponent)
       }
 
       this.form.sections.push(
@@ -1956,10 +2038,54 @@ export default {
         this.validationErrors.push(this.$t('At least one person named must be affiliated with the') + ' ' + this.instanceconfig.institution)
       }
     },
+    confirm: async function () {
+      if (!this.embargoNotificationCheckbox && !this.notificationCheckbox) {
+        this.$router.push('/search')
+      }
+      this.loading = true
+      try {
+        var httpFormData = new FormData()
+
+        httpFormData.append('pid', this.submitResponse.pid)
+        if (this.submitResponse.alternatives && (this.submitResponse.alternatives.length > 0)) {
+          httpFormData.append('alternatives[]', this.submitResponse.alternatives)
+        }
+        if (this.notificationCheckbox) {
+          httpFormData.append('notification', this.notificationCheckbox)
+        }
+        if (this.embargoNotificationCheckbox) {
+          httpFormData.append('embargonotification', this.embargoNotificationCheckbox)
+        }
+
+        let response = await fetch(this.$store.state.instanceconfig.api + '/ir/notifications', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'X-XSRF-TOKEN': this.$store.state.user.token
+          },
+          body: httpFormData
+        })
+
+        let json = await response.json()
+
+        if (json.alerts && json.alerts.length > 0) {
+          this.$store.commit('setAlerts', json.alerts)
+        }
+
+        if (json.status === 200) {
+          this.$router.push('/search')
+        }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
     resetSubmission: function (self) {
       if (!self) {
         self = this
       }
+      self.submitResponse = null
       self.$store.dispatch('loadLanguages')
       self.loadTemplates()
       self.step = 1
@@ -1967,8 +2093,8 @@ export default {
     }
   },
   mounted: function () {
-    this.objectListLoad()
-    this.resetSubmission(this)
+    // this.objectListLoad()
+    // this.resetSubmission(this)
   },
   beforeRouteEnter: async function (to, from, next) {
     next(vm => {
