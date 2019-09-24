@@ -83,7 +83,7 @@ export function createRouter () {
         component: SubmitEmpty
       },
       {
-        path: '/submit/ir',
+        path: '/submit/ir/:submitform',
         name: 'submit-ir',
         component: SubmitIr
       },

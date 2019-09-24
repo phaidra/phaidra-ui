@@ -784,16 +784,13 @@ export default {
     SubmitIrLicenseInfo
   },
   computed: {
-    importedMetadata: function () {
-      if (this.doiImportData) {
-        return this.doiImportData
-      } else {
-        return null
-      }
-    },
     doiToImport: function () {
       if (this.doiImportInput) {
-        // TODO clean input
+        this.doiImportInput = this.doiImportInput.replace('https://', '')
+        this.doiImportInput = this.doiImportInput.replace('http://', '')
+        this.doiImportInput = this.doiImportInput.replace('dx.doi.org/', '')
+        this.doiImportInput = this.doiImportInput.replace('doi.org/', '')
+        this.doiImportInput = this.doiImportInput.replace('doi:', '')
         return this.doiImportInput
       } else {
         return null
@@ -801,6 +798,19 @@ export default {
     },
     jsonld: function () {
       return this.getJsonld()
+    },
+    submitformparam: function () {
+      return this.$route.params.submitform
+    },
+    irObjectTypeVocabulary: function () {
+      switch (this.submitformparam) {
+        case 'journal-article':
+          return 'irobjecttypearticle'
+        case 'book':
+          return 'irobjecttypebook'
+        default:
+          return 'irobjecttype'
+      }
     }
   },
   data () {
@@ -1460,7 +1470,7 @@ export default {
         }
 
         this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
-        this.$store.commit('enableAllVocabularyTerms', 'irobjecttype')
+        this.$store.commit('enableAllVocabularyTerms', this.irObjectTypeVocabulary)
 
         if (f.predicate === 'edm:hasType') {
           this.filterVocabulary(
@@ -1514,7 +1524,7 @@ export default {
 
         if (f.predicate === 'oaire:version') {
           this.filterVocabulary(
-            'irobjecttype',
+            this.irObjectTypeVocabulary,
             'edm:hasType',
             fields,
             f.value,
@@ -1590,8 +1600,10 @@ export default {
       }
     },
     roleInput: function (f, event) {
-      f.role = event['@id']
-      this.$emit('form-input-' + f.component, f)
+      if (event) {
+        f.role = event['@id']
+        this.$emit('form-input-' + f.component, f)
+      }
     },
     setFilename: function (f, event) {
       f.value = event.name
@@ -1600,29 +1612,69 @@ export default {
     },
     setFormFromObject: function (importedComponents) {
       this.$store.commit('enableAllVocabularyTerms', 'versiontypes')
-      this.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+      this.$store.commit('enableAllVocabularyTerms', this.irObjectTypeVocabulary)
 
       this.form = {
         sections: []
       }
 
-      let mandatory = [
-        'resource-type',
-        'file',
-        'title',
-        'role-extended',
-        'date-edtf',
-        'language',
-        'object-type',
-        'version-type',
-        'access-right',
-        'license'
-      ]
+      let mandatory = []
+
+      if (this.submitformparam === 'journal-article') {
+        mandatory = [
+          'resource-type',
+          'file',
+          'title',
+          'role-extended',
+          'date-edtf',
+          'language',
+          'object-type',
+          'version-type',
+          'access-right',
+          'license'
+        ]
+      }
+
+      if (this.submitformparam === 'book-part') {
+        mandatory = [
+          'resource-type',
+          'file',
+          'title',
+          'role-extended',
+          'date-edtf',
+          'language',
+          'series',
+          'bf-publication',
+          'object-type',
+          'version-type',
+          'access-right',
+          'license'
+        ]
+      }
+
+      if (this.submitformparam === 'book') {
+        mandatory = [
+          'resource-type',
+          'file',
+          'title',
+          'role-extended',
+          'date-edtf',
+          'language',
+          'bf-publication',
+          'object-type',
+          'version-type',
+          'access-right',
+          'license'
+        ]
+      }
 
       let smf = []
       let embargoDateComponent = null
       for (let fieldId of mandatory) {
         let field = fields.getField(fieldId)
+        if (field.predicate === 'role') {
+          field.roleVocabulary = 'irrolepredicate'
+        }
         if (field.predicate === 'ebucore:filename') {
           // json2form creates readonly file component so add a normal one instead
           field.mimetype = 'application/pdf'
@@ -1639,9 +1691,16 @@ export default {
         }
         let added = false
         for (let c of importedComponents) {
+          if (c.predicate === 'role') {
+            c.roleVocabulary = 'irrolepredicate'
+          }
           if (c.predicate === field.predicate) {
             if (c.predicate === 'edm:hasType') {
-              c.vocabulary = 'irobjecttype'
+              c.vocabulary = this.irObjectTypeVocabulary
+              if (this.submitformparam === 'book-part') {
+                c.value = 'https://vocab.phaidra.org/vocabulary/XA52-09WA'
+                c.disabled = true
+              }
               c.label = this.$t('Type of publication')
               c.hint = this.$t('The publication type you choose can restrict the possible version type values.')
             }
@@ -1671,7 +1730,11 @@ export default {
         }
         if (!added) {
           if (field.predicate === 'edm:hasType') {
-            field.vocabulary = 'irobjecttype'
+            field.vocabulary = this.irObjectTypeVocabulary
+            if (this.submitformparam === 'book-part') {
+              field.value = 'https://vocab.phaidra.org/vocabulary/XA52-09WA'
+              field.disabled = true
+            }
             field.label = this.$t('Type of publication')
             field.hint = this.$t('The publication type you choose can restrict the possible version type values.')
           }
@@ -1707,19 +1770,49 @@ export default {
         }
       )
 
-      let optional = [
-        'description',
-        'funder',
-        'project',
-        'alternate-identifier',
-        'citation',
-        'keyword',
-        'series',
-        'page-start',
-        'page-end',
-        'bf-publication',
-        'gnd-subject'
-      ]
+      let optional = []
+
+      if (this.submitformparam === 'journal-article') {
+        optional = [
+          'description',
+          'funder',
+          'project',
+          'alternate-identifier',
+          'citation',
+          'keyword',
+          'series',
+          'page-start',
+          'page-end',
+          'bf-publication',
+          'gnd-subject'
+        ]
+      }
+
+      if (this.submitformparam === 'book-part') {
+        optional = [
+          'description',
+          'funder',
+          'project',
+          'alternate-identifier',
+          'citation',
+          'keyword',
+          'page-start',
+          'page-end',
+          'gnd-subject'
+        ]
+      }
+
+      if (this.submitformparam === 'book') {
+        optional = [
+          'description',
+          'funder',
+          'project',
+          'alternate-identifier',
+          'citation',
+          'keyword',
+          'gnd-subject'
+        ]
+      }
 
       let sof = []
       for (let fieldId of optional) {
@@ -1728,7 +1821,7 @@ export default {
         for (let c of importedComponents) {
           if (c.predicate === field.predicate) {
             if (c.predicate === 'datacite:hasIdentifier') {
-              c.label = 'DOI'
+              c.label = c.value.contains('isbn:') ? 'ISBN' : 'DOI'
               c.multiplicable = true
             }
             added = true
@@ -1746,6 +1839,12 @@ export default {
             field.multiplicable = true
           }
           sof.push(field)
+          if ((fieldId === 'datacite:hasIdentifier') && ((this.submitformparam === 'book') || (this.submitformparam === 'book-part'))) {
+            let isbn = fields.getField('alternate-identifier')
+            isbn.label = 'ISBN'
+            isbn.multiplicable = true
+            sof.push(isbn)
+          }
         }
       }
 
@@ -1760,7 +1859,7 @@ export default {
     },
     resetForm: function (self, doiImportData, importedComponents) {
       self.$store.commit('enableAllVocabularyTerms', 'versiontypes')
-      self.$store.commit('enableAllVocabularyTerms', 'irobjecttypes')
+      self.$store.commit('enableAllVocabularyTerms', this.irObjectTypeVocabulary)
 
       self.form = {
         sections: []
@@ -1787,6 +1886,7 @@ export default {
         for (let author of doiImportData.authors) {
           let role = fields.getField('role-extended')
           role.role = 'role:aut'
+          role.roleVocabulary = 'irrolepredicate'
           role.ordergroup = 'roles'
           role.firstname = author.firstname
           role.lastname = author.lastname
@@ -1795,6 +1895,7 @@ export default {
       } else {
         let role = fields.getField('role-extended')
         role.role = 'role:aut'
+        role.roleVocabulary = 'irrolepredicate'
         role.ordergroup = 'roles'
         smf.push(role)
       }
@@ -1812,14 +1913,27 @@ export default {
       smf.push(fields.getField('language'))
 
       let otf = fields.getField('object-type')
-      otf.vocabulary = 'irobjecttype'
+      otf.vocabulary = this.irObjectTypeVocabulary
       otf.label = self.$t('Type of publication')
       otf.hint = self.$t('The publication type you choose can restrict the possible version type values.')
       otf.showValueDefinition = true
       if (doiImportData && doiImportData.publicationTypeId) {
         otf.value = doiImportData.publicationTypeId
       }
+      if (this.submitformparam === 'book-part') {
+        otf.value = 'https://vocab.phaidra.org/vocabulary/XA52-09WA'
+        otf.disabled = true
+      }
       smf.push(otf)
+
+      if ((this.submitformparam === 'book') || (this.submitformparam === 'book-part')) {
+        let pf = fields.getField('bf-publication')
+        pf.multiplicable = false
+        if (doiImportData && doiImportData.publisher) {
+          pf.publisherName = doiImportData.publisher
+        }
+        smf.push(pf)
+      }
 
       let vtf = fields.getField('version-type')
       vtf.showValueDefinition = true
@@ -1864,6 +1978,13 @@ export default {
       }
       sof.push(aif)
 
+      if ((this.submitformparam === 'book') || (this.submitformparam === 'book-part')) {
+        let isbn = fields.getField('alternate-identifier')
+        isbn.label = 'ISBN'
+        isbn.multiplicable = true
+        sof.push(isbn)
+      }
+
       let modf = fields.getField('date-edtf')
       modf.picker = true
       modf.type = 'dcterms:modified'
@@ -1903,12 +2024,14 @@ export default {
       }
       sof.push(pe)
 
-      let pf = fields.getField('bf-publication')
-      pf.multiplicable = false
-      if (doiImportData && doiImportData.publisher) {
-        pf.publishername = doiImportData.publisher
+      if (this.submitformparam === 'journal-article') {
+        let pf = fields.getField('bf-publication')
+        pf.multiplicable = false
+        if (doiImportData && doiImportData.publisher) {
+          pf.publisherName = doiImportData.publisher
+        }
+        sof.push(pf)
       }
-      sof.push(pf)
 
       let gndf = fields.getField('gnd-subject')
       gndf.exactvoc = 'SubjectHeadingSensoStricto'
@@ -2028,6 +2151,22 @@ export default {
               if (f.mimetype.length < 1) {
                 f.mimetypeErrorMessages.push(this.$t('Please select'))
                 this.validationStatus = 'error'
+              }
+            }
+            if (f.component === 'p-bf-publication') {
+              f.publisherNameErrorMessages = []
+              f.publisherOrgUnitErrorMessages = []
+              if (f.publisherType === 'select') {
+                if (f.publisherOrgUnit.length < 1) {
+                  f.publisherOrgUnitErrorMessages.push(this.$t('Missing publisher'))
+                  this.validationStatus = 'error'
+                }
+              }
+              if (f.publisherType === 'other') {
+                if (f.publisherName.length < 1) {
+                  f.publisherNameErrorMessages.push(this.$t('Missing publisher'))
+                  this.validationStatus = 'error'
+                }
               }
             }
           }
