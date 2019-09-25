@@ -11,7 +11,6 @@ import MetadataEditor from '@/components/MetadataEditor'
 import SubmitResource from '@/components/SubmitResource'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
 import SubmitEmpty from '@/components/SubmitEmpty'
-import SubmitIr from '@/components/SubmitIr'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
 import AddMember from '@/components/AddMember'
@@ -81,11 +80,6 @@ export function createRouter () {
         path: '/submit/empty',
         name: 'submit-empty',
         component: SubmitEmpty
-      },
-      {
-        path: '/submit/ir/:submitform',
-        name: 'submit-ir',
-        component: SubmitIr
       },
       {
         path: '/addmember/:pid',

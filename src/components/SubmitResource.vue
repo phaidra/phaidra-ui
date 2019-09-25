@@ -2,22 +2,6 @@
   <v-container>
     <v-row>
       <v-col>
-        <template v-if="$route.params.cmodel === 'ir'">
-          <v-btn raised color="primary mr-2" :to="{ name: 'submit-ir', params: { submitform: 'journal-article' } }">
-            {{$t('Journal article')}}
-          </v-btn>
-          {{$t('Journal article.')}}
-          <v-divider class="my-4"></v-divider>
-          <v-btn raised color="primary mr-2" :to="{ name: 'submit-ir', params: { submitform: 'book' } }">
-            {{$t('Book')}}
-          </v-btn>
-          {{$t('Book.')}}
-          <v-divider class="my-4"></v-divider>
-          <v-btn raised color="primary mr-2" :to="{ name: 'submit-ir', params: { submitform: 'book-part' } }">
-            {{$t('Book chapter')}}
-          </v-btn>
-          {{$t('Book chapter.')}}
-        </template>
         <template v-if="$route.params.cmodel === 'document'">
           <v-btn raised color="primary mr-2" :to="{ name: 'submitform', params: { cmodel: 'document', submitform: 'digital' } }">
             {{$t('Born-digital')}}
