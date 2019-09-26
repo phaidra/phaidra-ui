@@ -435,22 +435,5 @@ export default {
   lang_yo: 'Yoruba',
   lang_za: 'Zhuang',
   lang_zh: 'Chinese',
-  lang_zu: 'Zulu',
-
-  'SUBMIT_START_1': 'All members of Vienna University are invited to upload their academic publications to u:scholar-sandbox, the university\'s institutional repository. Almost all file formats are allowed. Details can be found in our {0}.',
-  'SUBMIT_START_2': 'Please note that document upload to u:scholar is only permitted {0} (e.g. as granted by the publisher or by other rights holders)!',
-  'SUBMIT_START_3': 'If you plan on uploading {0}, please {1} beforehand.',
-  'SUBMIT_START_4': 'If possible please upload a PDF version to allow your colleagues to read the file without too much of an inconvenience.',
-  'SUBMIT_START_5': 'Please contact {0} if the file size exceeds 500 MB.',
-  'SUBMIT_START_6': 'If you have any questions, please consult our information pages on {1}. For further assistance, you can contact university library staff at {1}.',
-  'SUBMIT_TOU_1': 'The documents, materials and abstracts accessible through the publication service u:scholar are governed by applicable copyright laws and may be used freely for academic and personal purposes. Different rights of use may apply for each individual document and/or material as well as abstracts.',
-  'SUBMIT_TOU_2': 'The rights holder or the copyright holder (hereinafter simply referred to as "rights holder") have granted the University of Vienna as the service operator the non-exclusive right to electronic storage, particularly in databases, for public access, distribution and electronic transmission. Furthermore, the service operator is also permitted to archive and copy data if this should be required for the above purposes. In addition, the service operator has the right to notify third parties of the content and distribute it to them, particularly for the purpose of long-term preservation. For the same purpose, the service operator is permitted to make copies and to convert the material to other electronic or physical formats while preserving the integrity of the content. The service operator reserves the right to outsource the technical infrastructure for the operation with a third party without having to obtain the consent of the owner, provided there are no legal restrictions.',
-  'SUBMIT_TOU_3': 'The rights holder assures the service operator that no rights of third parties (e.g. co-authors, publishers, funding institutions) will be violated in publishing these documents, materials or parts thereof (e.g. images) as well as abstracts. In cases of doubt or the perceived or actual occurrence of related legal restrictions, the rights holder is to immediately inform the service provider. The rights holder agrees to indemnify the operator from any third-party claims.',
-  'SUBMIT_TOU_4': 'I have read and accepted the Terms of Use, which are based those of the system {0}.',
-  'PUBLISHER_HERAUSGEBERIN': 'Publisher',
-  'PUBLISHER_VERLAG': 'Publisher',
-  'JOURNAL_ERCHIENENIN': 'Journal',
-  'AUTHOR_PREPRINT': 'Author\'s preprint',
-  'AUTHOR_POSTPRINT': 'Author\'s postprint',
-  'PUBLISHER_PDF': 'Publisher\'s Version/PDF'
+  lang_zu: 'Zulu'
 }
