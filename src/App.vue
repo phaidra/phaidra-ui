@@ -260,7 +260,7 @@ export default {
     if (token) {
       this.$store.commit('setToken', token)
       if (!this.user.username) {
-        // TODO get user from token
+        this.$store.dispatch('getLoginData')
       }
     }
   },

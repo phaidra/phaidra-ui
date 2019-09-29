@@ -65,12 +65,28 @@ export default {
       console.log(error)
     }
   },
+  async getLoginData ({ commit, dispatch, state }) {
+    try {
+      let response = await axios.get(state.config.api + '/directory/user/data', {
+        headers: {
+          'X-XSRF-TOKEN': state.user.token
+        }
+      })
+      if (response.data.alerts && response.data.alerts.length > 0) {
+        commit('setAlerts', response.data.alerts)
+      }
+      console.log('[' + state.user.username + '] got user data firstname[' + response.data.user_data.firstname + '] lastname[' + response.data.user_data.lastname + '] email[' + response.data.user_data.email + ']')
+      commit('setLoginData', response.data.user_data)
+    } catch (error) {
+      console.log(error)
+    }
+  },
   async login ({ commit, dispatch, state }, credentials) {
     console.log('[' + credentials.username + '] logging in')
     commit('clearStore')
     commit('setUsername', credentials.username)
     try {
-      let response = await axios.get(state.instanceconfig.api + '/signin', {
+      let response = await axios.get(state.config.api + '/signin', {
         headers: {
           'Authorization': 'Basic ' + btoa(credentials.username + ':' + credentials.password)
         }
@@ -82,16 +98,7 @@ export default {
         console.log('[' + state.user.username + '] login successful token[' + response.data['XSRF-TOKEN'] + '], fetching user data')
         commit('setToken', response.data['XSRF-TOKEN'])
         document.cookie = 'X-XSRF-TOKEN=' + response.data['XSRF-TOKEN']
-        let userdatares = await axios.get(state.instanceconfig.api + '/directory/user/' + state.user.username + '/data', {
-          headers: {
-            'X-XSRF-TOKEN': state.user.token
-          }
-        })
-        if (userdatares.data.alerts && userdatares.data.alerts.length > 0) {
-          commit('setAlerts', userdatares.data.alerts)
-        }
-        console.log('[' + state.user.username + '] got user data firstname[' + userdatares.data.user_data.firstname + '] lastname[' + userdatares.data.user_data.lastname + '] email[' + userdatares.data.user_data.email + ']')
-        commit('setLoginData', userdatares.data.user_data)
+        dispatch('getLoginData')
       }
     } catch (error) {
       console.log(error)
