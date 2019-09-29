@@ -5,7 +5,18 @@ export default {
   async fetchObjectInfo ({ commit, state }, pid) {
     console.log('[' + pid + '] fetching object info')
     try {
-      let response = await axios.get(state.instanceconfig.api + '/object/' + pid + '/info')
+      let response
+      if (state.user.token) {
+        response = await axios.get(state.instanceconfig.api + '/object/' + pid + '/info',
+          {
+            headers: {
+              'X-XSRF-TOKEN': state.user.token
+            }
+          }
+        )
+      } else {
+        response = await axios.get(state.instanceconfig.api + '/object/' + pid + '/info')
+      }
       console.log('[' + pid + '] fetching object info done')
       commit('setObjectInfo', response.data.info)
     } catch (error) {
@@ -31,7 +42,18 @@ export default {
         let members = []
         for (let doc of response.data.response.docs) {
           console.log('[' + pid + '] fetching object info of member ' + doc.pid)
-          let memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info')
+          let memresponse
+          if (state.user.token) {
+            memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info',
+              {
+                headers: {
+                  'X-XSRF-TOKEN': state.user.token
+                }
+              }
+            )
+          } else {
+            memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info')
+          }
           console.log('[' + pid + '] fetching object info of member ' + doc.pid + ' done')
           members.push(memresponse.data.info)
         }
