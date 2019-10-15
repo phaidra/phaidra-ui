@@ -574,6 +574,8 @@ export default {
   'rdau:P60101': 'Series/Part of',
   'rdau:P60227': 'Is motion picture adaptation of',
 
+  'rdax:P00009': 'Zuordnung',
+
   'dcterms:spatial': 'Depicted/Represented place',
   'vra:placeOfCreation': 'Place of creation',
   'vra:placeOfRepository': 'Place of repository',

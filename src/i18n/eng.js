@@ -70,6 +70,8 @@ export default {
   'dcterms:audience': 'Audience',
   'rdau:P60059': 'Regional encoding',
 
+  'rdax:P00009': 'Association',
+
   'ebucore:filename': 'Filename',
   'ebucore:hasMimeType': 'MIME Type',
 

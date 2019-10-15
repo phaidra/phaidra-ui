@@ -1,52 +1,30 @@
 <template>
 
   <v-container fluid>
-    <v-row v-if="metadata">
-
-      <v-col>
-        <router-link :to="{ name: 'detail', params: { pid: pid } }">&laquo; {{ pid }}</router-link>
+    <v-row v-if="objectInfo">
+      <v-col v-if="objectInfo.metadata['JSON-LD']">
+        <code>{{ objectInfo.metadata['JSON-LD'] }}</code>
       </v-col>
-
-      <v-col v-if="metadata['uwmetadata']">
-        <v-tabs v-model="active" slider-color="primary" color="lighten-3">
-          <v-tab v-for="(node,i) in metadata.uwmetadata" :key="i" :href="'#' + node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" ripple>{{ $t('uwm_' + node.xmlname) }}</v-tab>
-        </v-tabs>
-        <v-tabs-items v-model="active">
-          <v-tab-item v-for="(node,i) in metadata.uwmetadata" :key="i" :id="node.xmlname" v-show="(node.xmlname !== 'etheses') && node.xmlname !== 'annotation'" class="pa-3">
-            <v-card flat class="grey lighten-5">
-              <v-card-text>
-                <uwmetadata-renderer v-for="(child,i) in node.children" :key="i" :node="child" :path="'uwm_' + node.xmlname"></uwmetadata-renderer>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
-      </v-col>
-
-      <v-col v-if="metadata['JSON-LD']">
-      </v-col>
-
     </v-row>
-
   </v-container>
 
 </template>
 
 <script>
-import UwmetadataRenderer from '@/components/UwmetadataRenderer'
+import configjs from '../config/phaidra-ui'
+import axios from 'axios'
 import { context } from '../mixins/context'
+import { config } from '../mixins/config'
 
 export default {
   name: 'metadata',
-  mixins: [ context ],
-  components: {
-    UwmetadataRenderer
-  },
+  mixins: [ context, config ],
   computed: {
-    pid: function () {
-      return this.$route.params.pid
+    routepid: function () {
+      return this.$store.state.route.params.pid
     },
-    metadata: function () {
-      return this.$store.state.object.metadata
+    objectInfo: function () {
+      return this.$store.state.objectInfo
     }
   },
   data () {
@@ -55,23 +33,30 @@ export default {
     }
   },
   methods: {
-    next () {
-      this.active = this.tabs[(this.tabs.indexOf(this.active) + 1) % this.tabs.length]
+    async fetchAsyncData (self, pid) {
+      await self.$store.dispatch('fetchObjectInfo', pid)
     }
   },
-  beforeRouteEnter: function (to, from, next) {
+  serverPrefetch () {
+    console.log('[' + this.$store.state.route.params.pid + '] prefetch')
+    return this.fetchAsyncData(this, this.$store.state.route.params.pid)
+  },
+  beforeRouteEnter: async function (to, from, next) {
+    let inforesponse
+    try {
+      console.log('[' + to.params.pid + '] fetching object info')
+      inforesponse = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
+      console.log('[' + to.params.pid + '] fetching object info done')
+    } catch (error) {
+      console.error(error)
+    }
     next(vm => {
-      vm.$store.commit('setMetadata', null)
-      vm.$store.dispatch('loadMetadata', to.params.pid).then(() => {
-        next()
-      })
+      vm.$store.commit('setObjectInfo', inforesponse.data.info)
     })
   },
-  beforeRouteUpdate: function (to, from, next) {
-    this.$store.commit('setMetadata', null)
-    this.$store.dispatch('loadMetadata', to.params.pid).then(() => {
-      next()
-    })
+  beforeRouteUpdate: async function (to, from, next) {
+    await this.fetchAsyncData(this, to.params.pid)
+    next()
   }
 }
 </script>

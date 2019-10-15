@@ -67,7 +67,7 @@ export default {
   },
   async getLoginData ({ commit, dispatch, state }) {
     try {
-      let response = await axios.get(state.config.api + '/directory/user/data', {
+      let response = await axios.get(state.instanceconfig.api + '/directory/user/data', {
         headers: {
           'X-XSRF-TOKEN': state.user.token
         }
@@ -86,7 +86,7 @@ export default {
     commit('clearStore')
     commit('setUsername', credentials.username)
     try {
-      let response = await axios.get(state.config.api + '/signin', {
+      let response = await axios.get(state.instanceconfig.api + '/signin', {
         headers: {
           'Authorization': 'Basic ' + btoa(credentials.username + ':' + credentials.password)
         }
