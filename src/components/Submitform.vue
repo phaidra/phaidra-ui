@@ -62,7 +62,7 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -92,6 +92,8 @@ export default {
       psc.type = 'dcterms:spatial'
       s.push(psc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getPicturePOGeneralSection: function () {
@@ -101,13 +103,9 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -135,15 +133,13 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getPictureDigitalFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
-
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
 
       s.push(fields.getField('license'))
 
@@ -155,10 +151,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('license'))
 
       s.push(fields.getField('rights'))
@@ -168,10 +160,6 @@ export default {
     getPictureDigitizedFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
-
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
 
       s.push(fields.getField('license'))
 
@@ -186,7 +174,7 @@ export default {
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('condition-note'))
 
@@ -232,10 +220,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('license'))
 
       s.push(fields.getField('rights'))
@@ -245,10 +229,6 @@ export default {
     getDocumentDigitalFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
-
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
 
       s.push(fields.getField('license'))
 
@@ -260,10 +240,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('license'))
 
       s.push(fields.getField('rights'))
@@ -274,10 +250,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('license'))
 
       s.push(fields.getField('rights'))
@@ -287,10 +259,6 @@ export default {
     getAudioDigitalFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
-
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
 
       s.push(fields.getField('dce-format-vocab'))
 
@@ -306,10 +274,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('dce-format-vocab'))
 
       s.push(fields.getField('duration'))
@@ -323,10 +287,6 @@ export default {
     getVideoDigitalFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
-
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
 
       s.push(fields.getField('dce-format-vocab'))
 
@@ -342,10 +302,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('dce-format-vocab'))
 
       s.push(fields.getField('duration'))
@@ -360,10 +316,6 @@ export default {
       let s = []
       s.push(fields.getField('file'))
 
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
-
       s.push(fields.getField('dce-format-vocab'))
 
       s.push(fields.getField('license'))
@@ -375,10 +327,6 @@ export default {
     getDataResearchdataFileSection: function () {
       let s = []
       s.push(fields.getField('file'))
-
-      let mime = fields.getField('mime-type')
-      // TODO: filter
-      s.push(mime)
 
       s.push(fields.getField('dce-format-vocab'))
 
@@ -395,7 +343,7 @@ export default {
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('condition-note'))
 
@@ -446,13 +394,9 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -479,6 +423,8 @@ export default {
       let sc = fields.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
+
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -491,7 +437,7 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -519,6 +465,8 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getPictureMapSubjectSection: function () {
@@ -528,7 +476,7 @@ export default {
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('condition-note'))
 
@@ -558,6 +506,7 @@ export default {
 
       let ci = fields.getField('series')
       ci.predicate = 'rdau:P60101'
+      ci.label = this.$t('Contained in')
       s.push(ci)
 
       s.push(fields.getField('accession-number'))
@@ -593,9 +542,11 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
+
+      s.push(fields.getField('number-of-pages'))
 
       s.push(fields.getField('note'))
 
@@ -623,6 +574,8 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getDocumentPosterGeneralSection: function () {
@@ -638,11 +591,13 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
       s.push(fields.getField('note'))
+
+      s.push(fields.getField('number-of-pages'))
 
       s.push(fields.getField('language'))
 
@@ -666,7 +621,12 @@ export default {
 
       s.push(fields.getField('project'))
 
-      s.push(fields.getField('funder'))
+      let fnd = fields.getField('funder')
+      fnd.multilingial = false
+      fnd.multiplicable = true
+      s.push(fnd)
+
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -679,11 +639,13 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
       s.push(fields.getField('note'))
+
+      s.push(fields.getField('number-of-pages'))
 
       s.push(fields.getField('digitization-note'))
 
@@ -703,6 +665,8 @@ export default {
 
       s.push(fields.getField('temporal-coverage'))
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getDocumentDigitizedSubjectSection: function () {
@@ -712,7 +676,9 @@ export default {
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('description'))
+
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('condition-note'))
 
@@ -731,6 +697,10 @@ export default {
       let di = fields.getField('date-edtf')
       di.type = 'dcterms:issued'
       s.push(di)
+
+      let pc = fields.getField('spatial-getty')
+      pc.type = 'vra:placeOfCreation'
+      s.push(pc)
 
       s.push(fields.getField('physical-location'))
 
@@ -763,9 +733,11 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
+
+      s.push(fields.getField('table-of-contents'))
 
       s.push(fields.getField('note'))
 
@@ -801,7 +773,7 @@ export default {
 
       s.push(fields.getField('temporal-coverage'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -812,17 +784,15 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(fields.getField('genre'))
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
+
+      s.push(fields.getField('table-of-contents'))
 
       s.push(fields.getField('note'))
 
@@ -860,7 +830,7 @@ export default {
 
       s.push(fields.getField('temporal-coverage'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -875,7 +845,9 @@ export default {
       // TODO: filter
       s.push(ct)
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('description'))
+
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('condition-note'))
 
@@ -930,9 +902,11 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
+
+      s.push(fields.getField('table-of-contents'))
 
       s.push(fields.getField('note'))
 
@@ -964,7 +938,7 @@ export default {
 
       s.push(fields.getField('temporal-coverage'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -975,17 +949,15 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(fields.getField('genre'))
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
+
+      s.push(fields.getField('table-of-contents'))
 
       s.push(fields.getField('note'))
 
@@ -1017,7 +989,7 @@ export default {
 
       s.push(fields.getField('temporal-coverage'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -1032,7 +1004,7 @@ export default {
       // TODO: filter
       s.push(ct)
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('condition-note'))
 
@@ -1085,7 +1057,7 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -1119,6 +1091,8 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getDataResearchdataGeneralSection: function () {
@@ -1134,7 +1108,7 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -1146,17 +1120,12 @@ export default {
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let da = fields.getField('date-edtf')
-      da.type = 'dcterms:available'
-      s.push(da)
-
-      let di = fields.getField('date-edtf')
-      di.type = 'dcterms:issued'
-      s.push(di)
-
       s.push(fields.getField('project'))
 
-      s.push(fields.getField('funder'))
+      let fnd = fields.getField('funder')
+      fnd.multilingial = false
+      fnd.multiplicable = true
+      s.push(fnd)
 
       s.push(fields.getField('citation'))
 
@@ -1174,6 +1143,8 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getResourceGeneralGeneralSection: function () {
@@ -1189,7 +1160,7 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
@@ -1215,6 +1186,8 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getCollectionDigitalGeneralSection: function () {
@@ -1226,15 +1199,13 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
 
-      s.push(fields.getField('note'))
-
       s.push(fields.getField('table-of-contents'))
 
-      s.push(fields.getField('association'))
+      s.push(fields.getField('note'))
 
       s.push(fields.getField('project'))
 
@@ -1247,6 +1218,8 @@ export default {
       let sc = fields.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
+
+      s.push(fields.getField('association'))
 
       return s
     },
@@ -1259,17 +1232,15 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('description'))
+
+      s.push(fields.getField('table-of-contents'))
 
       s.push(fields.getField('note'))
 
       s.push(fields.getField('digitization-note'))
-
-      s.push(fields.getField('table-of-contents'))
-
-      s.push(fields.getField('association'))
 
       s.push(fields.getField('project'))
 
@@ -1283,6 +1254,8 @@ export default {
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
+      s.push(fields.getField('association'))
+
       return s
     },
     getCollectionDigitizedSubjectSection: function () {
@@ -1294,7 +1267,7 @@ export default {
 
       s.push(fields.getField('title'))
 
-      s.push(fields.getField('role'))
+      s.push(fields.getField('role-extended'))
 
       s.push(fields.getField('provenance'))
 
@@ -1390,18 +1363,18 @@ export default {
           fields: this.getPictureMapGeneralSection()
         },
         {
-          title: 'File',
-          type: 'file',
-          disablemenu: true,
-          id: 2,
-          fields: this.getPictureMapFileSection()
-        },
-        {
           title: 'Represented object',
           type: 'phaidra:Subject',
           disablemenu: true,
-          id: 3,
+          id: 2,
           fields: this.getPictureMapSubjectSection()
+        },
+        {
+          title: 'File',
+          type: 'file',
+          disablemenu: true,
+          id: 3,
+          fields: this.getPictureMapFileSection()
         }
       ]
     },

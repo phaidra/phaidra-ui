@@ -95,6 +95,8 @@ export default {
 
   'SELECTION_LIMIT': 'Cannot select more than {limit} results.',
 
+  'OTHER_FEMININE': 'Other',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',
   uwm_etheses_note_1: 'Note 1',

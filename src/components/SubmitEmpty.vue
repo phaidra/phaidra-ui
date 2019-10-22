@@ -1,8 +1,5 @@
 <template>
   <v-container>
-    <v-col>
-      <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-    </v-col>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>Submit</v-toolbar-title>
