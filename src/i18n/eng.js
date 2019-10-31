@@ -63,6 +63,7 @@ export default {
 
   'dcterms:provenance': 'Provenance',
 
+  'rdau:P60550': 'Extent',
   'schema:numberOfPages': 'Number of pages',
   'bf:soundCharacteristic': 'Sound characteristic',
   'bf:supplementaryContent': 'Supplementary content',

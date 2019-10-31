@@ -591,6 +591,7 @@ export default {
   'bf:shelfMark': 'Signatur',
   'dcterms:provenance': 'Provenienz',
 
+  'rdau:P60550': 'Umfang',
   'schema:numberOfPages': 'Seitenanzahl',
   'bf:soundCharacteristic': 'Sound characteristic',
   'bf:supplementaryContent': 'Supplementary content',
