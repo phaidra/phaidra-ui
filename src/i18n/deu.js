@@ -540,7 +540,7 @@ export default {
   'seconds': 'Sekunden',
   'Language of subtitles': 'Untertitelsprache',
 
-  'datacite:hasIdentifier': 'Alternativer Identifikator',
+  'rdam:P30004': 'Alternativer Identifikator',
 
   'bf:Title': 'Titel',
   'bf:ParallelTitle': 'Parallel titel',
