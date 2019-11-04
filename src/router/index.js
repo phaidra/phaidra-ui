@@ -10,6 +10,7 @@ import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
 import SubmitResource from '@/components/SubmitResource'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
+import SubmitBruckneruni from '@/components/SubmitBruckneruni'
 import SubmitEmpty from '@/components/SubmitEmpty'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
@@ -65,6 +66,11 @@ export function createRouter () {
         path: '/submit/ksa-eda',
         name: 'submit-ksa-eda',
         component: SubmitKsaEda
+      },
+      {
+        path: '/submit/bruckneruni',
+        name: 'submit-bruckneruni',
+        component: SubmitBruckneruni
       },
       {
         path: '/submit/:cmodel',

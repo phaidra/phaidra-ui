@@ -102,6 +102,15 @@
       </v-col>
       <v-col cols="2" class="mx-2">
         <v-hover v-slot:default="{ hover }">
+          <router-link :to="{ name: 'submit-bruckneruni' }">
+            <v-row align="center">
+              <span class="title font-weight-light ml-2 primary--text">{{ $t("Bruckneruni") }}</span>
+            </v-row>
+          </router-link>
+        </v-hover>
+      </v-col>
+      <v-col cols="2" class="mx-2">
+        <v-hover v-slot:default="{ hover }">
           <router-link :to="{ name: 'submit-empty' }">
             <v-row align="center">
               <span class="title font-weight-light ml-2 primary--text">{{ $t("Empty") }}</span>

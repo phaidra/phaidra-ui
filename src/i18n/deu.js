@@ -633,5 +633,6 @@ export default {
   'Save': 'Speichern',
   'Sort': 'Sortieren',
   'Here you can sort members of this object (drag & drop).': 'Hier können Sie die Objekte innerhalb des Containers sortieren (drag & drop).',
-  'OTHER_FEMININE': 'Andere'
+  'OTHER_FEMININE': 'Andere',
+  'PUBLISHER_VERLAG': 'Verlag'
 }

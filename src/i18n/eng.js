@@ -98,6 +98,8 @@ export default {
 
   'OTHER_FEMININE': 'Other',
 
+  'PUBLISHER_VERLAG': 'Publisher',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',
   uwm_etheses_note_1: 'Note 1',
