@@ -443,6 +443,11 @@ address {
   border-top: 1px solid #bdbdbd;
 }
 
+.border-left {
+  border-left: 1px solid;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
 #app .v-btn {
   text-transform: none;
 }

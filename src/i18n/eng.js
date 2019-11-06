@@ -49,8 +49,8 @@ export default {
 
   'schema:pageStart': 'From page',
   'schema:pageEnd': 'To page',
-  'rdau:P60193': 'Journal/Series',
-  'rdau:P60101': 'Series/Part of',
+  'rdau:P60193': 'Is in series',
+  'rdau:P60101': 'Is contained in',
   'rdau:P60227': 'Is motion picture adaptation of',
   'bf:provisionActivity': 'Provision activity: Publication',
   'cito:cites': 'Cites',

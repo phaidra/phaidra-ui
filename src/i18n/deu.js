@@ -570,8 +570,8 @@ export default {
 
   'schema:pageStart': 'von Seite',
   'schema:pageEnd': 'bis Seite',
-  'rdau:P60193': 'Journal/Series',
-  'rdau:P60101': 'Series/Part of',
+  'rdau:P60193': 'Is in series',
+  'rdau:P60101': 'Is contained in',
   'rdau:P60227': 'Is motion picture adaptation of',
 
   'rdax:P00009': 'Zuordnung',
