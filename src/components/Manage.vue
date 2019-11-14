@@ -2,7 +2,7 @@
   <v-row>
     <v-col v-if="signedin">
       <p-m-sort v-if="members.length > 0" :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members=$event" @order-saved="orderSaved($event)"></p-m-sort>
-      <p-m-delete v-if="appsettings.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
+      <p-m-delete v-if="appconfig.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
     </v-col>
   </v-row>
 </template>
@@ -11,6 +11,7 @@
 import qs from 'qs'
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
+import configjs from '../config/phaidra-ui'
 
 export default {
   name: 'manage',
@@ -66,7 +67,7 @@ export default {
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = self.instance.solr + '/select?' + query
+      var url = configjs.instances[configjs.defaultinstance].solr + '/select?' + query
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
@@ -98,7 +99,7 @@ export default {
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = self.instance.solr + '/select?' + query
+      var url = configjs.instances[configjs.defaultinstance].solr + '/select?' + query
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
