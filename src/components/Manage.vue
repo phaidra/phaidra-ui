@@ -11,7 +11,6 @@
 import qs from 'qs'
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
-import configjs from '../config/phaidra-ui'
 
 export default {
   name: 'manage',
@@ -67,7 +66,7 @@ export default {
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = configjs.instances[configjs.defaultinstance].solr + '/select?' + query
+      var url = this.instanceconfig.solr + '/select?' + query
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
@@ -99,7 +98,7 @@ export default {
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = configjs.instances[configjs.defaultinstance].solr + '/select?' + query
+      var url = this.instanceconfig.solr + '/select?' + query
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
