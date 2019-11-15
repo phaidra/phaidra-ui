@@ -2,7 +2,7 @@
   <v-row>
     <v-col v-if="signedin">
       <p-m-sort v-if="members.length > 0" :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members=$event" @order-saved="orderSaved($event)"></p-m-sort>
-      <p-m-delete v-if="appsettings.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
+      <p-m-delete v-if="appconfig.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
     </v-col>
   </v-row>
 </template>
@@ -66,7 +66,7 @@ export default {
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = self.instance.solr + '/select?' + query
+      var url = this.instanceconfig.solr + '/select?' + query
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
@@ -98,7 +98,7 @@ export default {
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      var url = self.instance.solr + '/select?' + query
+      var url = this.instanceconfig.solr + '/select?' + query
       var promise = fetch(url, {
         method: 'GET',
         mode: 'cors'
