@@ -6,7 +6,8 @@ module.exports = {
   pluginOptions: {
     ssr: {
       defaultTitle: 'phaidra-ui-ssr',
-      favicon: './static/favicon.ico'
+      favicon: './static/favicon.ico',
+      clustered: true
     }
   },
   transpileDependencies: [

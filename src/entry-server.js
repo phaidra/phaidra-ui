@@ -1,15 +1,21 @@
 import { createApp } from './main'
 
+const prepareUrlForRouting = url => {
+  const { BASE_URL } = process.env
+  return url.startsWith(BASE_URL.replace(/\/$/, ''))
+    ? url.substr(BASE_URL.length)
+    : url
+}
+
 export default context => {
   return new Promise(async (resolve, reject) => {
     const {
       app,
       router,
-      store
+      store,
     } = await createApp()
 
-    console.log('processing ' + context.url)
-    router.push(context.url)
+    router.push(prepareUrlForRouting(context.url))
 
     router.onReady(() => {
       context.rendered = () => {
@@ -19,6 +25,7 @@ export default context => {
         // is used for the renderer, the state will automatically be
         // serialized and injected into the HTML as `window.__INITIAL_STATE__`.
         context.state = store.state
+
       }
       resolve(app)
     }, reject)
