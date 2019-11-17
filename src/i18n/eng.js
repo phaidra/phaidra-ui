@@ -90,6 +90,8 @@ export default {
   'vra:material': 'Material',
   'vra:hasInscription': 'Inscription',
 
+  'phaidra:systemTag': 'System tag',
+
   'MEMBERS_DELETE_ALERT_CONTAINER': 'This object is a Container with {nrmembers} members. Only an empty Container can be deleted. If you want to delete this object, you need to remove all members from this Container or delete them first.',
   'DELETE_OBJECT': 'Here you can delete object {pid}.',
   'DELETE_OBJECT_CONFIRM': 'Are you sure you want to permanently delete object {pid}?',

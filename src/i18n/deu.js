@@ -616,6 +616,8 @@ export default {
   'vra:material': 'Material',
   'vra:hasInscription': 'Inschrift',
 
+  'phaidra:systemTag': 'System tag',
+
   'Metadata editor': 'Metadateneditor',
   'Metadata preview': 'Metadatenansicht',
   'Remove': 'Löschen',
