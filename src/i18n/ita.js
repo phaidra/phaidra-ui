@@ -78,7 +78,7 @@ export default {
   'Addressee': 'Destinatario',
   'Project director': 'Direttore del progetto',
 
-  'PHAIDRA_IS': 'Phaidra è la piattaforma del Università di Vienna per l’archiviazione a lungo termine di oggetti e collezioni digitali',
+  'PHAIDRA_IS': 'Phaidra è la piattaforma dell\'Università di Vienna per l\'archiviazione a lungo termine di oggetti e collezioni digitali',
 
   uwm_etheses: 'Tesi elettroniche',
   uwm_etheses_note_2: 'Note 2',
