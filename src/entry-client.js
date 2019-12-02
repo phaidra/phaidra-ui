@@ -12,7 +12,7 @@ createApp({
   afterApp ({
     app,
     router,
-      store,
+    store
   }) {
     store.replaceState(window.__INITIAL_STATE__)
     router.onReady(() => {

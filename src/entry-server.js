@@ -12,7 +12,7 @@ export default context => {
     const {
       app,
       router,
-      store,
+      store
     } = await createApp()
 
     router.push(prepareUrlForRouting(context.url))
@@ -25,7 +25,6 @@ export default context => {
         // is used for the renderer, the state will automatically be
         // serialized and injected into the HTML as `window.__INITIAL_STATE__`.
         context.state = store.state
-
       }
       resolve(app)
     }, reject)

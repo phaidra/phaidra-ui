@@ -106,7 +106,7 @@ export async function createApp ({
 
   // sync so that route state is available as part of the store
   sync(store, router)
-  
+
   await beforeApp({
     router,
     store,
@@ -220,7 +220,7 @@ export function createApp () {
   // sync so that route state is available as part of the store
   sync(store, router)
 
-  /* eslint-disable no-new 
+  /* eslint-disable no-new
   const app = new Vue({
     router,
     store,
