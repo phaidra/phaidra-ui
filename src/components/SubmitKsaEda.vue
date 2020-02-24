@@ -220,10 +220,10 @@ export default {
       this.form.sections[0].fields.push(rt)
       this.form.sections[0].fields.push(fields.getField('title'))
       this.form.sections[0].fields.push(fields.getField('description'))
-      var gnd = fields.getField('gnd-subject')
-      gnd.exactvoc = 'EthnographicName'
-      gnd.label = 'Soziokulturelle Kategorie (GND)'
-      this.form.sections[0].fields.push(gnd)
+      var sccat = fields.getField('subject')
+      sccat.vocabulary = '60PM-DY5T'
+      sccat.label = 'Soziokulturelle Kategorie'
+      this.form.sections[0].fields.push(sccat)
       this.form.sections[0].fields.push(fields.getField('keyword'))
       var lang = fields.getField('language')
       lang.value = 'deu'
@@ -314,7 +314,8 @@ export default {
       this.form.sections.splice(this.form.sections.indexOf(afterSection) + 1, 0, s)
     }
   },
-  mounted: function () {
+  mounted: async function () {
+    await this.$store.dispatch('loadVocabulary', '60PM-DY5T')
     this.createContainerForm()
     this.setLangGerman()
   }

@@ -10,9 +10,11 @@ module.exports = {
       clustered: true
     }
   },
+
   transpileDependencies: [
     'phaidra-vue-components'
   ],
+
   configureWebpack: {
     /*
     plugins: [
@@ -46,5 +48,7 @@ module.exports = {
     externals: {
       moment: 'moment'
     }
-  }
+  },
+
+  publicPath: '/'
 }
