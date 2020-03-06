@@ -2,7 +2,6 @@
   <v-row>
     <v-col v-if="signedin">
       <p-m-sort v-if="members.length > 0" :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members=$event" @order-saved="orderSaved($event)"></p-m-sort>
-      <p-m-delete v-if="appconfig.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
     </v-col>
   </v-row>
 </template>
@@ -13,7 +12,7 @@ import { context } from '../mixins/context'
 import { config } from '../mixins/config'
 
 export default {
-  name: 'manage',
+  name: 'sort',
   mixins: [ context, config ],
   computed: {
     loadedcmodel: function () {
@@ -21,35 +20,16 @@ export default {
     },
     pid () {
       return this.$route.params.pid
-    },
-    breadcrumbs: function () {
-      let bc = [
-        {
-          text: this.$t('Search'),
-          to: { name: 'search', path: '/' }
-        },
-        {
-          text: this.$t('Detailpage') + ' ' + this.parentpid,
-          to: { name: 'detail', params: { pid: this.parentpid } }
-        },
-        {
-          text: this.$t('Manage') + ' ' + this.$route.params.pid,
-          disabled: true,
-          to: { name: 'manage', params: { pid: this.$route.params.pid } }
-        }
-      ]
-      return bc
     }
   },
   data () {
     return {
       members: [],
-      doc: {},
-      parentpid: ''
+      doc: {}
     }
   },
   methods: {
-    loadManagement: function (self, pid) {
+    loadData: function (self, pid) {
       return self.loadDoc(self, pid)
         .then(function (response) {
           return self.loadMembers(self, pid)
@@ -119,27 +99,17 @@ export default {
     },
     orderSaved: function (event) {
       this.$store.commit('setAlerts', [{ type: 'success', msg: 'Order for object ' + event + ' saved' }])
-    },
-    objectDeleted: function (event) {
-      this.$store.commit('setAlerts', [{ type: 'success', msg: 'Object' + this.pid + ' was successfully deleted.' }])
-      if (this.pid === this.parentpid) {
-        this.$router.push({ name: 'search' })
-      } else {
-        this.$router.push({ name: 'detail', params: { pid: this.parentpid } })
-      }
     }
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
-      vm.parentpid = from.params.pid
-      vm.loadManagement(vm, to.params.pid).then(() => {
+      vm.loadData(vm, to.params.pid).then(() => {
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
-    this.parentpid = from.params.pid
-    this.loadManagement(this, to.params.pid).then(() => {
+    this.loadData(this, to.params.pid).then(() => {
       next()
     })
   }

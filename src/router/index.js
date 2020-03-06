@@ -5,7 +5,10 @@ import Login from '@/components/Login'
 import PSearch from 'phaidra-vue-components/src/components/search/PSearch'
 import PLists from 'phaidra-vue-components/src/components/lists/PLists'
 import Detail from '@/components/Detail'
-import Manage from '@/components/Manage'
+import Rights from '@/components/Rights'
+import Sort from '@/components/Sort'
+import Relationships from '@/components/Relationships'
+import Delete from '@/components/Delete'
 import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
 import SubmitResource from '@/components/SubmitResource'
@@ -15,6 +18,7 @@ import SubmitEmpty from '@/components/SubmitEmpty'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
 import AddMember from '@/components/AddMember'
+import UploadWebVersion from '@/components/UploadWebVersion'
 
 Vue.use(Router)
 
@@ -43,9 +47,24 @@ export function createRouter () {
         component: Detail
       },
       {
-        path: '/manage/:pid',
-        name: 'manage',
-        component: Manage
+        path: '/rights/:pid',
+        name: 'rights',
+        component: Rights
+      },
+      {
+        path: '/sort/:pid',
+        name: 'sort',
+        component: Sort
+      },
+      {
+        path: '/relationships/:pid',
+        name: 'relationships',
+        component: Relationships
+      },
+      {
+        path: '/delete/:pid',
+        name: 'delete',
+        component: Delete
       },
       {
         path: '/metadata/:pid',
@@ -91,6 +110,11 @@ export function createRouter () {
         path: '/addmember/:pid',
         name: 'addmember',
         component: AddMember
+      },
+      {
+        path: '/uploadwebversion/:pid',
+        name: 'uploadwebversion',
+        component: UploadWebVersion
       },
       {
         path: '/lists',

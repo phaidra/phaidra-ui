@@ -1,8 +1,5 @@
 <template>
   <v-col>
-    <v-col>
-      <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
-    </v-col>
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>{{ $t('Add member of') }} {{this.parentpid}}</v-toolbar-title>
@@ -45,28 +42,6 @@ export default {
           }
         ]
       }
-    }
-  },
-  computed: {
-    breadcrumbs () {
-      let bc = [
-        {
-          text: this.$t('Search'),
-          to: { name: 'search', path: '/' }
-        },
-        {
-          text: this.$t('Detailpage') + ' ' + this.parentpid,
-          to: { name: 'detail', params: { pid: this.parentpid } }
-        },
-        {
-          text: this.$t('Add member of') + ' ' + this.parentpid,
-          disabled: true
-        }
-      ]
-      return bc
-    },
-    vocabularies: function () {
-      return this.$store.state.vocabulary.vocabularies
     }
   },
   methods: {

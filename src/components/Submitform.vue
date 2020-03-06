@@ -4,9 +4,12 @@
       <v-col>
         <p-i-form
           :form="form"
+          :rights="rights"
+          :enablerights="true"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
+          v-on:input-rights="rights = $event"
         ></p-i-form>
       </v-col>
     </v-row>
@@ -40,6 +43,7 @@ export default {
   data () {
     return {
       form: { sections: [] },
+      rights: {},
       cmodels
     }
   },

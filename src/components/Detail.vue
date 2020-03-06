@@ -63,8 +63,14 @@
                     <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
                       <v-list-item-title>{{ $t('Edit metadata') }}</v-list-item-title>
                     </v-list-item>
-                    <v-list-item :to="{ name: 'manage', params: { pid: member.pid } }">
-                      <v-list-item-title>{{ $t('Manage object') }}</v-list-item-title>
+                    <v-list-item :to="{ name: 'rights', params: { pid: member.pid } }">
+                      <v-list-item-title>{{ $t('Access rights') }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item :to="{ name: 'relationships', params: { pid: member.pid } }">
+                      <v-list-item-title>{{ $t('Relationships') }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item :to="{ name: 'delete', params: { pid: member.pid } }">
+                      <v-list-item-title>{{ $t('Delete') }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -236,11 +242,23 @@
               <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
                 <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
               </v-row>
-              <v-row no-gutters class="pt-2">
-                <router-link class="mb-1" :to="{ name: 'manage' }">{{ $t('Manage object') }}</router-link>
+              <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel === 'Container') || (objectInfo.cmodel === 'Collection')">
+                <router-link class="mb-1" :to="{ name: 'sort' }">{{ $t('Sort members') }}</router-link>
               </v-row>
               <v-row no-gutters class="pt-2" v-if="objectInfo.cmodel === 'Container'">
-                <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload container member') }}</router-link>
+                <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload member') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Book') && (objectInfo.cmodel !== 'Page')">
+                <router-link class="mb-1" :to="{ name: 'uploadwebversion' }">{{ $t('Upload web version') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <router-link class="mb-1" :to="{ name: 'rights' }">{{ $t('Access rights') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <router-link class="mb-1" :to="{ name: 'relationships' }">{{ $t('Relationships') }}</router-link>
+              </v-row>
+              <v-row no-gutters class="pt-2">
+                <router-link class="mb-1" :to="{ name: 'delete' }">{{ $t('Delete') }}</router-link>
               </v-row>
             </v-col>
           </v-row>

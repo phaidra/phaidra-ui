@@ -73,6 +73,108 @@ export default {
         }
       )
     }
+    if (transition.to.name === 'rights') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Access rights ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'sort') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Sort ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'relationships') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Relationships of ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'delete') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Delete of ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'addmember') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Upload new member of ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'uploadwebversion') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Upload web version of ' + transition.to.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.pid } },
+          disabled: true
+        }
+      )
+    }
     if (transition.to.name === 'submit') {
       state.breadcrumbs.push(
         {

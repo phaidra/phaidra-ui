@@ -16,10 +16,13 @@
       <v-card-text>
         <p-i-form
           :form="form"
+          :rights="rights"
+          :enablerights="true"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:form-input-p-file="handleMimeSelect($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
+          v-on:input-rights="rights = $event"
         ></p-i-form>
       </v-card-text>
     </v-card>
@@ -69,7 +72,8 @@ export default {
           value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ'
         }
       ],
-      form: { sections: [] }
+      form: { sections: [] },
+      rights: {}
     }
   },
   watch: {
@@ -121,32 +125,27 @@ export default {
       }
     },
     handleMimeSelect: function (val) {
-      var i
-      var j
-      var k
       if (val.predicate === 'ebucore:filename') {
-        for (i = 0; i < this.form.sections.length; i++) {
-          var mime = val.mimetype
-          var resourcetype = this.getResourceTypeFromMimeType(mime)
-          if (this.form.sections[i].fields) {
-            for (j = 0; j < this.form.sections[i].fields.length; j++) {
-              if (this.form.sections[i].fields[j].predicate === 'dcterms:type') {
-                var rt = this.form.sections[i].fields[j]
-                rt.value = resourcetype
-                var preflabels
-                for (k = 0; k < this.vocabularies.resourcetype.terms.length; k++) {
-                  if (this.vocabularies.resourcetype.terms[k]['@id'] === rt.value) {
-                    preflabels = this.vocabularies.resourcetype.terms[k]['skos:prefLabel']
+        for (let s of this.form.sections) {
+          if ((s.type !== 'digitalobject') && (s.type !== 'phaidra:Subject') && (s.fields)) {
+            let mime = val.mimetype
+            let resourcetype = this.getResourceTypeFromMimeType(mime)
+            for (let field of s.fields) {
+              if (field.predicate === 'dcterms:type') {
+                field.value = resourcetype
+                let preflabels
+                for (let term of this.vocabularies.resourcetype.terms) {
+                  if (term['@id'] === field.value) {
+                    preflabels = term['skos:prefLabel']
                   }
                 }
-                rt['skos:prefLabel'] = []
+                field['skos:prefLabel'] = []
                 Object.entries(preflabels).forEach(([key, value]) => {
-                  rt['skos:prefLabel'].push({ '@value': value, '@language': key })
+                  field['skos:prefLabel'].push({ '@value': value, '@language': key })
                 })
               }
             }
           }
-          this.form.sections.splice(i, 1, this.form.sections[i])
         }
       }
     },
@@ -247,7 +246,7 @@ export default {
       this.form.sections[1].fields.push(fields.getField('height'))
       this.form.sections[1].fields.push(fields.getField('width'))
       this.form.sections[1].fields.push(fields.getField('inscription'))
-      this.form.sections[1].fields.push(fields.getField('spatial-getty'))
+      this.form.sections[1].fields.push(fields.getField('spatial-geonames'))
       var localname = fields.getField('spatial-text')
       localname.label = 'Depicted/Represented place (native name)'
       this.form.sections[1].fields.push(localname)
