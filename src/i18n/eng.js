@@ -101,6 +101,7 @@ export default {
   'OTHER_FEMININE': 'Other',
 
   'PUBLISHER_VERLAG': 'Publisher',
+  'WEBVERSIONSUBMIT': 'I confirm that same rights which apply for object {pid} apply for the file uploaded as "web version".',
 
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',

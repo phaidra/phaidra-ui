@@ -1,11 +1,30 @@
 <template>
   <v-col>
     <v-card>
-      <v-toolbar flat>
-        <v-toolbar-title>{{ $t('Upload web version of') }} {{this.parentpid}}</v-toolbar-title>
-      </v-toolbar>
+      <v-card-title class="title font-weight-light grey white--text">{{ $t('Upload web version of') }} {{ parentpid }}</v-card-title>
       <v-card-text>
-        <v-file-input :label="$t('Select file')"></v-file-input>
+        <v-container>
+          <v-row>
+            <v-checkbox v-model="checkbox" color="primary" :error-messages="checkboxErrors">
+              <template v-slot:label>
+                {{ $t('WEBVERSIONSUBMIT', { pid: 'https://' + instanceconfig.baseurl + '/' + parentpid }) }}
+              </template>
+            </v-checkbox>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="10">
+              <p-i-file
+                :label="$t('Select file')"
+                :mimeLabel="$t('Select mime type')"
+                v-on:input-file="file = $event"
+                v-on:input-mimetype="mimetype = $event['@id']"
+              ></p-i-file>
+            </v-col>
+            <v-col cols="12" md="2">
+              <v-btn color="primary" :disabled="loading" @click="upload()" class="mt-6">{{ $t('Upload') }}</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-card-text>
     </v-card>
   </v-col>
@@ -13,16 +32,58 @@
 
 <script>
 import { context } from '../mixins/context'
+import { config } from '../mixins/config'
 
 export default {
   name: 'upload-web-version',
-  mixins: [ context ],
+  mixins: [ context, config ],
   data () {
     return {
-      parentpid: ''
+      loading: false,
+      checkbox: false,
+      parentpid: '',
+      file: null,
+      mimetype: null,
+      checkboxErrors: []
     }
   },
   methods: {
+    upload: async function () {
+      this.checkboxErrors = []
+      if (!this.checkbox) {
+        this.checkboxErrors.push(this.$t('Missing confirmation'))
+        return
+      }
+      this.loading = true
+      try {
+        var httpFormData = new FormData()
+        httpFormData.append('dscontent', this.file)
+        httpFormData.append('mimetype', this.mimetype)
+        httpFormData.append('controlgroup', 'M')
+        let response = await this.$http.request({
+          method: 'POST',
+          url: this.instanceconfig.api + '/object/' + this.parentpid + '/datastream/WEBVERSION',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-XSRF-TOKEN': this.$store.state.user.token
+          },
+          data: httpFormData
+        })
+        if (response.status === 200) {
+          this.$store.commit('setAlerts', [{ type: 'success', msg: 'Web version successfuly uploaded' }])
+          this.$router.push({ name: 'detail', params: { pid: this.parentpid } })
+        } else {
+          if (response.data.alerts && response.data.alerts.length > 0) {
+            this.$store.commit('setAlerts', response.data.alerts)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.loading = false
+      }
+    }
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
