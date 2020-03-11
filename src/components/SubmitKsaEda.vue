@@ -164,16 +164,16 @@ export default {
       }
     },
     setLangGerman: function () {
-      for (var i = 0; i < this.form.sections.length; i++) {
-        for (var j = 0; j < this.form.sections[i].fields.length; j++) {
-          if (this.form.sections[i].fields[j].language === 'eng') {
-            this.form.sections[i].fields[j].language = 'deu'
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.language === 'eng') {
+            f.language = 'deu'
           }
-          if (this.form.sections[i].fields[j].nameLanguage === 'eng') {
-            this.form.sections[i].fields[j].nameLanguage = 'deu'
+          if (f.nameLanguage === 'eng') {
+            f.nameLanguage = 'deu'
           }
-          if (this.form.sections[i].fields[j].descriptionLanguage === 'eng') {
-            this.form.sections[i].fields[j].descriptionLanguage = 'deu'
+          if (f.descriptionLanguage === 'eng') {
+            f.descriptionLanguage = 'deu'
           }
         }
       }
