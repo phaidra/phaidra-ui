@@ -637,5 +637,8 @@ export default {
   'Here you can sort members of this object (drag & drop).': 'Hier können Sie die Objekte innerhalb des Containers sortieren (drag & drop).',
   'OTHER_FEMININE': 'Andere',
   'PUBLISHER_VERLAG': 'Verlag',
-  'WEBVERSIONSUBMIT': 'I confirm that same rights which apply for object {pid} apply for the file uploaded as "web version".'
+  'WEBVERSIONSUBMIT': 'I confirm that same rights which apply for object {pid} apply for the file uploaded as "web version".',
+  'Upload web-optimized version': 'Web-optimierte Version hochladen',
+  'Download web-optimized version': 'Web-optimierte Version herunterladen',
+  'Download': 'Herunterladen'
 }

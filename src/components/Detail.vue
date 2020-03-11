@@ -5,8 +5,8 @@
 
         <v-col cols="12" md="8">
 
-          <v-row justify="start">
-            <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
+          <v-row justify="center" class="mb-12">
+            <a :href="objectInfo.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
               <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
               <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
               <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
@@ -14,7 +14,7 @@
             </a>
             <template v-if="(objectInfo.cmodel === 'Audio')">
               <audio controls>
-                <source :src="'https://' + instanceconfig.baseurl + '/open/' + objectInfo.pid">
+                <source :src="objectInfo.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
                 Your browser does not support the audio element.
               </audio>
             </template>
@@ -24,9 +24,9 @@
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
           </v-row>
 <!--
-            <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['UWMETADATA']">
-              <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
-            </v-col>
+          <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['UWMETADATA']">
+            <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
+          </v-col>
 -->
           <h3 v-if="objectInfo.cmodel === 'Container'" class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
 
@@ -36,14 +36,13 @@
 
           <v-row v-if="objectMembers">
             <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
-              <a :href="instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
-                <v-img class="mb-3" max-height="300" contain v-if="(member.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + member.pid + '/bdef:Document/preview?box=480'"/>
-                <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
+              <a :href="member.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
+                <v-img class="mb-3" max-height="300" contain v-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
                 <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
               </a>
               <center v-if="(member.cmodel === 'Audio')">
                 <audio controls>
-                  <source :src="'https://' + instanceconfig.baseurl + '/open/' + member.pid">
+                  <source :src="member.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
                   Your browser does not support the audio element.
                 </audio>
               </center>
@@ -80,201 +79,218 @@
 
         </v-col>
 
-        <v-col cols="12" md="3" offset-md="1" class="col-border">
+        <v-col cols="12" md="3" offset-md="1">
 
           <v-row class="mb-6">
             <v-col class="pt-0">
-              <v-row>
-                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Identifiers') }}</h3>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('PID') }}</v-col>
-                <v-col cols="9" offset="1">{{ 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid }}</v-col>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="objectInfo.dc_identifier.length > 1">
-                <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('ID') }}</v-col>
-                <v-col cols="9" offset="1" v-for="(id,i) in objectInfo.dc_identifier" :key="i" v-show="(id !== 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid) && (id !== 'http://' + instanceconfig.baseurl + '/' + objectInfo.pid)">
-                  {{ id }}
-                </v-col>
-              </v-row>
+              <v-card tile flat class="grey lighten-4">
+                <v-card-title class="title font-weight-light grey white--text">{{ $t('Identifiers') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <v-row no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('PID') }}</v-col>
+                    <v-col cols="9" offset="1">{{ 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid }}</v-col>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="objectInfo.dc_identifier.length > 1">
+                    <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('ID') }}</v-col>
+                    <v-col cols="9" offset="1" v-for="(id,i) in objectInfo.dc_identifier" :key="i" v-show="(id !== 'https://' + instanceconfig.baseurl + '/' + objectInfo.pid) && (id !== 'http://' + instanceconfig.baseurl + '/' + objectInfo.pid)">
+                      {{ id }}
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-row>
-                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Object data') }}</h3>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="3">Depositor</v-col>
-                <v-col cols="8" offset="1" v-if="objectInfo.owner.firstname">
-                  <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
-                </v-col>
-                <v-col v-else cols="8">{{ objectInfo.owner.username }}</v-col>
-              </v-row>
-              <v-row no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Object type') }}</v-col>
-                <v-col cols="8" offset="1">{{ objectInfo.cmodel }}</v-col>
-              </v-row>
-              <v-row v-if="objectInfo.dc_format" no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Format') }}</v-col>
-                <v-col cols="8" offset="1">
-                  <template v-if="objectInfo.dc_format.length > 1">
-                    <v-row>
-                      <v-col v-for="(v,i) in objectInfo.dc_format" :key="i">{{ v }}</v-col>
-                    </v-row>
-                  </template>
-                  <template v-else>{{ objectInfo.dc_format[0] }}</template>
-                </v-col>
-              </v-row>
-              <v-row no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Created') }}</v-col>
-                <v-col cols="8" offset="1">{{ objectInfo.created | time }}</v-col>
-              </v-row>
+              <v-card tile flat class="grey lighten-4">
+                <v-card-title class="title font-weight-light grey white--text">{{ $t('Details') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <v-row no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="3">Depositor</v-col>
+                    <v-col cols="8" offset="1" v-if="objectInfo.owner.firstname">
+                      <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
+                    </v-col>
+                    <v-col v-else cols="8">{{ objectInfo.owner.username }}</v-col>
+                  </v-row>
+                  <v-row no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Object type') }}</v-col>
+                    <v-col cols="8" offset="1">{{ objectInfo.cmodel }}</v-col>
+                  </v-row>
+                  <v-row v-if="objectInfo.dc_format" no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Format') }}</v-col>
+                    <v-col cols="8" offset="1">
+                      <template v-if="objectInfo.dc_format.length > 1">
+                        <v-row>
+                          <v-col v-for="(v,i) in objectInfo.dc_format" :key="i">{{ v }}</v-col>
+                        </v-row>
+                      </template>
+                      <template v-else>{{ objectInfo.dc_format[0] }}</template>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Created') }}</v-col>
+                    <v-col cols="8" offset="1">{{ objectInfo.created | time }}</v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 
           <v-row class="my-6" v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
             <v-col class="pt-0">
-              <v-row>
-                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Relationships') }}</h3>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is in collection') }}</v-col>
-                <v-col cols="7" offset="1">
-                  <template v-if="objectInfo.ispartof.length > 1">
-                    <v-row>
-                      <v-col v-for="(oId,i) in objectInfo.ispartof" :key="i">
-                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                      </v-col>
-                    </v-row>
-                  </template>
-                  <template v-else>{{ objectInfo.ispartof[0] }}</template>
-                </v-col>
-              </v-row>
-              <v-row v-if="objectInfo.hassuccessor" no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Has newer version') }}</v-col>
-                <v-col cols="7" offset="1">
-                  <template v-if="objectInfo.hassuccessor.length > 1">
-                    <v-row>
-                      <v-col v-for="(oId,i) in objectInfo.hassuccessor" :key="i">
-                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                      </v-col>
-                    </v-row>
-                  </template>
-                  <router-link :to="{ name: 'detail', params: { pid: objectInfo.hassuccessor[0] } }">{{ objectInfo.hassuccessor[0] }}</router-link>
-                </v-col>
-              </v-row>
-              <v-row v-if="objectInfo.isalternativeformatof" no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative format of') }}</v-col>
-                <v-col cols="7" offset="1">
-                  <template v-if="objectInfo.isalternativeformatof.length > 1">
-                    <v-row>
-                      <v-col v-for="(oId,i) in objectInfo.isalternativeformatof" :key="i">
-                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                      </v-col>
-                    </v-row>
-                  </template>
-                  <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeformatof[0] } }">{{ objectInfo.isalternativeformatof[0] }}</router-link>
-                </v-col>
-              </v-row>
-              <v-row v-if="objectInfo.isalternativeversionof" no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative version of') }}</v-col>
-                <v-col cols="7" offset="1">
-                  <template v-if="objectInfo.isalternativeversionof.length > 1">
-                    <v-row>
-                      <v-col v-for="(oId,i) in objectInfo.isalternativeversionof" :key="i">
-                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                      </v-col>
-                    </v-row>
-                  </template>
-                  <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeversionof[0] } }">{{ objectInfo.isalternativeversionof[0] }}</router-link>
-                </v-col>
-              </v-row>
-              <v-row v-if="objectInfo.isbacksideof" no-gutters class="pt-2">
-                <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is back side of') }}</v-col>
-                <v-col cols="7" offset="1">
-                  <template v-if="objectInfo.isbacksideof.length > 1">
-                    <v-row>
-                      <v-col v-for="(oId,i) in objectInfo.isbacksideof" :key="i">
-                        <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                      </v-col>
-                    </v-row>
-                  </template>
-                  <template v-else>
-                    <router-link :to="{ name: 'detail', params: { pid: objectInfo.isbacksideof[0] } }">{{ objectInfo.isbacksideof[0] }}</router-link>
-                  </template>
-                </v-col>
-              </v-row>
+              <v-card tile flat class="grey lighten-4">
+                <v-card-title class="title font-weight-light grey white--text">{{ $t('Relationships') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is in collection') }}</v-col>
+                    <v-col cols="7" offset="1">
+                      <template v-if="objectInfo.ispartof.length > 1">
+                        <v-row>
+                          <v-col v-for="(oId,i) in objectInfo.ispartof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                          </v-col>
+                        </v-row>
+                      </template>
+                      <template v-else>{{ objectInfo.ispartof[0] }}</template>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="objectInfo.hassuccessor" no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Has newer version') }}</v-col>
+                    <v-col cols="7" offset="1">
+                      <template v-if="objectInfo.hassuccessor.length > 1">
+                        <v-row>
+                          <v-col v-for="(oId,i) in objectInfo.hassuccessor" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                          </v-col>
+                        </v-row>
+                      </template>
+                      <router-link :to="{ name: 'detail', params: { pid: objectInfo.hassuccessor[0] } }">{{ objectInfo.hassuccessor[0] }}</router-link>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="objectInfo.isalternativeformatof" no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative format of') }}</v-col>
+                    <v-col cols="7" offset="1">
+                      <template v-if="objectInfo.isalternativeformatof.length > 1">
+                        <v-row>
+                          <v-col v-for="(oId,i) in objectInfo.isalternativeformatof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                          </v-col>
+                        </v-row>
+                      </template>
+                      <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeformatof[0] } }">{{ objectInfo.isalternativeformatof[0] }}</router-link>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="objectInfo.isalternativeversionof" no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative version of') }}</v-col>
+                    <v-col cols="7" offset="1">
+                      <template v-if="objectInfo.isalternativeversionof.length > 1">
+                        <v-row>
+                          <v-col v-for="(oId,i) in objectInfo.isalternativeversionof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                          </v-col>
+                        </v-row>
+                      </template>
+                      <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeversionof[0] } }">{{ objectInfo.isalternativeversionof[0] }}</router-link>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="objectInfo.isbacksideof" no-gutters class="pt-2">
+                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is back side of') }}</v-col>
+                    <v-col cols="7" offset="1">
+                      <template v-if="objectInfo.isbacksideof.length > 1">
+                        <v-row>
+                          <v-col v-for="(oId,i) in objectInfo.isbacksideof" :key="i">
+                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
+                          </v-col>
+                        </v-row>
+                      </template>
+                      <template v-else>
+                        <router-link :to="{ name: 'detail', params: { pid: objectInfo.isbacksideof[0] } }">{{ objectInfo.isbacksideof[0] }}</router-link>
+                      </template>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-row>
-                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Metadata') }}</h3>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row no-gutters class="pt-2">
-                <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
-                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
-              </v-row>
-              <v-row no-gutters class="pt-2">
-                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
-                <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
-              </v-row>
+              <v-card tile flat class="grey lighten-4">
+                <v-card-title class="title font-weight-light grey white--text">{{ $t('Metadata') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <v-row no-gutters class="pt-2">
+                    <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
+                    <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                  </v-row>
+                  <v-row no-gutters class="pt-2">
+                    <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
+                    <a class="mb-1" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/datacite?format=xml'" target="_blank">{{ $t('Data Cite') }}</a>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-row>
-                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Edit') }}</h3>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
-                <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel === 'Container') || (objectInfo.cmodel === 'Collection')">
-                <router-link class="mb-1" :to="{ name: 'sort' }">{{ $t('Sort members') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="objectInfo.cmodel === 'Container'">
-                <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload member') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Book') && (objectInfo.cmodel !== 'Page')">
-                <router-link class="mb-1" :to="{ name: 'uploadwebversion' }">{{ $t('Upload web version') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2">
-                <router-link class="mb-1" :to="{ name: 'rights' }">{{ $t('Access rights') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2">
-                <router-link class="mb-1" :to="{ name: 'relationships' }">{{ $t('Relationships') }}</router-link>
-              </v-row>
-              <v-row no-gutters class="pt-2">
-                <router-link class="mb-1" :to="{ name: 'delete' }">{{ $t('Delete') }}</router-link>
-              </v-row>
+              <v-card tile flat class="grey lighten-4">
+                <v-card-title class="title font-weight-light grey white--text">{{ $t('Edit') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
+                    <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel === 'Container') || (objectInfo.cmodel === 'Collection')">
+                    <router-link class="mb-1" :to="{ name: 'sort' }">{{ $t('Sort members') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="objectInfo.cmodel === 'Container'">
+                    <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload member') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Book') && (objectInfo.cmodel !== 'Page')">
+                    <router-link class="mb-1" :to="{ name: 'uploadwebversion' }">{{ $t('Upload web-optimized version') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2">
+                    <router-link class="mb-1" :to="{ name: 'rights' }">{{ $t('Access rights') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2">
+                    <router-link class="mb-1" :to="{ name: 'relationships' }">{{ $t('Relationships') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2">
+                    <router-link class="mb-1" :to="{ name: 'delete' }">{{ $t('Delete') }}</router-link>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 
           <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights)">
             <v-col class="pt-0">
-              <v-row>
-                <h3 class="title font-weight-light pl-3 primary--text">{{ $t('Links') }}</h3>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
-                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
-              </v-row>
-              <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights">
-                <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
-              </v-row>
+              <v-card tile flat class="grey lighten-4">
+                <v-card-title class="title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
+                    <a target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
+                  </v-row>
+                  <template v-if="downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')">
+                    <v-row no-gutters class="pt-2">
+                      <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:50/0/default.jpg'" primary>{{ $t('View scaled to 50%') }}</a>
+                    </v-row>
+                    <v-row no-gutters class="pt-2">
+                      <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:25/0/default.jpg'" primary>{{ $t('View scaled to 25%') }}</a>
+                    </v-row>
+                  </template>
+                  <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights">
+                    <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION']">
+                    <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/downloadwebversion'" primary>{{ $t('Download web-optimized version') }}</a>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 

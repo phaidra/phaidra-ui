@@ -1,7 +1,7 @@
 <template>
   <v-col>
     <v-card>
-      <v-card-title class="title font-weight-light grey white--text">{{ $t('Upload web version of') }} {{ parentpid }}</v-card-title>
+      <v-card-title class="title font-weight-light grey white--text">{{ $t('Upload web-optimized version of') }} {{ parentpid }}</v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
@@ -70,7 +70,7 @@ export default {
           data: httpFormData
         })
         if (response.status === 200) {
-          this.$store.commit('setAlerts', [{ type: 'success', msg: 'Web version successfuly uploaded' }])
+          this.$store.commit('setAlerts', [{ type: 'success', msg: 'Web-optimized version successfuly uploaded' }])
           this.$router.push({ name: 'detail', params: { pid: this.parentpid } })
         } else {
           if (response.data.alerts && response.data.alerts.length > 0) {
