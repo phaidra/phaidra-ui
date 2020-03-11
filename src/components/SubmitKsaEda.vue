@@ -217,6 +217,7 @@ export default {
       var sccat = fields.getField('subject')
       sccat.vocabulary = '60PM-DY5T'
       sccat.label = 'Soziokulturelle Kategorie'
+      sccat.showIds = true
       this.form.sections[0].fields.push(sccat)
       this.form.sections[0].fields.push(fields.getField('keyword'))
       var lang = fields.getField('language')
