@@ -140,7 +140,7 @@
           <v-row class="my-6" v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
             <v-col class="pt-0">
               <v-card tile flat class="grey lighten-4">
-                <v-card-title class="title font-weight-light grey white--text">{{ $t('Relationships') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Relationships') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
                     <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is in collection') }}</v-col>
@@ -152,7 +152,9 @@
                           </v-col>
                         </v-row>
                       </template>
-                      <template v-else>{{ objectInfo.ispartof[0] }}</template>
+                      <template v-else>
+                        <router-link :to="{ name: 'detail', params: { pid: objectInfo.ispartof[0] } }">{{ objectInfo.ispartof[0] }}</router-link>
+                      </template>
                     </v-col>
                   </v-row>
                   <v-row v-if="objectInfo.hassuccessor" no-gutters class="pt-2">
@@ -243,6 +245,9 @@
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
                     <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
+                    <router-link :to="{ name: 'uwmetadataeditor' }">{{ $t('Edit metadata') }}</router-link>
                   </v-row>
                   <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel === 'Container') || (objectInfo.cmodel === 'Collection')">
                     <router-link class="mb-1" :to="{ name: 'sort' }">{{ $t('Sort members') }}</router-link>
@@ -440,5 +445,9 @@ h3
 
 .showmembers {
   text-decoration: underline;
+}
+
+.ph-box {
+  line-height: 1rem;
 }
 </style>

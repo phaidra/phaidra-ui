@@ -11,6 +11,7 @@ import Relationships from '@/components/Relationships'
 import Delete from '@/components/Delete'
 import Metadata from '@/components/Metadata'
 import MetadataEditor from '@/components/MetadataEditor'
+import UwmetadataEditor from '@/components/UwmetadataEditor'
 import SubmitResource from '@/components/SubmitResource'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
 import SubmitBruckneruni from '@/components/SubmitBruckneruni'
@@ -75,6 +76,11 @@ export function createRouter () {
         path: '/metadata/:pid/edit',
         name: 'metadataeditor',
         component: MetadataEditor
+      },
+      {
+        path: '/uwmetadata/:pid/edit',
+        name: 'uwmetadataeditor',
+        component: UwmetadataEditor
       },
       {
         path: '/submit',

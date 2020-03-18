@@ -1,16 +1,13 @@
 <template>
-
-  <p-i-form
+  <p-uwmetadata-editor
     :form="editform"
-    :targetpid="pid"
-    :templating="false"
+    :targetpid="this.pid"
     v-on:object-saved="objectSaved($event)"
-  ></p-i-form>
-
+    v-on:load-form="editform = $event"
+  ></p-uwmetadata-editor>
 </template>
 
 <script>
-import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
 
@@ -20,7 +17,7 @@ export default {
   data () {
     return {
       loading: false,
-      editform: {},
+      editform: [],
       parentpid: ''
     }
   },
@@ -35,43 +32,40 @@ export default {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
-    loadJsonld: async function (self, pid) {
+    loadUwmetadata: async function (self, pid) {
       self.loading = true
       try {
         let response = await self.$http.request({
           method: 'GET',
           url: self.$store.state.instanceconfig.api + '/object/' + pid + '/metadata',
           params: {
-            mode: 'resolved'
+            mode: 'full'
           }
         })
         if (response.data.alerts && response.data.alerts.length > 0) {
           self.$store.commit('setAlerts', response.data.alerts)
         }
-        if (response.data.metadata['JSON-LD']) {
-          self.editform = response.data.metadata['JSON-LD']
+        if (response.data.metadata['uwmetadata']) {
+          self.editform = response.data.metadata['uwmetadata']
         }
       } catch (error) {
         console.log(error)
       } finally {
         self.loading = false
       }
-    },
-    json2form: function (jsonld) {
-      return jsonLd.json2form(jsonld)
     }
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
       vm.parentpid = from.params.pid
-      vm.loadJsonld(vm, to.params.pid).then(() => {
+      vm.loadUwmetadata(vm, to.params.pid).then(() => {
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
     this.parentpid = from.params.pid
-    this.loadJsonld(this, to.params.pid).then(() => {
+    this.loadUwmetadata(this, to.params.pid).then(() => {
       next()
     })
   }
