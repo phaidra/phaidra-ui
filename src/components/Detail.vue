@@ -84,7 +84,7 @@
           <v-row class="mb-6">
             <v-col class="pt-0">
               <v-card tile flat class="grey lighten-4">
-                <v-card-title class="title font-weight-light grey white--text">{{ $t('Identifiers') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Identifiers') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
                     <v-col class="caption grey--text text--darken-2" cols="2">{{ $t('PID') }}</v-col>
@@ -104,7 +104,7 @@
           <v-row class="my-6">
             <v-col class="pt-0">
               <v-card tile flat class="grey lighten-4">
-                <v-card-title class="title font-weight-light grey white--text">{{ $t('Details') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Details') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
                     <v-col class="caption grey--text text--darken-2" cols="3">Depositor</v-col>
@@ -219,7 +219,7 @@
           <v-row class="my-6">
             <v-col class="pt-0">
               <v-card tile flat class="grey lighten-4">
-                <v-card-title class="title font-weight-light grey white--text">{{ $t('Metadata') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Metadata') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
                     <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
@@ -241,7 +241,7 @@
           <v-row class="my-6">
             <v-col class="pt-0">
               <v-card tile flat class="grey lighten-4">
-                <v-card-title class="title font-weight-light grey white--text">{{ $t('Edit') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Edit') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
                     <router-link :to="{ name: 'metadataeditor' }">{{ $t('Edit metadata') }}</router-link>
@@ -275,7 +275,7 @@
           <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights)">
             <v-col class="pt-0">
               <v-card tile flat class="grey lighten-4">
-                <v-card-title class="title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
                     <a target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
