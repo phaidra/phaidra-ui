@@ -1,10 +1,13 @@
 <template>
   <p-i-form
     :form="form"
+    :rights="rights"
+    :enablerights="true"
     v-on:load-form="form = $event"
     v-on:object-created="objectCreated($event)"
     v-on:form-input-p-select="handleSelect($event)"
     v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
+    v-on:input-rights="rights = $event"
   ></p-i-form>
 </template>
 
@@ -45,7 +48,8 @@ export default {
           value: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ'
         }
       ],
-      form: { sections: [] }
+      form: { sections: [] },
+      rights: {}
     }
   },
   methods: {
