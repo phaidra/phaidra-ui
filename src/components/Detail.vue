@@ -23,11 +23,11 @@
           <v-row v-if="objectInfo.dshash['JSON-LD']">
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
           </v-row>
-<!--
+
           <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['UWMETADATA']">
-            <p-d-uwmetadata :indexdata="objectInfo"></p-d-uwmetadata>
+            <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']"></p-d-uwm-rec>
           </v-col>
--->
+
           <h3 v-if="objectInfo.cmodel === 'Container'" class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
 
           <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Collection'">
@@ -83,7 +83,7 @@
 
           <v-row class="mb-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-4">
+              <v-card tile flat class="grey lighten-5">
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Identifiers') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
@@ -103,7 +103,7 @@
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-4">
+              <v-card tile flat class="grey lighten-5">
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Details') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
@@ -130,7 +130,7 @@
                   </v-row>
                   <v-row no-gutters class="pt-2">
                     <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Created') }}</v-col>
-                    <v-col cols="8" offset="1">{{ objectInfo.created | time }}</v-col>
+                    <v-col cols="8" offset="1">{{ objectInfo.created | datetimeutc }}</v-col>
                   </v-row>
                 </v-card-text>
               </v-card>
@@ -139,7 +139,7 @@
 
           <v-row class="my-6" v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-4">
+              <v-card tile flat class="grey lighten-5">
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Relationships') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
@@ -218,7 +218,7 @@
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-4">
+              <v-card tile flat class="grey lighten-5">
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Metadata') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
@@ -240,7 +240,7 @@
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-4">
+              <v-card tile flat class="grey lighten-5">
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Edit') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
@@ -274,7 +274,7 @@
 
           <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights)">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-4">
+              <v-card tile flat class="grey lighten-5">
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
@@ -412,8 +412,12 @@ export default {
     }
     // on next() the component will be rendered, waits for no async calls, but we can put data to store since we already have them
     next(vm => {
-      vm.$store.commit('setObjectInfo', inforesponse.data.info)
-      vm.$store.commit('setObjectMembers', members)
+      if (inforesponse) {
+        if (inforesponse.data) {
+          vm.$store.commit('setObjectInfo', inforesponse.data.info)
+          vm.$store.commit('setObjectMembers', members)
+        }
+      }
     })
   },
   beforeRouteUpdate: async function (to, from, next) {

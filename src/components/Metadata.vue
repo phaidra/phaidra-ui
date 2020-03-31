@@ -51,7 +51,11 @@ export default {
       console.error(error)
     }
     next(vm => {
-      vm.$store.commit('setObjectInfo', inforesponse.data.info)
+      if (inforesponse) {
+        if (inforesponse.data) {
+          vm.$store.commit('setObjectInfo', inforesponse.data.info)
+        }
+      }
     })
   },
   beforeRouteUpdate: async function (to, from, next) {

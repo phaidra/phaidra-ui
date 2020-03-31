@@ -18,6 +18,7 @@ import SubmitBruckneruni from '@/components/SubmitBruckneruni'
 import SubmitEmpty from '@/components/SubmitEmpty'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
+import SubmitSimple from '@/components/SubmitSimple'
 import AddMember from '@/components/AddMember'
 import UploadWebVersion from '@/components/UploadWebVersion'
 
@@ -86,6 +87,11 @@ export function createRouter () {
         path: '/submit',
         name: 'submit',
         component: Submit
+      },
+      {
+        path: '/submit/simple',
+        name: 'submit-simple',
+        component: SubmitSimple
       },
       {
         path: '/submit/ksa-eda',

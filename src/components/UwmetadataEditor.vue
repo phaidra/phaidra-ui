@@ -1,10 +1,10 @@
 <template>
-  <p-uwmetadata-editor
+  <p-i-form-uwm
     :form="editform"
     :targetpid="this.pid"
     v-on:object-saved="objectSaved($event)"
     v-on:load-form="editform = $event"
-  ></p-uwmetadata-editor>
+  ></p-i-form-uwm>
 </template>
 
 <script>

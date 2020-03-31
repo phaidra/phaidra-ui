@@ -51,9 +51,15 @@ export async function createApp ({
     }
   })
 
-  Vue.filter('time', function (value) {
+  Vue.filter('datetime', function (value) {
     if (value) {
       return moment(String(value)).format('DD.MM.YYYY hh:mm:ss')
+    }
+  })
+
+  Vue.filter('datetimeutc', function (value) {
+    if (value) {
+      return moment.utc(String(value)).format('DD.MM.YYYY hh:mm:ss')
     }
   })
 
