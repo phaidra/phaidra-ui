@@ -1,13 +1,20 @@
 <template>
-  <p-i-form
-    :form="form"
-    :rights="rights"
-    :enablerights="true"
-    v-on:load-form="form = $event"
-    v-on:object-created="objectCreated($event)"
-    v-on:form-input-p-select="handleSelect($event)"
-    v-on:input-rights="rights = $event"
-  ></p-i-form>
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="8" offset-md="2">
+        <p-i-form
+          :form="form"
+          :rights="rights"
+          :enablerights="true"
+          :addbutton="false"
+          v-on:load-form="form = $event"
+          v-on:object-created="objectCreated($event)"
+          v-on:form-input-p-select="handleSelect($event)"
+          v-on:input-rights="rights = $event"
+        ></p-i-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -150,7 +157,7 @@ export default {
       this.form = {
         sections: [
           {
-            title: 'General metadata',
+            title: null,
             type: 'digitalobject',
             id: 1,
             fields: []
@@ -176,11 +183,15 @@ export default {
 
       this.form.sections[0].fields.push(fields.getField('keyword'))
 
-      this.form.sections[0].fields.push(fields.getField('role'))
+      let role = fields.getField('role')
+      role.ordergroup = 'role'
+      this.form.sections[0].fields.push(role)
 
       this.form.sections[0].fields.push(fields.getField('association'))
 
-      this.form.sections[0].fields.push(fields.getField('license'))
+      let lic = fields.getField('license')
+      lic.showValueDefinition = true
+      this.form.sections[0].fields.push(lic)
     }
   },
   mounted: function () {

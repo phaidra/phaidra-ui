@@ -5,7 +5,7 @@
 
         <v-col cols="12" md="8">
 
-          <v-row justify="center" class="mb-12">
+          <v-row justify="center">
             <a :href="objectInfo.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
               <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
               <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
@@ -20,13 +20,15 @@
             </template>
           </v-row>
 
-          <v-row v-if="objectInfo.dshash['JSON-LD']">
+          <v-divider class="mt-12 mb-10"></v-divider>
+
+          <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
           </v-row>
 
-          <v-col cols="12" class="mb-12" v-if="objectInfo.dshash['UWMETADATA']">
+          <v-row v-if="objectInfo.dshash['UWMETADATA']">
             <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']"></p-d-uwm-rec>
-          </v-col>
+          </v-row>
 
           <h3 v-if="objectInfo.cmodel === 'Container'" class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
 
@@ -83,7 +85,7 @@
 
           <v-row class="mb-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-5">
+              <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Identifiers') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
@@ -103,7 +105,7 @@
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-5">
+              <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Details') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
@@ -139,7 +141,7 @@
 
           <v-row class="my-6" v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-5">
+              <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Relationships') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
@@ -218,7 +220,7 @@
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-5">
+              <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Metadata') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2">
@@ -240,7 +242,7 @@
 
           <v-row class="my-6">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-5">
+              <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Edit') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
@@ -274,7 +276,7 @@
 
           <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights)">
             <v-col class="pt-0">
-              <v-card tile flat class="grey lighten-5">
+              <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
