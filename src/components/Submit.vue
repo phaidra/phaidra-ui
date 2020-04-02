@@ -147,6 +147,28 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row class="my-6">
+      <v-col cols="12">
+        <v-card>
+          <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Legacy") }}</v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="2" class="mx-2">
+                  <v-hover v-slot:default="{ hover }">
+                    <router-link :to="{ name: 'submit-uwm' }">
+                      <v-row align="center">
+                        <span class="title font-weight-light ml-2 primary--text">{{ $t("Uwmetadata") }}</span>
+                      </v-row>
+                    </router-link>
+                  </v-hover>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

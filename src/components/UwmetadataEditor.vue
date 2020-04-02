@@ -1,5 +1,6 @@
 <template>
   <p-i-form-uwm
+    title="Metadata"
     :form="editform"
     :targetpid="this.pid"
     v-on:object-saved="objectSaved($event)"

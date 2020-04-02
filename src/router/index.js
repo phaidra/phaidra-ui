@@ -19,6 +19,7 @@ import SubmitEmpty from '@/components/SubmitEmpty'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
 import SubmitSimple from '@/components/SubmitSimple'
+import SubmitUwm from '@/components/SubmitUwm'
 import AddMember from '@/components/AddMember'
 import UploadWebVersion from '@/components/UploadWebVersion'
 
@@ -92,6 +93,11 @@ export function createRouter () {
         path: '/submit/simple',
         name: 'submit-simple',
         component: SubmitSimple
+      },
+      {
+        path: '/submit/uwm',
+        name: 'submit-uwm',
+        component: SubmitUwm
       },
       {
         path: '/submit/ksa-eda',
