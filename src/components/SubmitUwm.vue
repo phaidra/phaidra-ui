@@ -5,21 +5,28 @@
         <v-container>
           <p-i-file
             v-bind.sync="fileField"
+            :mimetype="mimetype"
             v-on:input-file="file = $event"
-            v-on:input-mimetype="mimetype = $event"
+            v-on:input-mimetype="mimetype = $event['@id']"
             input-style="outlined"
+            :auto-mimetype="true"
+            :fileErrorMessages="fileErrorMessages"
+            :mimetypeErrorMessages="mimetypeErrorMessages"
+            :disabled="loading"
           ></p-i-file>
         </v-container>
         <p-i-form-uwm
+          ref="submitform"
           :form="form"
+          :disabled="loading"
           v-on:object-saved="objectSaved($event)"
-          v-on:load-form="editform = $event"
+          v-on:load-form="form = $event"
         ></p-i-form-uwm>
       </v-col>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn class="primary mr-8" @click="save()">{{ $t('Submit') }}</v-btn>
+      <v-btn fixed bottom right large :disabled="loading" :loading="loading" class="primary mr-8" @click="save()">{{ $t('Submit') }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -33,14 +40,46 @@ import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
 export default {
   name: 'submit-uwm',
   mixins: [ config, context, vocabulary ],
+  computed: {
+    objectType: function () {
+      switch (this.mimetype) {
+        case 'image/jpeg':
+        case 'image/tiff':
+        case 'image/gif':
+        case 'image/png':
+        case 'image/x-ms-bmp':
+          return 'picture'
+
+        case 'audio/wav':
+        case 'audio/mpeg':
+        case 'audio/flac':
+        case 'audio/ogg':
+          return 'audio'
+
+        case 'application/pdf':
+          return 'document'
+
+        case 'video/mpeg':
+        case 'video/avi':
+        case 'video/mp4':
+        case 'video/quicktime':
+        case 'video/x-matroska':
+          return 'video'
+
+        default:
+          return 'unknown'
+      }
+    }
+  },
   data () {
     return {
       loading: false,
       form: [],
-      cmodel: 'unknown',
       file: null,
-      mimetype: 'application/octet-stream',
-      fileField: fields.getField('file')
+      mimetype: '',
+      fileField: fields.getField('file'),
+      mimetypeErrorMessages: [],
+      fileErrorMessages: []
     }
   },
   methods: {
@@ -51,6 +90,9 @@ export default {
     },
     loadUwmetadata: async function (self) {
       self.loading = true
+      this.file = null
+      this.mimetype = ''
+      this.form = []
       try {
         let response = await self.$http.request({
           method: 'GET',
@@ -76,37 +118,52 @@ export default {
       return md
     },
     save: async function () {
-      this.loading = true
-      var httpFormData = new FormData()
-      httpFormData.append('metadata', JSON.stringify(this.getMetadata()))
-      httpFormData.append('file', this.file)
-      try {
-        let response = await this.$http.request({
-          method: 'POST',
-          url: this.instanceconfig.api + '/' + this.cmodel + '/create',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'X-XSRF-TOKEN': this.user.token
-          },
-          data: httpFormData
-        })
-        if (response.data.alerts && response.data.alerts.length > 0) {
-          if (response.data.status === 401) {
-            response.data.alerts.push({ type: 'danger', msg: 'Please log in' })
+      let valid = this.$refs.submitform.validate()
+      this.fileErrorMessages = []
+      this.mimetypeErrorMessages = []
+      if (!this.file) {
+        this.fileErrorMessages.push(this.$t('Missing file'))
+        valid = false
+      }
+      if (!this.mimetype) {
+        this.mimetypeErrorMessages.push(this.$t('Missing file type'))
+        valid = false
+      }
+      if (valid) {
+        this.loading = true
+        var httpFormData = new FormData()
+        httpFormData.append('metadata', JSON.stringify(this.getMetadata()))
+        httpFormData.append('file', this.file)
+        httpFormData.append('mimetype', this.mimetype)
+        try {
+          let response = await this.$http.request({
+            method: 'POST',
+            url: this.instanceconfig.api + '/' + this.objectType + '/create',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'X-XSRF-TOKEN': this.user.token
+            },
+            data: httpFormData
+          })
+          if (response.data.status === 200) {
+            if (response.data.pid) {
+              this.$router.push({ name: 'detail', params: { pid: response.data.pid } })
+            }
+          } else {
+            if (response.data.alerts && response.data.alerts.length > 0) {
+              if (response.data.status === 401) {
+                response.data.alerts.push({ type: 'danger', msg: 'Please log in' })
+              }
+              this.$store.commit('setAlerts', response.data.alerts)
+            }
           }
-          this.$store.commit('setAlerts', response.data.alerts)
+        } catch (error) {
+          console.log(error)
+          this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+        } finally {
+          this.$vuetify.goTo(0)
+          this.loading = false
         }
-        if (response.data.status === 200) {
-          if (response.data.pid) {
-            this.$emit('object-saved', this.targetpid)
-          }
-        }
-      } catch (error) {
-        console.log(error)
-        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
-      } finally {
-        this.$vuetify.goTo(0)
-        this.loading = false
       }
     }
   },

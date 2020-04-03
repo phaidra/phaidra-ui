@@ -299,7 +299,7 @@ export default {
   uwm_general_irdata: 'Institutional Repository',
   uwm_general_coverage: 'Geltungsbereich',
   uwm_general_keyword: 'Stichwörter',
-  uwm_general_description: 'Beschreibung oder zusätzliche Angaben',
+  uwm_general_description: 'Beschreibung',
   uwm_general_language: 'Sprache',
   uwm_general_alt_title: 'alternativer Titel',
   uwm_general_subtitle: 'Untertitel',

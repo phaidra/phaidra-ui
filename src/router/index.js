@@ -139,6 +139,9 @@ export function createRouter () {
         name: 'lists',
         component: PLists
       }
-    ]
+    ],
+    scrollBehavior () {
+      return { x: 0, y: 0 }
+    }
   })
 }

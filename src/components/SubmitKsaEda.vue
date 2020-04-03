@@ -150,7 +150,6 @@ export default {
       }
     },
     objectCreated: function (event) {
-      this.$store.commit('setAlerts', [{ type: 'success', msg: 'Object ' + event + ' created' }])
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },

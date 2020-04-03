@@ -250,7 +250,7 @@ export default {
   uwm_general_irdata: 'Institutional Repository',
   uwm_general_coverage: 'Coverage',
   uwm_general_keyword: 'Keywords',
-  uwm_general_description: 'Description or Additional Data',
+  uwm_general_description: 'Description',
   uwm_general_language: 'Language',
   uwm_general_alt_title: 'Alternative Title',
   uwm_general_subtitle: 'Subtitle',

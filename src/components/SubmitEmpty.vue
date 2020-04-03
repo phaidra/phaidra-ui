@@ -136,7 +136,6 @@ export default {
       this.form.sections.splice(this.form.sections.indexOf(afterSection) + 1, 0, s)
     },
     objectCreated: function (event) {
-      this.$store.commit('setAlerts', [{ type: 'success', msg: 'Object ' + event + ' created' }])
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
