@@ -20,7 +20,6 @@
           :enablerights="true"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
-          v-on:form-input-p-file="handleMimeSelect($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
           v-on:input-rights="rights = $event"
         ></p-i-form>
@@ -89,66 +88,6 @@ export default {
     }
   },
   methods: {
-    getResourceTypeFromMimeType: function (mime) {
-      switch (mime) {
-        case 'image/jpeg':
-        case 'image/tiff':
-        case 'image/gif':
-        case 'image/png':
-        case 'image/x-ms-bmp':
-          // picture
-          return 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
-
-        case 'audio/wav':
-        case 'audio/mpeg':
-        case 'audio/flac':
-        case 'audio/ogg':
-          // audio
-          return 'https://pid.phaidra.org/vocabulary/8YB5-1M0J'
-
-        case 'application/pdf':
-          // document
-          return 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
-
-        case 'video/mpeg':
-        case 'video/avi':
-        case 'video/mp4':
-        case 'video/quicktime':
-        case 'video/x-matroska':
-          // video
-          return 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8'
-
-        // should currently not happen, nothing else is in the selectbox
-        default:
-          // data
-          return 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
-      }
-    },
-    handleMimeSelect: function (val) {
-      if (val.predicate === 'ebucore:filename') {
-        for (let s of this.form.sections) {
-          if ((s.type !== 'digitalobject') && (s.type !== 'phaidra:Subject') && (s.fields)) {
-            let mime = val.mimetype
-            let resourcetype = this.getResourceTypeFromMimeType(mime)
-            for (let field of s.fields) {
-              if (field.predicate === 'dcterms:type') {
-                field.value = resourcetype
-                let preflabels
-                for (let term of this.vocabularies.resourcetype.terms) {
-                  if (term['@id'] === field.value) {
-                    preflabels = term['skos:prefLabel']
-                  }
-                }
-                field['skos:prefLabel'] = []
-                Object.entries(preflabels).forEach(([key, value]) => {
-                  field['skos:prefLabel'].push({ '@value': value, '@language': key })
-                })
-              }
-            }
-          }
-        }
-      }
-    },
     objectCreated: function (event) {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)

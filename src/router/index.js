@@ -16,6 +16,7 @@ import SubmitResource from '@/components/SubmitResource'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
 import SubmitBruckneruni from '@/components/SubmitBruckneruni'
 import SubmitEmpty from '@/components/SubmitEmpty'
+import SubmitCustom from '@/components/SubmitCustom'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
 import SubmitSimple from '@/components/SubmitSimple'
@@ -123,6 +124,11 @@ export function createRouter () {
         path: '/submit/empty',
         name: 'submit-empty',
         component: SubmitEmpty
+      },
+      {
+        path: '/submit/custom',
+        name: 'submit-custom',
+        component: SubmitCustom
       },
       {
         path: '/addmember/:pid',

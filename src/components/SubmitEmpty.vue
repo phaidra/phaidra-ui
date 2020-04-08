@@ -1,28 +1,17 @@
 <template>
   <v-container>
     <v-card>
-      <v-toolbar flat>
-        <v-toolbar-title>Submit</v-toolbar-title>
-        <v-divider class="mx-3" inset vertical></v-divider>
-        <v-select
-          :items="contentmodels"
-          v-model="contentmodel"
-          label="Object type"
-          single-line
-        ></v-select>
-      </v-toolbar>
       <v-card-text>
         <p-i-form
           :form="form"
+          :disablesave="true"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
         ></p-i-form>
       </v-card-text>
     </v-card>
-
   </v-container>
-
 </template>
 
 <script>
@@ -32,98 +21,12 @@ import { context } from '../mixins/context'
 export default {
   name: 'submit-empty',
   mixins: [ context ],
-  computed: {
-    breadcrumbs: function () {
-      let bc = [
-        {
-          text: this.$t('Submit'),
-          to: { name: 'submit', path: '/' }
-        },
-        {
-          text: this.$t('Submit - test'),
-          disabled: true,
-          to: { name: 'submit-empty', path: 'submit/empty' }
-        }
-      ]
-      return bc
-    }
-  },
   data () {
     return {
-      contentmodel: 'https://pid.phaidra.org/vocabulary/44TN-P1S0',
-      contentmodels: [
-        {
-          text: 'Data',
-          value: 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
-        },
-        {
-          text: 'Picture',
-          value: 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
-        },
-        {
-          text: 'Audio',
-          value: 'https://pid.phaidra.org/vocabulary/8YB5-1M0J'
-        },
-        {
-          text: 'Video',
-          value: 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8'
-        },
-        {
-          text: 'Document',
-          value: 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
-        }
-      ],
       form: { sections: [] }
     }
   },
-  watch: {
-    contentmodel: function (val) {
-      for (var i = 0; i < this.form.sections.length; i++) {
-        for (var j = 0; j < this.form.sections[i].fields.length; j++) {
-          if (this.form.sections[i].fields[j].predicate === 'dcterms:type') {
-            this.form.sections[i].fields[j].value = this.contentmodel
-            return
-          }
-        }
-      }
-    }
-  },
   methods: {
-    getResourceTypeFromMimeType: function (mime) {
-      switch (mime) {
-        case 'image/jpeg':
-        case 'image/tiff':
-        case 'image/gif':
-        case 'image/png':
-        case 'image/x-ms-bmp':
-          // picture
-          return 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
-
-        case 'audio/wav':
-        case 'audio/mpeg':
-        case 'audio/flac':
-        case 'audio/ogg':
-          // audio
-          return 'https://pid.phaidra.org/vocabulary/8YB5-1M0J'
-
-        case 'application/pdf':
-          // document
-          return 'https://pid.phaidra.org/vocabulary/69ZZ-2KGX'
-
-        case 'video/mpeg':
-        case 'video/avi':
-        case 'video/mp4':
-        case 'video/quicktime':
-        case 'video/x-matroska':
-          // video
-          return 'https://pid.phaidra.org/vocabulary/B0Y6-GYT8'
-
-        // should currently not happen, nothing else is in the selectbox
-        default:
-          // data
-          return 'https://pid.phaidra.org/vocabulary/7AVS-Y482'
-      }
-    },
     addPhaidrasubjectSection: function (afterSection) {
       let s = {
         title: 'Subject',
@@ -150,9 +53,8 @@ export default {
           }
         ]
       }
-
       var rt = fields.getField('resource-type')
-      rt.value = this.contentmodel
+      rt.disabled = false
       this.form.sections[0].fields.push(rt)
     }
   },
