@@ -18,6 +18,7 @@
           :form="form"
           :rights="rights"
           :enablerights="true"
+          :validate="validate"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
@@ -76,6 +77,9 @@ export default {
     }
   },
   watch: {
+    validate: function () {
+      return true
+    },
     contentmodel: function (val) {
       for (var i = 0; i < this.form.sections.length; i++) {
         for (var j = 0; j < this.form.sections[i].fields.length; j++) {

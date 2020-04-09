@@ -5,6 +5,7 @@
         <p-i-form
           :form="form"
           :disablesave="true"
+          :validate="validate"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
@@ -27,6 +28,9 @@ export default {
     }
   },
   methods: {
+    validate: function () {
+      return true
+    },
     addPhaidrasubjectSection: function (afterSection) {
       let s = {
         title: 'Subject',

@@ -1,5 +1,15 @@
 <template>
   <v-container>
+    <v-alert :value="validationError" dismissible type="error" transition="slide-y-transition">
+      <span>{{ $t('Please fill in the required fields') }}</span>
+      <template v-if="fieldsMissing.length > 0">
+        <br/>
+        <span>{{ $t('Some required fields are missing') }}:</span>
+        <ul>
+          <li v-for="(f, i) in fieldsMissing" :key="'mfld'+i">{{ f }}</li>
+        </ul>
+      </template>
+    </v-alert>
     <v-row>
       <v-col cols="12" md="8" offset-md="2">
         <p-i-form
@@ -7,6 +17,7 @@
           :rights="rights"
           :enablerights="true"
           :addbutton="false"
+          :validate="validate"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:form-input-p-select="handleSelect($event)"
@@ -29,10 +40,170 @@ export default {
   data () {
     return {
       form: { sections: [] },
-      rights: {}
+      rights: {},
+      validationError: false,
+      fieldsMissing: []
     }
   },
   methods: {
+    validate: function () {
+      this.validationError = false
+      this.fieldsMissing = []
+      let missingTitle = true
+      let missingDescription = true
+      let missingKeyword = true
+      let missingRole = true
+      let missingLicense = true
+      let missingResourceType = true
+      let missingObjectType = true
+      let missingFile = true
+      let resourceType = null
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.predicate === 'dcterms:type') {
+            resourceType = f.value
+          }
+        }
+      }
+      switch (resourceType) {
+        case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
+          // collection
+          missingFile = false
+          missingLicense = false
+          break
+        case 'https://pid.phaidra.org/vocabulary/T8GH-F4V8':
+          // resource
+          missingFile = false
+          missingLicense = false
+          break
+      }
+
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.component === 'p-title') {
+            missingTitle = false
+            f.titleErrorMessages = []
+            if (f.title.length < 1) {
+              f.titleErrorMessages.push(this.$t('Missing title'))
+              this.validationError = true
+            }
+          }
+          if (f.predicate === 'bf:note') {
+            missingDescription = false
+            f.errorMessages = []
+            if (f.value.length < 1) {
+              f.errorMessages.push(this.$t('Missing description'))
+              this.validationError = true
+            }
+          }
+          if (f.component === 'p-keyword') {
+            missingKeyword = false
+            f.errorMessages = []
+            if (f.value.length < 1) {
+              f.errorMessages.push(this.$t('Missing keywords'))
+              this.validationError = true
+            }
+          }
+          if (f.component === 'p-entity') {
+            missingRole = false
+            f.firstnameErrorMessages = []
+            f.lastnameErrorMessages = []
+            f.roleErrorMessages = []
+            f.affiliationErrorMessages = []
+            f.affiliationTextErrorMessages = []
+            f.organizationErrorMessages = []
+            f.organizationTextErrorMessages = []
+            if (f.role.length < 1) {
+              f.roleErrorMessages.push(this.$t('Missing role'))
+              this.validationError = true
+            }
+            if (f.type === 'schema:Person') {
+              if (f.firstname.length < 1) {
+                f.firstnameErrorMessages.push(this.$t('Missing firstname'))
+                this.validationError = true
+              }
+              if (f.lastname.length < 1) {
+                f.lastnameErrorMessages.push(this.$t('Missing lastname'))
+                this.validationError = true
+              }
+            }
+            if (f.type === 'schema:Organization') {
+              if (f.organization.length < 1) {
+                f.organizationErrorMessages.push(this.$t('Missing organization'))
+                this.validationError = true
+              }
+            }
+          }
+          if (f.component === 'p-select') {
+            f.errorMessages = []
+            if (f.predicate === 'edm:rights') {
+              missingLicense = false
+              if (f.value.length < 1) {
+                f.errorMessages.push(this.$t('Please select'))
+                this.validationError = true
+              }
+            }
+            if (f.predicate === 'dcterms:type') {
+              missingResourceType = false
+              if (f.value.length < 1) {
+                f.errorMessages.push(this.$t('Please select'))
+                this.validationError = true
+              }
+            }
+            if (f.predicate === 'edm:hasType') {
+              missingObjectType = false
+              if (f.value.length < 1) {
+                f.errorMessages.push(this.$t('Please select'))
+                this.validationError = true
+              }
+            }
+          }
+          if (f.component === 'p-file') {
+            missingFile = false
+            f.fileErrorMessages = []
+            f.mimetypeErrorMessages = []
+            if (!f.file) {
+              f.fileErrorMessages.push(this.$t('Please select'))
+              this.validationError = true
+            }
+            if (f.mimetype.length < 1) {
+              f.mimetypeErrorMessages.push(this.$t('Please select'))
+              this.validationError = true
+            }
+          }
+        }
+      }
+
+      if (missingTitle) {
+        this.fieldsMissing.push(this.$t('Title'))
+      }
+      if (missingDescription) {
+        this.fieldsMissing.push(this.$t('Description'))
+      }
+      if (missingKeyword) {
+        this.fieldsMissing.push(this.$t('Keyword'))
+      }
+      if (missingRole) {
+        this.fieldsMissing.push(this.$t('Role'))
+      }
+      if (missingLicense) {
+        this.fieldsMissing.push(this.$t('License'))
+      }
+      if (missingResourceType) {
+        this.fieldsMissing.push(this.$t('Resource type'))
+      }
+      if (missingObjectType) {
+        this.fieldsMissing.push(this.$t('Object type'))
+      }
+      if (missingFile) {
+        this.fieldsMissing.push(this.$t('File'))
+      }
+
+      if (this.validationError) {
+        this.$vuetify.goTo(0)
+      }
+      return !this.validationError
+    },
     handleSelect: function (field) {
       if (field.predicate === 'dcterms:type') {
         switch (field.value) {
@@ -127,27 +298,11 @@ export default {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
-    resetForm: function (cm) {
-      this.createContainerForm()
-      this.setLangGerman()
-    },
-    setLangGerman: function () {
-      for (let s of this.form.sections) {
-        for (let f of s.fields) {
-          if (f.language) {
-            f.language = 'deu'
-          }
-          if (f.nameLanguage) {
-            f.nameLanguage = 'deu'
-          }
-          if (f.descriptionLanguage) {
-            f.descriptionLanguage = 'deu'
-          }
-        }
-      }
-    },
-    createContainerForm: function (index) {
-      this.form = {
+    createContainerForm: function (self, index) {
+      self.validationError = false
+      self.fieldsMissing = []
+
+      self.form = {
         sections: [
           {
             title: null,
@@ -161,36 +316,41 @@ export default {
       let rt = fields.getField('resource-type')
       rt.disabled = false
       rt.vocabulary = 'resourcetypenocontainer'
-      this.form.sections[0].fields.push(rt)
+      self.form.sections[0].fields.push(rt)
 
-      this.form.sections[0].fields.push(fields.getField('object-type'))
+      self.form.sections[0].fields.push(fields.getField('object-type'))
 
-      this.form.sections[0].fields.push(fields.getField('title'))
+      self.form.sections[0].fields.push(fields.getField('title'))
 
-      this.form.sections[0].fields.push(fields.getField('description'))
+      self.form.sections[0].fields.push(fields.getField('description'))
 
       let lang = fields.getField('language')
       lang.value = 'deu'
-      this.form.sections[0].fields.push(lang)
+      self.form.sections[0].fields.push(lang)
 
-      this.form.sections[0].fields.push(fields.getField('keyword'))
+      self.form.sections[0].fields.push(fields.getField('keyword'))
 
       let role = fields.getField('role')
       role.ordergroup = 'role'
-      this.form.sections[0].fields.push(role)
+      self.form.sections[0].fields.push(role)
 
-      this.form.sections[0].fields.push(fields.getField('association'))
+      self.form.sections[0].fields.push(fields.getField('association'))
 
       let lic = fields.getField('license')
       lic.showValueDefinition = true
-      this.form.sections[0].fields.push(lic)
+      self.form.sections[0].fields.push(lic)
 
-      this.form.sections[0].fields.push(fields.getField('file'))
+      self.form.sections[0].fields.push(fields.getField('file'))
     }
   },
-  mounted: function () {
-    this.createContainerForm()
-    this.setLangGerman()
+  beforeRouteEnter: function (to, from, next) {
+    next(vm => {
+      vm.createContainerForm(vm)
+    })
+  },
+  beforeRouteUpdate: function (to, from, next) {
+    this.createContainerForm(this)
+    next()
   }
 }
 </script>

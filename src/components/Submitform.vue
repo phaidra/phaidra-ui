@@ -6,6 +6,7 @@
           :form="form"
           :rights="rights"
           :enablerights="true"
+          :validate="validate"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:add-phaidrasubject-section="addPhaidrasubjectSection($event)"
@@ -48,6 +49,9 @@ export default {
     }
   },
   methods: {
+    validate: function () {
+      return true
+    },
     objectCreated: function (event) {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
