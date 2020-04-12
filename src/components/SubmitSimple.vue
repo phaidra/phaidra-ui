@@ -18,9 +18,10 @@
           :enablerights="true"
           :addbutton="false"
           :validate="validate"
+          :toggle-resourcetype="true"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
-          v-on:form-input-p-select="handleSelect($event)"
+          v-on:form-input-resource-type="handleInputResourceType($event)"
           v-on:input-rights="rights = $event"
         ></p-i-form>
       </v-col>
@@ -204,94 +205,92 @@ export default {
       }
       return !this.validationError
     },
-    handleSelect: function (field) {
-      if (field.predicate === 'dcterms:type') {
-        switch (field.value) {
-          case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
-            // collection => remove file and license field and resourcelink section
-            for (let s of this.form.sections) {
-              if (s.type === 'resourcelink') {
-                arrays.remove(this.form.sections, s)
+    handleInputResourceType: function (rt) {
+      switch (rt['@id']) {
+        case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
+          // collection => remove file and license field and resourcelink section
+          for (let s of this.form.sections) {
+            if (s.type === 'resourcelink') {
+              arrays.remove(this.form.sections, s)
+              break
+            }
+          }
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.component === 'p-file') {
+                arrays.remove(s.fields, f)
                 break
               }
             }
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.component === 'p-file') {
-                  arrays.remove(s.fields, f)
-                  break
-                }
-              }
-            }
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.predicate === 'edm:rights') {
-                  arrays.remove(s.fields, f)
-                  break
-                }
-              }
-            }
-            break
-          case 'https://pid.phaidra.org/vocabulary/T8GH-F4V8':
-            // resource => remove license field and add resourcelink section
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.component === 'p-file') {
-                  arrays.remove(s.fields, f)
-                  break
-                }
-              }
-            }
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.predicate === 'edm:rights') {
-                  arrays.remove(s.fields, f)
-                  break
-                }
-              }
-            }
-            this.form.sections.push(
-              {
-                title: 'Resource link',
-                type: 'resourcelink',
-                disablemenu: true,
-                id: 2,
-                fields: []
-              }
-            )
-            break
-          default:
-            // add file field im missing and remove resourcelink section
-            for (let s of this.form.sections) {
-              if (s.type === 'resourcelink') {
-                arrays.remove(this.form.sections, s)
+          }
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.predicate === 'edm:rights') {
+                arrays.remove(s.fields, f)
                 break
               }
             }
-            let haslicense = false
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.predicate === 'edm:rights') {
-                  haslicense = true
-                }
+          }
+          break
+        case 'https://pid.phaidra.org/vocabulary/T8GH-F4V8':
+          // resource => remove license field and add resourcelink section
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.component === 'p-file') {
+                arrays.remove(s.fields, f)
+                break
               }
             }
-            if (!haslicense) {
-              this.form.sections[0].fields.push(fields.getField('license'))
-            }
-            let hasfile = false
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.component === 'p-file') {
-                  hasfile = true
-                }
+          }
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.predicate === 'edm:rights') {
+                arrays.remove(s.fields, f)
+                break
               }
             }
-            if (!hasfile) {
-              this.form.sections[0].fields.push(fields.getField('file'))
+          }
+          this.form.sections.push(
+            {
+              title: 'Resource link',
+              type: 'resourcelink',
+              disablemenu: true,
+              id: 2,
+              fields: []
             }
-            break
-        }
+          )
+          break
+        default:
+          // add file field im missing and remove resourcelink section
+          for (let s of this.form.sections) {
+            if (s.type === 'resourcelink') {
+              arrays.remove(this.form.sections, s)
+              break
+            }
+          }
+          let haslicense = false
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.predicate === 'edm:rights') {
+                haslicense = true
+              }
+            }
+          }
+          if (!haslicense) {
+            this.form.sections[0].fields.push(fields.getField('license'))
+          }
+          let hasfile = false
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.component === 'p-file') {
+                hasfile = true
+              }
+            }
+          }
+          if (!hasfile) {
+            this.form.sections[0].fields.push(fields.getField('file'))
+          }
+          break
       }
     },
     objectCreated: function (event) {
@@ -313,12 +312,11 @@ export default {
         ]
       }
 
-      let rt = fields.getField('resource-type')
-      rt.disabled = false
+      let rt = fields.getField('resource-type-buttongroup')
       rt.vocabulary = 'resourcetypenocontainer'
       self.form.sections[0].fields.push(rt)
 
-      self.form.sections[0].fields.push(fields.getField('object-type'))
+      self.form.sections[0].fields.push(fields.getField('object-type-checkboxes'))
 
       self.form.sections[0].fields.push(fields.getField('title'))
 
