@@ -16,7 +16,12 @@
           :form="form"
           :rights="rights"
           :enablerights="true"
+          :templating="false"
+          :importing="false"
           :addbutton="false"
+          :help="true"
+          :feedback="true"
+          :feedbackUser="this.user"
           :validate="validate"
           :toggle-resourcetype="true"
           v-on:load-form="form = $event"
@@ -71,6 +76,7 @@ export default {
           // collection
           missingFile = false
           missingLicense = false
+          missingObjectType = false
           break
         case 'https://pid.phaidra.org/vocabulary/T8GH-F4V8':
           // resource
@@ -81,6 +87,20 @@ export default {
 
       for (let s of this.form.sections) {
         for (let f of s.fields) {
+          if (f.predicate === 'dcterms:type') {
+            missingResourceType = false
+            if (f.value.length < 1) {
+              f.errorMessages.push(this.$t('Please select'))
+              this.validationError = true
+            }
+          }
+          if (f.predicate === 'edm:hasType') {
+            missingObjectType = false
+            if (f.value.length < 1) {
+              f.errorMessages.push(this.$t('Please select one or more object types'))
+              this.validationError = true
+            }
+          }
           if (f.component === 'p-title') {
             missingTitle = false
             f.titleErrorMessages = []
@@ -144,20 +164,6 @@ export default {
                 this.validationError = true
               }
             }
-            if (f.predicate === 'dcterms:type') {
-              missingResourceType = false
-              if (f.value.length < 1) {
-                f.errorMessages.push(this.$t('Please select'))
-                this.validationError = true
-              }
-            }
-            if (f.predicate === 'edm:hasType') {
-              missingObjectType = false
-              if (f.value.length < 1) {
-                f.errorMessages.push(this.$t('Please select'))
-                this.validationError = true
-              }
-            }
           }
           if (f.component === 'p-file') {
             missingFile = false
@@ -208,7 +214,7 @@ export default {
     handleInputResourceType: function (rt) {
       switch (rt['@id']) {
         case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
-          // collection => remove file and license field and resourcelink section
+          // collection => remove file, license and object type field and resourcelink section
           for (let s of this.form.sections) {
             if (s.type === 'resourcelink') {
               arrays.remove(this.form.sections, s)
@@ -225,6 +231,14 @@ export default {
           }
           for (let s of this.form.sections) {
             for (let f of s.fields) {
+              if (f.predicate === 'edm:hasType') {
+                arrays.remove(s.fields, f)
+                break
+              }
+            }
+          }
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
               if (f.predicate === 'edm:rights') {
                 arrays.remove(s.fields, f)
                 break
@@ -233,7 +247,7 @@ export default {
           }
           break
         case 'https://pid.phaidra.org/vocabulary/T8GH-F4V8':
-          // resource => remove license field and add resourcelink section
+          // resource => remove license field and add resourcelink section and object type if missing
           for (let s of this.form.sections) {
             for (let f of s.fields) {
               if (f.component === 'p-file') {
@@ -259,9 +273,30 @@ export default {
               fields: []
             }
           )
+          let hasObjectType = false
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.predicate === 'edm:hasType') {
+                hasObjectType = true
+              }
+            }
+          }
+          if (!hasObjectType) {
+            let otf = fields.getField('object-type-checkboxes')
+            let rt
+            for (let s of this.form.sections) {
+              for (let f of s.fields) {
+                if (f.predicate === 'dcterms:type') {
+                  rt = f.value
+                }
+              }
+            }
+            otf.resourceType = rt
+            this.form.sections[0].fields.splice(1, 0, otf)
+          }
           break
         default:
-          // add file field im missing and remove resourcelink section
+          // add file and object type field if missing and remove resourcelink section
           for (let s of this.form.sections) {
             if (s.type === 'resourcelink') {
               arrays.remove(this.form.sections, s)
@@ -290,6 +325,27 @@ export default {
           if (!hasfile) {
             this.form.sections[0].fields.push(fields.getField('file'))
           }
+          let hasObjectType2 = false
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.predicate === 'edm:hasType') {
+                hasObjectType2 = true
+              }
+            }
+          }
+          if (!hasObjectType2) {
+            let otf2 = fields.getField('object-type-checkboxes')
+            let rt2
+            for (let s of this.form.sections) {
+              for (let f of s.fields) {
+                if (f.predicate === 'dcterms:type') {
+                  rt2 = f.value
+                }
+              }
+            }
+            otf2.resourceType = rt2
+            this.form.sections[0].fields.splice(1, 0, otf2)
+          }
           break
       }
     },
@@ -312,11 +368,16 @@ export default {
         ]
       }
 
+      let defaultResourceType = 'https://pid.phaidra.org/vocabulary/44TN-P1S0'
+
       let rt = fields.getField('resource-type-buttongroup')
       rt.vocabulary = 'resourcetypenocontainer'
+      rt.value = defaultResourceType
       self.form.sections[0].fields.push(rt)
 
-      self.form.sections[0].fields.push(fields.getField('object-type-checkboxes'))
+      let ot = fields.getField('object-type-checkboxes')
+      ot.resourceType = defaultResourceType
+      self.form.sections[0].fields.push(ot)
 
       self.form.sections[0].fields.push(fields.getField('title'))
 
