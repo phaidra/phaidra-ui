@@ -24,7 +24,7 @@
           :feedback="true"
           :feedback-user="this.user"
           :feedback-context="'Simple submit'"
-          :guidelines-url="'http://static.phaidra-sandbox.univie.ac.at/guidelines/3.5.5Guidelinespicture_borndigital_'"
+          :guidelines-url="'https://static.phaidra-sandbox.univie.ac.at/guidelines/3.5.5Guidelinespicture_borndigital_'"
           :validate="validate"
           :toggle-resourcetype="true"
           v-on:load-form="form = $event"
