@@ -20,8 +20,11 @@
           :importing="false"
           :addbutton="false"
           :help="true"
+          :debug="false"
           :feedback="true"
-          :feedbackUser="this.user"
+          :feedback-user="this.user"
+          :feedback-context="'Simple submit'"
+          :guidelines-url="'http://static.phaidra-sandbox.univie.ac.at/guidelines/3.5.5Guidelinespicture_borndigital_'"
           :validate="validate"
           :toggle-resourcetype="true"
           v-on:load-form="form = $event"
@@ -96,7 +99,7 @@ export default {
           }
           if (f.predicate === 'edm:hasType') {
             missingObjectType = false
-            if (f.value.length < 1) {
+            if (f.selectedTerms.length < 1) {
               f.errorMessages.push(this.$t('Please select one or more object types'))
               this.validationError = true
             }
@@ -278,6 +281,7 @@ export default {
             for (let f of s.fields) {
               if (f.predicate === 'edm:hasType') {
                 hasObjectType = true
+                f.selectedTerms = []
               }
             }
           }
@@ -330,6 +334,7 @@ export default {
             for (let f of s.fields) {
               if (f.predicate === 'edm:hasType') {
                 hasObjectType2 = true
+                f.selectedTerms = []
               }
             }
           }
