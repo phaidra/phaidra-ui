@@ -56,7 +56,7 @@
                 <v-spacer></v-spacer>
                 <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
                 <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
-                <v-menu offset-y v-if="objectInfo.writerights">
+                <v-menu offset-y v-if="objectInfo.writerights === 1">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
                   </template>
@@ -240,7 +240,7 @@
             </v-col>
           </v-row>
 
-          <v-row class="my-6">
+          <v-row class="my-6" v-if="objectInfo.writerights === 1">
             <v-col class="pt-0">
               <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Edit') }}</v-card-title>
@@ -260,7 +260,7 @@
                   <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Book') && (objectInfo.cmodel !== 'Page')">
                     <router-link class="mb-1" :to="{ name: 'uploadwebversion' }">{{ $t('Upload web-optimized version') }}</router-link>
                   </v-row>
-                  <v-row no-gutters class="pt-2">
+                  <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource')">
                     <router-link class="mb-1" :to="{ name: 'rights' }">{{ $t('Access rights') }}</router-link>
                   </v-row>
                   <v-row no-gutters class="pt-2">
@@ -305,19 +305,12 @@
 
     </v-row>
 
-    <v-row v-else>
-      <v-alert :value="true" transition="slide-y-transition">{{$t('Object not found')}}</v-alert>
-    </v-row>
-
   </v-container>
 </template>
 
 <script>
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
-import configjs from '../config/phaidra-ui'
-import axios from 'axios'
-import qs from 'qs'
 
 export default {
   name: 'detail',
@@ -382,44 +375,11 @@ export default {
     return this.fetchAsyncData(this, this.$store.state.route.params.pid)
   },
   beforeRouteEnter: async function (to, from, next) {
-    // see https://router.vuejs.org/guide/advanced/data-fetching.html#fetching-before-navigation
-    // here the component does not exist yet so we don't have 'this' or access to the store
-    let inforesponse
-    let members = []
-    try {
-      console.log('[' + to.params.pid + '] fetching object info')
-      inforesponse = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
-      console.log('[' + to.params.pid + '] fetching object info done, querying object members')
-      let params = {
-        q: 'ismemberof:"' + to.params.pid + '"',
-        defType: 'edismax',
-        wt: 'json',
-        qf: 'ismemberof^5',
-        fl: 'pid',
-        sort: 'pos_in_' + to.params.pid.replace(':', '_') + ' asc'
-      }
-      let query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
-      let membersresponse = await axios.get(configjs.instances[configjs.defaultinstance].solr + '/select?' + query)
-      console.log('[' + to.params.pid + '] object has ' + membersresponse.data.response.numFound + ' members')
-      if (membersresponse.data.response.numFound > 0) {
-        for (let doc of membersresponse.data.response.docs) {
-          console.log('[' + to.params.pid + '] fetching object info of member ' + doc.pid)
-          let memresponse = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + doc.pid + '/info')
-          console.log('[' + to.params.pid + '] fetching object info of member ' + doc.pid + ' done')
-          members.push(memresponse.data.info)
-        }
-      }
-    } catch (error) {
-      console.error(error)
-    }
-    // on next() the component will be rendered, waits for no async calls, but we can put data to store since we already have them
-    next(vm => {
-      if (inforesponse) {
-        if (inforesponse.data) {
-          vm.$store.commit('setObjectInfo', inforesponse.data.info)
-          vm.$store.commit('setObjectMembers', members)
-        }
-      }
+    next(async function (vm) {
+      vm.$store.commit('setLoading', true)
+      vm.$store.commit('setObjectInfo', null)
+      await vm.fetchAsyncData(vm, to.params.pid)
+      vm.$store.commit('setLoading', false)
     })
   },
   beforeRouteUpdate: async function (to, from, next) {

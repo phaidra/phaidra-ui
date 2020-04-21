@@ -1,5 +1,15 @@
 <template>
   <v-container>
+    <v-alert :value="validationError" dismissible type="error" transition="slide-y-transition">
+      <span>{{ $t('Please fill in the required fields') }}</span>
+      <template v-if="fieldsMissing.length > 0">
+        <br/>
+        <span>{{ $t('Some required fields are missing') }}:</span>
+        <ul>
+          <li v-for="(f, i) in fieldsMissing" :key="'mfld'+i">{{ f }}</li>
+        </ul>
+      </template>
+    </v-alert>
     <v-row>
       <v-col>
         <p-i-form
@@ -20,11 +30,12 @@
 <script>
 import fields from 'phaidra-vue-components/src/utils/fields'
 import { context } from '../mixins/context'
+import { formvalidation } from '../mixins/formvalidation'
 import { cmodels } from '../utils/cmodels'
 
 export default {
   name: 'submitform',
-  mixins: [ context ],
+  mixins: [ context, formvalidation ],
   computed: {
     cmodelparam: function () {
       return this.$route.params.cmodel
@@ -49,1246 +60,1248 @@ export default {
     }
   },
   methods: {
-    validate: function () {
-      return true
-    },
     objectCreated: function (event) {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
+    getField: function (fieldId) {
+      let field = fields.getField(fieldId)
+      field.removable = true
+      return field
+    },
     getPictureDigitalGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let dtc = fields.getField('date-edtf')
+      let dtc = this.getField('date-edtf')
       dtc.type = 'dcterms:temporal'
       s.push(dtc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let psc = fields.getField('spatial-getty')
+      let psc = this.getField('spatial-getty')
       psc.type = 'dcterms:spatial'
       s.push(psc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getPicturePOGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('digitization-note'))
+      s.push(this.getField('digitization-note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getPictureDigitalFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getPicturePOFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getPictureDigitizedFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getPictureDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('condition-note'))
+      s.push(this.getField('condition-note'))
 
-      s.push(fields.getField('reproduction-note'))
+      s.push(this.getField('reproduction-note'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      s.push(fields.getField('accession-number'))
+      s.push(this.getField('accession-number'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
-      s.push(fields.getField('inscription'))
+      s.push(this.getField('inscription'))
 
-      s.push(fields.getField('material-text'))
+      s.push(this.getField('material-text'))
 
-      s.push(fields.getField('material-vocab'))
+      s.push(this.getField('material-vocab'))
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
-      s.push(fields.getField('width'))
+      s.push(this.getField('width'))
 
-      s.push(fields.getField('height'))
+      s.push(this.getField('height'))
 
       return s
     },
     getPictureMapFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getDocumentDigitalFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getDocumentPosterFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getDocumentDigitizedFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getAudioDigitalFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('dce-format-vocab'))
+      s.push(this.getField('dce-format-vocab'))
 
-      s.push(fields.getField('duration'))
+      s.push(this.getField('duration'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getAudioDigitizedFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('dce-format-vocab'))
+      s.push(this.getField('dce-format-vocab'))
 
-      s.push(fields.getField('duration'))
+      s.push(this.getField('duration'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getVideoDigitalFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('dce-format-vocab'))
+      s.push(this.getField('dce-format-vocab'))
 
-      s.push(fields.getField('duration'))
+      s.push(this.getField('duration'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getVideoDigitizedFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('dce-format-vocab'))
+      s.push(this.getField('dce-format-vocab'))
 
-      s.push(fields.getField('duration'))
+      s.push(this.getField('duration'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getDataGeneralFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('dce-format-vocab'))
+      s.push(this.getField('dce-format-vocab'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getDataResearchdataFileSection: function () {
       let s = []
-      s.push(fields.getField('file'))
+      s.push(this.getField('file'))
 
-      s.push(fields.getField('dce-format-vocab'))
+      s.push(this.getField('dce-format-vocab'))
 
-      s.push(fields.getField('license'))
+      s.push(this.getField('license'))
 
-      s.push(fields.getField('rights'))
+      s.push(this.getField('rights'))
 
       return s
     },
     getPicturePOSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('condition-note'))
+      s.push(this.getField('condition-note'))
 
-      s.push(fields.getField('reproduction-note'))
+      s.push(this.getField('reproduction-note'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      s.push(fields.getField('accession-number'))
+      s.push(this.getField('accession-number'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
-      s.push(fields.getField('inscription'))
+      s.push(this.getField('inscription'))
 
-      s.push(fields.getField('material-text'))
+      s.push(this.getField('material-text'))
 
-      s.push(fields.getField('material-vocab'))
+      s.push(this.getField('material-vocab'))
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
-      s.push(fields.getField('width'))
+      s.push(this.getField('width'))
 
-      s.push(fields.getField('height'))
+      s.push(this.getField('height'))
 
-      s.push(fields.getField('depth'))
+      s.push(this.getField('depth'))
 
       return s
     },
     getPictureDigitizedGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('digitization-note'))
+      s.push(this.getField('digitization-note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getPictureMapGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('digitization-note'))
+      s.push(this.getField('digitization-note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getPictureMapSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('condition-note'))
+      s.push(this.getField('condition-note'))
 
-      s.push(fields.getField('reproduction-note'))
+      s.push(this.getField('reproduction-note'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('scale'))
+      s.push(this.getField('scale'))
 
-      let ci = fields.getField('series')
+      let ci = this.getField('series')
       ci.predicate = 'rdau:P60101'
       ci.label = this.$t('Contained in')
       s.push(ci)
 
-      s.push(fields.getField('accession-number'))
+      s.push(this.getField('accession-number'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
-      s.push(fields.getField('inscription'))
+      s.push(this.getField('inscription'))
 
-      s.push(fields.getField('material-text'))
+      s.push(this.getField('material-text'))
 
-      s.push(fields.getField('material-vocab'))
+      s.push(this.getField('material-vocab'))
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
-      s.push(fields.getField('width'))
+      s.push(this.getField('width'))
 
-      s.push(fields.getField('height'))
+      s.push(this.getField('height'))
 
       return s
     },
     getDocumentDigitalGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('number-of-pages'))
+      s.push(this.getField('number-of-pages'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getDocumentPosterGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('number-of-pages'))
+      s.push(this.getField('number-of-pages'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      s.push(fields.getField('project'))
+      s.push(this.getField('project'))
 
-      let fnd = fields.getField('funder')
+      let fnd = this.getField('funder')
       fnd.multilingial = false
       fnd.multiplicable = true
       s.push(fnd)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getDocumentDigitizedGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('number-of-pages'))
+      s.push(this.getField('number-of-pages'))
 
-      s.push(fields.getField('digitization-note'))
+      s.push(this.getField('digitization-note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getDocumentDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('condition-note'))
+      s.push(this.getField('condition-note'))
 
-      s.push(fields.getField('reproduction-note'))
+      s.push(this.getField('reproduction-note'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let di = fields.getField('date-edtf')
+      let di = this.getField('date-edtf')
       di.type = 'dcterms:issued'
       s.push(di)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
-      s.push(fields.getField('number-of-pages'))
+      s.push(this.getField('number-of-pages'))
 
-      s.push(fields.getField('material-text'))
+      s.push(this.getField('material-text'))
 
-      s.push(fields.getField('material-vocab'))
+      s.push(this.getField('material-vocab'))
 
-      s.push(fields.getField('width'))
+      s.push(this.getField('width'))
 
-      s.push(fields.getField('height'))
+      s.push(this.getField('height'))
 
       return s
     },
     getAudioDigitalGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('genre'))
+      s.push(this.getField('genre'))
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(this.getField('table-of-contents'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let di = fields.getField('date-edtf')
+      let di = this.getField('date-edtf')
       di.type = 'dcterms:issued'
       s.push(di)
 
-      let dcc = fields.getField('date-edtf')
+      let dcc = this.getField('date-edtf')
       dcc.type = 'dcterms:dateCopyrighted'
       s.push(dcc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getAudioDigitizedGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('genre'))
+      s.push(this.getField('genre'))
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(this.getField('table-of-contents'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('digitization-note'))
+      s.push(this.getField('digitization-note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let di = fields.getField('date-edtf')
+      let di = this.getField('date-edtf')
       di.type = 'dcterms:issued'
       s.push(di)
 
-      let dcc = fields.getField('date-edtf')
+      let dcc = this.getField('date-edtf')
       dcc.type = 'dcterms:dateCopyrighted'
       s.push(dcc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getAudioDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      let ct = fields.getField('carrier-type')
+      let ct = this.getField('carrier-type')
       // TODO: filter
       s.push(ct)
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('condition-note'))
+      s.push(this.getField('condition-note'))
 
-      s.push(fields.getField('reproduction-note'))
+      s.push(this.getField('reproduction-note'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      s.push(fields.getField('supplementary-content'))
+      s.push(this.getField('supplementary-content'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      s.push(fields.getField('accession-number'))
+      s.push(this.getField('accession-number'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
-      s.push(fields.getField('inscription'))
+      s.push(this.getField('inscription'))
 
-      s.push(fields.getField('material-text'))
+      s.push(this.getField('material-text'))
 
-      s.push(fields.getField('material-vocab'))
+      s.push(this.getField('material-vocab'))
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
       return s
     },
     getVideoDigitalGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('genre'))
+      s.push(this.getField('genre'))
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(this.getField('table-of-contents'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
-      s.push(fields.getField('audience'))
+      s.push(this.getField('audience'))
 
-      s.push(fields.getField('subtitle-language'))
+      s.push(this.getField('subtitle-language'))
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getVideoDigitizedGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('genre'))
+      s.push(this.getField('genre'))
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(this.getField('table-of-contents'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
-      s.push(fields.getField('audience'))
+      s.push(this.getField('audience'))
 
-      s.push(fields.getField('subtitle-language'))
+      s.push(this.getField('subtitle-language'))
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getVideoDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      let ct = fields.getField('carrier-type')
+      let ct = this.getField('carrier-type')
       // TODO: filter
       s.push(ct)
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('condition-note'))
+      s.push(this.getField('condition-note'))
 
-      s.push(fields.getField('reproduction-note'))
+      s.push(this.getField('reproduction-note'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      s.push(fields.getField('supplementary-content'))
+      s.push(this.getField('supplementary-content'))
 
-      let d = fields.getField('date-edtf')
+      let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
       s.push(d)
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      s.push(fields.getField('accession-number'))
+      s.push(this.getField('accession-number'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
-      s.push(fields.getField('inscription'))
+      s.push(this.getField('inscription'))
 
-      s.push(fields.getField('material-text'))
+      s.push(this.getField('material-text'))
 
-      s.push(fields.getField('material-vocab'))
+      s.push(this.getField('material-vocab'))
 
-      s.push(fields.getField('technique-text'))
+      s.push(this.getField('technique-text'))
 
-      s.push(fields.getField('technique-vocab'))
+      s.push(this.getField('technique-vocab'))
 
       return s
     },
     getDataGeneralGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let da = fields.getField('date-edtf')
+      let da = this.getField('date-edtf')
       da.type = 'dcterms:available'
       s.push(da)
 
-      let di = fields.getField('date-edtf')
+      let di = this.getField('date-edtf')
       di.type = 'dcterms:issued'
       s.push(di)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getDataResearchdataGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      s.push(fields.getField('project'))
+      s.push(this.getField('project'))
 
-      let fnd = fields.getField('funder')
+      let fnd = this.getField('funder')
       fnd.multilingial = false
       fnd.multiplicable = true
       s.push(fnd)
 
-      s.push(fields.getField('citation'))
+      s.push(this.getField('citation'))
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      let tc = fields.getField('date-edtf')
+      let tc = this.getField('date-edtf')
       tc.type = 'dcterms:temporal'
       s.push(tc)
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getResourceGeneralGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('language'))
+      s.push(this.getField('language'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let da = fields.getField('date-edtf')
+      let da = this.getField('date-edtf')
       da.type = 'dcterms:available'
       s.push(da)
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getCollectionDigitalGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(this.getField('table-of-contents'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('project'))
+      s.push(this.getField('project'))
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getCollectionDigitizedGeneralSection: function () {
       let s = []
 
-      let rt = fields.getField('resource-type')
+      let rt = this.getField('resource-type')
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('description'))
+      s.push(this.getField('description'))
 
-      s.push(fields.getField('table-of-contents'))
+      s.push(this.getField('table-of-contents'))
 
-      s.push(fields.getField('note'))
+      s.push(this.getField('note'))
 
-      s.push(fields.getField('digitization-note'))
+      s.push(this.getField('digitization-note'))
 
-      s.push(fields.getField('project'))
+      s.push(this.getField('project'))
 
-      s.push(fields.getField('keyword'))
+      s.push(this.getField('keyword'))
 
-      s.push(fields.getField('gnd-subject'))
+      s.push(this.getField('gnd-subject'))
 
-      s.push(fields.getField('temporal-coverage'))
+      s.push(this.getField('temporal-coverage'))
 
-      let sc = fields.getField('spatial-getty')
+      let sc = this.getField('spatial-getty')
       sc.type = 'dcterms:spatial'
       s.push(sc)
 
-      s.push(fields.getField('association'))
+      s.push(this.getField('association'))
 
       return s
     },
     getCollectionDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = fields.getField('object-type')
+      let ot = this.getField('object-type')
       // TODO: filter
       s.push(ot)
 
-      s.push(fields.getField('title'))
+      s.push(this.getField('title'))
 
-      s.push(fields.getField('role-extended'))
+      s.push(this.getField('role-extended'))
 
-      s.push(fields.getField('provenance'))
+      s.push(this.getField('provenance'))
 
-      let dc = fields.getField('date-edtf')
+      let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let pc = fields.getField('spatial-getty')
+      let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(fields.getField('physical-location'))
+      s.push(this.getField('physical-location'))
 
-      s.push(fields.getField('shelf-mark'))
+      s.push(this.getField('shelf-mark'))
 
       return s
     },

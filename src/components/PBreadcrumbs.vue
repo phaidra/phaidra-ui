@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col >
+    <v-col>
       <span class="youarehere primary--text">{{$t('You are here')}}:</span>
       <template v-for="(item, index) in items">
         <icon :key="'icon'+index" left dark name="univie-right" color="#a4a4a4" width="8px" height="8px" class="mx-1"></icon>
@@ -11,6 +11,7 @@
         </template>
       </template>
       <v-divider></v-divider>
+      <v-progress-linear v-if="$store.state.loading" :height="2" indeterminate color="primary"></v-progress-linear>
     </v-col>
   </v-row>
 </template>

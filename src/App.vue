@@ -78,7 +78,6 @@
                               <v-list-item v-if="signedin" @click="$router.push('myobjects')"><v-list-item-title>{{ $t("My objects") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="signedin" @click="$router.push('lists')"><v-list-item-title>{{ $t("Object lists") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="signedin" @click="$router.push('groups')"><v-list-item-title>{{ $t("Groups") }}</v-list-item-title></v-list-item>
-                              <v-list-item v-if="signedin" @click="$router.push('templates')"><v-list-item-title>{{ $t("Templates") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="!signedin && appconfig.enablelogin" @click="$router.push('login')"><v-list-item-title>{{ $t("Login") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="signedin" @click="logout"><v-list-item-title>{{ $t("Logout") }}</v-list-item-title></v-list-item>
                             </v-list>
@@ -94,16 +93,13 @@
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                              <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { owner: user.username } }">{{ $t("My objects") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { owner: user.username } }">{{ $t("My objects") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/lists'">{{ $t("Object lists") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</router-link>
-                        </v-hover>
-                        <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/templates'">{{ $t("Templates") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="!signedin && appconfig.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>

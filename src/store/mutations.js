@@ -245,6 +245,93 @@ export default {
         )
       }
     }
+    if (transition.to.name === 'submit-simple') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Simple submit',
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submit-custom') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Submit template ' + transition.to.params.templateid,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submit-uwm') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Legacy submit (UWMetadata)',
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submit-empty') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'New template',
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submit-ksa-eda') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'KSA EDA',
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'submit-bruckneruni') {
+      state.breadcrumbs.push(
+        {
+          text: 'Submit',
+          to: '/submit'
+        }
+      )
+      state.breadcrumbs.push(
+        {
+          text: 'Bruckneruni',
+          disabled: true
+        }
+      )
+    }
+  },
+  setLoading (state, loading) {
+    state.loading = loading
   },
   setGroups (state, groups) {
     state.groups = groups
