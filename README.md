@@ -62,7 +62,7 @@ export default {
       fedora: 'https://fedora.myinstance.example.com/fedora',
       api: 'https://services.myinstance.example.com/api',
       solr: 'https://myinstance.example.com/search/solr/phaidra',
-      primary: '#DD4814',
+      primary: '#000',
       institution: 'My institution',
       address: 'My institution adress',
       phone: '+00-0-000-0',
