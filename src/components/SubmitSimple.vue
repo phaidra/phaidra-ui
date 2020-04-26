@@ -16,6 +16,7 @@
           :form="form"
           :rights="rights"
           :enablerights="true"
+          :enablerelationships="true"
           :templating="false"
           :importing="false"
           :addbutton="false"
@@ -197,7 +198,7 @@ export default {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
-    createContainerForm: function (self, index) {
+    createForm: function (self, index) {
       self.validationError = false
       self.fieldsMissing = []
 
@@ -248,11 +249,11 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
-      vm.createContainerForm(vm)
+      vm.createForm(vm)
     })
   },
   beforeRouteUpdate: function (to, from, next) {
-    this.createContainerForm(this)
+    this.createForm(this)
     next()
   }
 }

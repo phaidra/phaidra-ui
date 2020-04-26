@@ -122,22 +122,24 @@
             <v-col cols="12" md="10" offset-md="1" class="content">
               <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
 
-              <v-row justify="center" v-for="(alert, i) in alerts" :key="i">
-                <v-col cols="12">
-                  <v-snackbar class="font-weight-regular" top color="success" v-if="alert.type === 'success'" v-model="showSnackbar">
-                    {{alert.msg}}
-                    <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
-                  </v-snackbar>
-                  <v-alert v-else prominent :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
-                    <v-row align="center">
-                      <v-col class="grow">{{alert.msg}}</v-col>
-                      <v-col class="shrink">
-                        <v-btn icon @click.native="dismiss(alert)"><v-icon>mdi-close</v-icon></v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-alert>
-                </v-col>
-              </v-row>
+              <template v-if="alerts.length > 0">
+                <v-row justify="center" v-for="(alert, i) in alerts" :key="i">
+                  <v-col cols="12">
+                    <v-snackbar class="font-weight-regular" top color="success" v-if="alert.type === 'success'" v-model="showSnackbar">
+                      {{alert.msg}}
+                      <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
+                    </v-snackbar>
+                    <v-alert v-else prominent :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
+                      <v-row align="center">
+                        <v-col class="grow">{{alert.msg}}</v-col>
+                        <v-col class="shrink">
+                          <v-btn icon @click.native="dismiss(alert)"><v-icon>mdi-close</v-icon></v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-alert>
+                  </v-col>
+                </v-row>
+              </template>
 
               <transition name="fade" mode="out-in">
                 <keep-alive>

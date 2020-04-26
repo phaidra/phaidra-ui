@@ -30,54 +30,56 @@
             <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']"></p-d-uwm-rec>
           </v-row>
 
-          <h3 v-if="objectInfo.cmodel === 'Container'" class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectMembers.length}})</h3>
-
           <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Collection'">
             <router-link class="title font-weight-light primary--text showmembers" :to="{ path: '/search', query: { collection: objectInfo.pid } }">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</router-link>
           </v-row>
 
-          <v-row v-if="objectMembers">
-            <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
-              <a :href="member.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
-                <v-img class="mb-3" max-height="300" contain v-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
-                <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
-              </a>
-              <center v-if="(member.cmodel === 'Audio')">
-                <audio controls>
-                  <source :src="member.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
-                  Your browser does not support the audio element.
-                </audio>
-              </center>
-              <v-card-text class="ma-2">
-                <p-d-jsonld :jsonld="member.metadata['JSON-LD']" :pid="member.pid"></p-d-jsonld>
-              </v-card-text>
-              <v-divider light v-if="objectInfo.readrights"></v-divider>
-              <v-card-actions class="pa-3" v-if="objectInfo.readrights">
-                <v-spacer></v-spacer>
-                <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
-                <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
-                <v-menu offset-y v-if="objectInfo.writerights === 1">
-                  <template v-slot:activator="{ on }">
-                    <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
-                      <v-list-item-title>{{ $t('Edit metadata') }}</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :to="{ name: 'rights', params: { pid: member.pid } }">
-                      <v-list-item-title>{{ $t('Access rights') }}</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :to="{ name: 'relationships', params: { pid: member.pid } }">
-                      <v-list-item-title>{{ $t('Relationships') }}</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :to="{ name: 'delete', params: { pid: member.pid } }">
-                      <v-list-item-title>{{ $t('Delete') }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-card-actions>
-            </v-card>
-          </v-row>
+          <template v-if="objectInfo.cmodel === 'Container'">
+            <h3 class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectInfo.members.length}})</h3>
+
+            <v-row v-if="objectMembers">
+              <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
+                <a :href="member.datastreams.includes('WEBVERSION') ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
+                  <v-img class="mb-3" max-height="300" contain v-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
+                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+                </a>
+                <center v-if="(member.cmodel === 'Audio')">
+                  <audio controls>
+                    <source :src="member.datastreams.includes('WEBVERSION') ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
+                    Your browser does not support the audio element.
+                  </audio>
+                </center>
+                <v-card-text class="ma-2">
+                  <p-d-jsonld :jsonld="member.metadata['JSON-LD']" :pid="member.pid"></p-d-jsonld>
+                </v-card-text>
+                <v-divider light v-if="objectInfo.readrights"></v-divider>
+                <v-card-actions class="pa-3" v-if="objectInfo.readrights">
+                  <v-spacer></v-spacer>
+                  <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
+                  <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
+                  <v-menu offset-y v-if="objectInfo.writerights === 1">
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
+                        <v-list-item-title>{{ $t('Edit metadata') }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item :to="{ name: 'rights', params: { pid: member.pid } }">
+                        <v-list-item-title>{{ $t('Access rights') }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item :to="{ name: 'relationships', params: { pid: member.pid } }">
+                        <v-list-item-title>{{ $t('Relationships') }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item :to="{ name: 'delete', params: { pid: member.pid } }">
+                        <v-list-item-title>{{ $t('Delete') }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-card-actions>
+              </v-card>
+            </v-row>
+          </template>
 
         </v-col>
 
@@ -139,80 +141,205 @@
             </v-col>
           </v-row>
 
-          <v-row class="my-6" v-if="objectInfo.ispartof || objectInfo.hassuccessor || objectInfo.isalternativeformatof || objectInfo.isalternativeversionof || objectInfo.isbacksideof">
+          <v-row v-if="objectInfo.versions.length > 0" class="my-6">
             <v-col class="pt-0">
               <v-card tile>
-                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Relationships') }}</v-card-title>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Versions') }}</v-card-title>
                 <v-card-text class="mt-4">
-                  <v-row v-if="objectInfo.ispartof" no-gutters class="pt-2">
-                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is in collection') }}</v-col>
-                    <v-col cols="7" offset="1">
-                      <template v-if="objectInfo.ispartof.length > 1">
-                        <v-row>
-                          <v-col v-for="(oId,i) in objectInfo.ispartof" :key="i">
-                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                          </v-col>
-                        </v-row>
-                      </template>
-                      <template v-else>
-                        <router-link :to="{ name: 'detail', params: { pid: objectInfo.ispartof[0] } }">{{ objectInfo.ispartof[0] }}</router-link>
-                      </template>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="objectInfo.hassuccessor" no-gutters class="pt-2">
-                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Has newer version') }}</v-col>
-                    <v-col cols="7" offset="1">
-                      <template v-if="objectInfo.hassuccessor.length > 1">
-                        <v-row>
-                          <v-col v-for="(oId,i) in objectInfo.hassuccessor" :key="i">
-                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                          </v-col>
-                        </v-row>
-                      </template>
-                      <router-link :to="{ name: 'detail', params: { pid: objectInfo.hassuccessor[0] } }">{{ objectInfo.hassuccessor[0] }}</router-link>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="objectInfo.isalternativeformatof" no-gutters class="pt-2">
-                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative format of') }}</v-col>
-                    <v-col cols="7" offset="1">
-                      <template v-if="objectInfo.isalternativeformatof.length > 1">
-                        <v-row>
-                          <v-col v-for="(oId,i) in objectInfo.isalternativeformatof" :key="i">
-                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                          </v-col>
-                        </v-row>
-                      </template>
-                      <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeformatof[0] } }">{{ objectInfo.isalternativeformatof[0] }}</router-link>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="objectInfo.isalternativeversionof" no-gutters class="pt-2">
-                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is alternative version of') }}</v-col>
-                    <v-col cols="7" offset="1">
-                      <template v-if="objectInfo.isalternativeversionof.length > 1">
-                        <v-row>
-                          <v-col v-for="(oId,i) in objectInfo.isalternativeversionof" :key="i">
-                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                          </v-col>
-                        </v-row>
-                      </template>
-                      <router-link :to="{ name: 'detail', params: { pid: objectInfo.isalternativeversionof[0] } }">{{ objectInfo.isalternativeversionof[0] }}</router-link>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="objectInfo.isbacksideof" no-gutters class="pt-2">
-                    <v-col class="caption grey--text text--darken-2" cols="4">{{ $t('Is back side of') }}</v-col>
-                    <v-col cols="7" offset="1">
-                      <template v-if="objectInfo.isbacksideof.length > 1">
-                        <v-row>
-                          <v-col v-for="(oId,i) in objectInfo.isbacksideof" :key="i">
-                            <router-link :to="{ name: 'detail', params: { pid: oId } }">{{ oId }}</router-link>
-                          </v-col>
-                        </v-row>
-                      </template>
-                      <template v-else>
-                        <router-link :to="{ name: 'detail', params: { pid: objectInfo.isbacksideof[0] } }">{{ objectInfo.isbacksideof[0] }}</router-link>
-                      </template>
-                    </v-col>
-                  </v-row>
+                  <template v-for="(rel, i) in objectInfo.versions">
+                    <v-row :key="'version'+i">
+                      <v-col cols="12" md="1">{{ i+1 }}</v-col>
+                      <v-col cols="12" md="4">{{ rel.created | date }}</v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider v-if="(i+1) < objectInfo.versions.length" :key="'versiond'+i"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.alternativeversions.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Alternative versions') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.alternativeversions">
+                    <v-row :key="'version'+i">
+                      <v-col cols="12" md="12">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider v-if="(i+1) < objectInfo.alternativeversions.length" :key="'altversiond'+i"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.alternativeformats.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Alternative formats') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.alternativeformats">
+                    <v-row :key="'version'+i">
+                      <v-col cols="12" md="5">{{ rel.dc_format[0] }}</v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider v-if="(i+1) < objectInfo.alternativeformats.length" :key="'altformatsd'+i"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.ispartof.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object is in collection') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <tempalte v-for="(rel, i) in objectInfo.relationships.ispartof" :key="'ispartoft'+i">
+                    <v-row :key="'ispartof'+i">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'ispartofd'+i" v-if="(i+1) < objectInfo.relationships.ispartof.length"></v-divider>
+                  </tempalte>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.isbacksideof.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object is a back side of') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template  v-for="(rel, i) in objectInfo.relationships.isbacksideof">
+                    <v-row :key="'isbacksideof'+i" align="center">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'isbacksideofd'+i" v-if="(i+1) < objectInfo.relationships.isbacksideof.length"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.hasbackside.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object has a back side') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.relationships.hasbackside">
+                    <v-row :key="'hasbackside'+i" align="center">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'hasbacksided'+i" v-if="(i+1) < objectInfo.relationships.hasbackside.length"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.isthumbnailfor.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object is thumbnail for') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.relationships.isthumbnailfor">
+                    <v-row :key="'isthumbnailfor'+i" align="center">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'isthumbnailford'+i" v-if="(i+1) < objectInfo.relationships.isthumbnailfor.length"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.hasthumbnail.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object has thumbnail') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.relationships.hasthumbnail">
+                    <v-row :key="'hasthumbnail'+i" align="center">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'hasthumbnaild'+i" v-if="(i+1) < objectInfo.relationships.hasthumbnail.length"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.references.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object references') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.relationships.references">
+                    <v-row :key="'references'+i" align="center">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'referencesd'+i" v-if="(i+1) < objectInfo.relationships.references.length"></v-divider>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="objectInfo.relationships.isreferencedby.length > 0" class="my-6">
+            <v-col class="pt-0">
+              <v-card tile>
+                <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object is referenced by') }}</v-card-title>
+                <v-card-text class="mt-4">
+                  <template v-for="(rel, i) in objectInfo.relationships.isreferencedby">
+                    <v-row :key="'isreferencedby'+i" align="center">
+                      <v-col cols="12" md="5" class="preview-maxwidth">
+                        <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
+                      </v-col>
+                      <v-col cols="12" md="7">
+                        <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
+                      </v-col>
+                    </v-row>
+                    <v-divider :key="'isreferencedbyd'+i" v-if="(i+1) < objectInfo.relationships.isreferencedby.length"></v-divider>
+                  </template>
                 </v-card-text>
               </v-card>
             </v-col>
@@ -258,7 +385,44 @@
                     <router-link class="mb-1" :to="{ name: 'addmember' }">{{ $t('Upload member') }}</router-link>
                   </v-row>
                   <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Book') && (objectInfo.cmodel !== 'Page')">
-                    <router-link class="mb-1" :to="{ name: 'uploadwebversion' }">{{ $t('Upload web-optimized version') }}</router-link>
+                    <router-link class="mb-1" :to="{ name: 'upload-webversion', params: { pid: objectInfo.pid } }">{{ $t('Upload web-optimized version') }}</router-link>
+                  </v-row>
+                  <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Page')">
+                    <v-dialog class="pb-4" v-model="relationDialog" width="800px">
+                      <template v-slot:activator="{ on }">
+                        <a v-on="on" class="mb-1">{{ $t('Upload related object') }}</a>
+                      </template>
+                      <v-card>
+                        <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Choose relation") }}</v-card-title>
+                        <v-card-text>
+                          <v-container>
+                            <v-row align="center" justify="center">
+                              <v-col cols="12" md="4">
+                                <span>{{ $t('RELATION_SUBMITTED') }}</span>
+                              </v-col>
+                              <v-col cols="12" md="4">
+                                <v-radio-group v-model="chosenRelation">
+                                  <template v-for="(r, i) in vocabularies['relations'].terms">
+                                    <v-radio v-if="r['@id'] === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor'" :key="'relv'+i" :label="$t('Is new version of')" :value="r['@id']"></v-radio>
+                                    <v-radio v-if="r['@id'] === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember'" :key="'relm'+i" :label="$t('Is member of collection')" :value="r['@id']"></v-radio>
+                                    <v-radio v-if="r['@id'] === 'http://pcdm.org/models#hasMember'" :key="'relcm'+i" :label="$t('Is member of container')" :value="r['@id']"></v-radio>
+                                    <v-radio v-else :key="'rele'+i" :label="getLocalizedTermLabel('relations', r['@id'])" :value="r['@id']"></v-radio>
+                                  </template>
+                                </v-radio-group>
+                              </v-col>
+                              <v-col cols="12" md="4">
+                                <span>{{ objectInfo.pid }} ({{ $t('this object') }})</span>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn @click="relationDialog = false">{{ $t('Cancel') }}</v-btn>
+                          <v-btn class="primary" :disabled="!chosenRelation" @click="$router.push({ name: 'upload-related', params: { relatedpid: objectInfo.pid, relation: chosenRelation }})">{{ $t('Continue') }}</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
                   </v-row>
                   <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource')">
                     <router-link class="mb-1" :to="{ name: 'rights' }">{{ $t('Access rights') }}</router-link>
@@ -311,10 +475,11 @@
 <script>
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
+import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
 
 export default {
   name: 'detail',
-  mixins: [ context, config ],
+  mixins: [ context, config, vocabulary ],
   computed: {
     routepid: function () {
       return this.$store.state.route.params.pid
@@ -357,10 +522,18 @@ export default {
       return 'o:' + coverPidNum
     }
   },
+  data () {
+    return {
+      relationDialog: false,
+      chosenRelation: 'http://purl.org/dc/terms/references'
+    }
+  },
   methods: {
     async fetchAsyncData (self, pid) {
       await self.$store.dispatch('fetchObjectInfo', pid)
-      await self.$store.dispatch('fetchObjectMembers', pid)
+      if (self.objectInfo.cmodel === 'Container') {
+        await self.$store.dispatch('fetchObjectMembers', self.objectInfo)
+      }
     },
     getMemberDownloadUrl: function (member) {
       if (member.cmodel === 'Asset' || member.cmodel === 'Video') {
@@ -397,6 +570,10 @@ h3
 </style>
 
 <style scoped>
+.preview-maxwidth {
+  max-width: 80px;
+}
+
 .container {
   padding: 0px;
 }

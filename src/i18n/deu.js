@@ -640,5 +640,16 @@ export default {
   'WEBVERSIONSUBMIT': 'I confirm that same rights which apply for object {pid} apply for the file uploaded as "web version".',
   'Upload web-optimized version': 'Web-optimierte Version hochladen',
   'Download web-optimized version': 'Web-optimierte Version herunterladen',
-  'Download': 'Herunterladen'
+  'Download': 'Herunterladen',
+  'RELATION_SUBMITTED': 'Das hochgeladene Objekt',
+  'this object': 'dieses Objektes',
+  'Upload of': 'Upload von',
+  'an object referencing': 'einem Objekt das referenziert das',
+  'the back side of': 'der Rückseite vom',
+  'a thumbnail for': 'dem Vorschaubild vom',
+  'a new version of': 'einer neue Verison vom',
+  'an alternative format of': 'einem alternativen Format vom',
+  'an alternative version of': 'einer alternative Version vom',
+  'a new member of collection': 'einem neuen member der Collection',
+  'new member of container': 'einem neuen member des Containers'
 }

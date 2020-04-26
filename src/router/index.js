@@ -21,8 +21,9 @@ import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
 import SubmitSimple from '@/components/SubmitSimple'
 import SubmitUwm from '@/components/SubmitUwm'
-import AddMember from '@/components/AddMember'
 import UploadWebVersion from '@/components/UploadWebVersion'
+import UploadRelated from '@/components/UploadRelated'
+import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
 
@@ -131,19 +132,24 @@ export function createRouter () {
         component: SubmitCustom
       },
       {
-        path: '/addmember/:pid',
-        name: 'addmember',
-        component: AddMember
+        path: '/upload-webversion/:pid',
+        name: 'upload-webversion',
+        component: UploadWebVersion
       },
       {
-        path: '/uploadwebversion/:pid',
-        name: 'uploadwebversion',
-        component: UploadWebVersion
+        path: '/upload-related/:relatedpid/:relation',
+        name: 'upload-related',
+        component: UploadRelated
       },
       {
         path: '/lists',
         name: 'lists',
         component: PLists
+      },
+      {
+        path: '*',
+        name: 'notfound',
+        component: NotFound
       }
     ],
     scrollBehavior () {

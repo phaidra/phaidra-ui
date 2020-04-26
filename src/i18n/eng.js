@@ -103,6 +103,8 @@ export default {
   'PUBLISHER_VERLAG': 'Publisher',
   'WEBVERSIONSUBMIT': 'I confirm that same rights which apply for object {pid} apply for the file uploaded as "web version".',
 
+  'RELATION_SUBMITTED': 'The uploaded object will be',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',
   uwm_etheses_note_1: 'Note 1',

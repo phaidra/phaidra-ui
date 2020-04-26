@@ -3,7 +3,16 @@
   <p-i-form
     :form="editform"
     :targetpid="pid"
+    :enablerights="false"
+    :enablerelationships="false"
     :templating="false"
+    :importing="false"
+    :addbutton="true"
+    :help="true"
+    :debug="false"
+    :feedback="false"
+    :guidelines-url="'https://static.phaidra-sandbox.univie.ac.at/guidelines/3.5.5Guidelinespicture_borndigital_'"
+    :validate="validate"
     v-on:object-saved="objectSaved($event)"
   ></p-i-form>
 
@@ -11,12 +20,13 @@
 
 <script>
 import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
+import { formvalidation } from '../mixins/formvalidation'
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
 
 export default {
   name: 'metadata-editor',
-  mixins: [ context, config ],
+  mixins: [ context, config, formvalidation ],
   data () {
     return {
       loading: false,
@@ -49,7 +59,7 @@ export default {
           self.$store.commit('setAlerts', response.data.alerts)
         }
         if (response.data.metadata['JSON-LD']) {
-          self.editform = response.data.metadata['JSON-LD']
+          self.editform = this.json2form(response.data.metadata['JSON-LD'])
         }
       } catch (error) {
         console.log(error)

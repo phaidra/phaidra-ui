@@ -1,5 +1,4 @@
 import axios from 'axios'
-import qs from 'qs'
 
 export default {
   async fetchObjectInfo ({ commit, state }, pid) {
@@ -23,25 +22,14 @@ export default {
       console.log(error)
     }
   },
-  async fetchObjectMembers ({ dispatch, commit, state }, pid) {
-    console.log('[' + pid + '] fetching object members')
+  async fetchObjectMembers ({ dispatch, commit, state }, parent) {
+    console.log('[' + parent.pid + '] fetching object members')
     commit('setObjectMembers', [])
-    let params = {
-      q: 'ismemberof:"' + pid + '"',
-      defType: 'edismax',
-      wt: 'json',
-      qf: 'ismemberof^5',
-      fl: 'pid',
-      sort: 'pos_in_' + pid.replace(':', '_') + ' asc'
-    }
-    let query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
     try {
-      let response = await axios.get(state.instanceconfig.solr + '/select?' + query)
-      console.log('[' + pid + '] fetching object members done')
-      if (response.data.response.numFound > 0) {
+      if (parent.members.length > 0) {
         let members = []
-        for (let doc of response.data.response.docs) {
-          console.log('[' + pid + '] fetching object info of member ' + doc.pid)
+        for (let doc of parent.members) {
+          console.log('[' + parent.pid + '] fetching object info of member ' + doc.pid)
           let memresponse
           if (state.user.token) {
             memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info',
@@ -54,7 +42,7 @@ export default {
           } else {
             memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info')
           }
-          console.log('[' + pid + '] fetching object info of member ' + doc.pid + ' done')
+          console.log('[' + parent.pid + '] fetching object info of member ' + doc.pid + ' done')
           members.push(memresponse.data.info)
         }
         commit('setObjectMembers', members)
@@ -114,7 +102,7 @@ export default {
       })
       commit('clearStore')
       if (response.data.alerts && response.data.alerts.length > 0) {
-        commit('setAlerts', response.data.alerts)
+        // commit('setAlerts', response.data.alerts)
       }
     } catch (error) {
       commit('clearStore')

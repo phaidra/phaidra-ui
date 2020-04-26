@@ -41,10 +41,14 @@ export default {
     return {
       loading: false,
       checkbox: false,
-      parentpid: '',
       file: null,
       mimetype: null,
       checkboxErrors: []
+    }
+  },
+  computed: {
+    parentpid: function () {
+      return this.$store.state.route.params.pid
     }
   },
   methods: {
@@ -84,14 +88,6 @@ export default {
         this.loading = false
       }
     }
-  },
-  beforeRouteEnter: function (to, from, next) {
-    next(vm => {
-      vm.parentpid = from.params.pid
-    })
-  },
-  beforeRouteUpdate: function (to, from, next) {
-    this.parentpid = from.params.pid
   }
 }
 </script>

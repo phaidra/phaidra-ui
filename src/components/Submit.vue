@@ -20,9 +20,6 @@
             <v-btn v-on="on" large dark color="grey" class="mr-8">
               <v-icon dark class="mr-4">mdi-script</v-icon> {{ $t("Choose template") }}
             </v-btn>
-            <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-empty' }">
-              <v-icon dark class="mr-4">mdi-script-outline</v-icon> {{ $t("Create new template") }}
-            </v-btn>
           </template>
           <v-card>
             <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Choose template") }}</v-card-title>
@@ -34,6 +31,9 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-empty' }">
+          <v-icon dark class="mr-4">mdi-script-outline</v-icon> {{ $t("Create new template") }}
+        </v-btn>
       </v-col>
     </v-row>
     <v-row class="my-6" justify="start">
