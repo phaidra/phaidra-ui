@@ -1,6 +1,6 @@
 # phaidra-ui
 
-> User interface components using phaidra-api
+> User interface using phaidra-api
 
 ## Prerequisities
 
@@ -26,18 +26,47 @@ npm install
 export default {
   defaultinstance: 'myinstance.example.com',
   global: {
-    showinstanceswitch: 1,
-    enablelogin: 1
+    title: 'phaidra-ui',
+    showinstanceswitch: 0,
+    enablelogin: 1,
+    enabledelete: 1,
+    iraccount: 'iraccount',
+    suggesters: {
+      getty: 'https://ws.gbv.de/suggest/getty/',
+      gnd: 'https://ws.gbv.de/suggest/gnd/',
+      geonames: 'https://ws.gbv.de/suggest/geonames/'
+    },
+    search: {
+      selectionlimit: 5000
+    },
+    apis: {
+      doi: {
+        baseurl: 'doi.org',
+        accept: 'application/vnd.citationstyles.csl+json'
+      },
+      sherparomeo: {
+        url: 'https://v2.sherpa.ac.uk/cgi/retrieve',
+        key: 'xxx'
+      },
+      vocserver: {
+        ns: 'https://vocab.phaidra.org/vocabulary/',
+        url: 'https://vocab.phaidra.org/fuseki/',
+        dataset: 'vocab'
+      }
+    }
   },
   instances: {
     'myinstance.example.com': {
+      title: 'Phaidra - myinstance',
       baseurl: 'myinstance.example.com',
+      fedora: 'https://fedora.myinstance.example.com/fedora',
       api: 'https://services.myinstance.example.com/api',
-      solr: 'https://solr.myinstance.example.com:8983/solr/myinstance',
-      primary: '#000000',
-      address: 'Institution | Street | City',
-      phone: '+number',
-      email: 'support.phaidra@example.com'
+      solr: 'https://myinstance.example.com/search/solr/phaidra',
+      primary: '#000',
+      institution: 'My institution',
+      address: 'My institution adress',
+      phone: '+00-0-000-0',
+      email: 'support email'
     }
   }
 }
