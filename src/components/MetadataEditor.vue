@@ -1,7 +1,7 @@
 <template>
 
   <p-i-form
-    :form="editform"
+    :form="form"
     :targetpid="pid"
     :enablerights="false"
     :enablerelationships="false"
@@ -30,7 +30,7 @@ export default {
   data () {
     return {
       loading: false,
-      editform: {},
+      form: {},
       parentpid: ''
     }
   },
@@ -59,7 +59,7 @@ export default {
           self.$store.commit('setAlerts', response.data.alerts)
         }
         if (response.data.metadata['JSON-LD']) {
-          self.editform = this.json2form(response.data.metadata['JSON-LD'])
+          self.form = this.json2form(response.data.metadata['JSON-LD'])
         }
       } catch (error) {
         console.log(error)
