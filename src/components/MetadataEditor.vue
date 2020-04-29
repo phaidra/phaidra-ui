@@ -20,13 +20,13 @@
 
 <script>
 import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
-import { formvalidation } from '../mixins/formvalidation'
+// import { formvalidation } from '../mixins/formvalidation'
 import { context } from '../mixins/context'
 import { config } from '../mixins/config'
 
 export default {
   name: 'metadata-editor',
-  mixins: [ context, config, formvalidation ],
+  mixins: [ context, config ],
   data () {
     return {
       loading: false,
@@ -40,6 +40,9 @@ export default {
     }
   },
   methods: {
+    validate: function () {
+      return true
+    },
     objectSaved: function (event) {
       this.$store.commit('setAlerts', [{ type: 'success', msg: 'Metadata for object ' + event + ' saved' }])
       this.$router.push({ name: 'detail', params: { pid: event } })
