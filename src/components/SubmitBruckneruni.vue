@@ -16,10 +16,11 @@
 import fields from 'phaidra-vue-components/src/utils/fields'
 import { context } from '../mixins/context'
 import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
+import { formvalidation } from '../mixins/formvalidation'
 
 export default {
   name: 'submit-bruckneruni',
-  mixins: [ context, vocabulary ],
+  mixins: [ context, vocabulary, formvalidation ],
   data () {
     return {
       contentmodel: 'https://pid.phaidra.org/vocabulary/8MY0-BQDQ',
@@ -54,9 +55,6 @@ export default {
     }
   },
   methods: {
-    validate: function () {
-      return true
-    },
     getResourceTypeFromMimeType: function (mime) {
       switch (mime) {
         case 'image/jpeg':
