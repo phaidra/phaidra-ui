@@ -11,7 +11,7 @@
         </template>
       </template>
       <v-divider></v-divider>
-      <v-progress-linear v-if="$store.state.loading" :height="2" indeterminate color="primary"></v-progress-linear>
+      <v-progress-linear :active="$store.state.loading" :height="2" indeterminate color="primary"></v-progress-linear>
     </v-col>
   </v-row>
 </template>
