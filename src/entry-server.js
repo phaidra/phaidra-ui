@@ -13,7 +13,7 @@ export default context => {
       app,
       router,
       store
-    } = await createApp()
+    } = await createApp({}, context)
 
     router.push(prepareUrlForRouting(context.url))
 

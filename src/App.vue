@@ -234,10 +234,10 @@ export default {
       this.$store.dispatch('logout')
     },
     getCookie: function (name) {
-      var value = '; ' + document.cookie
-      var parts = value.split('; ' + name + '=')
+      let value = '; ' + document.cookie
+      let parts = value.split('; ' + name + '=')
       if (parts.length === 2) {
-        var val = parts.pop().split(';').shift()
+        let val = parts.pop().split(';').shift()
         return val === ' ' ? null : val
       }
     },
@@ -253,12 +253,18 @@ export default {
       })
     }
   },
-  mounted: function () {
-    var token = this.getCookie('X-XSRF-TOKEN')
-    if (token) {
-      this.$store.commit('setToken', token)
-      if (!this.user.username) {
-        this.$store.dispatch('getLoginData')
+  serverPrefetch: async function () {
+    if (this.$store.state.user.token) {
+      await this.$store.dispatch('getLoginData')
+      console.log('fetched login: firstname[' + this.$store.state.user.firstname + '] lastname[' + this.$store.state.user.lastname + '] username[' + this.$store.state.user.username + ']')
+    }
+  },
+  mounted: async function () {
+    if (!this.user.token) {
+      let token = this.getCookie('X-XSRF-TOKEN')
+      if (token) {
+        this.$store.commit('setToken', token)
+        await this.$store.dispatch('getLoginData')
       }
     }
   },

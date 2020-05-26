@@ -16,6 +16,7 @@ export default {
 
   'Invalid credentials': 'Login fehlgeschlagen',
 
+  'View': 'Anzeigen',
   'Preferences': 'Einstellungen',
   'Search': 'Suche',
   'New object': 'Neues Objekt',

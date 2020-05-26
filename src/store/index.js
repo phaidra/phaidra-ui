@@ -9,7 +9,7 @@ Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
-export function createStore () {
+export function createStore (token) {
   return new Vuex.Store({
     state: () => ({
       config: config,
@@ -19,7 +19,9 @@ export function createStore () {
       alerts: [],
       objectInfo: null,
       objectMembers: [],
-      user: {},
+      user: {
+        token: token
+      },
       groups: [],
       breadcrumbs: [],
       loading: false

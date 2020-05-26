@@ -403,10 +403,10 @@
                               <v-col cols="12" md="4">
                                 <v-radio-group v-model="chosenRelation">
                                   <template v-for="(r, i) in vocabularies['relations'].terms">
-                                    <v-radio v-if="r['@id'] === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor'" :key="'relv'+i" :label="$t('Is new version of')" :value="r['@id']"></v-radio>
-                                    <v-radio v-if="r['@id'] === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember'" :key="'relm'+i" :label="$t('Is member of collection')" :value="r['@id']"></v-radio>
-                                    <v-radio v-if="r['@id'] === 'http://pcdm.org/models#hasMember'" :key="'relcm'+i" :label="$t('Is member of container')" :value="r['@id']"></v-radio>
-                                    <v-radio v-else :key="'rele'+i" :label="getLocalizedTermLabel('relations', r['@id'])" :value="r['@id']"></v-radio>
+                                    <v-radio v-if="r['@id'] === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor'" :key="'relv'+i" :label="$t('Is new version of')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
+                                    <v-radio v-else-if="r['@id'] === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember'" :key="'relm'+i" :label="$t('Is member of collection')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
+                                    <v-radio v-else-if="r['@id'] === 'http://pcdm.org/models#hasMember'" :key="'relcm'+i" :label="$t('Is member of container')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
+                                    <v-radio v-else :key="'rele'+i" :label="getLocalizedTermLabel('relations', r['@id'])" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
                                   </template>
                                 </v-radio-group>
                               </v-col>
@@ -443,9 +443,11 @@
               <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
                 <v-card-text class="mt-4">
-                  <v-row no-gutters class="pt-2" v-if="viewable && objectInfo.readrights">
-                    <a target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" primary>{{ $t('View') }}</a>
+                  <v-row no-gutters class="pt-2">
+                    <v-btn class="mr-2" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" color="primary">{{ $t('Download') }}</v-btn>
+                    <v-btn v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" color="primary">{{ $t('View') }}</v-btn>
                   </v-row>
+                  <v-divider class="mt-6 mb-4" v-if="(downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')) || (downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION'])"></v-divider>
                   <template v-if="downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')">
                     <v-row no-gutters class="pt-2">
                       <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:50/0/default.jpg'" primary>{{ $t('View scaled to 50%') }}</a>
@@ -454,9 +456,6 @@
                       <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:25/0/default.jpg'" primary>{{ $t('View scaled to 25%') }}</a>
                     </v-row>
                   </template>
-                  <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights">
-                    <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" primary>{{ $t('Download') }}</a>
-                  </v-row>
                   <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION']">
                     <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/downloadwebversion'" primary>{{ $t('Download web-optimized version') }}</a>
                   </v-row>

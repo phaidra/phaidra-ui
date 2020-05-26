@@ -22,7 +22,7 @@ import vuetify from './plugins/vuetify'
 export async function createApp ({
   beforeApp = () => {},
   afterApp = () => {}
-} = {}) {
+} = {}, context) {
   Vue.config.productionTip = false
 
   Vue.use(Vuetify)
@@ -104,7 +104,17 @@ export async function createApp ({
 
   // create router and store instances
   const router = createRouter()
-  const store = createStore()
+
+  let token
+  if (context) {
+    let value = '; ' + context.req.headers.cookie
+    let parts = value.split('; X-XSRF-TOKEN=')
+    if (parts.length === 2) {
+      let val = parts.pop().split(';').shift()
+      token = val === ' ' ? null : val
+    }
+  }
+  const store = createStore(token)
 
   router.afterEach((to, from) => {
     store.commit('updateBreadcrumbs', { to, from })

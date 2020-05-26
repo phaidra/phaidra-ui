@@ -45,6 +45,7 @@ export const formvalidation = {
             missingResourceType = false
             if (f.value.length < 1) {
               f.errorMessages.push(this.$t('Please select'))
+              console.log('missing resource type')
               this.validationError = true
             }
           }
@@ -53,11 +54,13 @@ export const formvalidation = {
             if (f.hasOwnProperty('selectedTerms')) {
               if (f.selectedTerms.length < 1) {
                 f.errorMessages.push(this.$t('Please select one or more object types'))
+                console.log('missing object type:' + JSON.stringify(f))
                 this.validationError = true
               }
             } else {
               if (f.value.length < 1) {
                 f.errorMessages.push(this.$t('Please select one or more object types'))
+                console.log('missing object type (value.length < 1):' +  + JSON.stringify(f))
                 this.validationError = true
               }
             }
@@ -67,6 +70,7 @@ export const formvalidation = {
             f.titleErrorMessages = []
             if (f.title.length < 1) {
               f.titleErrorMessages.push(this.$t('Missing title'))
+              console.log('missing title')
               this.validationError = true
             }
           }
@@ -75,6 +79,7 @@ export const formvalidation = {
             f.errorMessages = []
             if (f.value.length < 1) {
               f.errorMessages.push(this.$t('Missing description'))
+              console.log('missing description')
               this.validationError = true
             }
           }
@@ -83,6 +88,7 @@ export const formvalidation = {
             f.errorMessages = []
             if (f.value.length < 1) {
               f.errorMessages.push(this.$t('Missing keywords'))
+              console.log('missing keywords')
               this.validationError = true
             }
           }
@@ -97,21 +103,25 @@ export const formvalidation = {
             f.organizationTextErrorMessages = []
             if (f.role.length < 1) {
               f.roleErrorMessages.push(this.$t('Missing role'))
+              console.log('missing role')
               this.validationError = true
             }
             if (f.type === 'schema:Person') {
               if (f.firstname.length < 1) {
                 f.firstnameErrorMessages.push(this.$t('Missing firstname'))
+                console.log('missing firstname')
                 this.validationError = true
               }
               if (f.lastname.length < 1) {
                 f.lastnameErrorMessages.push(this.$t('Missing lastname'))
+                console.log('missing lastname')
                 this.validationError = true
               }
             }
             if (f.type === 'schema:Organization') {
               if (f.organization.length < 1) {
                 f.organizationErrorMessages.push(this.$t('Missing organization'))
+                console.log('missing organisation')
                 this.validationError = true
               }
             }
@@ -122,6 +132,7 @@ export const formvalidation = {
               missingLicense = false
               if (f.value.length < 1) {
                 f.errorMessages.push(this.$t('Please select'))
+                console.log('missing license')
                 this.validationError = true
               }
             }
@@ -132,10 +143,12 @@ export const formvalidation = {
             f.mimetypeErrorMessages = []
             if (!f.file) {
               f.fileErrorMessages.push(this.$t('Please select'))
+              console.log('missing file')
               this.validationError = true
             }
             if (f.mimetype.length < 1) {
               f.mimetypeErrorMessages.push(this.$t('Please select'))
+              console.log('missing mimetype')
               this.validationError = true
             }
           }
@@ -166,7 +179,7 @@ export const formvalidation = {
       if (missingFile) {
         this.fieldsMissing.push(this.$t('File'))
       }
-
+      console.log('error[' + this.validationError + '] missing fields:' + JSON.stringify(this.fieldsMissing))
       if (this.validationError) {
         this.$vuetify.goTo(0)
       }

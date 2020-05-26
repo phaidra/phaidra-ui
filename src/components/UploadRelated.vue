@@ -3,23 +3,33 @@
     <v-card>
       <v-card-title class="title font-weight-light grey white--text">
         <span class="mr-1">{{ $t('Upload of') }}</span>
-        <span v-if="relation === 'http://purl.org/dc/terms/references'">{{ $t('an object referencing') }}</span>
-        <span v-if="relation === 'http://phaidra.org/XML/V1.0/relations#isBackSideOf'">{{ $t('the back side of') }}</span>
-        <span v-if="relation === 'http://phaidra.org/XML/V1.0/relations#isThumbnailFor'">{{ $t('a thumbnail for') }}</span>
-        <span v-if="relation === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor'">{{ $t('a new version of') }}</span>
-        <span v-if="relation === 'http://phaidra.org/XML/V1.0/relations#isAlternativeFormatOf'">{{ $t('an alternative format of') }}</span>
-        <span v-if="relation === 'http://phaidra.org/XML/V1.0/relations#isAlternativeVersionOf'">{{ $t('an alternative version of') }}</span>
-        <span v-if="relation === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember'">{{ $t('a new member of collection') }}</span>
-        <span v-if="relation === 'http://pcdm.org/models#hasMember'">{{ $t('new member of container') }}</span>
+        <span v-if="relation === 'references'">{{ $t('an object referencing') }}</span>
+        <span v-if="relation === 'isbacksideof'">{{ $t('the back side of') }}</span>
+        <span v-if="relation === 'isthumbnailfor'">{{ $t('a thumbnail for') }}</span>
+        <span v-if="relation === 'hassuccessor'">{{ $t('a new version of') }}</span>
+        <span v-if="relation === 'isalternativeformatof'">{{ $t('an alternative format of') }}</span>
+        <span v-if="relation === 'isalternativeversionof'">{{ $t('an alternative version of') }}</span>
+        <span v-if="relation === 'hascollectionmember'">{{ $t('a new member of collection') }}</span>
+        <span v-if="relation === 'hasmember'">{{ $t('new member of container') }}</span>
         <span class="ml-1">{{ relatedpid }}</span>
       </v-card-title>
       <v-card-text>
+        <v-alert :value="validationError" dismissible type="error" transition="slide-y-transition">
+          <span>{{ $t('Please fill in the required fields') }}</span>
+          <template v-if="fieldsMissing.length > 0">
+            <br/>
+            <span>{{ $t('Some required fields are missing') }}:</span>
+            <ul>
+              <li v-for="(f, i) in fieldsMissing" :key="'mfld'+i">{{ f }}</li>
+            </ul>
+          </template>
+        </v-alert>
         <p-i-form
           :form="form"
           :rights="rights"
           :relationships="relationships"
           :enablerights="true"
-          :enablerelationships="false"
+          :enablerelationships="true"
           :templating="true"
           :importing="false"
           :addbutton="true"
@@ -49,7 +59,7 @@ import { formvalidation } from '../mixins/formvalidation'
 import { context } from '../mixins/context'
 
 export default {
-  name: 'add-member',
+  name: 'upload-related',
   mixins: [ context, vocabulary, formvalidation ],
   computed: {
     relatedpid: function () {
@@ -72,7 +82,8 @@ export default {
         ]
       },
       rights: {},
-      relationships: []
+      relationships: {},
+      foreignRelationships: {}
     }
   },
   methods: {
@@ -143,7 +154,11 @@ export default {
             for (let f of s.fields) {
               if (f.predicate === 'edm:hasType') {
                 hasObjectType = true
-                f.selectedTerms = []
+                if (f.hasOwnProperty('selectedTerms')) {
+                  f.selectedTerms = []
+                } else {
+                  f.value = null
+                }
               }
             }
           }
@@ -196,7 +211,11 @@ export default {
             for (let f of s.fields) {
               if (f.predicate === 'edm:hasType') {
                 hasObjectType2 = true
-                f.selectedTerms = []
+                if (f.hasOwnProperty('selectedTerms')) {
+                  f.selectedTerms = []
+                } else {
+                  f.value = null
+                }
               }
             }
           }
@@ -268,16 +287,16 @@ export default {
       //   })
       // return promise
     },
-    importFromRelatedObject: async function () {
-      this.loading = true
+    importFromRelatedObject: async function (self) {
+      self.loading = true
       try {
-        let response = await this.$http.request({
+        let response = await self.$http.request({
           method: 'GET',
-          url: this.$store.state.instanceconfig.api + '/object/' + this.relatedpid + '/jsonld'
+          url: self.$store.state.instanceconfig.api + '/object/' + self.relatedpid + '/metadata'
         })
-        if (response.data.hasOwnProperty('JSON-LD')) {
-          this.form = jsonLd.json2form(response.data['JSON-LD'])
-          for (let s of this.form.sections) {
+        if (response.data.metadata.hasOwnProperty('JSON-LD')) {
+          self.form = jsonLd.json2form(response.data.metadata['JSON-LD'])
+          for (let s of self.form.sections) {
             let isFileSection = false
             for (let f of s.fields) {
               if (f.predicate === 'ebucore:filename') {
@@ -296,48 +315,47 @@ export default {
               newFields.push(fields.getField('file'))
             }
           }
+          return true
         } else {
           if (response.data.alerts && response.data.alerts.length > 0) {
-            this.$store.commit('setAlerts', response.data.alerts)
+            self.$store.commit('setAlerts', response.data.alerts)
           }
+          return false
         }
       } catch (error) {
         console.error(error)
       } finally {
-        this.loading = false
+        self.loading = false
       }
     },
-    createForm: function (self) {
+    createForm: async function (self) {
       self.validationError = false
       self.fieldsMissing = []
+      self.form = {
+        sections: [
+          {
+            title: '',
+            id: 1,
+            type: 'digitalobject',
+            fields: []
+          }
+        ]
+      }
+      self.rights = {}
+      self.relationships = {}
+      self.foreignRelationships = {}
 
-      if (
-        (this.relation === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor') ||
-        (this.relation === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember') ||
-        (this.relation === 'http://pcdm.org/models#hasMember')) {
-        self.relationships.push(
-          {
-            s: 'info:fedora/' + this.relatedpid,
-            p: this.relation,
-            o: 'self'
-          }
-        )
+      if ((self.relation === 'hassuccessor') || (self.relation === 'hascollectionmember') || (self.relation === 'hasmember')) {
+        self.foreignRelationships[self.relation] = [ self.relatedpid ]
       } else {
-        self.relationships.push(
-          {
-            s: 'self',
-            p: this.relation,
-            o: 'info:fedora/' + this.relatedpid
-          }
-        )
+        self.relationships[self.relation] = [ self.relatedpid ]
       }
 
-      if (
-        (this.relation === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor') ||
-        (this.relation === 'http://phaidra.org/XML/V1.0/relations#isAlternativeFormatOf') ||
-        (this.relation === 'http://phaidra.org/XML/V1.0/relations#isAlternativeVersionOf')) {
-        this.importFromRelatedObject()
-      } else {
+      let imported = false
+      if ((self.relation === 'hassuccessor') || (self.relation === 'isalternativeformatof') || (self.relation === 'isalternativeversionof')) {
+        imported = await self.importFromRelatedObject(self)
+      }
+      if (!imported) {
         self.form = {
           sections: [
             {
@@ -384,13 +402,17 @@ export default {
       }
     }
   },
-  beforeRouteEnter: function (to, from, next) {
-    next(vm => {
-      vm.createForm(vm)
+  beforeRouteEnter: async function (to, from, next) {
+    next(async function (vm) {
+      vm.$store.commit('setLoading', true)
+      await vm.createForm(vm)
+      vm.$store.commit('setLoading', false)
     })
   },
-  beforeRouteUpdate: function (to, from, next) {
-    this.createForm(this)
+  beforeRouteUpdate: async function (to, from, next) {
+    this.$store.commit('setLoading', true)
+    await this.createForm(this)
+    this.$store.commit('setLoading', false)
   }
 }
 </script>
