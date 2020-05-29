@@ -2,7 +2,7 @@
   <v-col>
     <v-card>
       <v-card-title class="title font-weight-light grey white--text">
-        <span class="mr-1">{{ $t('Upload of') }}</span>
+        <span class="mr-1">{{ $t('Submit of') }}</span>
         <span v-if="relation === 'references'">{{ $t('an object referencing') }}</span>
         <span v-if="relation === 'isbacksideof'">{{ $t('the back side of') }}</span>
         <span v-if="relation === 'isthumbnailfor'">{{ $t('a thumbnail for') }}</span>
@@ -28,13 +28,14 @@
           :form="form"
           :rights="rights"
           :relationships="relationships"
+          :foreignRelationships="foreignRelationships"
           :enablerights="true"
-          :enablerelationships="true"
+          :enablerelationships="false"
           :templating="true"
           :importing="false"
           :addbutton="true"
           :help="true"
-          :debug="false"
+          :debug="true"
           :feedback="true"
           :feedback-user="this.user"
           :feedback-context="'Related object submit'"
@@ -59,7 +60,7 @@ import { formvalidation } from '../mixins/formvalidation'
 import { context } from '../mixins/context'
 
 export default {
-  name: 'upload-related',
+  name: 'submit-related',
   mixins: [ context, vocabulary, formvalidation ],
   computed: {
     relatedpid: function () {
@@ -236,56 +237,8 @@ export default {
       }
     },
     objectCreated: function (event) {
-      this.memberpid = event
-      this.$store.commit('setAlerts', [{ type: 'success', msg: this.$t('Upload successful') + ' ' + event }])
-      // add membership relation
-      // var self = this
-      // var httpFormData = new FormData()
-      // this.loading = true
-      // httpFormData.append('predicate', 'http://pcdm.org/models#hasMember')
-      // httpFormData.append('object', 'info:fedora/' + self.memberpid)
-      // var url = self.$store.state.settings.instance.api + '/object/' + self.parentpid + '/relationship/add'
-      // var promise = fetch(url, {
-      //   method: 'POST',
-      //   mode: 'cors',
-      //   headers: {
-      //     'X-XSRF-TOKEN': self.$store.state.user.token
-      //   },
-      //   body: httpFormData
-      // })
-      //   .then(function (response) { return response.json() })
-      //   .then(function (json) {
-      //     if (self.isthumbnail) {
-      //       httpFormData = new FormData()
-      //       httpFormData.append('predicate', 'http://phaidra.org/XML/V1.0/relations#isThumbnailFor')
-      //       httpFormData.append('object', 'info:fedora/' + self.parentpid)
-      //       url = self.$store.state.settings.instance.api + '/object/' + self.memberpid + '/relationship/add'
-      //       var promise2 = fetch(url, {
-      //         method: 'POST',
-      //         mode: 'cors',
-      //         headers: {
-      //           'X-XSRF-TOKEN': self.$store.state.user.token
-      //         },
-      //         body: httpFormData
-      //       })
-      //         .then(function (response) { return response.json() })
-      //         .then(function (json) {
-      //           self.loading = false
-      //           self.$router.push({ name: 'detail', params: { pid: self.parentpid } })
-      //         })
-      //         .catch(function (error) {
-      //           console.log(error)
-      //         })
-      //       return promise2
-      //     } else {
-      //       self.loading = false
-      //       self.$router.push({ name: 'detail', params: { pid: self.parentpid } })
-      //     }
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error)
-      //   })
-      // return promise
+      this.$router.push({ name: 'detail', params: { pid: event } })
+      this.$vuetify.goTo(0)
     },
     importFromRelatedObject: async function (self) {
       self.loading = true

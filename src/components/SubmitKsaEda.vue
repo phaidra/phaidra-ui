@@ -77,9 +77,6 @@ export default {
     }
   },
   watch: {
-    validate: function () {
-      return true
-    },
     contentmodel: function (val) {
       for (var i = 0; i < this.form.sections.length; i++) {
         for (var j = 0; j < this.form.sections[i].fields.length; j++) {
@@ -92,6 +89,9 @@ export default {
     }
   },
   methods: {
+    validate: function () {
+      return true
+    },
     objectCreated: function (event) {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)

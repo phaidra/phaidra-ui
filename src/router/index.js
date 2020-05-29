@@ -22,7 +22,7 @@ import Submit from '@/components/Submit'
 import SubmitSimple from '@/components/SubmitSimple'
 import SubmitUwm from '@/components/SubmitUwm'
 import UploadWebVersion from '@/components/UploadWebVersion'
-import UploadRelated from '@/components/UploadRelated'
+import SubmitRelated from '@/components/SubmitRelated'
 import NotFound from '@/components/NotFound'
 
 Vue.use(Router)
@@ -137,9 +137,9 @@ export function createRouter () {
         component: UploadWebVersion
       },
       {
-        path: '/upload-related/:relatedpid/:relation',
-        name: 'upload-related',
-        component: UploadRelated
+        path: '/submit-related/:relatedpid/:relation',
+        name: 'submit-related',
+        component: SubmitRelated
       },
       {
         path: '/lists',

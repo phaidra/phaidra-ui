@@ -175,7 +175,7 @@ export default {
         }
       )
     }
-    if (transition.to.name === 'upload-related') {
+    if (transition.to.name === 'submit-related') {
       if (transition.from.name === 'detail') {
         state.breadcrumbs.push(
           {
@@ -186,7 +186,7 @@ export default {
       }
       state.breadcrumbs.push(
         {
-          text: 'Upload of an object related to ' + transition.from.params.pid,
+          text: 'Submit of an object related to ' + transition.from.params.pid,
           to: { name: transition.to.name, params: { relatedpid: transition.to.params.relatedpid } },
           disabled: true
         }

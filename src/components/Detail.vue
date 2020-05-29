@@ -148,8 +148,7 @@
                 <v-card-text class="mt-4">
                   <template v-for="(rel, i) in objectInfo.versions">
                     <v-row :key="'version'+i">
-                      <v-col cols="12" md="1">{{ i+1 }}</v-col>
-                      <v-col cols="12" md="4">{{ rel.created | date }}</v-col>
+                      <v-col cols="12" md="5">{{ rel.created | date }}</v-col>
                       <v-col cols="12" md="7">
                         <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>
                       </v-col>
@@ -390,7 +389,7 @@
                   <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Page')">
                     <v-dialog class="pb-4" v-model="relationDialog" width="800px">
                       <template v-slot:activator="{ on }">
-                        <a v-on="on" class="mb-1">{{ $t('Upload related object') }}</a>
+                        <a v-on="on" class="mb-1">{{ $t('Submit related object') }}</a>
                       </template>
                       <v-card>
                         <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Choose relation") }}</v-card-title>
@@ -404,8 +403,12 @@
                                 <v-radio-group v-model="chosenRelation">
                                   <template v-for="(r, i) in vocabularies['relations'].terms">
                                     <v-radio v-if="r['@id'] === 'http://phaidra.univie.ac.at/XML/V1.0/relations#hasSuccessor'" :key="'relv'+i" :label="$t('Is new version of')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
-                                    <v-radio v-else-if="r['@id'] === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember'" :key="'relm'+i" :label="$t('Is member of collection')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
-                                    <v-radio v-else-if="r['@id'] === 'http://pcdm.org/models#hasMember'" :key="'relcm'+i" :label="$t('Is member of container')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
+                                    <template v-else-if="r['@id'] === 'info:fedora/fedora-system:def/relations-external#hasCollectionMember'">
+                                      <v-radio v-if="objectInfo.cmodel === 'Collection'" :key="'relm'+i" :label="$t('Is member of collection')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
+                                    </template>
+                                    <template v-else-if="r['@id'] === 'http://pcdm.org/models#hasMember'">
+                                      <v-radio v-if="objectInfo.cmodel === 'Container'" :key="'relcm'+i" :label="$t('Is member of container')" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
+                                    </template>
                                     <v-radio v-else :key="'rele'+i" :label="getLocalizedTermLabel('relations', r['@id'])" :value="r['skos:notation'][0].toLowerCase()"></v-radio>
                                   </template>
                                 </v-radio-group>
@@ -419,7 +422,7 @@
                         <v-card-actions>
                           <v-spacer></v-spacer>
                           <v-btn @click="relationDialog = false">{{ $t('Cancel') }}</v-btn>
-                          <v-btn class="primary" :disabled="!chosenRelation" @click="$router.push({ name: 'upload-related', params: { relatedpid: objectInfo.pid, relation: chosenRelation }})">{{ $t('Continue') }}</v-btn>
+                          <v-btn class="primary" :disabled="!chosenRelation" @click="$router.push({ name: 'submit-related', params: { relatedpid: objectInfo.pid, relation: chosenRelation }})">{{ $t('Continue') }}</v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>

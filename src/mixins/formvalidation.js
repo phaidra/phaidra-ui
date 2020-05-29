@@ -60,7 +60,7 @@ export const formvalidation = {
             } else {
               if (f.value.length < 1) {
                 f.errorMessages.push(this.$t('Please select one or more object types'))
-                console.log('missing object type (value.length < 1):' +  + JSON.stringify(f))
+                console.log('missing object type (value.length < 1):' + JSON.stringify(f))
                 this.validationError = true
               }
             }

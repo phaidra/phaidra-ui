@@ -258,6 +258,7 @@ export default {
       await this.$store.dispatch('getLoginData')
       console.log('fetched login: firstname[' + this.$store.state.user.firstname + '] lastname[' + this.$store.state.user.lastname + '] username[' + this.$store.state.user.username + ']')
     }
+    await this.$store.dispatch('loadOrgUnits', this.$i18n.locale)
   },
   mounted: async function () {
     if (!this.user.token) {
