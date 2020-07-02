@@ -35,7 +35,7 @@ export default {
           method: 'GET',
           url: self.instanceconfig.api + '/object/' + self.pid + '/rights',
           headers: {
-            'X-XSRF-TOKEN': this.$store.state.user.token
+            'X-XSRF-TOKEN': self.$store.state.user.token
           }
         })
         if (response.data.metadata.status === 200) {
