@@ -202,7 +202,7 @@
               <v-card tile>
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object is in collection') }}</v-card-title>
                 <v-card-text class="mt-4">
-                  <tempalte v-for="(rel, i) in objectInfo.relationships.ispartof" :key="'ispartoft'+i">
+                  <template v-for="(rel, i) in objectInfo.relationships.ispartof" :key="'ispartoft'+i">
                     <v-row :key="'ispartof'+i">
                       <v-col cols="12" md="5" class="preview-maxwidth">
                         <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
@@ -212,7 +212,7 @@
                       </v-col>
                     </v-row>
                     <v-divider :key="'ispartofd'+i" v-if="(i+1) < objectInfo.relationships.ispartof.length"></v-divider>
-                  </tempalte>
+                  </template>
                 </v-card-text>
               </v-card>
             </v-col>
