@@ -2,7 +2,7 @@
   <v-card flat>
     <v-card-text>
       <v-col cols="12">
-        <v-container>
+        <v-container fluid>
           <p-i-file
             v-bind.sync="fileField"
             :mimetype="mimetype"

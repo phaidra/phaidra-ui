@@ -184,7 +184,7 @@
                 <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Alternative formats') }}</v-card-title>
                 <v-card-text class="mt-4">
                   <template v-for="(rel, i) in objectInfo.alternativeformats">
-                    <v-row :key="'version'+i">
+                    <v-row :key="'format'+i">
                       <v-col cols="12" md="5">{{ rel.dc_format[0] }}</v-col>
                       <v-col cols="12" md="7">
                         <router-link :to="{ name: 'detail', params: { pid: rel.pid } }">{{ rel.dc_title[0] }}</router-link>

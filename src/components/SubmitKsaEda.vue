@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ksa-submit" >
+  <v-container fluid class="ksa-submit">
     <v-card>
       <v-toolbar flat>
         <v-toolbar-title>Submit</v-toolbar-title>

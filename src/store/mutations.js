@@ -6,7 +6,7 @@ export default {
       {
         text: state.instanceconfig.institution,
         external: true,
-        to: 'https://www.univie.ac.at'
+        to: state.instanceconfig.institutionurl
       },
       {
         text: state.instanceconfig.title,

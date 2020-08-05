@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
         <v-btn large class="primary" :to="{ name: 'submit-simple' }">

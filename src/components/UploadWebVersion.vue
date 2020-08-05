@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="title font-weight-light grey white--text">{{ $t('Upload web-optimized version of') }} {{ parentpid }}</v-card-title>
       <v-card-text>
-        <v-container>
+        <v-container fluid>
           <v-row>
             <v-checkbox v-model="checkbox" color="primary" :error-messages="checkboxErrors">
               <template v-slot:label>

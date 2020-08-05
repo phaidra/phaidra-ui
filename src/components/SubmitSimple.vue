@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-alert :value="validationError" dismissible type="error" transition="slide-y-transition">
       <span>{{ $t('Please fill in the required fields') }}</span>
       <template v-if="fieldsMissing.length > 0">
