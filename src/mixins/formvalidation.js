@@ -127,8 +127,8 @@ export const formvalidation = {
             }
           }
           if (f.component === 'p-select') {
-            f.errorMessages = []
             if (f.predicate === 'edm:rights') {
+              f.errorMessages = []
               missingLicense = false
               if (f.value.length < 1) {
                 f.errorMessages.push(this.$t('Please select'))
@@ -150,6 +150,8 @@ export const formvalidation = {
               f.mimetypeErrorMessages.push(this.$t('Please select'))
               console.log('missing mimetype')
               this.validationError = true
+            } else {
+              // TODO check mime type against resource type
             }
           }
         }

@@ -76,9 +76,9 @@
 
           <v-col cols="12" md="3">
             <div class="footer-quicklinks-list">
-              <a href="http://studentpoint.univie.ac.at" target="_blank">
+              <a href="http://studieren.univie.ac.at" target="_blank">
                 <div>
-                  <span>Student Point</span>
+                  <span>Studieren an der Universität Wien</span>
                   <icon name="univie-right" class="float-right"></icon>
                 </div>
               </a>
@@ -91,9 +91,6 @@
                 </div>
               </a>
             </div>
-          </v-col>
-
-          <v-col cols="12" md="3">
             <div class="footer-quicklinks-list">
               <a href="http://uspace.univie.ac.at" target="_blank">
                 <div>
@@ -102,14 +99,10 @@
                 </div>
               </a>
             </div>
-            <div class="footer-quicklinks-list">
-              <a href="http://univis.univie.ac.at/" target="_blank">
-                <div>
-                  <span>UNIVISonline</span>
-                  <icon name="univie-right" class="float-right"></icon>
-                </div>
-              </a>
-            </div>
+          </v-col>
+
+          <v-col cols="12" md="3">
+            
             <div class="footer-quicklinks-list">
               <a href="http://bibliothek.univie.ac.at/" target="_blank">
                 <div>
@@ -118,9 +111,6 @@
                 </div>
               </a>
             </div>
-          </v-col>
-
-          <v-col cols="12" md="3">
             <div class="footer-quicklinks-list">
               <a href="http://moodle.univie.ac.at/" target="_blank">
                 <div>
@@ -137,6 +127,11 @@
                 </div>
               </a>
             </div>
+          </v-col>
+
+          <v-col cols="12" md="3">
+            
+            
             <div class="footer-quicklinks-list">
               <a href="http://webmail.univie.ac.at" target="_blank">
                 <div>
@@ -145,9 +140,6 @@
                 </div>
               </a>
             </div>
-          </v-col>
-
-          <v-col cols="12" md="3">
             <div class="footer-quicklinks-list">
               <a href="http://intra.univie.ac.at/" target="_blank">
                 <div>
@@ -164,6 +156,10 @@
                 </div>
               </a>
             </div>
+          </v-col>
+
+          <v-col cols="12" md="3">
+            
           </v-col>
 
         </v-row>

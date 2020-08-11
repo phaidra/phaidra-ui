@@ -76,8 +76,8 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -102,10 +102,6 @@ export default {
 
       s.push(this.getField('gnd-subject'))
 
-      let dtc = this.getField('date-edtf')
-      dtc.type = 'dcterms:temporal'
-      s.push(dtc)
-
       s.push(this.getField('temporal-coverage'))
 
       let psc = this.getField('spatial-getty')
@@ -123,13 +119,15 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
+      s.push(ot)
+
       s.push(this.getField('title'))
 
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('description'))
-
-      s.push(this.getField('note'))
 
       s.push(this.getField('digitization-note'))
 
@@ -142,10 +140,6 @@ export default {
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
-
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
 
       s.push(this.getField('temporal-coverage'))
 
@@ -190,21 +184,15 @@ export default {
     getPictureDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = this.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('condition-note'))
 
       s.push(this.getField('reproduction-note'))
 
-      s.push(this.getField('provenance'))
+      s.push(this.getField('inscription'))
 
-      let d = this.getField('date-edtf')
-      d.type = 'dcterms:date'
-      s.push(d)
+      s.push(this.getField('provenance'))
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
@@ -216,11 +204,9 @@ export default {
 
       s.push(this.getField('physical-location'))
 
-      s.push(this.getField('accession-number'))
-
       s.push(this.getField('shelf-mark'))
 
-      s.push(this.getField('inscription'))
+      s.push(this.getField('accession-number'))
 
       s.push(this.getField('material-text'))
 
@@ -359,10 +345,6 @@ export default {
     getPicturePOSubjectSection: function () {
       let s = []
 
-      let ot = this.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('condition-note'))
@@ -370,6 +352,8 @@ export default {
       s.push(this.getField('reproduction-note'))
 
       s.push(this.getField('provenance'))
+
+      s.push(this.getField('inscription'))
 
       let d = this.getField('date-edtf')
       d.type = 'dcterms:date'
@@ -385,11 +369,9 @@ export default {
 
       s.push(this.getField('physical-location'))
 
-      s.push(this.getField('accession-number'))
-
       s.push(this.getField('shelf-mark'))
 
-      s.push(this.getField('inscription'))
+      s.push(this.getField('accession-number'))
 
       s.push(this.getField('material-text'))
 
@@ -414,13 +396,15 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
+      s.push(ot)
+
       s.push(this.getField('title'))
 
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('description'))
-
-      s.push(this.getField('note'))
 
       s.push(this.getField('digitization-note'))
 
@@ -433,10 +417,6 @@ export default {
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
-
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
 
       s.push(this.getField('temporal-coverage'))
 
@@ -455,13 +435,15 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
+      s.push(ot)
+
       s.push(this.getField('title'))
 
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('description'))
-
-      s.push(this.getField('note'))
 
       s.push(this.getField('digitization-note'))
 
@@ -474,10 +456,6 @@ export default {
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
-
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
 
       s.push(this.getField('temporal-coverage'))
 
@@ -492,35 +470,15 @@ export default {
     getPictureMapSubjectSection: function () {
       let s = []
 
-      let ot = this.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('condition-note'))
 
       s.push(this.getField('reproduction-note'))
 
+      s.push(this.getField('inscription'))
+
       s.push(this.getField('provenance'))
-
-      let d = this.getField('date-edtf')
-      d.type = 'dcterms:date'
-      s.push(d)
-
-      let dc = this.getField('date-edtf')
-      dc.type = 'dcterms:created'
-      s.push(dc)
-
-      let pc = this.getField('spatial-getty')
-      pc.type = 'vra:placeOfCreation'
-      s.push(pc)
-
-      s.push(this.getField('physical-location'))
-
-      let sc = this.getField('spatial-getty')
-      sc.type = 'dcterms:spatial'
-      s.push(sc)
 
       s.push(this.getField('scale'))
 
@@ -529,11 +487,13 @@ export default {
       ci.label = this.$t('Contained in')
       s.push(ci)
 
-      s.push(this.getField('accession-number'))
+      s.push(this.getField('bf-publication'))
+
+      s.push(this.getField('physical-location'))
 
       s.push(this.getField('shelf-mark'))
 
-      s.push(this.getField('inscription'))
+      s.push(this.getField('accession-number'))
 
       s.push(this.getField('material-text'))
 
@@ -556,8 +516,8 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -567,8 +527,6 @@ export default {
       s.push(this.getField('description'))
 
       s.push(this.getField('number-of-pages'))
-
-      s.push(this.getField('note'))
 
       s.push(this.getField('language'))
 
@@ -584,15 +542,7 @@ export default {
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
-
-      let sc = this.getField('spatial-getty')
-      sc.type = 'dcterms:spatial'
-      s.push(sc)
 
       s.push(this.getField('association'))
 
@@ -605,8 +555,8 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -615,9 +565,9 @@ export default {
 
       s.push(this.getField('description'))
 
-      s.push(this.getField('note'))
-
       s.push(this.getField('number-of-pages'))
+
+      s.push(this.getField('project'))
 
       s.push(this.getField('language'))
 
@@ -633,18 +583,7 @@ export default {
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
-
-      s.push(this.getField('project'))
-
-      let fnd = this.getField('funder')
-      fnd.multilingial = false
-      fnd.multiplicable = true
-      s.push(fnd)
 
       s.push(this.getField('association'))
 
@@ -657,13 +596,15 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
+      s.push(ot)
+
       s.push(this.getField('title'))
 
       s.push(this.getField('role-extended'))
 
       s.push(this.getField('description'))
-
-      s.push(this.getField('note'))
 
       s.push(this.getField('number-of-pages'))
 
@@ -679,10 +620,6 @@ export default {
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
 
       s.push(this.getField('association'))
@@ -692,8 +629,8 @@ export default {
     getDocumentDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('description'))
@@ -745,11 +682,9 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
-
-      s.push(this.getField('genre'))
 
       s.push(this.getField('title'))
 
@@ -759,7 +694,7 @@ export default {
 
       s.push(this.getField('table-of-contents'))
 
-      s.push(this.getField('note'))
+      s.push(this.getField('genre'))
 
       s.push(this.getField('language'))
 
@@ -767,31 +702,23 @@ export default {
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let di = this.getField('date-edtf')
-      di.type = 'dcterms:issued'
-      s.push(di)
-
-      let dcc = this.getField('date-edtf')
-      dcc.type = 'dcterms:dateCopyrighted'
-      s.push(dcc)
-
       let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
-
-      s.push(this.getField('technique-text'))
-
-      s.push(this.getField('technique-vocab'))
 
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
+
+      s.push(this.getField('dce-format-vocab'))
+
+      s.push(this.getField('duration'))
+
+      s.push(this.getField('technique-text'))
+
+      s.push(this.getField('technique-vocab'))
 
       s.push(this.getField('association'))
 
@@ -804,7 +731,9 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(this.getField('genre'))
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
+      s.push(ot)
 
       s.push(this.getField('title'))
 
@@ -812,29 +741,17 @@ export default {
 
       s.push(this.getField('description'))
 
-      s.push(this.getField('table-of-contents'))
-
-      s.push(this.getField('note'))
-
       s.push(this.getField('digitization-note'))
 
-      s.push(this.getField('language'))
+      s.push(this.getField('table-of-contents'))
 
-      let d = this.getField('date-edtf')
-      d.type = 'dcterms:date'
-      s.push(d)
+      s.push(this.getField('genre'))
+
+      s.push(this.getField('language'))
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
-
-      let di = this.getField('date-edtf')
-      di.type = 'dcterms:issued'
-      s.push(di)
-
-      let dcc = this.getField('date-edtf')
-      dcc.type = 'dcterms:dateCopyrighted'
-      s.push(dcc)
 
       let pc = this.getField('spatial-getty')
       pc.type = 'vra:placeOfCreation'
@@ -844,11 +761,11 @@ export default {
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
+
+      s.push(this.getField('dce-format-vocab'))
+
+      s.push(this.getField('duration'))
 
       s.push(this.getField('association'))
 
@@ -856,16 +773,6 @@ export default {
     },
     getAudioDigitizedSubjectSection: function () {
       let s = []
-
-      let ot = this.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
-      let ct = this.getField('carrier-type')
-      // TODO: filter
-      s.push(ct)
-
-      s.push(this.getField('description'))
 
       s.push(this.getField('role-extended'))
 
@@ -877,9 +784,11 @@ export default {
 
       s.push(this.getField('supplementary-content'))
 
-      let d = this.getField('date-edtf')
-      d.type = 'dcterms:date'
-      s.push(d)
+      s.push(this.getField('inscription'))
+
+      let ct = this.getField('carrier-type')
+      // TODO: filter
+      s.push(ct)
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
@@ -891,11 +800,9 @@ export default {
 
       s.push(this.getField('physical-location'))
 
-      s.push(this.getField('accession-number'))
-
       s.push(this.getField('shelf-mark'))
 
-      s.push(this.getField('inscription'))
+      s.push(this.getField('accession-number'))
 
       s.push(this.getField('material-text'))
 
@@ -914,11 +821,9 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
-
-      s.push(this.getField('genre'))
 
       s.push(this.getField('title'))
 
@@ -928,9 +833,13 @@ export default {
 
       s.push(this.getField('table-of-contents'))
 
-      s.push(this.getField('note'))
+      s.push(this.getField('genre'))
+
+      s.push(this.getField('audience'))
 
       s.push(this.getField('language'))
+
+      s.push(this.getField('subtitle-language'))
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
@@ -940,23 +849,19 @@ export default {
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(this.getField('technique-text'))
-
-      s.push(this.getField('technique-vocab'))
-
-      s.push(this.getField('audience'))
-
-      s.push(this.getField('subtitle-language'))
-
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
+
+      s.push(this.getField('dce-format-vocab'))
+
+      s.push(this.getField('duration'))
+
+      s.push(this.getField('technique-text'))
+
+      s.push(this.getField('technique-vocab'))
 
       s.push(this.getField('association'))
 
@@ -969,7 +874,9 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      s.push(this.getField('genre'))
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
+      s.push(ot)
 
       s.push(this.getField('title'))
 
@@ -977,11 +884,17 @@ export default {
 
       s.push(this.getField('description'))
 
+      s.push(this.getField('digitization-note'))
+
       s.push(this.getField('table-of-contents'))
 
-      s.push(this.getField('note'))
+      s.push(this.getField('genre'))
+
+      s.push(this.getField('audience'))
 
       s.push(this.getField('language'))
+
+      s.push(this.getField('subtitle-language'))
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
@@ -991,23 +904,15 @@ export default {
       pc.type = 'vra:placeOfCreation'
       s.push(pc)
 
-      s.push(this.getField('technique-text'))
-
-      s.push(this.getField('technique-vocab'))
-
-      s.push(this.getField('audience'))
-
-      s.push(this.getField('subtitle-language'))
-
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
+
+      s.push(this.getField('dce-format-vocab'))
+
+      s.push(this.getField('duration'))
 
       s.push(this.getField('association'))
 
@@ -1015,14 +920,6 @@ export default {
     },
     getVideoDigitizedSubjectSection: function () {
       let s = []
-
-      let ot = this.getField('object-type')
-      // TODO: filter
-      s.push(ot)
-
-      let ct = this.getField('carrier-type')
-      // TODO: filter
-      s.push(ct)
 
       s.push(this.getField('role-extended'))
 
@@ -1034,9 +931,7 @@ export default {
 
       s.push(this.getField('supplementary-content'))
 
-      let d = this.getField('date-edtf')
-      d.type = 'dcterms:date'
-      s.push(d)
+      s.push(this.getField('inscription'))
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
@@ -1048,11 +943,13 @@ export default {
 
       s.push(this.getField('physical-location'))
 
-      s.push(this.getField('accession-number'))
-
       s.push(this.getField('shelf-mark'))
 
-      s.push(this.getField('inscription'))
+      s.push(this.getField('accession-number'))
+
+      let ct = this.getField('carrier-type')
+      // TODO: filter
+      s.push(ct)
 
       s.push(this.getField('material-text'))
 
@@ -1071,8 +968,8 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -1081,35 +978,23 @@ export default {
 
       s.push(this.getField('description'))
 
-      s.push(this.getField('note'))
-
       s.push(this.getField('language'))
 
       let dc = this.getField('date-edtf')
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      let da = this.getField('date-edtf')
-      da.type = 'dcterms:available'
-      s.push(da)
-
-      let di = this.getField('date-edtf')
-      di.type = 'dcterms:issued'
-      s.push(di)
+      let sc = this.getField('spatial-getty')
+      sc.type = 'dcterms:spatial'
+      s.push(sc)
 
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
 
-      let sc = this.getField('spatial-getty')
-      sc.type = 'dcterms:spatial'
-      s.push(sc)
+      s.push(this.getField('dce-format-vocab'))
 
       s.push(this.getField('association'))
 
@@ -1122,8 +1007,8 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -1132,7 +1017,9 @@ export default {
 
       s.push(this.getField('description'))
 
-      s.push(this.getField('note'))
+      s.push(this.getField('project'))
+
+      s.push(this.getField('citation'))
 
       s.push(this.getField('language'))
 
@@ -1140,28 +1027,17 @@ export default {
       dc.type = 'dcterms:created'
       s.push(dc)
 
-      s.push(this.getField('project'))
-
-      let fnd = this.getField('funder')
-      fnd.multilingial = false
-      fnd.multiplicable = true
-      s.push(fnd)
-
-      s.push(this.getField('citation'))
+      let sc = this.getField('spatial-getty')
+      sc.type = 'dcterms:spatial'
+      s.push(sc)
 
       s.push(this.getField('keyword'))
 
       s.push(this.getField('gnd-subject'))
 
-      let tc = this.getField('date-edtf')
-      tc.type = 'dcterms:temporal'
-      s.push(tc)
-
       s.push(this.getField('temporal-coverage'))
 
-      let sc = this.getField('spatial-getty')
-      sc.type = 'dcterms:spatial'
-      s.push(sc)
+      s.push(this.getField('dce-format-vocab'))
 
       s.push(this.getField('association'))
 
@@ -1174,8 +1050,8 @@ export default {
       rt.value = this.cmodel.value
       s.push(rt)
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -1281,8 +1157,8 @@ export default {
     getCollectionDigitizedSubjectSection: function () {
       let s = []
 
-      let ot = this.getField('object-type')
-      // TODO: filter
+      let ot = this.getField('object-type-checkboxes')
+      ot.resourceType = this.cmodel.value
       s.push(ot)
 
       s.push(this.getField('title'))
@@ -1308,36 +1184,36 @@ export default {
     initPictureDigital: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getPictureDigitalGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getPictureDigitalFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getPictureDigitalGeneralSection()
         }
       ]
     },
     initPicturePhysicalObject: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getPicturePOGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getPicturePOFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getPicturePOGeneralSection()
         },
         {
           title: 'Represented object',
@@ -1351,6 +1227,13 @@ export default {
     initPictureDigitized: function (form) {
       form.sections = [
         {
+          title: 'File',
+          type: 'file',
+          disablemenu: true,
+          id: 3,
+          fields: this.getPictureDigitizedFileSection()
+        },
+        {
           title: 'General',
           type: 'digitalobject',
           disablemenu: true,
@@ -1363,18 +1246,18 @@ export default {
           disablemenu: true,
           id: 2,
           fields: this.getPictureDigitizedSubjectSection()
-        },
-        {
-          title: 'File',
-          type: 'file',
-          disablemenu: true,
-          id: 3,
-          fields: this.getPictureDigitizedFileSection()
         }
       ]
     },
     initPictureMap: function (form) {
       form.sections = [
+        {
+          title: 'File',
+          type: 'file',
+          disablemenu: true,
+          id: 3,
+          fields: this.getPictureMapFileSection()
+        },
         {
           title: 'General',
           type: 'digitalobject',
@@ -1388,67 +1271,60 @@ export default {
           disablemenu: true,
           id: 2,
           fields: this.getPictureMapSubjectSection()
-        },
-        {
-          title: 'File',
-          type: 'file',
-          disablemenu: true,
-          id: 3,
-          fields: this.getPictureMapFileSection()
         }
       ]
     },
     initDocumentDigital: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getDocumentDigitalGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getDocumentDigitalFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getDocumentDigitalGeneralSection()
         }
       ]
     },
     initDocumentPoster: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getDocumentPosterGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getDocumentPosterFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getDocumentPosterGeneralSection()
         }
       ]
     },
     initDocumentDigitized: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getDocumentDigitizedGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getDocumentDigitizedFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getDocumentDigitizedGeneralSection()
         },
         {
           title: 'Digitized object',
@@ -1462,36 +1338,36 @@ export default {
     initAudioDigital: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getAudioDigitalGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getAudioDigitalFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getAudioDigitalGeneralSection()
         }
       ]
     },
     initAudioDigitized: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getAudioDigitizedGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getAudioDigitizedFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getAudioDigitizedGeneralSection()
         },
         {
           title: 'Digitized object',
@@ -1505,36 +1381,36 @@ export default {
     initVideoDigital: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getVideoDigitalGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getVideoDigitalFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getVideoDigitalGeneralSection()
         }
       ]
     },
     initVideoDigitized: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getVideoDigitizedGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getVideoDigitizedFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getVideoDigitizedGeneralSection()
         },
         {
           title: 'Digitized object',
@@ -1548,54 +1424,54 @@ export default {
     initDataGeneral: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getDataGeneralGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getDataGeneralFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getDataGeneralGeneralSection()
         }
       ]
     },
     initDataResearchdata: function (form) {
       form.sections = [
         {
-          title: 'General',
-          type: 'digitalobject',
-          disablemenu: true,
-          id: 1,
-          fields: this.getDataResearchdataGeneralSection()
-        },
-        {
           title: 'File',
           type: 'file',
           disablemenu: true,
           id: 2,
           fields: this.getDataResearchdataFileSection()
+        },
+        {
+          title: 'General',
+          type: 'digitalobject',
+          disablemenu: true,
+          id: 1,
+          fields: this.getDataResearchdataGeneralSection()
         }
       ]
     },
     initResourceGeneral: function (form) {
       form.sections = [
         {
-          title: 'Resource link',
-          type: 'resourcelink',
-          disablemenu: true,
-          id: 1,
-          fields: []
-        },
-        {
           title: 'General',
           type: 'digitalobject',
           disablemenu: true,
           id: 2,
           fields: this.getResourceGeneralGeneralSection()
+        },
+        {
+          title: 'Resource link',
+          type: 'resourcelink',
+          disablemenu: true,
+          id: 1,
+          fields: []
         }
       ]
     },

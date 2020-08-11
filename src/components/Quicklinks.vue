@@ -58,9 +58,9 @@
           </v-row>
 
           <v-row>
-            <a href="http://studentpoint.univie.ac.at" target="_blank">
+            <a href="http://studieren.univie.ac.at" target="_blank">
               <icon name="univie-quick-studienpoint"></icon>
-              <span>Student Point</span>
+              <span>Studieren an der Universität Wien</span>
               <icon name="univie-extern"></icon>
             </a>
           </v-row>
@@ -77,14 +77,6 @@
             <a href="http://uspace.univie.ac.at" target="_blank">
               <icon name="univie-quick-univis"></icon>
               <span>u:space</span>
-              <icon name="univie-extern"></icon>
-            </a>
-          </v-row>
-
-          <v-row>
-            <a href="http://univis.univie.ac.at/" target="_blank">
-              <icon name="univie-quick-univis"></icon>
-              <span>UNIVISonline</span>
               <icon name="univie-extern"></icon>
             </a>
           </v-row>
