@@ -64,7 +64,8 @@ export default {
       solr: 'https://myinstance.example.com/search/solr/phaidra',
       primary: '#000',
       institution: 'My institution',
-      address: 'My institution adress',
+      institutionurl: 'My institution URL',
+      address: 'My institution address',
       phone: '+00-0-000-0',
       email: 'support email'
     }
