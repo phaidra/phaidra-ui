@@ -1,5 +1,10 @@
 <template>
   <v-col>
+    <v-alert v-if="(relation === 'hassuccessor') && objectInfo && (objectInfo.relationships.ispartof.length > 0)" type="info">
+      <div>{{ relatedpid + ' ' + $t('is part of collections:') }}</div>
+      <div v-for="(col, i) in objectInfo.relationships.ispartof" :key="'cola'+i">{{ col.pid + ' (owner:' + col.owner + '): ' + col.dc_title[0] }}</div>
+      <div>{{ $t('Should the collection membership in collections you own be transferred to new version?') }} <v-switch v-model="transferMembership" :label="transferMembership ? $t('Yes') : $t('No')"></v-switch></div>
+    </v-alert>
     <v-card>
       <v-card-title class="title font-weight-light grey white--text">
         <span class="mr-1">{{ $t('Submit of') }}</span>
@@ -13,7 +18,7 @@
         <span v-if="relation === 'hasmember'">{{ $t('new member of container') }}</span>
         <span class="ml-1">{{ relatedpid }}</span>
       </v-card-title>
-      <v-card-text>
+      <v-card-text v-if="!transferringMembership">
         <v-alert :value="validationError" dismissible type="error" transition="slide-y-transition">
           <span>{{ $t('Please fill in the required fields') }}</span>
           <template v-if="fieldsMissing.length > 0">
@@ -47,6 +52,18 @@
           v-on:input-relationships="relationships = $event"
         ></p-i-form>
       </v-card-text>
+      <v-card-text v-else>
+        <v-row class="mx-4">
+          <v-col cols="12">
+            <v-row no-gutters>
+              <v-progress-linear indeterminate color="primary"></v-progress-linear>
+            </v-row>
+            <v-row no-gutters class="primary--text mt-1">
+              <span>{{ $t('Transferring relationships...') }}</span><span class="ml-2" v-if="transferMembershipAction">{{ transferMembershipAction }}</span>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
   </v-col>
 </template>
@@ -58,16 +75,20 @@ import jsonLd from 'phaidra-vue-components/src/utils/json-ld'
 import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
 import { formvalidation } from '../mixins/formvalidation'
 import { context } from '../mixins/context'
+import { config } from '../mixins/config'
 
 export default {
   name: 'submit-related',
-  mixins: [ context, vocabulary, formvalidation ],
+  mixins: [ context, config, vocabulary, formvalidation ],
   computed: {
     relatedpid: function () {
       return this.$store.state.route.params.relatedpid
     },
     relation: function () {
       return this.$store.state.route.params.relation
+    },
+    objectInfo: function () {
+      return this.$store.state.objectInfo
     }
   },
   data () {
@@ -84,7 +105,10 @@ export default {
       },
       rights: {},
       relationships: {},
-      foreignRelationships: {}
+      foreignRelationships: {},
+      transferMembership: false,
+      transferringMembership: false,
+      transferMembershipAction: ''
     }
   },
   methods: {
@@ -236,8 +260,62 @@ export default {
           break
       }
     },
-    objectCreated: function (event) {
-      this.$router.push({ name: 'detail', params: { pid: event } })
+    objectCreated: async function (event) {
+      let newpid = event
+      if ((this.relation === 'hassuccessor') && this.transferMembership) {
+        this.transferringMembership = true
+        let removeMembers = { 'metadata': { 'members': [ { 'pid': this.relatedpid } ] } }
+        let addMembers = { 'metadata': { 'members': [ { 'pid': newpid } ] } }
+        for (let col of this.objectInfo.relationships.ispartof) {
+          if (col.owner === this.$store.state.user.username) {
+            this.transferMembershipAction = this.$t('REMOVE_COLLECTION_MEMBER', { oldpid: this.relatedpid, collection: col.pid })
+            try {
+              let httpFormData = new FormData()
+              httpFormData.append('metadata', JSON.stringify(removeMembers))
+              let response = await this.$http.request({
+                method: 'POST',
+                url: this.instanceconfig.api + '/collection/' + col.pid + '/members/remove',
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'X-XSRF-TOKEN': this.$store.state.user.token
+                },
+                data: httpFormData
+              })
+              if (response.status !== 200) {
+                if (response.data.alerts && response.data.alerts.length > 0) {
+                  this.$store.commit('setAlerts', response.data.alerts)
+                }
+              }
+            } catch (error) {
+              console.log(error)
+              this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+            }
+            this.transferMembershipAction = this.$t('ADD_COLLECTION_MEMBER', { newpid: newpid, collection: col.pid })
+            try {
+              let httpFormData = new FormData()
+              httpFormData.append('metadata', JSON.stringify(addMembers))
+              let response = await this.$http.request({
+                method: 'POST',
+                url: this.instanceconfig.api + '/collection/' + col.pid + '/members/add',
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'X-XSRF-TOKEN': this.$store.state.user.token
+                },
+                data: httpFormData
+              })
+              if (response.status !== 200) {
+                if (response.data.alerts && response.data.alerts.length > 0) {
+                  this.$store.commit('setAlerts', response.data.alerts)
+                }
+              }
+            } catch (error) {
+              console.log(error)
+              this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+            }
+          }
+        }
+      }
+      this.$router.push({ name: 'detail', params: { pid: newpid } })
       this.$vuetify.goTo(0)
     },
     importFromRelatedObject: async function (self) {
@@ -282,6 +360,9 @@ export default {
       }
     },
     createForm: async function (self) {
+      self.transferMembership = false
+      self.transferringMembership = false
+      self.transferMembershipAction = ''
       self.validationError = false
       self.fieldsMissing = []
       self.form = {
@@ -359,12 +440,18 @@ export default {
     next(async function (vm) {
       vm.$store.commit('setLoading', true)
       await vm.createForm(vm)
+      if (vm.relation === 'hassuccessor') {
+        await vm.$store.dispatch('fetchObjectInfo', vm.relatedpid)
+      }
       vm.$store.commit('setLoading', false)
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
     this.$store.commit('setLoading', true)
     await this.createForm(this)
+    if (this.relation === 'hassuccessor') {
+      await this.$store.dispatch('fetchObjectInfo', this.relatedpid)
+    }
     this.$store.commit('setLoading', false)
   }
 }

@@ -102,7 +102,7 @@
           </v-col>
 
           <v-col cols="12" md="3">
-            
+
             <div class="footer-quicklinks-list">
               <a href="http://bibliothek.univie.ac.at/" target="_blank">
                 <div>
@@ -130,8 +130,7 @@
           </v-col>
 
           <v-col cols="12" md="3">
-            
-            
+
             <div class="footer-quicklinks-list">
               <a href="http://webmail.univie.ac.at" target="_blank">
                 <div>
@@ -159,7 +158,7 @@
           </v-col>
 
           <v-col cols="12" md="3">
-            
+
           </v-col>
 
         </v-row>

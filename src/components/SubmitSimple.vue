@@ -11,7 +11,7 @@
       </template>
     </v-alert>
     <v-row>
-      <v-col cols="12" md="8" offset-md="2">
+      <v-col cols="12" md="10" offset-md="1">
         <p-i-form
           :form="form"
           :rights="rights"

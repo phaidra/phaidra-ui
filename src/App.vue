@@ -7,7 +7,7 @@
           <quicklinks v-if="isUnivie" :showquicklinks="quicklinksenabled"></quicklinks>
 
           <v-row no-gutters>
-            <v-col cols="12" md="10" offset-md="1" class="header">
+            <v-col cols="12" md="8" offset-md="2" class="header">
 
               <v-row no-gutters>
                 <v-col class="text-left" cols="3" >
@@ -119,7 +119,7 @@
           </v-row>
 
           <v-row>
-            <v-col cols="12" md="10" offset-md="1" class="content">
+            <v-col cols="12" md="8" offset-md="2" class="content">
               <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
 
               <template v-if="alerts.length > 0">
@@ -157,7 +157,7 @@
           </v-row>
 
           <v-row>
-            <v-col cols="12" md="10" offset-md="1">
+            <v-col cols="12" md="8" offset-md="2">
               <v-row   class="my-5">
                 <v-col class="text-left" >
                   <span class="grey--text text--darken-2"><address>{{ instanceconfig.address }} | <abbr title="Telefon">T</abbr> {{ instanceconfig.phone }}</address></span>

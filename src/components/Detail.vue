@@ -23,7 +23,7 @@
           <v-divider class="mt-12 mb-10"></v-divider>
 
           <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
-            <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid"></p-d-jsonld>
+            <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
           </v-row>
 
           <v-row v-if="objectInfo.dshash['UWMETADATA']">
@@ -50,7 +50,7 @@
                   </audio>
                 </center>
                 <v-card-text class="ma-2">
-                  <p-d-jsonld :jsonld="member.metadata['JSON-LD']" :pid="member.pid"></p-d-jsonld>
+                  <p-d-jsonld :jsonld="member.metadata['JSON-LD']" :pid="member.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
                 </v-card-text>
                 <v-divider light v-if="objectInfo.readrights"></v-divider>
                 <v-card-actions class="pa-3" v-if="objectInfo.readrights">

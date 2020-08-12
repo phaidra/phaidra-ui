@@ -10,24 +10,23 @@ export default {
   'SEARCH_PLACEHOLDER': 'Search',
   'PHAIDRA_IS': 'Phaidra is the repository for the permanent secure storage of digital assets at the University of Vienna.',
 
-  'rdam:P30004': 'Alternative identifier',
-
   'bf:Title': 'Title',
   'bf:ParallelTitle': 'Parallel title',
 
   'bf:Note': 'Description',
   'bf:Summary': 'Abstract',
   'phaidra:Remark': 'Remark',
-  'phaidra:ConditionNote': 'Condition',
+  'arm:ConditionAssessment': 'Condition',
   'phaidra:ReproductionNote': 'Reproduction note',
   'phaidra:DigitizationNote': 'Digitization note',
+  'bf:tableOfContents': 'Table of contents',
 
   'dce:subject': 'Keywords',
   'dcterms:subject': 'Subject',
   'dcterms:language': 'Language',
   'schema:subtitleLanguage': 'Subtitle language',
   'dcterms:type': 'Resource type',
-  'edm:hasType': 'Type/Genre',
+  'edm:hasType': 'Type / Genre',
   'bf:physicalLocation': 'Physical location',
   'bf:shelfMark': 'Call number',
   'edm:rights': 'License',
@@ -51,27 +50,30 @@ export default {
   'schema:pageEnd': 'To page',
   'rdau:P60193': 'Is in series',
   'rdau:P60101': 'Is contained in',
+  'rdau:P60101_rdau:P60193': 'Series',
+  'rdau:P60101_bf:provisionActivity': 'Publisher',
   'rdau:P60227': 'Is motion picture adaptation of',
   'bf:provisionActivity': 'Provision activity: Publication',
   'cito:cites': 'Cites',
   'cito:isCitedBy': 'Is cited by',
+  'rdfs:seeAlso': 'See also',
 
-  'dcterms:spatial': 'Depicted/Represented place',
+  'dcterms:spatial': 'Depicted / Represented place',
   'vra:placeOfCreation': 'Place of creation',
-  'vra:placeOfRepository': 'Place of repository',
   'vra:placeOfSite': 'Place of site',
+
+  'frapo:isOutputOf': 'Project',
+  'frapo:hasFundingAgency': 'Funder',
+  'rdax:P00009': 'Association',
 
   'dcterms:provenance': 'Provenance',
 
-  'rdau:P60550': 'Extent',
   'schema:numberOfPages': 'Number of pages',
   'bf:soundCharacteristic': 'Sound characteristic',
   'bf:supplementaryContent': 'Supplementary content',
   'bf:awards': 'Award',
   'dcterms:audience': 'Audience',
   'rdau:P60059': 'Regional encoding',
-
-  'rdax:P00009': 'Association',
 
   'ebucore:filename': 'Filename',
   'ebucore:hasMimeType': 'MIME Type',
@@ -81,12 +83,14 @@ export default {
   'schema:height': 'Height',
   'schema:depth': 'Depth',
   'schema:weight': 'Weight',
+  'vra:diameter': 'Diameter',
   'schema:duration': 'Duration',
   'bf:scale': 'Scale',
   'schema:genre': 'Genre',
   'dcterms:temporal': 'Temporal coverage',
   'vra:hasTechnique': 'Technique',
   'dce:format': 'Format',
+  'rdau:P60048': 'Carrier type',
   'vra:material': 'Material',
   'vra:hasInscription': 'Inscription',
 
@@ -95,6 +99,9 @@ export default {
   'MEMBERS_DELETE_ALERT_CONTAINER': 'This object is a Container with {nrmembers} members. Only an empty Container can be deleted. If you want to delete this object, you need to remove all members from this Container or delete them first.',
   'DELETE_OBJECT': 'Here you can delete object {pid}.',
   'DELETE_OBJECT_CONFIRM': 'Are you sure you want to permanently delete object {pid}?',
+
+  'REMOVE_COLLECTION_MEMBER': 'Removing object {oldpid} from collection {collection}.',
+  'ADD_COLLECTION_MEMBER': 'Adding object {newpid} to collection {collection}.',
 
   'SELECTION_LIMIT': 'Cannot select more than {limit} results.',
 
