@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     handleInputResourceType: function (rt) {
-      switch (rt['@id']) {
+      switch (rt) {
         case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
           // collection => remove file, license and object type field and resourcelink section
           for (let s of this.form.sections) {
@@ -127,15 +127,15 @@ export default {
           }
           if (!hasObjectType) {
             let otf = fields.getField('object-type-checkboxes')
-            let rt
+            let rtv
             for (let s of this.form.sections) {
               for (let f of s.fields) {
                 if (f.predicate === 'dcterms:type') {
-                  rt = f.value
+                  rtv = f.value
                 }
               }
             }
-            otf.resourceType = rt
+            otf.resourceType = rtv
             this.form.sections[0].fields.splice(1, 0, otf)
           }
           break
@@ -180,15 +180,15 @@ export default {
           }
           if (!hasObjectType2) {
             let otf2 = fields.getField('object-type-checkboxes')
-            let rt2
+            let rtv2
             for (let s of this.form.sections) {
               for (let f of s.fields) {
                 if (f.predicate === 'dcterms:type') {
-                  rt2 = f.value
+                  rtv2 = f.value
                 }
               }
             }
-            otf2.resourceType = rt2
+            otf2.resourceType = rtv2
             this.form.sections[0].fields.splice(1, 0, otf2)
           }
           break
