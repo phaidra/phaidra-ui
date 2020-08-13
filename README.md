@@ -30,7 +30,6 @@ export default {
     showinstanceswitch: 0,
     enablelogin: 1,
     enabledelete: 1,
-    iraccount: 'iraccount',
     suggesters: {
       getty: 'https://ws.gbv.de/suggest/getty/',
       gnd: 'https://ws.gbv.de/suggest/gnd/',
@@ -42,7 +41,8 @@ export default {
     apis: {
       doi: {
         baseurl: 'doi.org',
-        accept: 'application/vnd.citationstyles.csl+json'
+        accept: 'application/vnd.citationstyles.csl+json',
+        citationstyles: 'https://citation.crosscite.org/styles/'
       },
       sherparomeo: {
         url: 'https://v2.sherpa.ac.uk/cgi/retrieve',
@@ -59,6 +59,7 @@ export default {
     'myinstance.example.com': {
       title: 'Phaidra - myinstance',
       baseurl: 'myinstance.example.com',
+      irbaseurl: 'myirinstance.example.com',
       fedora: 'https://fedora.myinstance.example.com/fedora',
       api: 'https://services.myinstance.example.com/api',
       solr: 'https://myinstance.example.com/search/solr/phaidra',

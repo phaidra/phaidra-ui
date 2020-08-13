@@ -116,6 +116,20 @@
           <v-row justify="end">
             <v-col cols="12" md="9">
 
+              <v-row class="mb-6" v-if="objectInfo.isinadminset">
+                <v-col class="pt-0">
+                  <v-card tile>
+                    <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Managed by') }}</v-card-title>
+                    <v-card-text class="mt-4">
+                      <v-row v-for="(adminset, i) in objectInfo.isinadminset" no-gutters class="pt-2" :key="'adminset'+i">
+                        <a class="font-weight-regular" v-if="adminset === 'phaidra:ir.univie.ac.at'" :href="uscholarlink" target="_blank">u:scholar</a>
+                        <a v-if="adminset === 'phaidra:utheses.univie.ac.at'" :href="utheseslink" target="_blank">u:theses</a>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+
               <v-row class="mb-6">
                 <v-col class="pt-0">
                   <v-card tile>
@@ -497,6 +511,9 @@ export default {
   name: 'detail',
   mixins: [ context, config, vocabulary ],
   computed: {
+    uscholarlink: function () {
+      return 'https://' + this.instanceconfig.irbaseurl + '/' + this.objectInfo.pid
+    },
     doi: function () {
       for (let id of this.objectInfo.dc_identifier) {
         let type = id.substr(0, id.indexOf(':'))
@@ -602,14 +619,31 @@ export default {
       citationStyle: 'apa',
       citationStyles: [],
       citationStylesLoading: false,
-      chosenRelation: 'http://purl.org/dc/terms/references'
+      chosenRelation: 'http://purl.org/dc/terms/references',
+      utheseslink: ''
     }
   },
   methods: {
     async fetchAsyncData (self, pid) {
       await self.$store.dispatch('fetchObjectInfo', pid)
+      this.postMetadataLoad()
       if (self.objectInfo.cmodel === 'Container') {
         await self.$store.dispatch('fetchObjectMembers', self.objectInfo)
+      }
+    },
+    postMetadataLoad: function () {
+      if (this.objectInfo.metadata['JSON-LD']) {
+        Object.entries(this.objectInfo.metadata['JSON-LD']).forEach(([p, arr]) => {
+          if (p === 'rdam:P30004') {
+            for (let o of arr) {
+              if (o['@type'] === 'ids:uri') {
+                if (/utheses/.test(o['@value'])) {
+                  this.utheseslink = o['@value']
+                }
+              }
+            }
+          }
+        })
       }
     },
     getMemberDownloadUrl: function (member) {
