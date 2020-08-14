@@ -27,7 +27,7 @@
           </v-row>
 
           <v-row v-if="objectInfo.dshash['UWMETADATA']">
-            <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']"></p-d-uwm-rec>
+            <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']" :cmodel="objectInfo.cmodel"></p-d-uwm-rec>
           </v-row>
 
           <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Collection'">
@@ -85,7 +85,7 @@
 
         <v-col cols="12" md="4">
           <v-row justify="end" class="mb-2">
-            <v-col cols="12">
+            <v-col cols="12" class="pt-0">
               <p class="text-right" v-for="(id,i) in identifiers" :key="i">
                 <v-dialog @input="loadCitationStyles()" v-if="id.label === 'DOI'" class="pb-4" v-model="doiCiteDialog" width="800px">
                   <template v-slot:activator="{ on }">
@@ -228,7 +228,7 @@
                     <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('This object is in collection') }}</v-card-title>
                     <v-card-text class="mt-4">
                       <template v-for="(rel, i) in objectInfo.relationships.ispartof">
-                        <v-row :key="'ispartof'+i">
+                        <v-row :key="'ispartof'+i" align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img :src="'https://' + instanceconfig.baseurl + '/preview/' + rel.pid + '///120'" class="elevation-1 mt-2"></p-img>
                           </v-col>
@@ -374,11 +374,14 @@
                   <v-card tile>
                     <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Metadata') }}</v-card-title>
                     <v-card-text class="mt-4">
-                      <v-row no-gutters class="pt-2">
+                      <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['JSON-LD']">
                         <router-link :to="{ name: 'metadata' }">{{ $t('Show metadata') }}</router-link>
                       </v-row>
                       <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['UWMETADATA']">
                         <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/uwmetadata?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
+                      </v-row>
+                      <v-row no-gutters class="pt-2" v-if="objectInfo.dshash['MODS']">
+                        <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/mods?format=xml'" target="_blank">{{ $t('Metadata XML') }}</a>
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/index/dc'" target="_blank">{{ $t('Dublin Core') }}</a>
@@ -730,7 +733,9 @@ export default {
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
+    this.$store.commit('setLoading', true)
     await this.fetchAsyncData(this, to.params.pid)
+    this.$store.commit('setLoading', false)
     next()
   }
 }

@@ -662,5 +662,7 @@ export default {
   'an alternative format of': 'einem alternativen Format vom',
   'an alternative version of': 'einer alternative Version vom',
   'a new member of collection': 'einem neuen member der Collection',
-  'new member of container': 'einem neuen member des Containers'
+  'new member of container': 'einem neuen member des Containers',
+  'REMOVE_COLLECTION_MEMBER': 'Objekt {oldpid} wird aus Collection {collection} entfernt.',
+  'ADD_COLLECTION_MEMBER': 'Objekt {newpid} wird ins Collection {collection} hinzugefügt.'
 }

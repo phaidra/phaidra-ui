@@ -33,6 +33,34 @@ export default {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
+    findNodeRec: function (pathToFind, currPath, children) {
+      let ret = null
+      for (let n of children) {
+        let nodePath = currPath + '_' + n.xmlname
+        if (nodePath === pathToFind) {
+          ret = n
+        } else {
+          if (n.children) {
+            if (n.children.length > 0) {
+              let x = this.findNodeRec(pathToFind, nodePath, n.children)
+              if (x) {
+                ret = x
+              }
+            }
+          }
+        }
+      }
+      if (ret) {
+        return ret
+      }
+    },
+    postLoadUwmetadata: function (self, uwmetadata) {
+      let lic = this.findNodeRec('uwm_rights_license', 'uwm', uwmetadata)
+      if (lic.ui_value && (lic.ui_value !== 'http://phaidra.univie.ac.at/XML/metadata/lom/V1.0/voc_21/1')) {
+        lic.disabled = true
+      }
+      self.editform = uwmetadata
+    },
     loadUwmetadata: async function (self, pid) {
       self.loading = true
       try {
@@ -47,7 +75,7 @@ export default {
           self.$store.commit('setAlerts', response.data.alerts)
         }
         if (response.data.metadata['uwmetadata']) {
-          self.editform = response.data.metadata['uwmetadata']
+          this.postLoadUwmetadata(self, response.data.metadata['uwmetadata'])
         }
       } catch (error) {
         console.log(error)
@@ -59,14 +87,18 @@ export default {
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
       vm.parentpid = from.params.pid
+      vm.$store.commit('setLoading', true)
       vm.loadUwmetadata(vm, to.params.pid).then(() => {
+        vm.$store.commit('setLoading', false)
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
     this.parentpid = from.params.pid
+    this.$store.commit('setLoading', true)
     this.loadUwmetadata(this, to.params.pid).then(() => {
+      this.$store.commit('setLoading', false)
       next()
     })
   }

@@ -48,6 +48,18 @@ export default {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
     },
+    postMetadataLoad: function (self, form) {
+      for (let s of form.sections) {
+        for (let f of s.fields) {
+          if (f.predicate === 'edm:rights') {
+            if (f.value !== 'http://rightsstatements.org/vocab/InC/1.0/') {
+              f.disabled = true
+            }
+          }
+        }
+      }
+      self.form = form
+    },
     loadJsonld: async function (self, pid) {
       self.loading = true
       try {
@@ -62,7 +74,7 @@ export default {
           self.$store.commit('setAlerts', response.data.alerts)
         }
         if (response.data.metadata['JSON-LD']) {
-          self.form = this.json2form(response.data.metadata['JSON-LD'])
+          self.postMetadataLoad(self, this.json2form(response.data.metadata['JSON-LD']))
         }
       } catch (error) {
         console.log(error)
@@ -76,15 +88,19 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
+      vm.$store.commit('setLoading', true)
       vm.parentpid = from.params.pid
       vm.loadJsonld(vm, to.params.pid).then(() => {
+        vm.$store.commit('setLoading', false)
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
     this.parentpid = from.params.pid
+    this.$store.commit('setLoading', true)
     this.loadJsonld(this, to.params.pid).then(() => {
+      this.$store.commit('setLoading', false)
       next()
     })
   }

@@ -122,14 +122,16 @@
             <v-col cols="12" md="8" offset-md="2" class="content">
               <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
 
-              <template v-if="alerts.length > 0">
-                <v-row justify="center" v-for="(alert, i) in alerts" :key="i">
+              <template v-for="(alert, i) in alerts">
+                <v-snackbar :key="'altsnack'+i" class="font-weight-regular" top color="success" v-if="alert.type === 'success'" v-model="showSnackbar">
+                  {{alert.msg}}
+                  <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
+                </v-snackbar>
+              </template>
+              <template v-if="showAlerts">
+                <v-row justify="center" v-for="(alert, i) in alerts" :key="'alert'+i">
                   <v-col cols="12">
-                    <v-snackbar class="font-weight-regular" top color="success" v-if="alert.type === 'success'" v-model="showSnackbar">
-                      {{alert.msg}}
-                      <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
-                    </v-snackbar>
-                    <v-alert v-else prominent :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
+                    <v-alert v-if="alert.type !== 'success'" :type="(alert.type === 'danger' ? 'error' : alert.type)" :value="true" transition="slide-y-transition">
                       <v-row align="center">
                         <v-col class="grow">{{alert.msg}}</v-col>
                         <v-col class="shrink">
@@ -199,6 +201,18 @@ export default {
     }
   },
   computed: {
+    showAlerts: function () {
+      if (this.$store.state.alerts.length > 0) {
+        let onlySuccess = true
+        for (let a of this.$store.state.alerts) {
+          if (a.type !== 'success') {
+            onlySuccess = false
+          }
+        }
+        return !onlySuccess
+      }
+      return false
+    },
     showSnackbar: {
       get: function () {
         return this.$store.state.snackbar
