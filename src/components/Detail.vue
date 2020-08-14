@@ -20,7 +20,7 @@
             </template>
           </v-row>
 
-          <v-divider class="mt-12 mb-10"></v-divider>
+          <v-divider class="mt-12 mb-10" v-if="(objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Collection')"></v-divider>
 
           <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
@@ -32,6 +32,10 @@
 
           <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Collection'">
             <router-link class="title font-weight-light primary--text showmembers" :to="{ path: '/search', query: { collection: objectInfo.pid } }">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</router-link>
+          </v-row>
+
+          <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Resource'">
+            <a class="title font-weight-light primary--text showmembers" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Resource/get'">{{ $t('Open link') }}</a>
           </v-row>
 
           <template v-if="objectInfo.cmodel === 'Container'">
