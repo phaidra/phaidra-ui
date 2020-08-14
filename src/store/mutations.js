@@ -366,6 +366,7 @@ export default {
     Vue.set(state.user, 'token', token)
   },
   setLoginData (state, logindata) {
+    Vue.set(state.user, 'username', logindata.username)
     Vue.set(state.user, 'firstname', logindata.firstname)
     Vue.set(state.user, 'lastname', logindata.lastname)
     Vue.set(state.user, 'email', logindata.email)

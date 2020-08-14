@@ -97,7 +97,7 @@ export function createRouter () {
         component: SubmitSimple
       },
       {
-        path: '/submit/uwm',
+        path: '/submit/uwm/:cmodel',
         name: 'submit-uwm',
         component: SubmitUwm
       },

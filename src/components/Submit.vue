@@ -96,14 +96,20 @@
     </v-row>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{ $t("Legacy") }}</span>
+        <span class="title font-weight-light primary--text">{{ $t("Legacy (Uwmetadata)") }}</span>
         <v-divider></v-divider>
       </v-col>
     </v-row>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <v-btn large dark color="grey white--text" :to="{ name: 'submit-uwm' }">
-          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("Uwmetadata") }}
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm' }">
+          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("File") }}
+        </v-btn>
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'collection' } }">
+          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("Collection") }}
+        </v-btn>
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'resource' } }">
+          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("Resource") }}
         </v-btn>
       </v-col>
     </v-row>

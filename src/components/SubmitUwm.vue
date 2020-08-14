@@ -1,9 +1,18 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <v-col cols="12">
-        <v-container fluid>
+      <v-col cols="12" v-if="this.form.length > 0">
+        <v-container fluid v-if="objectType !== 'collection'">
+          <v-text-field
+            v-if="objectType === 'resource'"
+            :label="$t('Link')"
+            :placeholder="'https://...'"
+            v-model="link"
+            outlined
+            :error-messages="linkErrorMessages"
+          ></v-text-field>
           <p-i-file
+            v-else
             v-bind.sync="fileField"
             :mimetype="mimetype"
             v-on:input-file="file = $event"
@@ -42,6 +51,12 @@ export default {
   mixins: [ config, context, vocabulary ],
   computed: {
     objectType: function () {
+      if (this.$route.params.cmodel === 'collection') {
+        return 'collection'
+      }
+      if (this.$route.params.cmodel === 'resource') {
+        return 'resource'
+      }
       switch (this.mimetype) {
         case 'image/jpeg':
         case 'image/tiff':
@@ -79,7 +94,9 @@ export default {
       mimetype: '',
       fileField: fields.getField('file'),
       mimetypeErrorMessages: [],
-      fileErrorMessages: []
+      fileErrorMessages: [],
+      linkErrorMessages: [],
+      link: ''
     }
   },
   methods: {
@@ -115,26 +132,41 @@ export default {
     },
     getMetadata: function () {
       let md = { metadata: { 'uwmetadata': this.form } }
+      if (this.objectType === 'resource') {
+        md['metadata']['resourcelink'] = this.link
+      }
       return md
     },
     save: async function () {
       let valid = this.$refs.submitform.validate()
       this.fileErrorMessages = []
+      this.linkErrorMessages = []
       this.mimetypeErrorMessages = []
-      if (!this.file) {
-        this.fileErrorMessages.push(this.$t('Missing file'))
-        valid = false
-      }
-      if (!this.mimetype) {
-        this.mimetypeErrorMessages.push(this.$t('Missing file type'))
-        valid = false
+      if (this.objectType !== 'collection') {
+        if (this.objectType === 'resource') {
+          if (this.link.length < 1) {
+            this.linkErrorMessages.push(this.$t('Missing link'))
+            valid = false
+          }
+        } else {
+          if (!this.file) {
+            this.fileErrorMessages.push(this.$t('Missing file'))
+            valid = false
+          }
+          if (!this.mimetype) {
+            this.mimetypeErrorMessages.push(this.$t('Missing file type'))
+            valid = false
+          }
+        }
       }
       if (valid) {
         this.loading = true
         var httpFormData = new FormData()
         httpFormData.append('metadata', JSON.stringify(this.getMetadata()))
-        httpFormData.append('file', this.file)
-        httpFormData.append('mimetype', this.mimetype)
+        if ((this.objectType !== 'resource') && (this.objectType !== 'collection')) {
+          httpFormData.append('file', this.file)
+          httpFormData.append('mimetype', this.mimetype)
+        }
         try {
           let response = await this.$http.request({
             method: 'POST',
@@ -169,13 +201,17 @@ export default {
   },
   beforeRouteEnter: function (to, from, next) {
     next(vm => {
+      vm.$store.commit('setLoading', true)
       vm.loadUwmetadata(vm).then(() => {
+        vm.$store.commit('setLoading', false)
         next()
       })
     })
   },
   beforeRouteUpdate: function (to, from, next) {
+    this.$store.commit('setLoading', true)
     this.loadUwmetadata(this).then(() => {
+      this.$store.commit('setLoading', false)
       next()
     })
   }
