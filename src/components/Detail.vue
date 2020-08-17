@@ -10,7 +10,7 @@
               <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
               <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
               <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
-              <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + coverPid + '/ImageManipulator/boxImage/480/png'" />
+              <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.firstpagepid + '/ImageManipulator/boxImage/480/png'" />
             </a>
             <template v-if="(objectInfo.cmodel === 'Audio')">
               <audio controls>
@@ -20,7 +20,7 @@
             </template>
           </v-row>
 
-          <v-divider class="mt-12 mb-10" v-if="(objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Collection')"></v-divider>
+          <v-divider class="mt-12 mb-10" v-if="(objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Asset')"></v-divider>
 
           <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
@@ -106,10 +106,15 @@
                           <v-autocomplete :loading="citationStylesLoading" v-model="citationStyle" :items="citationStyles" :label="$t('Style')"></v-autocomplete>
                         </v-row>
                         <v-row align="center" justify="center">
-                          <v-textarea height="300px" readonly filled v-model="citeResult"></v-textarea>
+                          <v-textarea hide-details height="300px" readonly filled v-model="citeResult"></v-textarea>
                         </v-row>
                       </v-container>
                     </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn @click="doiCiteDialog=false">{{ $t('Close') }}</v-btn>
+                    </v-card-actions>
                   </v-card>
                 </v-dialog>
                 <span v-if="id.label" class="caption text--secondary">{{$t(id.label)}}</span><br/><span>{{id.value}}</span>
@@ -539,6 +544,7 @@ export default {
           continue
         } else {
           let type = id.substr(0, id.indexOf(':'))
+          console.log(type)
           let idvalue = id.substr(id.indexOf(':') + 1)
           switch (type) {
             case 'hdl':
@@ -553,6 +559,12 @@ export default {
             case 'isbn':
             case 'ISBN':
               ids.push({ label: 'ISBN', value: idvalue })
+              break
+            case 'HTTP/WWW':
+              ids.push({ label: 'URL', value: idvalue })
+              break
+            case 'PrintISSN':
+              ids.push({ label: 'PrintISSN', value: idvalue })
               break
             case 'uri':
               ids.push({ label: 'URI', value: idvalue })
@@ -598,12 +610,6 @@ export default {
         default:
           return false
       }
-    },
-    coverPid: function () {
-      // HACK
-      var pidNumStr = this.objectInfo.pid.substr(2)
-      var coverPidNum = parseInt(pidNumStr) + 1
-      return 'o:' + coverPidNum
     },
     citationLocale: function () {
       switch (this.$i18n.locale) {

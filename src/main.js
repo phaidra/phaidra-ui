@@ -18,6 +18,8 @@ import moment from 'moment'
 import axios from 'axios'
 import PhaidraVueComponents from 'phaidra-vue-components/src/components'
 import vuetify from './plugins/vuetify'
+import config from './config/phaidra-ui'
+import qs from 'qs'
 
 export async function createApp ({
   beforeApp = () => {},
@@ -115,6 +117,62 @@ export async function createApp ({
     }
   }
   const store = createStore(token)
+
+  router.beforeEach(async function (to, from, next) {
+    if (to.name === 'notfound') {
+      if (/^\/o:\d+$/.test(to.fullPath)) {
+        let pid = to.fullPath
+        pid = pid.replace('/', '')
+        if (process.browser) {
+          // on client-side, find out if we want to redirect
+          let params = { q: '*:*', defType: 'edismax', wt: 'json', start: 0, rows: 1, fq: 'pid:"' + pid + '"' }
+          try {
+            let response = await axios.request({
+              method: 'POST',
+              url: config.instances[config.defaultinstance].solr + '/select',
+              data: qs.stringify(params, { arrayFormat: 'repeat' }),
+              headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+              },
+              params: params
+            })
+            let docs = response.data.response.docs
+            console.log(docs)
+            if (docs.length < 1) {
+              next()
+            } else {
+              let doc = docs[0]
+              if (doc['cmodel']) {
+                if (doc['cmodel'] === 'Book') {
+                  window.location = config.instances[config.defaultinstance].fedora + '/objects/' + pid + '/methods/bdef:Book/view'
+                }
+              }
+              if (doc['isinadminset']) {
+                for (let adminset of doc['isinadminset']) {
+                  if (adminset === 'phaidra:ir.univie.ac.at') {
+                    window.location = 'https://' + config.instances[config.defaultinstance].irbaseurl + '/' + pid
+                  }
+                }
+              }
+              next({ name: 'detail', params: { pid: pid } })
+            }
+          } catch (error) {
+            console.log(error)
+            next()
+          } finally {
+            next()
+          }
+        } else {
+          // on server-side, render object detail
+          next({ name: 'detail', params: { pid: pid } })
+        }
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  })
 
   router.afterEach((to, from) => {
     store.commit('updateBreadcrumbs', { to, from })
