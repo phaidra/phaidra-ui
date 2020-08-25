@@ -4,23 +4,29 @@
     <v-row v-if="objectInfo">
 
         <v-col cols="12" md="8">
-
-          <v-row justify="center">
-            <a :href="objectInfo.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
-              <img v-if="(objectInfo.cmodel === 'PDFDocument') && (instanceconfig.baseurl === 'e-book.fwf.ac.at')" :src="'https://fedora.e-book.fwf.ac.at/fedora/get/' + objectInfo.pid + '/bdef:Document/preview?box=480'"  class="elevation-1">
-              <img v-else-if="objectInfo.cmodel === 'PDFDocument'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/Document/preview/480'" />
-              <img v-else-if="objectInfo.cmodel === 'Picture' || objectInfo.cmodel === 'Page'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.pid + '/ImageManipulator/boxImage/480/png'" />
-              <img v-else-if="objectInfo.cmodel === 'Book'" class="elevation-1" :src="'https://' + instanceconfig.baseurl + '/preview/' + objectInfo.firstpagepid + '/ImageManipulator/boxImage/480/png'" />
-            </a>
-            <template v-if="(objectInfo.cmodel === 'Audio')">
-              <audio controls>
-                <source :src="objectInfo.dshash['WEBVERSION'] ? instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'">
-                Your browser does not support the audio element.
-              </audio>
+          <template v-if="objectInfo.relationships.hasthumbnail.length > 0">
+            <img v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
+          </template>
+          <v-row justify="center" v-if="showPreview">
+            <!--
+            <template v-if="objectInfo.cmodel === 'PDFDocument'">
+              <p-preview-pdf :object-info="objectInfo"></p-preview-pdf>
             </template>
+            <template v-if="objectInfo.cmodel === 'Picture'">
+              <img v-if="isRestricted" :src="instanceconfig.api + '/object/' + objectInfo.pid + '/thumbnail?h=480&w=480'" />
+              <p-preview-imageserver v-else :object-info="objectInfo"></p-preview-imageserver>
+            </template>
+            <template v-if="objectInfo.cmodel === 'Audio'">
+              <p-preview-audioplayer :object-info="objectInfo"></p-preview-audioplayer>
+            </template>
+            <template v-if="objectInfo.cmodel === 'Video'">
+              <p-preview-streaming v-if="!isRestricted" :object-info="objectInfo"></p-preview-streaming>
+            </template>
+            -->
+            <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" style="height: 500px; width: 100%; border: 0px;" scrolling="no" border="0">Content</iframe>
           </v-row>
 
-          <v-divider class="mt-12 mb-10" v-if="(objectInfo.cmodel !== 'Resource') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Asset')"></v-divider>
+          <v-divider class="mt-12 mb-10" v-if="showPreview"></v-divider>
 
           <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
@@ -30,14 +36,6 @@
             <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']" :cmodel="objectInfo.cmodel"></p-d-uwm-rec>
           </v-row>
 
-          <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Collection'">
-            <router-link class="title font-weight-light primary--text showmembers" :to="{ path: '/search', query: { collection: objectInfo.pid } }">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</router-link>
-          </v-row>
-
-          <v-row no-gutters class="mt-6" v-if="objectInfo.cmodel === 'Resource'">
-            <a class="title font-weight-light primary--text showmembers" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Resource/get'">{{ $t('Open link') }}</a>
-          </v-row>
-
           <template v-if="objectInfo.cmodel === 'Container'">
             <h3 class="title font-weight-light grey--text text--darken-2">{{$t('Members')}} ({{objectInfo.members.length}})</h3>
 
@@ -45,7 +43,8 @@
               <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
                 <a :href="member.datastreams.includes('WEBVERSION') ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
                   <v-img class="mb-3" max-height="300" contain v-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture' || member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
+                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
                 </a>
                 <center v-if="(member.cmodel === 'Audio')">
                   <audio controls>
@@ -60,7 +59,7 @@
                 <v-card-actions class="pa-3" v-if="objectInfo.readrights">
                   <v-spacer></v-spacer>
                   <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
-                  <v-btn :href="getMemberDownloadUrl(member)" primary>{{ $t('Download') }}</v-btn>
+                  <v-btn :href="instanceconfig.api + '/object/' + member.pid + '/get'" primary>{{ $t('Download') }}</v-btn>
                   <v-menu offset-y v-if="objectInfo.writerights === 1">
                     <template v-slot:activator="{ on }">
                       <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
@@ -124,6 +123,34 @@
 
           <v-row justify="end">
             <v-col cols="12" md="9">
+
+              <v-row class="mb-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights) || (objectInfo.cmodel === 'Collection') || (objectInfo.cmodel === 'Resource')">
+                <v-col class="pt-0">
+                  <v-card tile>
+                    <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Content') }}</v-card-title>
+                    <v-card-text class="mt-4">
+                      <v-row no-gutters class="pt-2" justify="center">
+                        <v-btn class="mr-2 mb-2" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/download'" color="primary">{{ $t('Download') }}</v-btn>
+                        <v-btn class="mb-2" v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/get'" color="primary">{{ $t('View') }}</v-btn>
+                        <v-btn v-if="objectInfo.cmodel === 'Collection'" :to="{ path: '/search', query: { collection: objectInfo.pid } }" color="primary">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</v-btn>
+                        <v-btn v-if="objectInfo.cmodel === 'Resource'" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Resource/get'" color="primary">{{ $t('Open link') }}</v-btn>
+                      </v-row>
+                      <v-divider class="mt-4 mb-4" v-if="(downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')) || (downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION'])"></v-divider>
+                      <template v-if="downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')">
+                        <v-row no-gutters class="pt-2">
+                          <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:50/0/default.jpg'" primary>{{ $t('View scaled to 50%') }}</a>
+                        </v-row>
+                        <v-row no-gutters class="pt-2">
+                          <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:25/0/default.jpg'" primary>{{ $t('View scaled to 25%') }}</a>
+                        </v-row>
+                      </template>
+                      <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION']">
+                        <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/downloadwebversion'" primary>{{ $t('Download web-optimized version') }}</a>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
 
               <v-row class="mb-6" v-if="objectInfo.isinadminset">
                 <v-col class="pt-0">
@@ -464,7 +491,7 @@
                           </v-card>
                         </v-dialog>
                       </v-row>
-                      <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection') && (objectInfo.cmodel !== 'Resource')">
+                      <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Container') && (objectInfo.cmodel !== 'Collection')">
                         <router-link class="mb-1" :to="{ name: 'rights' }">{{ $t('Access rights') }}</router-link>
                       </v-row>
                       <v-row no-gutters class="pt-2">
@@ -472,32 +499,6 @@
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <router-link class="mb-1" :to="{ name: 'delete' }">{{ $t('Delete') }}</router-link>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
-
-              <v-row class="my-6" v-if="(viewable && objectInfo.readrights) || (downloadable && objectInfo.readrights)">
-                <v-col class="pt-0">
-                  <v-card tile>
-                    <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Data') }}</v-card-title>
-                    <v-card-text class="mt-4">
-                      <v-row no-gutters class="pt-2">
-                        <v-btn class="mr-2 mb-2" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/download'" color="primary">{{ $t('Download') }}</v-btn>
-                        <v-btn class="mb-2" v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/get'" color="primary">{{ $t('View') }}</v-btn>
-                      </v-row>
-                      <v-divider class="mt-4 mb-4" v-if="(downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')) || (downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION'])"></v-divider>
-                      <template v-if="downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')">
-                        <v-row no-gutters class="pt-2">
-                          <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:50/0/default.jpg'" primary>{{ $t('View scaled to 50%') }}</a>
-                        </v-row>
-                        <v-row no-gutters class="pt-2">
-                          <a target="_blank" :href="instanceconfig.api + '/imageserver/?IIIF=' + objectInfo.pid + '.tif/full/pct:25/0/default.jpg'" primary>{{ $t('View scaled to 25%') }}</a>
-                        </v-row>
-                      </template>
-                      <v-row no-gutters class="pt-2" v-if="downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION']">
-                        <a :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Content/downloadwebversion'" primary>{{ $t('Download web-optimized version') }}</a>
                       </v-row>
                     </v-card-text>
                   </v-card>
@@ -523,6 +524,12 @@ export default {
   name: 'detail',
   mixins: [ context, config, vocabulary ],
   computed: {
+    isRestricted: function () {
+      return this.objectInfo.datastreams.includes('POLICY')
+    },
+    showPreview: function () {
+      return (this.objectInfo.cmodel !== 'Resource') && (this.objectInfo.cmodel !== 'Collection') && (this.objectInfo.cmodel !== 'Asset') && this.objectInfo.readrights && !((this.objectInfo.cmodel === 'Video') && this.isRestricted)
+    },
     uscholarlink: function () {
       return 'https://' + this.instanceconfig.irbaseurl + '/' + this.objectInfo.pid
     },
@@ -592,7 +599,7 @@ export default {
         case 'Video':
         case 'Audio':
         case 'Picture':
-        case 'Unknown':
+        case 'Asset':
         case 'Book':
           return true
         default:
@@ -622,6 +629,14 @@ export default {
         default:
           return 'en-GB'
       }
+    },
+    mimetype: function () {
+      for (let f of this.objectInfo['dc_format']) {
+        if (f.includes('/')) {
+          return f
+        }
+      }
+      return ''
     }
   },
   data () {
@@ -645,27 +660,29 @@ export default {
       }
     },
     postMetadataLoad: function () {
-      if (this.objectInfo.metadata['JSON-LD']) {
-        Object.entries(this.objectInfo.metadata['JSON-LD']).forEach(([p, arr]) => {
-          if (p === 'rdam:P30004') {
-            for (let o of arr) {
-              if (o['@type'] === 'ids:uri') {
-                if (/utheses/.test(o['@value'])) {
-                  this.utheseslink = o['@value']
+      if (this.objectInfo) {
+        if (this.objectInfo.metadata['JSON-LD']) {
+          Object.entries(this.objectInfo.metadata['JSON-LD']).forEach(([p, arr]) => {
+            if (p === 'rdam:P30004') {
+              for (let o of arr) {
+                if (o['@type'] === 'ids:uri') {
+                  if (/utheses/.test(o['@value'])) {
+                    this.utheseslink = o['@value']
+                  }
                 }
               }
             }
-          }
-        })
+          })
+        }
       }
     },
-    getMemberDownloadUrl: function (member) {
-      if (member.cmodel === 'Asset' || member.cmodel === 'Video') {
-        return this.instanceconfig.fedora + '/objects/' + member.pid + '/methods/bdef:Content/download'
-      } else {
-        return this.instanceconfig.api + '/object/' + member.pid + '/diss/Content/download'
-      }
-    },
+    // getMemberDownloadUrl: function (member) {
+    //   if (member.cmodel === 'Asset' || member.cmodel === 'Video') {
+    //     return this.instanceconfig.fedora + '/objects/' + member.pid + '/methods/bdef:Content/download'
+    //   } else {
+    //     return this.instanceconfig.api + '/object/' + member.pid + '/diss/Content/download'
+    //   }
+    // },
     loadCitationStyles: async function () {
       this.citationStylesLoading = true
       try {
