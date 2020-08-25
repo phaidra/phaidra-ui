@@ -8,22 +8,25 @@
             <img v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
           </template>
           <v-row justify="center" v-if="showPreview">
-            <!--
+
             <template v-if="objectInfo.cmodel === 'PDFDocument'">
-              <p-preview-pdf :object-info="objectInfo"></p-preview-pdf>
+              <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" style="height: 500px; width: 100%; border: 0px;" scrolling="no" border="0">Content</iframe>
             </template>
             <template v-if="objectInfo.cmodel === 'Picture'">
               <img v-if="isRestricted" :src="instanceconfig.api + '/object/' + objectInfo.pid + '/thumbnail?h=480&w=480'" />
-              <p-preview-imageserver v-else :object-info="objectInfo"></p-preview-imageserver>
+              <iframe v-else :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" style="height: 500px; width: 100%; border: 0px;" scrolling="no" border="0">Content</iframe>
             </template>
             <template v-if="objectInfo.cmodel === 'Audio'">
-              <p-preview-audioplayer :object-info="objectInfo"></p-preview-audioplayer>
+              <audio controls>
+                <!-- TODO: if thumbpid, show large thumbnail -->
+                <source :src="instanceconfig.api + '/object/' + objectInfo.pid + '/get'" :type="mimetype">
+                Your browser does not support the audio element.
+              </audio>
             </template>
             <template v-if="objectInfo.cmodel === 'Video'">
-              <p-preview-streaming v-if="!isRestricted" :object-info="objectInfo"></p-preview-streaming>
+              <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" style="height: 500px; width: 100%; border: 0px;" scrolling="no" border="0">Content</iframe>
             </template>
-            -->
-            <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" style="height: 500px; width: 100%; border: 0px;" scrolling="no" border="0">Content</iframe>
+            
           </v-row>
 
           <v-divider class="mt-12 mb-10" v-if="showPreview"></v-divider>
