@@ -8,22 +8,9 @@
             <img v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
           </template>
           <v-row justify="center" v-if="showPreview">
-            <!--
-            <template v-if="objectInfo.cmodel === 'PDFDocument'">
-              <p-preview-pdf :object-info="objectInfo"></p-preview-pdf>
+            <template>
+              <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" :style="objectInfo.cmodel === 'Audio' ? 'height: 150px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'" scrolling="no" border="0">Content</iframe>
             </template>
-            <template v-if="objectInfo.cmodel === 'Picture'">
-              <img v-if="isRestricted" :src="instanceconfig.api + '/object/' + objectInfo.pid + '/thumbnail?h=480&w=480'" />
-              <p-preview-imageserver v-else :object-info="objectInfo"></p-preview-imageserver>
-            </template>
-            <template v-if="objectInfo.cmodel === 'Audio'">
-              <p-preview-audioplayer :object-info="objectInfo"></p-preview-audioplayer>
-            </template>
-            <template v-if="objectInfo.cmodel === 'Video'">
-              <p-preview-streaming v-if="!isRestricted" :object-info="objectInfo"></p-preview-streaming>
-            </template>
-            -->
-            <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" style="height: 500px; width: 100%; border: 0px;" scrolling="no" border="0">Content</iframe>
           </v-row>
 
           <v-divider class="mt-12 mb-10" v-if="showPreview"></v-divider>
@@ -87,9 +74,10 @@
         </v-col>
 
         <v-col cols="12" md="4">
+
           <v-row justify="end" class="mb-2">
             <v-col cols="12" class="pt-0">
-              <p class="text-right" v-for="(id,i) in identifiers" :key="i">
+              <p class="text-right" v-for="(id,i) in identifiers" :key="'id'+i">
                 <v-dialog @input="loadCitationStyles()" v-if="id.label === 'DOI'" class="pb-4" v-model="doiCiteDialog" width="800px">
                   <template v-slot:activator="{ on }">
                     <v-chip v-on="on" x-small class="mr-2 font-weight-regular" color="primary">{{ $t('Cite') }}</v-chip>
@@ -118,6 +106,11 @@
                 </v-dialog>
                 <span v-if="id.label" class="caption text--secondary">{{$t(id.label)}}</span><br/><span>{{id.value}}</span>
               </p>
+              <template v-for="(md5,i) in checksums">
+                <p class="text-right" v-if="md5.path.includes('OCTETS')" :key="'md5'+i">
+                  <span class="caption text--secondary">md5</span><br/><span>{{md5.md5}}</span>
+                </p>
+              </template>
             </v-col>
           </v-row>
 
@@ -196,6 +189,25 @@
                       <v-row no-gutters class="pt-2">
                         <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Created') }}</v-col>
                         <v-col cols="8" offset="1">{{ objectInfo.created | datetimeutc }}</v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+
+              <v-row class="my-6">
+                <v-col class="pt-0">
+                  <v-card tile>
+                    <v-card-title class="ph-box title font-weight-light grey white--text"><router-link class="white--text" :to="{ name: 'stats', params: { pid: objectInfo.pid } }">{{ $t('Usage statistics') }}</router-link></v-card-title>
+                    <v-card-text class="mt-4">
+                      <v-row>
+                        <v-col>
+                          <v-icon>mdi-eye-outline</v-icon><span class="ml-2">{{ stats.detail }}</span>
+                        </v-col>
+                        <v-col v-if="objectInfo.cmodel !== 'Resource'">
+                          <v-icon>mdi-download</v-icon><span class="ml-2">{{ stats.download }}</span>
+                        </v-col>
+                        <v-spacer></v-spacer>
                       </v-row>
                     </v-card-text>
                   </v-card>
@@ -648,15 +660,55 @@ export default {
       citationStyles: [],
       citationStylesLoading: false,
       chosenRelation: 'http://purl.org/dc/terms/references',
-      utheseslink: ''
+      utheseslink: '',
+      stats: {
+        download: '-',
+        detail: '-'
+      },
+      checksums: []
     }
   },
   methods: {
     async fetchAsyncData (self, pid) {
       await self.$store.dispatch('fetchObjectInfo', pid)
-      this.postMetadataLoad()
+      self.postMetadataLoad()
       if (self.objectInfo.cmodel === 'Container') {
         await self.$store.dispatch('fetchObjectMembers', self.objectInfo)
+      }
+    },
+    async fetchUsageStats (self, pid) {
+      self.stats.download = null
+      self.stats.detail = null
+      try {
+        let response = await self.$http.get(self.instanceconfig.api + '/stats/' + pid,
+          {
+            headers: {
+              'X-XSRF-TOKEN': self.user.token
+            }
+          }
+        )
+        if (response.data.stats) {
+          self.stats.download = response.data.stats.downloads
+          self.stats.detail = response.data.stats.detail_page
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async fetchChecksums (self, pid) {
+      try {
+        let response = await self.$http.get(self.instanceconfig.api + '/object/' + pid + '/md5',
+          {
+            headers: {
+              'X-XSRF-TOKEN': self.user.token
+            }
+          }
+        )
+        if (response.data.stats) {
+          self.checksums = response.data.md5
+        }
+      } catch (error) {
+        console.log(error)
       }
     },
     postMetadataLoad: function () {
@@ -756,12 +808,16 @@ export default {
       vm.$store.commit('setLoading', true)
       vm.$store.commit('setObjectInfo', null)
       await vm.fetchAsyncData(vm, to.params.pid)
+      vm.fetchUsageStats(vm, to.params.pid)
+      vm.fetchChecksums(vm, to.params.pid)
       vm.$store.commit('setLoading', false)
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
     this.$store.commit('setLoading', true)
     await this.fetchAsyncData(this, to.params.pid)
+    this.fetchUsageStats(this, to.params.pid)
+    this.fetchChecksums(this, to.params.pid)
     this.$store.commit('setLoading', false)
     next()
   }

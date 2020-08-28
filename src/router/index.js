@@ -5,6 +5,7 @@ import Login from '@/components/Login'
 import PSearch from 'phaidra-vue-components/src/components/search/PSearch'
 import PLists from 'phaidra-vue-components/src/components/lists/PLists'
 import Detail from '@/components/Detail'
+import Stats from '@/components/Stats'
 import Rights from '@/components/Rights'
 import Sort from '@/components/Sort'
 import Relationships from '@/components/Relationships'
@@ -50,6 +51,11 @@ export function createRouter () {
         path: '/detail/:pid',
         name: 'detail',
         component: Detail
+      },
+      {
+        path: '/detail/:pid/stats',
+        name: 'stats',
+        component: Stats
       },
       {
         path: '/rights/:pid',
