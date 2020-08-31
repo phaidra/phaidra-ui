@@ -166,7 +166,7 @@ export default {
 }
 
 .quicklinks-content {
-  background: #1a74b0 url(../assets/quicklinksbackground.png) no-repeat;
+  background: #1a74b0 url(../assets/ext/quicklinksbackground.png) no-repeat;
   font-size: 12pt;
   color: white;
   padding-bottom: 30px;
@@ -177,7 +177,7 @@ h3.top-row-header {
     margin-top: 0px;
     font-size: 19pt;
     color: white;
-    background: url(../assets/verlauf-weiss.png) no-repeat left bottom;
+    background: url(../assets/ext/verlauf-weiss.png) no-repeat left bottom;
     font-weight: 300;
     margin-bottom: 8pt;
 }

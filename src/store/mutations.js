@@ -192,6 +192,23 @@ export default {
         }
       )
     }
+    if (transition.to.name === 'stats') {
+      if (transition.from.name === 'detail') {
+        state.breadcrumbs.push(
+          {
+            text: 'Detail ' + transition.from.params.pid,
+            to: { name: transition.from.name, params: { pid: transition.from.params.pid } }
+          }
+        )
+      }
+      state.breadcrumbs.push(
+        {
+          text: 'Usage statistics for ' + transition.from.params.pid,
+          to: { name: transition.to.name, params: { pid: transition.to.params.relatedpid } },
+          disabled: true
+        }
+      )
+    }
     if (transition.to.name === 'submit') {
       state.breadcrumbs.push(
         {

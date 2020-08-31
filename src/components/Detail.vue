@@ -106,11 +106,6 @@
                 </v-dialog>
                 <span v-if="id.label" class="caption text--secondary">{{$t(id.label)}}</span><br/><span>{{id.value}}</span>
               </p>
-              <template v-for="(md5,i) in checksums">
-                <p class="text-right" v-if="md5.path.includes('OCTETS')" :key="'md5'+i">
-                  <span class="caption text--secondary">md5</span><br/><span>{{md5.md5}}</span>
-                </p>
-              </template>
             </v-col>
           </v-row>
 
@@ -122,11 +117,11 @@
                   <v-card tile>
                     <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Content') }}</v-card-title>
                     <v-card-text class="mt-4">
-                      <v-row no-gutters class="pt-2" justify="center">
-                        <v-btn class="mr-2 mb-2" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/download'" color="primary">{{ $t('Download') }}</v-btn>
-                        <v-btn class="mb-2" v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/get'" color="primary">{{ $t('View') }}</v-btn>
+                      <v-row no-gutters class="pt-2" justify="start">
+                        <v-btn class="mr-2 mb-2" @click="trackDownload()" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/download'" color="primary">{{ $t('Download') }}</v-btn>
+                        <!--<v-btn class="mb-2" v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/get'" color="primary">{{ $t('View') }}</v-btn>-->
                         <v-btn v-if="objectInfo.cmodel === 'Collection'" :to="{ path: '/search', query: { collection: objectInfo.pid } }" color="primary">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</v-btn>
-                        <v-btn v-if="objectInfo.cmodel === 'Resource'" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Resource/get'" color="primary">{{ $t('Open link') }}</v-btn>
+                        <v-btn  v-if="objectInfo.cmodel === 'Resource'" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Resource/get'" color="primary">{{ $t('Open link') }}</v-btn>
                       </v-row>
                       <v-divider class="mt-4 mb-4" v-if="(downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')) || (downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION'])"></v-divider>
                       <template v-if="downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')">
@@ -517,6 +512,16 @@
                 </v-col>
               </v-row>
 
+              <v-row justify="end" class="mb-2">
+                <v-col cols="12" class="pt-0">
+                  <template v-for="(md5,i) in checksums">
+                    <p class="text-right" v-if="md5.path.includes('OCTETS')" :key="'md5'+i">
+                      <span class="caption text--secondary">md5</span><br/><span>{{md5.md5}}</span>
+                    </p>
+                  </template>
+                </v-col>
+              </v-row>
+
             </v-col>
           </v-row>
 
@@ -669,6 +674,11 @@ export default {
     }
   },
   methods: {
+    trackDownload () {
+      this.$matomo.setCustomUrl('https://' + this.instanceconfig.baseurl + '/download/' + this.routepid)
+      this.$matomo.setDocumentTitle('Download ' + this.routepid)
+      this.$matomo.trackPageView()
+    },
     async fetchAsyncData (self, pid) {
       await self.$store.dispatch('fetchObjectInfo', pid)
       self.postMetadataLoad()
@@ -704,7 +714,7 @@ export default {
             }
           }
         )
-        if (response.data.stats) {
+        if (response.data.md5) {
           self.checksums = response.data.md5
         }
       } catch (error) {
@@ -797,6 +807,13 @@ export default {
         console.log(error)
         this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
       }
+    },
+    resetData: function (self) {
+      self.stats = {
+        download: '-',
+        detail: '-'
+      }
+      self.checksums = []
     }
   },
   serverPrefetch () {
@@ -805,6 +822,7 @@ export default {
   },
   beforeRouteEnter: async function (to, from, next) {
     next(async function (vm) {
+      vm.resetData(vm)
       vm.$store.commit('setLoading', true)
       vm.$store.commit('setObjectInfo', null)
       await vm.fetchAsyncData(vm, to.params.pid)
@@ -814,6 +832,7 @@ export default {
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
+    this.resetData(this)
     this.$store.commit('setLoading', true)
     await this.fetchAsyncData(this, to.params.pid)
     this.fetchUsageStats(this, to.params.pid)

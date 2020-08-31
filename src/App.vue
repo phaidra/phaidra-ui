@@ -11,16 +11,7 @@
 
               <v-row no-gutters>
                 <v-col class="text-left" cols="3" >
-                  <router-link :to="'/'">
-                    <img v-if="isUnivie" src="./assets/Uni_Logo_2016.png" class="logo" alt="logo" />
-                    <img v-if="instanceconfig.baseurl === 'volare.vorarlberg.at'" src="./assets/logo_vorarlberg_land.png" class="logo" alt="logo" />
-                    <img v-if="instanceconfig.baseurl === 'phaidra.kug.ac.at'" src="./assets/kug_logo.gif" class="logo" alt="logo" />
-                    <img v-if="instanceconfig.baseurl === 'phaidra.bibliothek.uni-ak.ac.at'" src="./assets/uniak_logo.png" class="logo pt-5" alt="logo" />
-                    <img v-if="instanceconfig.baseurl === 'phaidra.ufg.at'" src="./assets/logo_ufg.gif" class="logo pt-5" alt="logo" />
-                    <img v-if="instanceconfig.baseurl === 'e-book.fwf.ac.at'" src="./assets/fwf_logo.png" class="logo pt-5 pb-4" alt="logo" />
-                    <img v-if="instanceconfig.baseurl === 'phaidra.fhstp.ac.at'" src="./assets/fhstp_logo.svg" class="logo" alt="logo" />
-                    <v-col v-if="instanceconfig.baseurl === 'phaidra.cab.unipd.it'" style="width: 165px; height: 54px; background-color: #EB001E; margin-top: 50px;"><img src="./assets/unipd_logo.png" class="logo" alt="logo" /></v-col>
-                  </router-link>
+                  <logo></logo>
                 </v-col>
 
                 <v-col cols="9">
@@ -165,7 +156,7 @@
                   <span class="grey--text text--darken-2"><address>{{ instanceconfig.address }} | <abbr title="Telefon">T</abbr> {{ instanceconfig.phone }}</address></span>
                 </v-col>
                 <v-col class="text-right" >
-                  <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link>
+                  <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link> | <a href="http://datamanagement.univie.ac.at/en/about-phaidra/policy-of-phaidra/" target="_blank">{{ $t('Policy of Phaidra') }}</a> | <router-link :to="'termsofuse'">{{ $t('Terms of Use') }}</router-link>
                 </v-col>
               </v-row>
             </v-col>
@@ -177,6 +168,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import '@/assets/css/material-icons.css'
 import Quicklinks from '@/components/Quicklinks'
 import QuicklinksFooter from '@/components/QuicklinksFooter'
@@ -184,8 +176,11 @@ import '@/compiled-icons/material-social-person'
 import '@/compiled-icons/material-navigation-menu'
 import '@/compiled-icons/univie-sprache'
 import ClientOnly from 'vue-client-only'
+import Logo from '@/components/ext/Logo'
 import { context } from '@/mixins/context'
 import { config } from '@/mixins/config'
+import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
 
 export default {
   name: 'app',
@@ -193,7 +188,8 @@ export default {
   components: {
     Quicklinks,
     QuicklinksFooter,
-    ClientOnly
+    ClientOnly,
+    Logo
   },
   data () {
     return {
@@ -263,8 +259,28 @@ export default {
         this.$store.commit('clearStore')
         this.$router.push('/search')
         this.$store.dispatch('search')
-        this.$vuetify.theme.primary = this.$store.state.instanceconfig.primary
+        this.$vuetify.theme.primary = this.instanceconfig.primary
       })
+    },
+    loadTracking: async function () {
+      const scriptPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.async = true
+        script.defer = true
+        script.src = '//' + this.instanceconfig.stats.trackerbaseurl + '/matomo.js'
+
+        const head = document.head || document.getElementsByTagName('head')[0]
+        head.appendChild(script)
+
+        script.onload = resolve
+        script.onerror = reject
+      })
+
+      scriptPromise.catch((error) => {
+        console.error('An error occurred trying to load ' + error.target.src + '. If the file exists you may have an ad- or trackingblocker enabled.')
+      })
+
+      return scriptPromise
     }
   },
   serverPrefetch: async function () {
@@ -276,16 +292,51 @@ export default {
     await this.$store.dispatch('loadOrgUnits', this.$i18n.locale)
   },
   mounted: async function () {
+    if (this.$store.state.route.query.lang === 'deu') {
+      this.$i18n.locale = 'deu'
+    }
+    if (this.$store.state.route.query.lang === 'eng') {
+      this.$i18n.locale = 'eng'
+    }
     if (!this.user.token) {
-      let token = this.getCookie('X-XSRF-TOKEN')
+      var token = this.getCookie('X-XSRF-TOKEN')
       if (token) {
         this.$store.commit('setToken', token)
         await this.$store.dispatch('getLoginData')
       }
     }
+    await this.loadTracking()
+    let Matomo
+    if (process.browser) {
+      Matomo = window.Piwik.getTracker('https://' + this.instanceconfig.stats.trackerbaseurl + '/matomo.php', this.instanceconfig.stats.siteid)
+    }
+    Matomo.trackPageView()
+    Matomo.enableLinkTracking()
+    Vue.prototype.$matomo = Matomo
+    this.$router.afterEach((to, from) => {
+      this.$matomo.setCustomUrl('https://' + this.$store.state.instanceconfig.baseurl + to.path)
+      this.$matomo.setDocumentTitle(this.$store.state.pagetitle)
+      this.$matomo.trackPageView()
+    })
+
+    if (this.appconfig.monitor) {
+      if (this.appconfig.monitor.sentry) {
+        if (this.appconfig.monitor.sentry.dsn) {
+          Sentry.init({
+            dsn: this.appconfig.monitor.sentry.dsn,
+            integrations: [
+              new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
+              new Integrations.CaptureConsole({
+                levels: ['error']
+              })
+            ]
+          })
+        }
+      }
+    }
   },
   created: function () {
-    this.$vuetify.theme.themes.light.primary = this.$store.state.instanceconfig.primary
+    this.$vuetify.theme.themes.light.primary = this.instanceconfig.primary
   }
 }
 </script>

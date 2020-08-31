@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
+import Home from '@/components/ext/Home'
+import Impressum from '@/components/ext/Impressum'
+import TermsOfUse from '@/components/ext/TermsOfUse'
 import Login from '@/components/Login'
 import PSearch from 'phaidra-vue-components/src/components/search/PSearch'
 import PLists from 'phaidra-vue-components/src/components/lists/PLists'
+import PGroups from 'phaidra-vue-components/src/components/groups/PGroups'
 import Detail from '@/components/Detail'
 import Stats from '@/components/Stats'
 import Rights from '@/components/Rights'
@@ -43,6 +46,16 @@ export function createRouter () {
         component: Login
       },
       {
+        path: '/terms-of-use',
+        name: 'termsofuse',
+        component: TermsOfUse
+      },
+      {
+        path: '/impressum',
+        name: 'impressum',
+        component: Impressum
+      },
+      {
         path: '/search',
         name: 'search',
         component: PSearch
@@ -53,7 +66,7 @@ export function createRouter () {
         component: Detail
       },
       {
-        path: '/detail/:pid/stats',
+        path: '/stats/:pid',
         name: 'stats',
         component: Stats
       },
@@ -151,6 +164,11 @@ export function createRouter () {
         path: '/lists',
         name: 'lists',
         component: PLists
+      },
+      {
+        path: '/groups',
+        name: 'groups',
+        component: PGroups
       },
       {
         path: '*',

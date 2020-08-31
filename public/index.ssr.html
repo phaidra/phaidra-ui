@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="icon" href="/favicon.ico">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/de.js" integrity="sha256-wUoStqxFxc33Uz7o+njPIobHc4HJjMQqMXNRDy7X3ps=" crossorigin="anonymous"></script> -->
     <script src="/js/moment/moment.min.js"></script>
     <script src="/js/moment/de.js"></script>
     <title>{{ title }}</title>
@@ -12,9 +14,36 @@
     {{{ renderStyles() }}}
   </head>
   <body>
+    <noscript>
+      <strong>We're sorry but this webpage doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <style>
+      .jumbotron-alert {
+        overflow: visible;
+        min-height: 240px;
+        background-color: #dd4814;
+        text-align: center;
+        color: white;
+        padding-top: 50px;
+      }
+      .jumbotron-alert h3 {
+        font-size: 15pt;
+        color: white;
+        margin: 0;
+      }
+      .jumbotron-alert p {
+        margin-top: 15px;
+      }
+    </style>
+    <div id="outdated"></div>
     <!--vue-ssr-outlet-->
     {{{ renderState() }}}
-    {{{ renderState({ contextKey: 'apolloState', windowKey: '__APOLLO_STATE__' }) }}}
     {{{ renderScripts() }}}
+    <script>
+      if(navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > -1){
+        var outdatedDiv = document.getElementById("outdated");
+        outdatedDiv.innerHTML = '<div class="jumbotron-alert"><p><h3>Ihr Browser wird nicht mehr unterstützt. Bitte verwenden Sie eine aktuelle Version von Firefox, Chrome or Edge (oder einen anderen aktuellen Browser).</h3></p><p><h3>Your browser is no longer being supported. Please use a current version of Firefox, Chrome or Edge (or another current browser).<h3></p></div>';
+      }
+    </script>
   </body>
 </html>
