@@ -64,9 +64,9 @@
                               <v-btn text icon color="grey lighten-1" v-on="on"><icon name="material-navigation-menu" width="24px" height="24px"></icon></v-btn>
                             </template>
                             <v-list>
-                              <v-list-item @click="$router.push('search')"><v-list-item-title>{{ $t("Search") }}</v-list-item-title></v-list-item>
+                              <v-list-item @click="$router.push({ path: '/search', query: { reset: 1 } })"><v-list-item-title>{{ $t("Search") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="signedin" @click="$router.push('submit')"><v-list-item-title>{{ $t("Submit") }}</v-list-item-title></v-list-item>
-                              <v-list-item v-if="signedin" @click="$router.push({ path: '/search', query: { owner: user.username } })"><v-list-item-title>{{ $t("My objects") }}</v-list-item-title></v-list-item>
+                              <v-list-item v-if="signedin" @click="$router.push({ path: '/search', query: { reset: 1, owner: user.username } })"><v-list-item-title>{{ $t("My objects") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="signedin" @click="$router.push('lists')"><v-list-item-title>{{ $t("Object lists") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="signedin" @click="$router.push('groups')"><v-list-item-title>{{ $t("Groups") }}</v-list-item-title></v-list-item>
                               <v-list-item v-if="!signedin && appconfig.enablelogin" @click="$router.push('login')"><v-list-item-title>{{ $t("Login") }}</v-list-item-title></v-list-item>
@@ -78,13 +78,13 @@
                       <v-spacer></v-spacer>
                       <v-toolbar-items class="hidden-sm-and-down no-height-inherit">
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search' }">{{ $t("Search") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search', query: { reset: 1 } }">{{ $t("Search") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { owner: user.username } }">{{ $t("My objects") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { reset: 1, owner: user.username } }">{{ $t("My objects") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/lists'">{{ $t("Object lists") }}</router-link>
