@@ -114,6 +114,10 @@ export default {
 
   'HOME_SANDBOX': 'A {0} of Phaidra is available inside university\'s network.',
 
+  'PAGE_OF_BOOK': 'This object is a page from book {bookpid}',
+
+  'MEMBER_OF_CONTAINER': 'This object is a member of container {containerpid}',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',
   uwm_etheses_note_1: 'Note 1',

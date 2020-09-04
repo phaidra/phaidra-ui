@@ -156,7 +156,7 @@
                   <span class="grey--text text--darken-2"><address>{{ instanceconfig.address }} | <abbr title="Telefon">T</abbr> {{ instanceconfig.phone }}</address></span>
                 </v-col>
                 <v-col class="text-right" >
-                  <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link> | <a href="http://datamanagement.univie.ac.at/en/about-phaidra/policy-of-phaidra/" target="_blank">{{ $t('Policy of Phaidra') }}</a> | <router-link :to="'termsofuse'">{{ $t('Terms of Use') }}</router-link>
+                  <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link> | <a href="http://datamanagement.univie.ac.at/en/about-phaidra/policy-of-phaidra/" target="_blank">{{ $t('Policy of Phaidra') }}</a> | <router-link :to="{ name: 'termsofuse' }">{{ $t('Terms of Use') }}</router-link>
                 </v-col>
               </v-row>
             </v-col>

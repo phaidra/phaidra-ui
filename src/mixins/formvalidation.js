@@ -2,7 +2,39 @@ export const formvalidation = {
   data () {
     return {
       validationError: false,
-      fieldsMissing: []
+      fieldsMissing: [],
+      allowedMimetypes: {
+        // image
+        'https://pid.phaidra.org/vocabulary/44TN-P1S0': [
+          'image/jpeg',
+          'image/gif',
+          'image/tiff',
+          'image/png',
+          'image/x-ms-bmp'
+        ],
+        // text
+        'https://pid.phaidra.org/vocabulary/69ZZ-2KGX': [
+          'application/pdf',
+          'application/x-pdf'
+        ],
+        // video
+        'https://pid.phaidra.org/vocabulary/B0Y6-GYT8': [
+          'video/mpeg',
+          'video/avi',
+          'video/x-msvideo',
+          'video/mp4',
+          'video/quicktime',
+          'video/x-matroska'
+        ],
+        // sound
+        'https://pid.phaidra.org/vocabulary/8YB5-1M0J': [
+          'audio/x-wav',
+          'audio/wav',
+          'audio/mpeg',
+          'audio/flac',
+          'audio/ogg'
+        ]
+      }
     }
   },
   methods: {
@@ -151,7 +183,13 @@ export const formvalidation = {
               console.log('missing mimetype')
               this.validationError = true
             } else {
-              // TODO check mime type against resource type
+              if (this.allowedMimetypes[resourceType]) {
+                if (!this.allowedMimetypes[resourceType].includes(f.mimetype)) {
+                  f.mimetypeErrorMessages.push(this.$t('This file type is not supported for the chosen resource type.'))
+                  console.log('invalid mimetype')
+                  this.validationError = true
+                }
+              }
             }
           }
         }

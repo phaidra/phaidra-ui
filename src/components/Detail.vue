@@ -1,15 +1,40 @@
 <template>
   <v-container fluid>
 
-    <v-row v-if="objectInfo">
+    <template v-if="objectInfo">
+
+      <v-row v-if="objectInfo.cmodel === 'Page'" justify="center">
+        <v-col cols="6">
+          <v-row justify="center" class="mt-5">{{ $t('PAGE_OF_BOOK', { bookpid: objectInfo.bookpid } ) }}</v-row>
+          <v-row justify="center" class="mt-4"><v-btn large raised color="primary" :to="{ name: 'detail', params: { pid: objectInfo.bookpid }}">{{ $t('Go to book') }}</v-btn></v-row>
+        </v-col>
+      </v-row>
+      <v-row v-else-if="objectInfo.ismemberof && (objectInfo.ismemberof.length > 0)" justify="center">
+        <template v-if="objectInfo.ismemberof.length === 1">
+          <v-col cols="6">
+            <v-row justify="center" class="mt-5">{{ $t('MEMBER_OF_CONTAINER', { containerpid: objectInfo.ismemberof[0] } ) }}</v-row>
+            <v-row justify="center" class="mt-4"><v-btn large raised color="primary" :to="{ name: 'detail', params: { pid: objectInfo.ismemberof[0] }}">{{ $t('Go to container') }}</v-btn></v-row>
+          </v-col>
+        </template>
+        <template v-else>
+          <v-col cols="6">
+            <v-row justify="center" class="mt-5">{{ $t('This object is a member of multiple containers. Please choose a container to view:') }}</v-row>
+            <v-row justify="center" class="mt-4"><v-btn v-for="(contpid, i) in objectInfo.ismemberof" :key="'contbtn'+i" large raised color="primary" :to="{ name: 'detail', params: { pid: contpid }}">{{ $t('Go to container') }}&nbsp;{{ contpid }}</v-btn></v-row>
+          </v-col>
+        </template>
+      </v-row>
+      <v-row v-else>
 
         <v-col cols="12" md="8">
           <template v-if="objectInfo.relationships.hasthumbnail.length > 0">
             <img v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
           </template>
           <v-row justify="center" v-if="showPreview">
-            <template>
-              <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" :style="objectInfo.cmodel === 'Audio' ? 'height: 150px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'" scrolling="no" border="0">Content</iframe>
+            <template v-if="objectInfo.cmodel === 'Book'">
+              <v-btn large raised color="primary" :href="instanceconfig.fedora + '/objects/' + objectInfo.pid + '/methods/bdef:Book/view'" target="_blank">{{ $t('Open in Bookviewer') }}</v-btn>
+            </template>
+            <template v-else>
+              <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" :style="objectInfo.cmodel === 'Audio' ? 'height: 60px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'" scrolling="no" border="0">Content</iframe>
             </template>
           </v-row>
 
@@ -28,28 +53,17 @@
 
             <v-row v-if="objectMembers">
               <v-card class="mb-3 pt-4" width="100%" v-for="(member) in objectMembers" :key="'member_'+member.pid">
-                <a :href="member.datastreams.includes('WEBVERSION') ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
-                  <v-img class="mb-3" max-height="300" contain v-if="member.cmodel === 'PDFDocument'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/Document/preview/480'" />
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Picture'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
-                  <v-img class="mb-3" max-height="300" contain v-else-if="member.cmodel === 'Page'" :src="'https://' + instanceconfig.baseurl + '/preview/' + member.pid + '/ImageManipulator/boxImage/480/png'" />
-                </a>
-                <center v-if="(member.cmodel === 'Audio')">
-                  <audio controls>
-                    <source :src="member.datastreams.includes('WEBVERSION') ? instanceconfig.api + '/object/' + member.pid + '/diss/Content/getwebversion' : instanceconfig.api + '/object/' + member.pid + '/diss/Content/get'">
-                    Your browser does not support the audio element.
-                  </audio>
-                </center>
+                <iframe :src="instanceconfig.api + '/object/' + member.pid + '/preview'" :style="member.cmodel === 'Audio' ? 'height: 60px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'" scrolling="no" border="0">Content</iframe>
                 <v-card-text class="ma-2">
                   <p-d-jsonld :jsonld="member.metadata['JSON-LD']" :pid="member.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
                 </v-card-text>
                 <v-divider light v-if="objectInfo.readrights"></v-divider>
                 <v-card-actions class="pa-3" v-if="objectInfo.readrights">
                   <v-spacer></v-spacer>
-                  <v-btn v-if="member.cmodel === 'Picture'" target="_blank" :href="'https://' + instanceconfig.baseurl + '/imageserver/' + member.pid" primary>{{ $t('View') }}</v-btn>
-                  <v-btn :href="instanceconfig.api + '/object/' + member.pid + '/get'" primary>{{ $t('Download') }}</v-btn>
+                  <v-btn raised :href="instanceconfig.api + '/object/' + member.pid + '/download'" color="primary">{{ $t('Download') }}</v-btn>
                   <v-menu offset-y v-if="objectInfo.writerights === 1">
                     <template v-slot:activator="{ on }">
-                      <v-btn color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
+                      <v-btn raised color="primary" dark v-on="on">{{ $t('Edit') }}<v-icon right dark>arrow_drop_down</v-icon></v-btn>
                     </template>
                     <v-list>
                       <v-list-item :to="{ name: 'metadataeditor', params: { pid: member.pid } }">
@@ -527,8 +541,8 @@
 
         </v-col>
 
-    </v-row>
-
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -545,7 +559,7 @@ export default {
       return this.objectInfo.datastreams.includes('POLICY')
     },
     showPreview: function () {
-      return (this.objectInfo.cmodel !== 'Resource') && (this.objectInfo.cmodel !== 'Collection') && (this.objectInfo.cmodel !== 'Asset') && this.objectInfo.readrights && !((this.objectInfo.cmodel === 'Video') && this.isRestricted)
+      return (this.objectInfo.cmodel !== 'Resource') && (this.objectInfo.cmodel !== 'Collection') && (this.objectInfo.cmodel !== 'Asset') && (this.objectInfo.cmodel !== 'Container') && this.objectInfo.readrights && !((this.objectInfo.cmodel === 'Video') && this.isRestricted)
     },
     uscholarlink: function () {
       return 'https://' + this.instanceconfig.irbaseurl + '/' + this.objectInfo.pid
@@ -563,39 +577,41 @@ export default {
     identifiers: function () {
       let ids = []
       ids.push({ label: 'Persistent identifier', value: 'https://' + this.instanceconfig.baseurl + '/' + this.objectInfo.pid })
-      for (let id of this.objectInfo.dc_identifier) {
-        if ((id === 'https://' + this.instanceconfig.baseurl + '/' + this.objectInfo.pid) || (id === 'http://' + this.instanceconfig.baseurl + '/' + this.objectInfo.pid)) {
-          continue
-        } else {
-          let type = id.substr(0, id.indexOf(':'))
-          console.log(type)
-          let idvalue = id.substr(id.indexOf(':') + 1)
-          switch (type) {
-            case 'hdl':
-              ids.push({ label: 'Handle', value: idvalue })
-              break
-            case 'doi':
-              ids.push({ label: 'DOI', value: idvalue })
-              break
-            case 'urn':
-              ids.push({ label: 'URN', value: idvalue })
-              break
-            case 'isbn':
-            case 'ISBN':
-              ids.push({ label: 'ISBN', value: idvalue })
-              break
-            case 'HTTP/WWW':
-              ids.push({ label: 'URL', value: idvalue })
-              break
-            case 'PrintISSN':
-              ids.push({ label: 'PrintISSN', value: idvalue })
-              break
-            case 'uri':
-              ids.push({ label: 'URI', value: idvalue })
-              break
-            default:
-              ids.push({ value: idvalue })
-              break
+      if (this.objectInfo.dc_identifier) {
+        for (let id of this.objectInfo.dc_identifier) {
+          if ((id === 'https://' + this.instanceconfig.baseurl + '/' + this.objectInfo.pid) || (id === 'http://' + this.instanceconfig.baseurl + '/' + this.objectInfo.pid)) {
+            continue
+          } else {
+            let type = id.substr(0, id.indexOf(':'))
+            console.log(type)
+            let idvalue = id.substr(id.indexOf(':') + 1)
+            switch (type) {
+              case 'hdl':
+                ids.push({ label: 'Handle', value: idvalue })
+                break
+              case 'doi':
+                ids.push({ label: 'DOI', value: idvalue })
+                break
+              case 'urn':
+                ids.push({ label: 'URN', value: idvalue })
+                break
+              case 'isbn':
+              case 'ISBN':
+                ids.push({ label: 'ISBN', value: idvalue })
+                break
+              case 'HTTP/WWW':
+                ids.push({ label: 'URL', value: idvalue })
+                break
+              case 'PrintISSN':
+                ids.push({ label: 'PrintISSN', value: idvalue })
+                break
+              case 'uri':
+                ids.push({ label: 'URI', value: idvalue })
+                break
+              default:
+                ids.push({ value: idvalue })
+                break
+            }
           }
         }
       }
@@ -681,7 +697,7 @@ export default {
     },
     async fetchAsyncData (self, pid) {
       await self.$store.dispatch('fetchObjectInfo', pid)
-      self.postMetadataLoad()
+      self.postMetadataLoad(self)
       if (self.objectInfo.cmodel === 'Container') {
         await self.$store.dispatch('fetchObjectMembers', self.objectInfo)
       }
@@ -721,20 +737,22 @@ export default {
         console.log(error)
       }
     },
-    postMetadataLoad: function () {
-      if (this.objectInfo) {
-        if (this.objectInfo.metadata['JSON-LD']) {
-          Object.entries(this.objectInfo.metadata['JSON-LD']).forEach(([p, arr]) => {
-            if (p === 'rdam:P30004') {
-              for (let o of arr) {
-                if (o['@type'] === 'ids:uri') {
-                  if (/utheses/.test(o['@value'])) {
-                    this.utheseslink = o['@value']
+    postMetadataLoad: function (self) {
+      if (self.objectInfo) {
+        if (self.objectInfo.metadata) {
+          if (self.objectInfo.metadata['JSON-LD']) {
+            Object.entries(self.objectInfo.metadata['JSON-LD']).forEach(([p, arr]) => {
+              if (p === 'rdam:P30004') {
+                for (let o of arr) {
+                  if (o['@type'] === 'ids:uri') {
+                    if (/utheses/.test(o['@value'])) {
+                      self.utheseslink = o['@value']
+                    }
                   }
                 }
               }
-            }
-          })
+            })
+          }
         }
       }
     },

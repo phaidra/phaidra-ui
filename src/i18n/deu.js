@@ -327,6 +327,18 @@ export default {
   'Service page': 'Serviceseite',
   'User guides': 'Anleitungen',
 
+  'Terms of use': 'Nutzungsbedingungen',
+  'Dear user, we have changed the terms of use!': 'Liebe User, wir haben die Nutzungsbedingungen verändert!',
+  'You have to agree to the terms of use to use Phaidra.': 'Sie müssen diesen Nutzungsbedingungen zustimmen um Phaidra verwenden zu können.',
+  'I agree to the terms of use.': 'Ich stimme diesen Nutzungsbedingungen zu.',
+  'Please agree to the terms of use!': 'Sie müssen den Nutzungsbedingungen zustimmen!',
+
+  'Continue': 'weiter',
+
+  'PAGE_OF_BOOK': 'This object is a page from book {bookpid}',
+
+  'MEMBER_OF_CONTAINER': 'This object is a member of container {containerpid}',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Interne Notiz 2',
   uwm_etheses_note_1: 'Interne Notiz 1',
