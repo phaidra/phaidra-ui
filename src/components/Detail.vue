@@ -44,8 +44,12 @@
             <p-d-jsonld :jsonld="objectInfo.metadata['JSON-LD']" :pid="objectInfo.pid" :bold-label-fields="['dce:title', 'role', 'edm:rights']"></p-d-jsonld>
           </v-row>
 
-          <v-row v-if="objectInfo.dshash['UWMETADATA']">
+          <v-row v-else-if="objectInfo.dshash['UWMETADATA']">
             <p-d-uwm-rec :children="objectInfo.metadata['uwmetadata']" :cmodel="objectInfo.cmodel"></p-d-uwm-rec>
+          </v-row>
+
+          <v-row v-else-if="objectInfo.dshash['MODS']">
+            <p-d-mods-rec :children="objectInfo.metadata['MODS']"></p-d-mods-rec>
           </v-row>
 
           <template v-if="objectInfo.cmodel === 'Container'">
