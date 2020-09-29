@@ -138,7 +138,7 @@
                       <v-row no-gutters class="pt-2" justify="start">
                         <v-btn class="mr-2 mb-2" @click="trackDownload()" v-if="downloadable && objectInfo.readrights" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/download'" color="primary">{{ $t('Download') }}</v-btn>
                         <!--<v-btn class="mb-2" v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/get'" color="primary">{{ $t('View') }}</v-btn>-->
-                        <v-btn v-if="objectInfo.cmodel === 'Collection'" :to="{ path: '/search', query: { collection: objectInfo.pid } }" color="primary">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</v-btn>
+                        <v-btn v-if="objectInfo.cmodel === 'Collection'" :to="{ path: '/search', query: { collection: objectInfo.pid, reset: 1 } }" color="primary">{{ $t('Show members') }} ({{ objectInfo.haspartsize }})</v-btn>
                         <v-btn  v-if="objectInfo.cmodel === 'Resource'" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/diss/Resource/get'" color="primary">{{ $t('Open link') }}</v-btn>
                       </v-row>
                       <v-divider class="mt-4 mb-4" v-if="(downloadable && objectInfo.readrights && (objectInfo.cmodel === 'Picture')) || (downloadable && objectInfo.readrights && objectInfo.dshash['WEBVERSION'])"></v-divider>
