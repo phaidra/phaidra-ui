@@ -28,12 +28,14 @@ import SubmitUwm from '@/components/SubmitUwm'
 import UploadWebVersion from '@/components/UploadWebVersion'
 import SubmitRelated from '@/components/SubmitRelated'
 import NotFound from '@/components/NotFound'
+import config from '../config/phaidra-ui'
 
 Vue.use(Router)
 
 export function createRouter () {
   return new Router({
     mode: 'history',
+    base: '/' + config.instances[config.defaultinstance].basepath + '/',
     routes: [
       {
         path: '/',
