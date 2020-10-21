@@ -59,6 +59,7 @@ export default {
     'myinstance.example.com': {
       title: 'Phaidra - myinstance',
       baseurl: 'myinstance.example.com',
+      basepath: '',
       irbaseurl: 'myirinstance.example.com',
       fedora: 'https://fedora.myinstance.example.com/fedora',
       api: 'https://services.myinstance.example.com/api',
