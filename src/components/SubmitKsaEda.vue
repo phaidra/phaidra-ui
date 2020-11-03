@@ -250,7 +250,7 @@ export default {
       this.form.sections[1].fields.push(fields.getField('height'))
       this.form.sections[1].fields.push(fields.getField('width'))
       this.form.sections[1].fields.push(fields.getField('inscription'))
-      this.form.sections[1].fields.push(fields.getField('spatial-geonames'))
+      this.form.sections[1].fields.push(fields.getField('spatial-geonames-search'))
       var localname = fields.getField('spatial-text')
       localname.label = 'Depicted/Represented place (native name)'
       this.form.sections[1].fields.push(localname)
