@@ -35,7 +35,7 @@ Vue.use(Router)
 export function createRouter () {
   return new Router({
     mode: 'history',
-    base: '/' + config.instances[config.defaultinstance].basepath + '/',
+    base: config.instances[config.defaultinstance].basepath ? '/' + config.instances[config.defaultinstance].basepath + '/' : null,
     routes: [
       {
         path: '/',
