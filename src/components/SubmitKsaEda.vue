@@ -310,7 +310,6 @@ export default {
     }
   },
   mounted: async function () {
-    await this.$store.dispatch('loadVocabulary', '60PM-DY5T')
     this.createContainerForm()
     this.setLangGerman()
   }
