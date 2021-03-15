@@ -39,7 +39,22 @@ export async function createApp ({
     defaultHeight: '1em'
   })
 
-  const messages = { eng, deu, ita }
+  let engVoc = eng
+  let deuVoc = deu
+  let itaVoc = ita
+  try {
+    let engExt = require('./i18n/ext/eng')
+    engVoc = engExt.default
+  } catch (ex) {}
+  try {
+    let deuExt = require('./i18n/ext/deu')
+    deuVoc = deuExt.default
+  } catch (ex) {}
+  try {
+    let itaExt = require('./i18n/ext/ita')
+    itaVoc = itaExt.default
+  } catch (ex) {}
+  const messages = { eng: engVoc, deu: deuVoc, ita: itaVoc }
   const i18n = new VueI18n({
     locale: 'deu',
     fallbackLocale: 'eng',

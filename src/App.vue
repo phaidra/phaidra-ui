@@ -10,31 +10,31 @@
             <v-col cols="12" md="8" offset-md="2" class="header">
 
               <v-row no-gutters>
-                <v-col class="text-left" cols="3" >
+                <v-col class="text-left" cols="12" md="3" >
                   <logo></logo>
                 </v-col>
 
                 <v-col cols="9">
 
-                  <v-row justify="end">
+                  <v-row justify="start" justify-md="end" class="pl-3">
                     <icon v-if="signedin" class="personicon mr-2 univie-grey" name="material-social-person" width="24px" height="24px"></icon>
                     <span v-if="signedin" class="subheading displayname univie-grey">{{ user.firstname }} {{ user.lastname }}</span>
 
                     <v-menu bottom transition="slide-y-transition" class="v-align-top">
                       <template v-slot:activator="{ on }">
                         <v-btn text v-on="on" class="top-margin-lang">
-                          <span class="grey--text text--darken-1">{{$i18n.locale}}</span>
+                          <span class="grey--text text--darken-1">{{ localeLabel }}</span>
                           <icon name="univie-sprache" class="lang-icon grey--text text--darken-1"></icon>
                         </v-btn>
                       </template>
                       <v-list>
-                        <v-list-item @click="$i18n.locale='eng'">
+                        <v-list-item v-if="useLocale('eng')" @click="$i18n.locale='eng'">
                           <v-list-item-title>English</v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="$i18n.locale='deu'">
+                        <v-list-item v-if="useLocale('deu')" @click="$i18n.locale='deu'">
                           <v-list-item-title>Deutsch</v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="$i18n.locale='ita'">
+                        <v-list-item v-if="useLocale('ita')" @click="$i18n.locale='ita'">
                           <v-list-item-title>Italiano</v-list-item-title>
                         </v-list-item>
                       </v-list>
@@ -197,6 +197,23 @@ export default {
     }
   },
   computed: {
+    localeLabel: function () {
+      if (this.instanceconfig.ui) {
+        if (this.instanceconfig.ui.twoletterlang === 1) {
+          switch (this.$i18n.locale) {
+            case 'eng':
+              return 'en'
+            case 'deu':
+              return 'de'
+            case 'ita':
+              return 'it'
+            default:
+              return ''
+          }
+        }
+      }
+      return this.$i18n.locale
+    },
     showAlerts: function () {
       if (this.$store.state.alerts.length > 0) {
         let onlySuccess = true
@@ -250,6 +267,14 @@ export default {
         let val = parts.pop().split(';').shift()
         return val === ' ' ? null : val
       }
+    },
+    useLocale: function (lang) {
+      if (this.instanceconfig.ui) {
+        if (this.instanceconfig.ui.languages) {
+          return this.instanceconfig.ui.languages.includes(lang)
+        }
+      }
+      return false
     },
     dismiss: function (alert) {
       this.$store.commit('clearAlert', alert)

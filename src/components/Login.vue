@@ -26,7 +26,7 @@
                   v-model="credentials.username"
                   required
                   filled
-                  single-line
+                  :placeholder="' '"
                   :autocomplete="'username'"
                 ></v-text-field>
                 <v-text-field
@@ -35,7 +35,7 @@
                   v-model="credentials.password"
                   required
                   filled
-                  single-line
+                  :placeholder="' '"
                   :append-icon="passVisibility ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append="toggleVisibility"
                   :type="passVisibility ? 'password' : 'text'"
