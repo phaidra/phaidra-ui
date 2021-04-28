@@ -3,6 +3,7 @@ node_modules
 /dist
 /src/components/ext
 /src/assets/ext
+/src/i18n/ext
 
 # local env files
 .env.local
