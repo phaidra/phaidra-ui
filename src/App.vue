@@ -28,13 +28,13 @@
                         </v-btn>
                       </template>
                       <v-list>
-                        <v-list-item v-if="useLocale('eng')" @click="$i18n.locale='eng'">
+                        <v-list-item v-if="useLocale('eng')" @click="changeLocale('eng')">
                           <v-list-item-title>English</v-list-item-title>
                         </v-list-item>
-                        <v-list-item v-if="useLocale('deu')" @click="$i18n.locale='deu'">
+                        <v-list-item v-if="useLocale('deu')" @click="changeLocale('deu')">
                           <v-list-item-title>Deutsch</v-list-item-title>
                         </v-list-item>
-                        <v-list-item v-if="useLocale('ita')" @click="$i18n.locale='ita'">
+                        <v-list-item v-if="useLocale('ita')" @click="changeLocale('ita')">
                           <v-list-item-title>Italiano</v-list-item-title>
                         </v-list-item>
                       </v-list>
@@ -275,6 +275,10 @@ export default {
         }
       }
       return false
+    },
+    changeLocale: function (lang) {
+      this.$i18n.locale = lang
+      this.$store.dispatch('localeChange', lang)
     },
     dismiss: function (alert) {
       this.$store.commit('clearAlert', alert)

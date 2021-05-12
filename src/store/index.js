@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import actions from './actions'
 import mutations from './mutations'
 import vocabulary from 'phaidra-vue-components/src/store/modules/vocabulary'
+import info from 'phaidra-vue-components/src/store/modules/info'
 import config from '../config/phaidra-ui'
 
 Vue.use(Vuex)
@@ -27,6 +28,7 @@ export function createStore (token) {
       loading: false
     }),
     modules: {
+      info,
       vocabulary
     },
     mutations,

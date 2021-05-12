@@ -5,15 +5,12 @@ import 'core-js'
 import Vue from 'vue'
 
 import Vuetify from 'vuetify/lib'
-import VueI18n from 'vue-i18n'
 import App from './App'
 import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 import * as svgicon from 'vue-svgicon'
-import eng from './i18n/ext/eng'
-import deu from './i18n/ext/deu'
-import ita from './i18n/ext/ita'
+import i18n from './i18n/i18n.js'
 import moment from 'moment'
 import axios from 'axios'
 import PhaidraVueComponents from 'phaidra-vue-components/src/components'
@@ -28,7 +25,6 @@ export async function createApp ({
   Vue.config.productionTip = false
 
   Vue.use(Vuetify)
-  Vue.use(VueI18n)
   Vue.use(PhaidraVueComponents)
 
   Vue.prototype.$http = axios
@@ -37,14 +33,6 @@ export async function createApp ({
     tagName: 'icon',
     defaultWidth: '1em',
     defaultHeight: '1em'
-  })
-
-  const messages = { eng: eng, deu: deu, ita: ita }
-  const i18n = new VueI18n({
-    locale: 'deu',
-    fallbackLocale: 'eng',
-    silentTranslationWarn: true,
-    messages
   })
 
   Vue.filter('date', function (value) {
