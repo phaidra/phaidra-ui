@@ -22,6 +22,15 @@ export default {
         }
       )
     }
+    if (transition.to.name === 'metadatafieldshelp') {
+      state.breadcrumbs.push(
+        {
+          text: 'Metadata fields overview',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
     if (transition.to.name === 'impressum') {
       state.breadcrumbs.push(
         {
