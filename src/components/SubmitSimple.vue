@@ -245,6 +245,8 @@ export default {
       self.form.sections[0].fields.push(lic)
 
       self.form.sections[0].fields.push(fields.getField('file'))
+
+      this.markMandatory()
     }
   },
   beforeRouteEnter: function (to, from, next) {

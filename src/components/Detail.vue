@@ -201,7 +201,7 @@
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Created') }}</v-col>
-                        <v-col cols="8" offset="1">{{ objectInfo.created | datetimeutc }}</v-col>
+                        <v-col cols="8" offset="1">{{ objectInfo.created | datetime }}</v-col>
                       </v-row>
                     </v-card-text>
                   </v-card>

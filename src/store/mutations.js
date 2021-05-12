@@ -13,6 +13,24 @@ export default {
         to: '/'
       }
     ]
+    if (transition.to.name === 'repostats') {
+      state.breadcrumbs.push(
+        {
+          text: 'Repostats',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.name === 'impressum') {
+      state.breadcrumbs.push(
+        {
+          text: 'Impressum',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
     if (transition.to.name === 'search') {
       state.breadcrumbs.push(
         {

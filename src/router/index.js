@@ -7,6 +7,7 @@ import Login from '@/components/Login'
 import PSearch from 'phaidra-vue-components/src/components/search/PSearch'
 import PLists from 'phaidra-vue-components/src/components/lists/PLists'
 import PGroups from 'phaidra-vue-components/src/components/groups/PGroups'
+import PMetadataFieldsHelp from 'phaidra-vue-components/src/components/info/PMetadataFieldsHelp'
 import Detail from '@/components/Detail'
 import Stats from '@/components/Stats'
 import Rights from '@/components/Rights'
@@ -28,6 +29,7 @@ import SubmitUwm from '@/components/SubmitUwm'
 import UploadWebVersion from '@/components/UploadWebVersion'
 import SubmitRelated from '@/components/SubmitRelated'
 import NotFound from '@/components/NotFound'
+import Repostats from '@/components/ext/Repostats'
 import config from '../config/phaidra-ui'
 
 Vue.use(Router)
@@ -56,6 +58,16 @@ export function createRouter () {
         path: '/impressum',
         name: 'impressum',
         component: Impressum
+      },
+      {
+        path: '/repostats',
+        name: 'repostats',
+        component: Repostats
+      },
+      {
+        path: '/metadata-fields-help',
+        name: 'metadatafieldshelp',
+        component: PMetadataFieldsHelp
       },
       {
         path: '/search',

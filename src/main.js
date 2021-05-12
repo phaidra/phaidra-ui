@@ -11,9 +11,9 @@ import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 import * as svgicon from 'vue-svgicon'
-import eng from './i18n/eng'
-import deu from './i18n/deu'
-import ita from './i18n/ita'
+import eng from './i18n/ext/eng'
+import deu from './i18n/ext/deu'
+import ita from './i18n/ext/ita'
 import moment from 'moment'
 import axios from 'axios'
 import PhaidraVueComponents from 'phaidra-vue-components/src/components'
@@ -39,22 +39,7 @@ export async function createApp ({
     defaultHeight: '1em'
   })
 
-  let engVoc = eng
-  let deuVoc = deu
-  let itaVoc = ita
-  try {
-    let engExt = require('./i18n/ext/eng')
-    engVoc = engExt.default
-  } catch (ex) {}
-  try {
-    let deuExt = require('./i18n/ext/deu')
-    deuVoc = deuExt.default
-  } catch (ex) {}
-  try {
-    let itaExt = require('./i18n/ext/ita')
-    itaVoc = itaExt.default
-  } catch (ex) {}
-  const messages = { eng: engVoc, deu: deuVoc, ita: itaVoc }
+  const messages = { eng: eng, deu: deu, ita: ita }
   const i18n = new VueI18n({
     locale: 'deu',
     fallbackLocale: 'eng',

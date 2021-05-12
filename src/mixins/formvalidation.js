@@ -38,6 +38,41 @@ export const formvalidation = {
     }
   },
   methods: {
+    markMandatory: function () {
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.predicate === 'dcterms:type') {
+            f.label = f.label + ' *'
+          }
+          if (f.predicate === 'edm:hasType') {
+            f.label = f.label + ' *'
+          }
+          if (f.component === 'p-title') {
+            f.titleLabel = f.titleLabel ? f.titleLabel + ' *' : this.$t(f.type) + ' *'
+          }
+          if ((f.predicate === 'bf:note') && (f.type === 'bf:Note')) {
+            f.label = f.label + ' *'
+          }
+          if (f.component === 'p-keyword') {
+            f.label = f.label + ' *'
+          }
+          if ((f.component === 'p-entity') || (f.component === 'p-entity-extended')) {
+            f.label = f.label + ' *'
+            f.roleLabel = f.roleLabel + ' *'
+            f.firstnameLabel = f.firstnameLabel + ' *'
+            f.lastnameLabel = f.lastnameLabel + ' *'
+          }
+          if (f.component === 'p-select') {
+            if (f.predicate === 'edm:rights') {
+              f.label = f.label + ' *'
+            }
+          }
+          if (f.component === 'p-file') {
+            f.label = f.label + ' *'
+          }
+        }
+      }
+    },
     validate: function () {
       this.validationError = false
       this.fieldsMissing = []

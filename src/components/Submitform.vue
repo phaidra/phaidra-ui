@@ -1608,6 +1608,7 @@ export default {
           console.error('bad cmodel param: [' + this.cmodelparam + ']')
           break
       }
+      this.markMandatory()
     }
   },
   beforeRouteEnter: function (to, from, next) {
