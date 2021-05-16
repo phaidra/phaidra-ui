@@ -478,7 +478,7 @@
                       <v-row no-gutters class="pt-2" v-if="(objectInfo.cmodel !== 'Page')">
                         <v-dialog class="pb-4" v-model="relationDialog" width="800px">
                           <template v-slot:activator="{ on }">
-                            <a v-on="on" class="mb-1">{{ $t('Submit related object') }}</a>
+                            <a v-on="on" class="mb-1">{{ $t('Upload related object') }}</a>
                           </template>
                           <v-card>
                             <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Choose relation") }}</v-card-title>
