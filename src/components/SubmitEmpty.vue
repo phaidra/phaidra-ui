@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import fields from 'phaidra-vue-components/src/utils/fields'
 import { context } from '../mixins/context'
 
 export default {
@@ -33,7 +32,7 @@ export default {
     },
     addPhaidrasubjectSection: function (afterSection) {
       let s = {
-        title: 'Subject',
+        title: 'SUBJECT_SECTION',
         type: 'phaidra:Subject',
         id: this.form.sections.length + 1,
         removable: true,
@@ -57,9 +56,6 @@ export default {
           }
         ]
       }
-      var rt = fields.getField('resource-type')
-      rt.disabled = false
-      this.form.sections[0].fields.push(rt)
     }
   },
   mounted: function () {

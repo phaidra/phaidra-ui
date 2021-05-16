@@ -16,7 +16,7 @@ export default {
     if (transition.to.name === 'repostats') {
       state.breadcrumbs.push(
         {
-          text: 'Repostats',
+          text: 'Repository statistics',
           to: transition.to.name,
           disabled: true
         }

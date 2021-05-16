@@ -25,7 +25,7 @@
       </v-row>
       <v-row v-else>
 
-        <v-col cols="12" md="8">
+        <v-col cols="12" md="8" class="mt-8">
           <template v-if="objectInfo.relationships.hasthumbnail.length > 0">
             <img v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
           </template>
@@ -91,7 +91,7 @@
 
         </v-col>
 
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="4" class="mt-4">
 
           <v-row justify="end" class="mb-2">
             <v-col cols="12" class="pt-0">
@@ -178,7 +178,7 @@
                     <v-card-title class="ph-box title font-weight-light grey white--text">{{ $t('Details') }}</v-card-title>
                     <v-card-text class="mt-4">
                       <v-row no-gutters class="pt-2">
-                        <v-col class="caption grey--text text--darken-2" cols="3">Depositor</v-col>
+                        <v-col class="caption grey--text text--darken-2" cols="3">{{ $t('Uploader') }}</v-col>
                         <v-col cols="8" offset="1" v-if="objectInfo.owner.firstname">
                           <a :href="'mailto:' + objectInfo.owner.email">{{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}</a>
                         </v-col>

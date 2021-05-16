@@ -130,6 +130,13 @@ import '@/compiled-icons/material-toggle-star'
 
 export default {
   name: 'submit',
+  watch: {
+    templateDialog (opened) {
+      if (opened) {
+        this.$refs.templates.loadTemplates()
+      }
+    }
+  },
   methods: {
     loadTemplate: async function (templateid) {
       this.$router.push({ name: 'submit-custom', params: { templateid: templateid } })

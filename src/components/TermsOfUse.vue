@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col>
         <v-card tile>
-          <v-card-title class="title font-weight-light grey white--text">{{ $t('Nutzungsbedingungen') }}</v-card-title>
+          <v-card-title class="title font-weight-light grey white--text">{{ $t('Terms of use') }}</v-card-title>
           <v-card-text style="white-space: pre-wrap;">{{ tou }}</v-card-text>
         </v-card>
       </v-col>

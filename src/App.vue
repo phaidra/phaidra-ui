@@ -9,7 +9,7 @@
           <v-row no-gutters>
             <v-col cols="12" md="8" offset-md="2" class="header">
 
-              <v-row no-gutters>
+              <v-row no-gutters class="mt-2" style="min-height:125px;">
                 <v-col class="text-left" cols="12" md="3" >
                   <logo></logo>
                 </v-col>
@@ -149,18 +149,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="12" md="8" offset-md="2">
-              <v-row   class="my-5">
-                <v-col class="text-left" >
-                  <span class="grey--text text--darken-2"><address>{{ instanceconfig.address }} | <abbr title="Telefon">T</abbr> {{ instanceconfig.phone }}</address></span>
-                </v-col>
-                <v-col class="text-right" >
-                  <a href="http://datamanagement.univie.ac.at/" target="_blank">{{ $t('Servicepage') }}</a> | <router-link :to="'impressum'">{{ $t('Impressum') }}</router-link> | <a href="http://datamanagement.univie.ac.at/en/about-phaidra/policy-of-phaidra/" target="_blank">{{ $t('Policy of Phaidra') }}</a> | <router-link :to="{ name: 'termsofuse' }">{{ $t('Terms of Use') }}</router-link>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+          <p-footer></p-footer>
         </v-col>
       </v-row>
     </v-container>
@@ -177,6 +166,7 @@ import '@/compiled-icons/material-navigation-menu'
 import '@/compiled-icons/univie-sprache'
 import ClientOnly from 'vue-client-only'
 import Logo from '@/components/ext/Logo'
+import PFooter from '@/components/ext/PFooter'
 import { context } from '@/mixins/context'
 import { config } from '@/mixins/config'
 import * as Sentry from '@sentry/browser'
@@ -189,7 +179,8 @@ export default {
     Quicklinks,
     QuicklinksFooter,
     ClientOnly,
-    Logo
+    Logo,
+    PFooter
   },
   data () {
     return {
