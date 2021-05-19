@@ -563,7 +563,7 @@ export default {
       return this.objectInfo.datastreams.includes('POLICY')
     },
     showPreview: function () {
-      return (this.objectInfo.cmodel !== 'Resource') && (this.objectInfo.cmodel !== 'Collection') && (this.objectInfo.cmodel !== 'Asset') && (this.objectInfo.cmodel !== 'Container') && this.objectInfo.readrights && !((this.objectInfo.cmodel === 'Video') && this.isRestricted)
+      return (this.objectInfo.cmodel !== 'Resource') && (this.objectInfo.cmodel !== 'Collection') && (this.objectInfo.cmodel !== 'Asset' || ((this.objectInfo.cmodel === 'Asset') && ((this.mimetype === 'model/nxz') || (this.mimetype === 'model/ply')))) && (this.objectInfo.cmodel !== 'Container') && this.objectInfo.readrights && !((this.objectInfo.cmodel === 'Video') && this.isRestricted)
     },
     uscholarlink: function () {
       return 'https://' + this.instanceconfig.irbaseurl + '/' + this.objectInfo.pid
