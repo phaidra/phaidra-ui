@@ -191,7 +191,9 @@ export default {
       this.form.sections[1].fields.push(fields.getField('height'))
       this.form.sections[1].fields.push(fields.getField('width'))
       this.form.sections[1].fields.push(fields.getField('condition-note'))
+      this.form.sections[1].fields.push(fields.getField('technique-vocab'))
       this.form.sections[1].fields.push(fields.getField('technique-text'))
+      this.form.sections[1].fields.push(fields.getField('material-vocab'))
       this.form.sections[1].fields.push(fields.getField('material-text'))
 
       let file = fields.getField('file')
