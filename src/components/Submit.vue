@@ -89,6 +89,9 @@
         <v-btn large dark color="grey white--text mr-8" :to="'/submit/ksa-eda'">
           <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("EDA") }}
         </v-btn>
+        <v-btn large dark color="grey white--text mr-8" :to="'/submit/fb-psychologie'">
+          <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("FB Psychologie") }}
+        </v-btn>
         <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-bruckneruni' }">
           <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("Bruckneruni") }}
         </v-btn>

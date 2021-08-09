@@ -19,6 +19,7 @@ import MetadataEditor from '@/components/MetadataEditor'
 import UwmetadataEditor from '@/components/UwmetadataEditor'
 import SubmitResource from '@/components/SubmitResource'
 import SubmitKsaEda from '@/components/SubmitKsaEda'
+import SubmitFbPsychologie from '@/components/SubmitFbPsychologie'
 import SubmitBruckneruni from '@/components/SubmitBruckneruni'
 import SubmitEmpty from '@/components/SubmitEmpty'
 import SubmitCustom from '@/components/SubmitCustom'
@@ -138,6 +139,11 @@ export function createRouter () {
         path: '/submit/ksa-eda',
         name: 'submit-ksa-eda',
         component: SubmitKsaEda
+      },
+      {
+        path: '/submit/fb-psychologie',
+        name: 'submit-fb-psychologie',
+        component: SubmitFbPsychologie
       },
       {
         path: '/submit/bruckneruni',
