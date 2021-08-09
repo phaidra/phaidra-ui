@@ -178,7 +178,9 @@ export default {
       this.form.sections[0].fields.push(fields.getField('bk-subject'))
       this.form.sections[0].fields.push(fields.getField('gnd-subject'))
       this.form.sections[0].fields.push(fields.getField('description'))
-      this.form.sections[0].fields.push(fields.getField('citation'))
+      let cit = fields.getField('citation')
+      cit.type = 'cito:cites'
+      this.form.sections[0].fields.push(cit)
       var lang = fields.getField('language')
       lang.value = 'deu'
       this.form.sections[0].fields.push(lang)
