@@ -2,14 +2,14 @@
   <v-container fluid>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <v-btn large class="primary" :to="{ name: 'submit-simple' }">
-          <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Simple submit") }}
+        <v-btn large class="primary" :to="{ name: 'upload' }">
+          <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Upload") }}
         </v-btn>
       </v-col>
     </v-row>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{ $t("Custom") }}</span>
+        <span class="title font-weight-light primary--text">{{ $t("Templates") }}</span>
         <v-divider></v-divider>
       </v-col>
     </v-row>
@@ -38,43 +38,20 @@
     </v-row>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{ $t("Advanced") }}</span>
+        <span class="title font-weight-light primary--text">{{ $t("Legacy (Uwmetadata)") }}</span>
         <v-divider></v-divider>
       </v-col>
     </v-row>
-    <v-row class="my-6">
+    <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitresource', params: { cmodel: 'picture' } }">
-          <v-icon dark class="mr-4">mdi-image</v-icon> {{ $t("Picture") }}
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm' }">
+          {{ $t("File") }}
         </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitresource', params: { cmodel: 'audio' } }">
-          <v-icon dark class="mr-4">mdi-volume-high</v-icon> {{ $t("Audio") }}
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'collection' } }">
+          {{ $t("Collection") }}
         </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitresource', params: { cmodel: 'video' } }">
-          <v-icon dark class="mr-4">mdi-video</v-icon> {{ $t("Video") }}
-        </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitresource', params: { cmodel: 'data' } }">
-          <v-icon dark class="mr-4">mdi-file</v-icon> {{ $t("Data") }}
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="my-6">
-      <v-col cols="12">
-        <v-btn large dark color="grey white--text mr-8" href="https://uscholar.univie.ac.at/">
-          <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Publications") }}
-        </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitresource', params: { cmodel: 'document' } }">
-          <v-icon dark class="mr-4">mdi-file-pdf</v-icon> {{ $t("Other documents") }}
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="my-6">
-      <v-col cols="12">
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitresource', params: { cmodel: 'collection' } }">
-          <v-icon dark class="mr-4">mdi-folder-open</v-icon> {{ $t("Collection") }}
-        </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submitform', params: { cmodel: 'resource', submitform: 'general' } }">
-          <v-icon dark class="mr-4">mdi-link</v-icon> {{ $t("Resource") }}
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'resource' } }">
+          {{ $t("Resource") }}
         </v-btn>
       </v-col>
     </v-row>
@@ -94,25 +71,6 @@
         </v-btn>
         <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-bruckneruni' }">
           <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("Bruckneruni") }}
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{ $t("Legacy (Uwmetadata)") }}</span>
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm' }">
-          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("File") }}
-        </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'collection' } }">
-          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("Collection") }}
-        </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'resource' } }">
-          <v-icon dark class="mr-4">mdi-history</v-icon> {{ $t("Resource") }}
         </v-btn>
       </v-col>
     </v-row>

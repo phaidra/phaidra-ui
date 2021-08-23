@@ -26,6 +26,7 @@ import SubmitCustom from '@/components/SubmitCustom'
 import Submitform from '@/components/Submitform'
 import Submit from '@/components/Submit'
 import SubmitSimple from '@/components/SubmitSimple'
+import Upload from '@/components/Upload'
 import SubmitUwm from '@/components/SubmitUwm'
 import UploadWebVersion from '@/components/UploadWebVersion'
 import SubmitRelated from '@/components/SubmitRelated'
@@ -129,6 +130,11 @@ export function createRouter () {
         path: '/submit/simple',
         name: 'submit-simple',
         component: SubmitSimple
+      },
+      {
+        path: '/submit/upload',
+        name: 'upload',
+        component: Upload
       },
       {
         path: '/submit/uwm/:cmodel',
