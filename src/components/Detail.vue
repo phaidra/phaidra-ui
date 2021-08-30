@@ -26,9 +26,14 @@
       <v-row v-else>
 
         <v-col cols="12" md="8" class="mt-8">
-          <template v-if="objectInfo.relationships.hasthumbnail.length > 0">
-            <img v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
-          </template>
+          <v-row v-if="hasLaterVersion" justify="center">
+            <v-alert type="info" color="primary">
+              <div>{{ $t('This object has a later version') }}</div>
+            </v-alert>
+          </v-row>
+          <v-row justify="center" v-if="objectInfo.relationships.hasthumbnail.length > 0">
+            <img class="py-2" v-for="(thumb, i) in objectInfo.relationships.hasthumbnail" :src="instanceconfig.api + '/object/' + thumb.pid + '/thumbnail?h=480&w=480'" :key="'thmb'+i"/>
+          </v-row>
           <v-row justify="center" v-if="showPreview">
             <template v-if="objectInfo.cmodel === 'Book'">
               <v-btn large raised color="primary" :href="instanceconfig.fedora + '/objects/' + objectInfo.pid + '/methods/bdef:Book/view'" target="_blank">{{ $t('Open in Bookviewer') }}</v-btn>
@@ -679,6 +684,18 @@ export default {
         default:
           return false
       }
+    },
+    hasLaterVersion: function () {
+      if (this.$store.state.objectInfo.versions) {
+        if (Array.isArray(this.$store.state.objectInfo.versions)) {
+          for (let v of this.$store.state.objectInfo.versions) {
+            if (v.created > this.$store.state.objectInfo.created) {
+              return true
+            }
+          }
+        }
+      }
+      return false
     },
     citationLocale: function () {
       switch (this.$i18n.locale) {
