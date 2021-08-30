@@ -86,7 +86,7 @@ export default {
         console.log('[' + state.user.username + '] login successful token[' + response.data['XSRF-TOKEN'] + '], fetching user data')
         commit('setToken', response.data['XSRF-TOKEN'])
         if (process.browser) {
-          document.cookie = 'X-XSRF-TOKEN=' + response.data['XSRF-TOKEN'] + '; domain=' + state.instanceconfig.baseurl + '; path=/; secure; samesite=strict'
+          document.cookie = 'X-XSRF-TOKEN=' + response.data['XSRF-TOKEN'] + '; domain=' + window.location.hostname + '; path=/; secure; samesite=strict'
         }
         dispatch('getLoginData')
       }
@@ -96,7 +96,7 @@ export default {
   },
   async logout ({ commit, dispatch, state }) {
     if (process.browser) {
-      document.cookie = 'X-XSRF-TOKEN=; domain=' + state.instanceconfig.baseurl + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+      document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
     }
     try {
       let response = await axios.get(state.instanceconfig.api + '/signout', {
