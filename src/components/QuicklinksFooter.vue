@@ -194,7 +194,6 @@ export default {
 }
 
 .footer-quicklinks-list {
-  background-color: #ffffff;
   font-size: 11pt;
   margin: 4px 20px 0 0;
   padding: 2px 5px 2px 5px;
@@ -202,6 +201,7 @@ export default {
 }
 
 .footer-quicklinks-list a {
+  color: #0063a6;
     display: block;
     padding-right: 5px;
 }

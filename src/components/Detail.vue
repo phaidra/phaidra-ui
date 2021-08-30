@@ -118,7 +118,7 @@
                     <v-divider></v-divider>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn @click="doiCiteDialog=false">{{ $t('Close') }}</v-btn>
+                      <v-btn :loading="doiCiteLoading" @click="doiCiteDialog=false">{{ $t('Close') }}</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -558,6 +558,31 @@ import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
 export default {
   name: 'detail',
   mixins: [ context, config, vocabulary ],
+  metaInfo () {
+    let metaInfo = {}
+    if (this.objectInfo) {
+      if (this.objectInfo.metatags) {
+        metaInfo.title = this.objectInfo.metatags.citation_title + ' (' + this.instanceconfig.title + ' - ' + this.objectInfo.pid + ')'
+        metaInfo.meta = []
+        Object.entries(this.objectInfo.metatags).forEach(([name, value]) => {
+          if (Array.isArray(value)) {
+            for (let v of value) {
+              metaInfo.meta.push({
+                name: name,
+                content: v
+              })
+            }
+          } else {
+            metaInfo.meta.push({
+              name: name,
+              content: value
+            })
+          }
+        })
+      }
+    }
+    return metaInfo
+  },
   computed: {
     isRestricted: function () {
       return this.objectInfo.datastreams.includes('POLICY')
@@ -680,6 +705,7 @@ export default {
     return {
       relationDialog: false,
       doiCiteDialog: false,
+      doiCiteLoading: false,
       citeResult: '',
       citationStyle: 'apa',
       citationStyles: [],
@@ -789,6 +815,7 @@ export default {
       }
     },
     getBibTex: async function () {
+      this.doiCiteLoading = true
       try {
         let response = await this.$http.request({
           method: 'GET',
@@ -807,9 +834,12 @@ export default {
       } catch (error) {
         console.log(error)
         this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.doiCiteLoading = false
       }
     },
     getCitation: async function () {
+      this.doiCiteLoading = true
       try {
         let response = await this.$http.request({
           method: 'GET',
@@ -828,6 +858,8 @@ export default {
       } catch (error) {
         console.log(error)
         this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.doiCiteLoading = false
       }
     },
     resetData: function (self) {

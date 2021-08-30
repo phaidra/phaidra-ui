@@ -2,9 +2,9 @@
 
   <transition name="slide">
 
-    <v-container v-if="showquicklinks" fluid class="quicklinks-content" id="quicklinks">
+    <v-container v-if="showquicklinks" fluid class="quicklinks-content pb-6" id="quicklinks">
 
-      <v-row>
+      <v-row class="py-4">
 
         <v-col cols="2" offset="4">
 
@@ -174,12 +174,12 @@ export default {
 }
 
 h3.top-row-header {
-    margin-top: 0px;
-    font-size: 19pt;
-    color: white;
-    background: url(../assets/ext/verlauf-weiss.png) no-repeat left bottom;
-    font-weight: 300;
-    margin-bottom: 8pt;
+  margin-top: 0px;
+  font-size: 19pt;
+  color: white;
+  background: url(../assets/ext/verlauf-weiss.png) no-repeat left bottom;
+  font-weight: 300;
+  margin-bottom: 8pt;
 }
 
 .slide-enter-active, .slide-leave-active {

@@ -10,6 +10,7 @@ import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 import * as svgicon from 'vue-svgicon'
+import VueMeta from 'vue-meta'
 import i18n from './i18n/i18n.js'
 import moment from 'moment'
 import axios from 'axios'
@@ -25,6 +26,7 @@ export async function createApp ({
   Vue.config.productionTip = false
 
   Vue.use(Vuetify)
+  Vue.use(VueMeta)
   Vue.use(PhaidraVueComponents)
 
   Vue.prototype.$http = axios

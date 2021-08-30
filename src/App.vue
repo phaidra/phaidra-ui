@@ -40,7 +40,7 @@
                       </v-list>
                     </v-menu>
 
-                    <a id="quicklinks-button" v-if="isUnivie" class="ph-button" v-on:click="quicklinksenabled = !quicklinksenabled">Quicklinks</a>
+                    <a id="quicklinks-button" v-if="isUnivie" class="ph-button mt-1" v-on:click="quicklinksenabled = !quicklinksenabled">Quicklinks</a>
 
                   </v-row>
 
@@ -81,7 +81,7 @@
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search', query: { reset: 1 } }">{{ $t("Search") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Submit") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Upload") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { reset: 1, owner: user.username } }">{{ $t("My objects") }}</router-link>
@@ -181,6 +181,10 @@ export default {
     ClientOnly,
     Logo,
     PFooter
+  },
+  metaInfo: {
+    title: config.title,
+    meta: []
   },
   data () {
     return {

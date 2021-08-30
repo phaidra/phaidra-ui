@@ -14,7 +14,8 @@ export default context => {
       router,
       store
     } = await createApp({}, context)
-
+    const meta = app.$meta()
+    context.meta = meta
     router.push(prepareUrlForRouting(context.url))
 
     router.onReady(() => {

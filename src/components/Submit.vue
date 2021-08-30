@@ -50,9 +50,6 @@
         <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'collection' } }">
           {{ $t("Collection") }}
         </v-btn>
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'resource' } }">
-          {{ $t("Resource") }}
-        </v-btn>
       </v-col>
     </v-row>
     <v-row class="my-6" justify="start">

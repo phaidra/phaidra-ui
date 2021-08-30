@@ -26,6 +26,7 @@
     "vue-client-only": "^2.0.0",
     "vue-i18n": "^8.21.0",
     "vue-json-pretty": "^1.6.7",
+    "vue-meta": "^2.4.0",
     "vue-router": "^3.4.3",
     "vue-server-renderer": "^2.6.12",
     "vuetify": "^2.4.11",

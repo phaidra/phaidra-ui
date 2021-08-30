@@ -153,13 +153,12 @@ export default {
             title: null,
             type: 'digitalobject',
             addbutton: false,
-            outlined: true,
             id: 1,
             fields: []
           },
           {
             title: 'Classification',
-            type: 'expansion',
+            mode: 'expansion',
             disablemenu: true,
             collapsed: true,
             outlined: true,
@@ -168,7 +167,7 @@ export default {
           },
           {
             title: 'Association',
-            type: 'expansion',
+            mode: 'expansion',
             disablemenu: true,
             collapsed: true,
             outlined: true,
@@ -177,7 +176,8 @@ export default {
           },
           {
             title: 'Physical object',
-            type: 'expansion',
+            type: 'phaidra:Subject',
+            mode: 'expansion',
             disablemenu: true,
             collapsed: true,
             outlined: true,
