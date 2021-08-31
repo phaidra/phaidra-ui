@@ -81,22 +81,22 @@
                           <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" :to="{ path: '/search', query: { reset: 1 } }">{{ $t("Search") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/submit'">{{ $t("Upload") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-show="signedin" :to="'/submit'">{{ $t("Upload") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="{ path: '/search', query: { reset: 1, owner: user.username } }">{{ $t("My objects") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-show="signedin" :to="{ path: '/search', query: { reset: 1, owner: user.username } }">{{ $t("My objects") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/lists'">{{ $t("Object lists") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-show="signedin" :to="'/lists'">{{ $t("Object lists") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="signedin" :to="'/groups'">{{ $t("Groups") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-show="signedin" :to="'/groups'">{{ $t("Groups") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-if="!signedin && appconfig.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>
+                          <router-link :class="hover ? 'ph-button primary' : 'ph-button grey'" v-show="!signedin && appconfig.enablelogin" :to="'/login'">{{ $t("Login") }}</router-link>
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
-                          <a class="flat dark ph-button grey" v-if="signedin" @click="logout" >{{ $t("Logout") }}</a>
+                          <a class="flat dark ph-button grey" v-show="signedin" @click="logout" >{{ $t("Logout") }}</a>
                         </v-hover>
                       </v-toolbar-items>
                     </v-toolbar>
@@ -310,7 +310,6 @@ export default {
   serverPrefetch: async function () {
     if (this.$store.state.user.token) {
       await this.$store.dispatch('getLoginData')
-      console.log('fetched login: firstname[' + this.$store.state.user.firstname + '] lastname[' + this.$store.state.user.lastname + '] username[' + this.$store.state.user.username + ']')
     }
     await this.$store.dispatch('loadLanguages', this.$i18n.locale)
     await this.$store.dispatch('loadOrgUnits', this.$i18n.locale)
