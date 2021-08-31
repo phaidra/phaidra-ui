@@ -39,7 +39,10 @@
               <v-btn large raised color="primary" :href="instanceconfig.fedora + '/objects/' + objectInfo.pid + '/methods/bdef:Book/view'" target="_blank">{{ $t('Open in Bookviewer') }}</v-btn>
             </template>
             <template v-else>
-              <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" :style="objectInfo.cmodel === 'Audio' ? 'height: 60px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'" scrolling="no" border="0">Content</iframe>
+              <v-col cols="12">
+                <iframe :src="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" :style="objectInfo.cmodel === 'Audio' ? 'height: 60px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'" scrolling="no" border="0">Content</iframe>
+                <a class="mt-2 float-right" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/preview'" target="_blank">{{ $t('Open in new window') }}</a>
+              </v-col>
             </template>
           </v-row>
 
