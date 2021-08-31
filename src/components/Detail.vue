@@ -28,7 +28,7 @@
         <v-col cols="12" md="8" class="mt-8">
           <v-row v-if="hasLaterVersion" justify="center">
             <v-alert type="info" color="primary">
-              <div>{{ $t('This object has a later version') }}</div>
+              <div>{{ $t('There is a more recent version of this object available') }}</div>
             </v-alert>
           </v-row>
           <v-row justify="center" v-if="objectInfo.relationships.hasthumbnail.length > 0">
@@ -893,13 +893,15 @@ export default {
   },
   beforeRouteEnter: async function (to, from, next) {
     next(async function (vm) {
-      vm.resetData(vm)
-      vm.$store.commit('setLoading', true)
-      vm.$store.commit('setObjectInfo', null)
-      await vm.fetchAsyncData(vm, to.params.pid)
-      vm.fetchUsageStats(vm, to.params.pid)
-      vm.fetchChecksums(vm, to.params.pid)
-      vm.$store.commit('setLoading', false)
+      if (process.browser && (!vm.objectInfo || (vm.objectInfo.pid !== to.params.pid))) {
+        vm.resetData(vm)
+        vm.$store.commit('setLoading', true)
+        vm.$store.commit('setObjectInfo', null)
+        await vm.fetchAsyncData(vm, to.params.pid)
+        vm.fetchUsageStats(vm, to.params.pid)
+        vm.fetchChecksums(vm, to.params.pid)
+        vm.$store.commit('setLoading', false)
+      }
     })
   },
   beforeRouteUpdate: async function (to, from, next) {
