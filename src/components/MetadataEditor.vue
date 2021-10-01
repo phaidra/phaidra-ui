@@ -43,9 +43,12 @@ export default {
     validate: function () {
       return true
     },
-    objectSaved: function (event) {
-      this.$store.commit('setAlerts', [{ type: 'success', msg: 'Metadata for object ' + event + ' saved' }])
-      this.$router.push({ name: 'detail', params: { pid: event } })
+    objectSaved: async function (pid) {
+      this.$store.commit('setAlerts', [{ type: 'success', msg: 'Metadata for object ' + pid + ' saved' }])
+      // to save unnecessary loadings, fetchObjectInfo is skipped in Detail.vue if we return to the same pid
+      // but it must be done after metadata edit, so re-load it here
+      await this.$store.dispatch('fetchObjectInfo', pid)
+      this.$router.push({ name: 'detail', params: { pid } })
       this.$vuetify.goTo(0)
     },
     postMetadataLoad: function (self, form) {

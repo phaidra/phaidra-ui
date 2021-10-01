@@ -11,7 +11,7 @@
       </template>
     </v-alert>
     <v-row>
-      <v-col cols="12" md="10" offset-md="1">
+      <v-col cols="12">
         <p-i-form
           :form="form"
           :rights="rights"
@@ -55,19 +55,80 @@ export default {
     }
   },
   methods: {
+    addRemovedFieldsCol: function (rt) {
+      let haslicense = false
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.predicate === 'edm:rights') {
+            haslicense = true
+          }
+        }
+      }
+      if (!haslicense) {
+        this.form.sections[0].fields.push(fields.getField('license'))
+      }
+      let hasfile = false
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.component === 'p-file') {
+            hasfile = true
+          }
+        }
+      }
+      if (!hasfile) {
+        this.form.sections[0].fields.push(fields.getField('file'))
+      }
+      let hasObjectType2 = false
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          if (f.predicate === 'edm:hasType') {
+            hasObjectType2 = true
+            f.selectedTerms = []
+          }
+        }
+      }
+      if (!hasObjectType2) {
+        let otf2 = fields.getField('object-type-checkboxes')
+        let rtv2
+        for (let s of this.form.sections) {
+          for (let f of s.fields) {
+            if (f.predicate === 'dcterms:type') {
+              rtv2 = f.value
+            }
+          }
+        }
+        otf2.resourceType = rtv2
+        this.form.sections[0].fields.splice(1, 0, otf2)
+      }
+    },
     handleInputResourceType: function (rt) {
       switch (rt) {
-        case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
-          // collection => remove file, license and object type field and resourcelink section
+        case 'https://pid.phaidra.org/vocabulary/44TN-P1S0':
+          // add fields which were removed if switching from collection
+          this.addRemovedFieldsCol(rt)
+          // image => remove language
           for (let s of this.form.sections) {
-            if (s.type === 'resourcelink') {
-              arrays.remove(this.form.sections, s)
-              break
+            for (let f of s.fields) {
+              if (f.predicate === 'dcterms:language') {
+                arrays.remove(s.fields, f)
+                break
+              }
+            }
+          }
+          break
+        case 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ':
+          // collection => remove file, language, license and object type field
+          for (let s of this.form.sections) {
+            for (let f of s.fields) {
+              if (f.component === 'p-file') {
+                arrays.remove(s.fields, f)
+                break
+              }
             }
           }
           for (let s of this.form.sections) {
             for (let f of s.fields) {
-              if (f.component === 'p-file') {
+              if (f.predicate === 'dcterms:language') {
                 arrays.remove(s.fields, f)
                 break
               }
@@ -91,50 +152,22 @@ export default {
           }
           break
         default:
-          // add file and object type field if missing
-          let haslicense = false
+          // add fields which were removed if switching from collection
+          this.addRemovedFieldsCol(rt)
+          // add language (removed if switching from picture or collection)
+          let hasLang = false
           for (let s of this.form.sections) {
             for (let f of s.fields) {
-              if (f.predicate === 'edm:rights') {
-                haslicense = true
+              if (f.predicate === 'dcterms:language') {
+                hasLang = true
               }
             }
           }
-          if (!haslicense) {
-            this.form.sections[0].fields.push(fields.getField('license'))
-          }
-          let hasfile = false
-          for (let s of this.form.sections) {
-            for (let f of s.fields) {
-              if (f.component === 'p-file') {
-                hasfile = true
-              }
-            }
-          }
-          if (!hasfile) {
-            this.form.sections[0].fields.push(fields.getField('file'))
-          }
-          let hasObjectType2 = false
-          for (let s of this.form.sections) {
-            for (let f of s.fields) {
-              if (f.predicate === 'edm:hasType') {
-                hasObjectType2 = true
-                f.selectedTerms = []
-              }
-            }
-          }
-          if (!hasObjectType2) {
-            let otf2 = fields.getField('object-type-checkboxes')
-            let rtv2
-            for (let s of this.form.sections) {
-              for (let f of s.fields) {
-                if (f.predicate === 'dcterms:type') {
-                  rtv2 = f.value
-                }
-              }
-            }
-            otf2.resourceType = rtv2
-            this.form.sections[0].fields.splice(1, 0, otf2)
+          if (!hasLang) {
+            let lang = fields.getField('language')
+            lang.value = this.$i18n.locale
+            lang.label = 'Language of object'
+            this.form.sections[0].fields.splice(4, 0, lang)
           }
           break
       }
@@ -152,13 +185,13 @@ export default {
           {
             title: null,
             type: 'digitalobject',
-            addbutton: false,
             id: 1,
             fields: []
           },
           {
             title: 'Classification',
             mode: 'expansion',
+            addbutton: false,
             disablemenu: true,
             collapsed: true,
             outlined: true,
@@ -166,8 +199,9 @@ export default {
             fields: []
           },
           {
-            title: 'Association',
+            title: 'Coverage',
             mode: 'expansion',
+            addbutton: false,
             disablemenu: true,
             collapsed: true,
             outlined: true,
@@ -175,13 +209,33 @@ export default {
             fields: []
           },
           {
-            title: 'Physical object',
+            title: 'Association',
+            mode: 'expansion',
+            addbutton: false,
+            disablemenu: true,
+            collapsed: true,
+            outlined: true,
+            id: 4,
+            fields: []
+          },
+          {
+            title: 'Represented object',
             type: 'phaidra:Subject',
             mode: 'expansion',
             disablemenu: true,
             collapsed: true,
             outlined: true,
-            id: 4,
+            id: 5,
+            fields: []
+          },
+          {
+            title: 'Bibliographic metadata',
+            mode: 'expansion',
+            addbutton: false,
+            disablemenu: true,
+            collapsed: true,
+            outlined: true,
+            id: 6,
             fields: []
           }
         ]
@@ -203,10 +257,13 @@ export default {
       self.form.sections[0].fields.push(fields.getField('description'))
 
       let lang = fields.getField('language')
-      lang.value = 'deu'
+      lang.value = this.$i18n.locale
+      lang.label = 'Language of object'
       self.form.sections[0].fields.push(lang)
 
-      self.form.sections[0].fields.push(fields.getField('keyword'))
+      let kw = fields.getField('keyword')
+      kw.disableSuggest = true
+      self.form.sections[0].fields.push(kw)
 
       let role = fields.getField('role')
       role.ordergroup = 'role'
@@ -222,21 +279,45 @@ export default {
       self.form.sections[1].fields.push(fields.getField('oefos-subject'))
       self.form.sections[1].fields.push(fields.getField('bk-subject'))
 
-      self.form.sections[2].fields.push(fields.getField('association'))
-      self.form.sections[2].fields.push(fields.getField('project'))
+      self.form.sections[2].fields.push(fields.getField('temporal-coverage'))
+      let place = fields.getField('spatial-geonames-search')
+      place.showtype = false
+      self.form.sections[2].fields.push(place)
 
-      self.form.sections[3].fields.push(fields.getField('inscription'))
-      self.form.sections[3].fields.push(fields.getField('shelf-mark'))
-      self.form.sections[3].fields.push(fields.getField('accession-number'))
-      self.form.sections[3].fields.push(fields.getField('provenance'))
-      self.form.sections[3].fields.push(fields.getField('production-company'))
-      self.form.sections[3].fields.push(fields.getField('production-place'))
-      self.form.sections[3].fields.push(fields.getField('physical-location'))
-      self.form.sections[3].fields.push(fields.getField('condition-note'))
-      self.form.sections[3].fields.push(fields.getField('height'))
-      self.form.sections[3].fields.push(fields.getField('width'))
-      self.form.sections[3].fields.push(fields.getField('material-text'))
-      self.form.sections[3].fields.push(fields.getField('technique-text'))
+      self.form.sections[3].fields.push(fields.getField('association'))
+      self.form.sections[3].fields.push(fields.getField('project'))
+
+      self.form.sections[4].fields.push(fields.getField('date-edtf'))
+      self.form.sections[4].fields.push(fields.getField('inscription'))
+      self.form.sections[4].fields.push(fields.getField('shelf-mark'))
+      self.form.sections[4].fields.push(fields.getField('accession-number'))
+      self.form.sections[4].fields.push(fields.getField('provenance'))
+      self.form.sections[4].fields.push(fields.getField('production-company'))
+      self.form.sections[4].fields.push(fields.getField('production-place'))
+      self.form.sections[4].fields.push(fields.getField('physical-location'))
+      self.form.sections[4].fields.push(fields.getField('condition-note'))
+      self.form.sections[4].fields.push(fields.getField('height'))
+      self.form.sections[4].fields.push(fields.getField('width'))
+      self.form.sections[4].fields.push(fields.getField('material-text'))
+      self.form.sections[4].fields.push(fields.getField('technique-text'))
+
+      self.form.sections[5].fields.push(fields.getField('series'))
+      self.form.sections[5].fields.push(fields.getField('bf-publication'))
+
+      for (let s of this.form.sections) {
+        for (let f of s.fields) {
+          for (let prop of Object.keys(f)) {
+            switch (prop) {
+              case 'language':
+                f.language = this.$i18n.locale
+                break
+              case 'nameLanguage':
+                f.nameLanguage = this.$i18n.locale
+                break
+            }
+          }
+        }
+      }
 
       this.markMandatory()
     }
