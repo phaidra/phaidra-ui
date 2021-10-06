@@ -66,6 +66,14 @@ export default {
       console.log('[' + state.user.username + '] got user data firstname[' + response.data.user_data.firstname + '] lastname[' + response.data.user_data.lastname + '] email[' + response.data.user_data.email + ']')
       commit('setLoginData', response.data.user_data)
     } catch (error) {
+      if (error.response.status === 401) {
+        commit('setAlerts', [ { type: 'danger', msg: 'You have been logged out' } ])
+        commit('setToken', null)
+        commit('setLoginData', { username: null, firstname: null, lastname: null, email: null, org_units_l1: null, org_units_l2: null })
+        if (process.browser) {
+          document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+        }
+      }
       console.log(error)
     }
   },

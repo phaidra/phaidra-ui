@@ -115,7 +115,7 @@
 
               <template v-for="(alert, i) in alerts">
                 <v-snackbar :key="'altsnack'+i" class="font-weight-regular" top color="success" v-if="alert.type === 'success'" v-model="showSnackbar">
-                  {{alert.msg}}
+                  {{ $t(alert.msg) }}
                   <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
                 </v-snackbar>
               </template>
@@ -322,11 +322,10 @@ export default {
       this.$i18n.locale = 'eng'
     }
     if (!this.user.token) {
-      var token = this.getCookie('X-XSRF-TOKEN')
-      if (token) {
-        this.$store.commit('setToken', token)
-        await this.$store.dispatch('getLoginData')
-      }
+      this.$store.commit('setToken', this.getCookie('X-XSRF-TOKEN'))
+    }
+    if (this.user.token) {
+      await this.$store.dispatch('getLoginData')
     }
     await this.loadTracking()
     let Matomo

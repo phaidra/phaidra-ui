@@ -76,7 +76,7 @@ export default {
         }
       }
       if (!hasfile) {
-        this.form.sections[0].fields.push(fields.getField('file'))
+        this.form.sections[0].fields.splice(1, 0, fields.getField('file'))
       }
       let hasObjectType2 = false
       for (let s of this.form.sections) {
@@ -98,7 +98,7 @@ export default {
           }
         }
         otf2.resourceType = rtv2
-        this.form.sections[0].fields.splice(1, 0, otf2)
+        this.form.sections[0].fields.splice(2, 0, otf2)
       }
     },
     handleInputResourceType: function (rt) {
@@ -248,6 +248,10 @@ export default {
       rt.value = defaultResourceType
       self.form.sections[0].fields.push(rt)
 
+      let file = fields.getField('file')
+      file.fileInputClass = 'mb-2'
+      self.form.sections[0].fields.push(file)
+
       let ot = fields.getField('object-type-checkboxes')
       ot.resourceType = defaultResourceType
       self.form.sections[0].fields.push(ot)
@@ -271,9 +275,8 @@ export default {
 
       let lic = fields.getField('license')
       lic.showValueDefinition = true
+      lic.vocabulary = 'alllicenses'
       self.form.sections[0].fields.push(lic)
-
-      self.form.sections[0].fields.push(fields.getField('file'))
 
       self.form.sections[1].fields.push(fields.getField('gnd-subject'))
       self.form.sections[1].fields.push(fields.getField('oefos-subject'))

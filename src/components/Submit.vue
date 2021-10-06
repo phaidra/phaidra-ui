@@ -2,8 +2,27 @@
   <v-container fluid>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
+        <span class="title font-weight-light primary--text">{{ $t("Research data") }}</span>
+        <v-divider></v-divider>
+      </v-col>
+    </v-row>
+    <v-row class="my-6" justify="start">
+      <v-col cols="12">
         <v-btn large class="primary" :to="{ name: 'upload' }">
           <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Upload") }}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="my-6" justify="start">
+      <v-col cols="12">
+        <span class="title font-weight-light primary--text">{{ $t("Publications") }}</span>
+        <v-divider></v-divider>
+      </v-col>
+    </v-row>
+    <v-row class="my-6" justify="start">
+      <v-col cols="12">
+        <v-btn large class="primary" :href="'https://uscholar.univie.ac.at/login'">
+          <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("u:scholar") }}
         </v-btn>
       </v-col>
     </v-row>
