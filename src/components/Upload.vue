@@ -271,6 +271,7 @@ export default {
 
       let role = fields.getField('role')
       role.ordergroup = 'role'
+      role.roleVocabulary = 'submitrolepredicate'
       self.form.sections[0].fields.push(role)
 
       let lic = fields.getField('license')

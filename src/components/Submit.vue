@@ -63,7 +63,7 @@
     </v-row>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm' }">
+        <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'asset' }  }">
           {{ $t("File") }}
         </v-btn>
         <v-btn large dark color="grey white--text mr-8" :to="{ name: 'submit-uwm', params: { cmodel: 'collection' } }">
