@@ -1,94 +1,34 @@
 {
-  "name": "phaidra-ui",
+  "name": "phaidra-ui-nuxt",
   "version": "1.0.0",
   "private": true,
-  "description": "User interface components using phaidra-api",
-  "author": "Rasta <hudak.rastislav@gmail.com>",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "ssr:build": "vue-cli-service ssr:build",
-    "ssr:serve": "vue-cli-service ssr:serve",
-    "ssr:start": "cross-env NODE_ENV=production vue-cli-service ssr:serve --mode production",
-    "svg": "vsvg -s ./svg-icons -t ./src/compiled-icons"
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
   },
   "dependencies": {
-    "@sentry/browser": "^5.22.3",
-    "@sentry/integrations": "^5.22.3",
-    "axios": "^0.21.1",
-    "core-js": "^2.6.11",
-    "express": "^4.17.1",
-    "iconv-lite": "^0.5.2",
-    "moment": "^2.27.0",
-    "phaidra-vue-components": "^0.6.6",
-    "vue": "^2.6.12",
-    "vue-client-only": "^2.0.0",
-    "vue-i18n": "^8.21.0",
-    "vue-json-pretty": "^1.6.7",
+    "@nuxt/http": "^0.6.4",
+    "@nuxtjs/axios": "^5.13.6",
+    "@sentry/browser": "^6.15.0",
+    "@sentry/integrations": "^6.15.0",
+    "axios": "^0.24.0",
+    "core-js": "^3.8.3",
+    "moment": "^2.29.1",
+    "nuxt": "^2.15.7",
+    "nuxt-i18n": "^6.28.1",
+    "path": "^0.12.7",
+    "vue-axios": "^3.4.0",
     "vue-meta": "^2.4.0",
-    "vue-router": "^3.4.3",
-    "vue-server-renderer": "^2.6.12",
-    "vuetify": "^2.4.11",
-    "vuex": "^3.5.1",
-    "vuex-router-sync": "^5.0.0",
-    "webpack-merge": "^4.2.2",
-    "whatwg-fetch": "^3.4.0"
+    "vue-svgicon": "^3.2.9",
+    "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
-    "@akryum/vue-cli-plugin-ssr": "^0.6.0",
-    "@mdi/font": "^5.5.55",
-    "@vue/cli-plugin-babel": "^3.12.1",
-    "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-service": "^3.12.1",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-react": "^7.20.6",
-    "eslint-plugin-vue": "^5.2.3",
-    "eslint-plugin-vuetify": "^1.0.0-beta.7",
-    "extract-text-webpack-plugin": "^3.0.2",
+    "@nuxtjs/vuetify": "^1.11.3",
     "sass": "^1.26.10",
     "sass-loader": "^7.3.1",
     "stylus": "^0.54.8",
-    "stylus-loader": "^3.0.2",
-    "vue-cli-plugin-vuetify": "^0.6.3",
-    "vue-svgicon": "^3.2.8",
-    "vue-template-compiler": "^2.6.12",
-    "vuetify-loader": "^1.6.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "standard"
-    ],
-    "plugins": [
-      "vuetify"
-    ],
-    "rules": {
-      "vuetify/no-deprecated-classes": "error",
-      "vuetify/grid-unknown-attributes": "error",
-      "vuetify/no-legacy-grid": "error"
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "cover 95% in AT",
-    "> 1%",
-    "not ie <= 8",
-    "Chrome >= 41",
-    "last 2 versions"
-  ]
+    "stylus-loader": "^3.0.2"
+  }
 }
