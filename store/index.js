@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import axios from 'axios'
 import config from '../config/phaidra-ui'
-import languages from '../utils/lang'
-import lang3to2map from '../utils/lang3to2map'
-import orgunits from '../utils/orgunits'
-import oefos from '../utils/oefos'
+import languages from 'phaidra-vue-components/src/utils/lang'
+import lang3to2map from 'phaidra-vue-components/src/utils/lang3to2map'
+import orgunits from 'phaidra-vue-components/src/utils/orgunits'
+import oefos from 'phaidra-vue-components/src/utils/oefos'
 
 const lang2to3map = Object.keys(lang3to2map).reduce((ret, key) => {
   ret[lang3to2map[key]] = key

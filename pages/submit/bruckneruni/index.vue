@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import fields from '../../../utils/fields'
+import fields from 'phaidra-vue-components/src/utils/fields'
 import { context } from '../../../mixins/context'
-import { vocabulary } from '../../../mixins/vocabulary'
+import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
 
 export default {
   mixins: [ context, vocabulary ],

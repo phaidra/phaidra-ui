@@ -40,11 +40,11 @@
 </template>
 
 <script>
-import arrays from '../../utils/arrays'
-import fields from '../../utils/fields'
+import arrays from 'phaidra-vue-components/src/utils/arrays'
+import fields from 'phaidra-vue-components/src/utils/fields'
 import { context } from '../../mixins/context'
 import { formvalidation } from '../../mixins/formvalidation'
-import { vocabulary } from '../../mixins/vocabulary'
+import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
 
 export default {
   mixins: [ context, vocabulary, formvalidation ],
