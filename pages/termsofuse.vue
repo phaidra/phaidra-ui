@@ -17,7 +17,6 @@
 import { config } from "../mixins/config";
 
 export default {
-  layout: "main",
   mixins: [config],
   data() {
     return {

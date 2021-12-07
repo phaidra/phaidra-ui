@@ -149,7 +149,6 @@
 
 <script>
 export default {
-  layout: "main",
     watch: {
     templateDialog (opened) {
       if (opened) {

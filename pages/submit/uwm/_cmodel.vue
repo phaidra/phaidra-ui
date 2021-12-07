@@ -60,7 +60,6 @@ import { config } from "../../../mixins/config";
 import { vocabulary } from "../../../mixins/vocabulary";
 
 export default {
-  layout: "main",
   mixins: [config, context, vocabulary],
   computed: {
     objectType: function () {
