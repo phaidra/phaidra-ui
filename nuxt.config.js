@@ -24,7 +24,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/axios',  mode: 'client'},
+    { src: '~/plugins/axios', mode: 'client' },
     { src: '~/plugins/svg-icon' },
     { src: '~/plugins/before-each.js' },
     { src: '~/plugins/after-each.js' },
@@ -50,7 +50,7 @@ export default {
   i18n: {
     langDir: 'locales/',
     locales: [
-       {
+      {
         name: 'English',
         code: 'eng',
         iso: 'eng',
@@ -62,10 +62,10 @@ export default {
         iso: 'deu',
         file: 'deu'
       },
-   ],
-   strategy: 'prefix_except_default',
-   fallbackLocale: 'eng',
-   vueI18n: {
+    ],
+    strategy: 'no_prefix',
+    fallbackLocale: 'eng',
+    vueI18n: {
       defaultLocale: 'eng',
       silentTranslationWarn: true,
       silentFallbackWarn: true,

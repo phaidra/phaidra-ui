@@ -8,7 +8,9 @@
             :placeholder="$t('Search...')"
             autocomplete="off"
             append-icon="mdi-magnify"
-            v-on:keyup.enter="$router.push(localeLocation({ path: '/search', query: { q } }))"
+            v-on:keyup.enter="
+              $router.push(localeLocation({ path: '/search', query: { q } }))
+            "
             clearable
             solo
             hide-details
@@ -16,11 +18,7 @@
           </v-text-field>
         </v-row>
         <v-row class="text-subtitle-1 font-weight-light text-center my-6">
-          <v-col>{{
-            $t(
-              "PHAIDRA_IS"
-            )
-          }}</v-col>
+          <v-col>{{ $t("PHAIDRA_IS") }}</v-col>
         </v-row>
       </v-col>
     </v-row>

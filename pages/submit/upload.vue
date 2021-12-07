@@ -44,11 +44,11 @@
 </template>
 
 <script>
-import arrays from 'phaidra-vue-components/src/utils/arrays'
-import fields from 'phaidra-vue-components/src/utils/fields'
+import arrays from "../../node_modules/phaidra-vue-components/src/utils/arrays";
+import fields from "../../node_modules/phaidra-vue-components/src/utils/fields";
 import { context } from "../../mixins/context";
 import { formvalidation } from "../../mixins/formvalidation";
-import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
+import { vocabulary } from "../../node_modules/phaidra-vue-components/src/mixins/vocabulary";
 
 export default {
   layout: "main",
@@ -178,7 +178,7 @@ export default {
       }
     },
     objectCreated: function (event) {
-      this.$router.push(this.localeLocation({ path: `detail/${event}`}));
+      this.$router.push(this.localeLocation({ path: `detail/${event}` }));
       this.$vuetify.goTo(0);
     },
     createForm: function (self, index) {

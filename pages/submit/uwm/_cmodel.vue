@@ -54,10 +54,10 @@
 </template>
 
 <script>
-import fields from "../../../utils/fields";
+import fields from "../../../node_modules/phaidra-vue-components/src/utils/fields";
 import { context } from "../../../mixins/context";
 import { config } from "../../../mixins/config";
-import { vocabulary } from "../../../mixins/vocabulary";
+import { vocabulary } from "../../../node_modules/phaidra-vue-components/src/mixins/vocabulary";
 
 export default {
   layout: "main",
@@ -117,7 +117,7 @@ export default {
       this.$store.commit("setAlerts", [
         { type: "success", msg: "Object " + event + " created" },
       ]);
-      this.$router.push(this.localeLocation({ path: `detail/${event}`}));
+      this.$router.push(this.localeLocation({ path: `detail/${event}` }));
       this.$vuetify.goTo(0);
     },
     loadUwmetadata: async function (self) {
@@ -197,9 +197,11 @@ export default {
           });
           if (response.data.status === 200) {
             if (response.data.pid) {
-              this.$router.push(this.localeLocation({
-                path: `detail/${response.data.pid}`
-              }));
+              this.$router.push(
+                this.localeLocation({
+                  path: `detail/${response.data.pid}`,
+                })
+              );
             }
           } else {
             if (response.data.alerts && response.data.alerts.length > 0) {
