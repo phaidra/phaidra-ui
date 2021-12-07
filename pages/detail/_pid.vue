@@ -569,7 +569,6 @@
 <script>
 import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
-// import { vocabulary } from 'phaidra-vue-components/src/mixins/vocabulary'
 
 export default {
   mixins: [ context, config ],
