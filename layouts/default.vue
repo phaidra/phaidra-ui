@@ -339,6 +339,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
+import '@/assets/css/material-icons.css'
 
 export default {
   mixins: [config, context],
@@ -502,7 +503,6 @@ export default {
 </style>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap');
 .no-padding {
   padding: 0px;
 }

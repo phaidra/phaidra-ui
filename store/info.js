@@ -1,1 +1,2 @@
-../node_modules/phaidra-vue-components/src/store/modules/info.js
+import info from 'phaidra-vue-components/src/store/modules/info'
+export default info
