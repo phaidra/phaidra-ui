@@ -6,7 +6,9 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "@mdi/font": "^6.5.95",
@@ -26,7 +28,10 @@
     "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.16.3",
+    "@nuxtjs/eslint-config": "^8.0.0",
     "@nuxtjs/vuetify": "^1.11.3",
+    "eslint": "^8.4.1",
     "sass": "^1.26.10",
     "sass-loader": "^7.3.1",
     "stylus": "^0.54.8",

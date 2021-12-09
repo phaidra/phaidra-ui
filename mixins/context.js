@@ -5,10 +5,10 @@ export const context = {
     PBreadcrumbs
   },
   computed: {
-    signedin() {
+    signedin () {
       return this.$store.state.user.token ? 1 : 0
     },
-    user() {
+    user () {
       return this.$store.state.user
     }
   }

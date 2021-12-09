@@ -1,5 +1,5 @@
-const path = require('path')
 import config from './config/phaidra-ui'
+const path = require('path')
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -39,7 +39,7 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
+    '@nuxtjs/vuetify'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -62,15 +62,15 @@ export default {
         code: 'deu',
         iso: 'deu',
         file: 'deu'
-      },
+      }
     ],
     strategy: 'no_prefix',
     fallbackLocale: 'eng',
     vueI18n: {
       defaultLocale: 'eng',
       silentTranslationWarn: true,
-      silentFallbackWarn: true,
-    },
+      silentFallbackWarn: true
+    }
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
