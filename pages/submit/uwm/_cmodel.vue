@@ -54,13 +54,12 @@
 </template>
 
 <script>
-import fields from "../../../node_modules/phaidra-vue-components/src/utils/fields";
+import fields from "phaidra-vue-components/src/utils/fields";
 import { context } from "../../../mixins/context";
 import { config } from "../../../mixins/config";
-import { vocabulary } from "../../../node_modules/phaidra-vue-components/src/mixins/vocabulary";
+import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
 
 export default {
-  layout: "main",
   mixins: [config, context, vocabulary],
   computed: {
     objectType: function () {

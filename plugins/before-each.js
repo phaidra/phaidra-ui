@@ -1,6 +1,6 @@
-import config from '../config/phaidra-ui'
-import qs from 'qs'
-import axios from 'axios'
+// import qs from 'qs'
+// import axios from 'axios'
+// import config from '../config/phaidra-ui'
 
 // export default async ({app}) => {
 //   app.router.beforeEach(async(to, from, next) => {

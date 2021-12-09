@@ -339,6 +339,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
+import '@/assets/css/material-icons.css'
 
 export default {
   mixins: [config, context],

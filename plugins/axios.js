@@ -1,15 +1,15 @@
-import Vue from 'vue';
-import axios from 'axios';
+import Vue from 'vue'
+import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 axios.interceptors.request.use((config) => {
-  let token = localStorage.getItem('token')
-  if(token){
-    config.headers.Authorization = `Bearer ${token}`;
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
-  return config;
+  return config
 }, function (error) {
-  return Promise.reject(error);
-});
+  return Promise.reject(error)
+})
 
-Vue.use(VueAxios, axios);
+Vue.use(VueAxios, axios)

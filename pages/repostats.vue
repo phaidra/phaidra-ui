@@ -65,7 +65,6 @@ import { context } from "../mixins/context";
 import { config } from "../mixins/config";
 
 export default {
-  layout: "main",
   mixins: [context, config],
   computed: {
     routepid: function () {

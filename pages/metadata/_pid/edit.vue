@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import jsonLd from "../../../node_modules/phaidra-vue-components/src/utils/json-ld";
+import jsonLd from "phaidra-vue-components/src/utils/json-ld";
 // import { formvalidation } from '../mixins/formvalidation'
 import { context } from "../../../mixins/context";
 import { config } from "../../../mixins/config";

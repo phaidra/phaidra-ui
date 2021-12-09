@@ -3,7 +3,7 @@ import axios from 'axios'
 import config from '../config/phaidra-ui'
 
 export const state = () => ({
-  config: config,
+  config,
   appconfig: config.global,
   instanceconfig: config.instances[config.defaultinstance],
   snackbar: false,
@@ -19,7 +19,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  updateBreadcrumbs(state, transition) {
+  updateBreadcrumbs (state, transition) {
     state.breadcrumbs = [
       {
         text: state.instanceconfig.institution,
@@ -385,37 +385,37 @@ export const mutations = {
       )
     }
   },
-  setLoading(state, loading) {
+  setLoading (state, loading) {
     state.loading = loading
   },
-  setGroups(state, groups) {
+  setGroups (state, groups) {
     state.groups = groups
   },
-  setObjectInfo(state, objectInfo) {
+  setObjectInfo (state, objectInfo) {
     state.objectInfo = objectInfo
   },
-  setObjectMembers(state, objectMembers) {
+  setObjectMembers (state, objectMembers) {
     state.objectMembers = objectMembers
   },
-  switchInstance(state, instance) {
+  switchInstance (state, instance) {
     state.instance = state.config.instances[instance]
   },
-  hideSnackbar(state) {
+  hideSnackbar (state) {
     state.snackbar = false
   },
-  setAlerts(state, alerts) {
-    for (let a of alerts) {
+  setAlerts (state, alerts) {
+    for (const a of alerts) {
       if (a.type === 'success') {
         state.snackbar = true
       }
     }
     state.alerts = alerts
   },
-  clearAlert(state, alert) {
+  clearAlert (state, alert) {
     state.alerts = state.alerts.filter(e => e !== alert)
   },
-  setUserData(state, user) {
-    let data = {
+  setUserData (state, user) {
+    const data = {
       ...state.user,
       ...user
     }
@@ -424,8 +424,8 @@ export const mutations = {
       localStorage.setItem('user', JSON.stringify(user))
     }
   },
-  setUserToken(state, token) {
-    let data = {
+  setUserToken (state, token) {
+    const data = {
       ...state.user,
       token
     }
@@ -434,15 +434,15 @@ export const mutations = {
       localStorage.setItem('token', token)
     }
   },
-  setUsername(state, username) {
+  setUsername (state, username) {
     Vue.set(state.user, 'username', username)
   },
-  setToken(state, token) {
+  setToken (state, token) {
     localStorage.setItem('token', token)
     Vue.set(state.user, 'token', token)
   },
-  setLoginData(state, logindata) {
-    let user = {
+  setLoginData (state, logindata) {
+    const user = {
       username: logindata.username,
       firstname: logindata.firstname,
       lastname: logindata.lastname,
@@ -450,19 +450,19 @@ export const mutations = {
       org_units_l1: logindata.org_units_l1,
       org_units_l2: logindata.org_units_l2
     }
-    let data = {
+    const data = {
       ...state.user,
       ...user
     }
     state.user = data
     localStorage.setItem('user', JSON.stringify(user))
   },
-  clearUser(state) {
+  clearUser (state) {
     state.user = {}
     localStorage.removeItem('token')
     localStorage.removeItem('user')
   },
-  clearStore(state) {
+  clearStore (state) {
     state.alerts = []
     state.objectInfo = null
     state.objectMembers = []
@@ -476,8 +476,7 @@ export const mutations = {
 
 export const actions = {
 
-  async fetchObjectInfo({ commit, state }, pid) {
-    console.log('[' + pid + '] fetching object info')
+  async fetchObjectInfo ({ commit, state }, pid) {
     try {
       let response
       if (state.user.token) {
@@ -491,20 +490,16 @@ export const actions = {
       } else {
         response = await axios.get(state.instanceconfig.api + '/object/' + pid + '/info')
       }
-      console.log('[' + pid + '] fetching object info done')
       commit('setObjectInfo', response.data.info)
     } catch (error) {
-      console.log(error)
     }
   },
-  async fetchObjectMembers({ dispatch, commit, state }, parent) {
-    console.log('[' + parent.pid + '] fetching object members')
+  async fetchObjectMembers ({ dispatch, commit, state }, parent) {
     commit('setObjectMembers', [])
     try {
       if (parent.members.length > 0) {
-        let members = []
-        for (let doc of parent.members) {
-          console.log('[' + parent.pid + '] fetching object info of member ' + doc.pid)
+        const members = []
+        for (const doc of parent.members) {
           let memresponse
           if (state.user.token) {
             memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info',
@@ -517,7 +512,6 @@ export const actions = {
           } else {
             memresponse = await axios.get(state.instanceconfig.api + '/object/' + doc.pid + '/info')
           }
-          console.log('[' + parent.pid + '] fetching object info of member ' + doc.pid + ' done')
           members.push(memresponse.data.info)
         }
         commit('setObjectMembers', members)
@@ -525,12 +519,11 @@ export const actions = {
         commit('setObjectMembers', [])
       }
     } catch (error) {
-      console.log(error)
     }
   },
-  async getLoginData({ commit, dispatch, state }) {
+  async getLoginData ({ commit, dispatch, state }) {
     try {
-      let response = await axios.get(state.instanceconfig.api + '/directory/user/data', {
+      const response = await axios.get(state.instanceconfig.api + '/directory/user/data', {
         headers: {
           'X-XSRF-TOKEN': state.user.token
         }
@@ -538,7 +531,6 @@ export const actions = {
       if (response.data.alerts && response.data.alerts.length > 0) {
         commit('setAlerts', response.data.alerts)
       }
-      console.log('[' + state.user.username + '] got user data firstname[' + response.data.user_data.firstname + '] lastname[' + response.data.user_data.lastname + '] email[' + response.data.user_data.email + ']')
       commit('setLoginData', response.data.user_data)
     } catch (error) {
       if (error.response.status === 401) {
@@ -549,24 +541,21 @@ export const actions = {
           document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
         }
       }
-      console.log(error)
     }
   },
-  async login({ commit, dispatch, state }, credentials) {
-    console.log('[' + credentials.username + '] logging in')
+  async login ({ commit, dispatch, state }, credentials) {
     commit('clearStore')
     commit('setUsername', credentials.username)
     try {
-      let response = await axios.get(state.instanceconfig.api + '/signin', {
+      const response = await axios.get(state.instanceconfig.api + '/signin', {
         headers: {
-          'Authorization': 'Basic ' + btoa(credentials.username + ':' + credentials.password)
+          Authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
         }
       })
       if (response.data.alerts && response.data.alerts.length > 0) {
         commit('setAlerts', response.data.alerts)
       }
       if (response.status === 200) {
-        console.log('[' + state.user.username + '] login successful token[' + response.data['XSRF-TOKEN'] + '], fetching user data')
         if (process.browser) {
           document.cookie = 'X-XSRF-TOKEN=' + response.data['XSRF-TOKEN'] + '; domain=' + window.location.hostname + '; path=/; secure; samesite=strict'
         }
@@ -574,10 +563,9 @@ export const actions = {
         dispatch('getLoginData')
       }
     } catch (error) {
-      console.log(error)
     }
   },
-  async logout({ commit, dispatch, state }) {
+  async logout ({ commit, dispatch, state }) {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     commit('clearStore')
@@ -585,7 +573,7 @@ export const actions = {
       document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
     }
     try {
-      let response = await axios.get(state.instanceconfig.api + '/signout', {
+      const response = await axios.get(state.instanceconfig.api + '/signout', {
         headers: {
           'X-XSRF-TOKEN': state.user.token
         }
@@ -596,13 +584,12 @@ export const actions = {
       }
     } catch (error) {
       commit('clearStore')
-      console.log(error)
     }
   },
-  async getUserGroups({ commit, state }) {
+  async getUserGroups ({ commit, state }) {
     commit('clearAlerts')
     try {
-      let response = await axios.get(state.instanceconfig.api + '/groups', {
+      const response = await axios.get(state.instanceconfig.api + '/groups', {
         headers: {
           'X-XSRF-TOKEN': state.user.token
         }
@@ -612,10 +599,9 @@ export const actions = {
       }
       commit('setGroups', response.data.groups)
     } catch (error) {
-      console.log(error)
     }
   },
-  switchInstance({ commit }, instance) {
+  switchInstance ({ commit }, instance) {
     commit('switchInstance', instance)
   }
 

@@ -1,10 +1,10 @@
 export const config = {
   computed: {
-    appconfig() {
+    appconfig () {
       return this.$store.state.config.global
     },
-    instanceconfig() {
+    instanceconfig () {
       return this.$store.state.instanceconfig
     }
-  },
+  }
 }

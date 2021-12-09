@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import fields from "../../../node_modules/phaidra-vue-components/src/utils/fields";
+import fields from "phaidra-vue-components/src/utils/fields";
 import { context } from "../../../mixins/context";
 
 export default {
