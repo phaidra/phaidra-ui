@@ -29,6 +29,7 @@ export default {
     { src: '~/plugins/before-each.js' },
     { src: '~/plugins/after-each.js' },
     { src: '~/plugins/vue-meta.js' },
+    { src: '~/plugins/vuetify.js', mode: 'client' },
     { src: '~/plugins/phaidra-vue-components', mode: 'client' }
   ],
 
