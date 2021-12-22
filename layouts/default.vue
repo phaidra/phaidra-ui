@@ -358,11 +358,6 @@ export default {
           content: "The Essential Meta Tags for Facebook",
         },
         {
-          hid: "og:image",
-          name: "og:image",
-          content: "https://phaidra.univie.ac.at/static/img/projects/uscholar.jpg",
-        },
-        {
           hid: "twitter:description",
           name: "twitter:description",
           content: "Description",
@@ -376,11 +371,6 @@ export default {
           hid: "twitter:card",
           name: "twitter:card",
           content: "summary_large_image",
-        },
-        {
-          hid: "twitter:image",
-          name: "twitter:image",
-          content: "https://phaidra.univie.ac.at/static/img/projects/uscholar.jpg",
         }
       ],
     };
