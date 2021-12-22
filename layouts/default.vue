@@ -343,9 +343,38 @@ import '@/assets/css/material-icons.css'
 
 export default {
   mixins: [config, context],
-  metaInfo: {
-    title: config.title,
-    meta: []
+   metaInfo() {
+    let metaInfo = {
+      title: config.title,
+      meta: [
+        {
+          hid: "og:description",
+          name: "og:description",
+          content: "Description",
+        },
+        {
+          hid: "og:title",
+          name: "og:title",
+          content: "The Essential Meta Tags for Facebook",
+        },
+        {
+          hid: "twitter:description",
+          name: "twitter:description",
+          content: "Description",
+        },
+        {
+          hid: "twitter:title",
+          name: "twitter:title",
+          content: "The Essential Meta Tags for Twitter",
+        },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        }
+      ],
+    };
+    return metaInfo;
   },
   data() {
     return {
