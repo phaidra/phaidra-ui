@@ -396,6 +396,7 @@ export default {
     changeLocale: function (lang) {
       this.$i18n.locale = lang;
       this.$router.push(this.switchLocalePath(lang))
+      this.$store.dispatch('vocabulary/sortRoles', this.$i18n.locale)
     },
     dismiss: function (alert) {
       this.$store.commit("clearAlert", alert);
