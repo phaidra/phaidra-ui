@@ -561,6 +561,38 @@
 
         </v-col>
 
+        <div no-gutters v-if="objectInfo.cmodel === 'Collection' && docs.length">
+          <p class="title font-weight-light mb-8">{{ $t('Members of') }} {{ objectInfo.pid }}</p>
+          <template v-for="(doc, i) in this.docs">
+            <v-row :key="'doc'+i">
+              <v-col cols="2" class="preview-maxwidth">
+                  <div>
+                  <p-img :src="instanceconfig.api + '/object/' + doc.pid + '/thumbnail'" class="elevation-1 mt-2">
+                    <template v-slot:placeholder>
+                      <div class="fill-height ma-0" align="center" justify="center" >
+                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                      </div>
+                    </template>
+                  </p-img>
+                  </div>
+              </v-col>
+              <v-col cols="10">
+                <v-row no-gutters class="mb-4">
+                <v-col cols="10">
+                  <h3 class="title font-weight-light primary--text" @click.stop v-if="doc.dc_title">
+                    <router-link :to="{ path: `${doc.pid}`, params: { pid: doc.pid } }">{{ doc.dc_title[0] }}</router-link>
+                  </h3>
+                  <p class="grey--text">{{doc.pid}}</p>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col cols="2" class="text-right"><span v-if="doc.created" class="grey--text">{{ doc.created | date }}</span></v-col>
+              </v-row>
+              </v-col>
+            </v-row>
+          </template>
+          <v-pagination v-if="total>pagesize" v-bind:length="totalPages" total-visible="10" v-model="page" class="mb-3" />
+        </div>
+
       </v-row>
     </template>
   </v-container>
@@ -569,7 +601,7 @@
 <script>
 import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
-
+import qs from 'qs'
 export default {
   mixins: [ context, config ],
   metaInfo () {
@@ -635,6 +667,18 @@ export default {
     return metaInfo
   },
   computed: {
+    page: {
+      get () {
+        return this.currentPage
+      },
+      set (value) {
+        this.currentPage = value
+        this.getCollectionMembers()
+      }
+    },
+    totalPages: function () {
+      return Math.ceil(this.total / this.pagesize)
+    },
     isRestricted: function () {
       return this.objectInfo.datastreams.includes('POLICY')
     },
@@ -701,7 +745,11 @@ export default {
       return this.$route.params.pid
     },
     objectInfo: function () {
-      return this.$store.state.objectInfo
+      let objInfo =  this.$store.state.objectInfo
+      if(objInfo && objInfo.cmodel === 'Collection') {
+        this.getCollectionMembers(this.$route.params.pid)
+    }
+      return objInfo
     },
     objectMembers: function () {
       return this.$store.state.objectMembers
@@ -779,10 +827,47 @@ export default {
         download: '-',
         detail: '-'
       },
-      checksums: []
+      checksums: [],
+      currentPage: 1,
+      pagesize: 10,
+      docs: [],
+      total: 0
     }
   },
   methods: {
+    async getCollectionMembers (pid) {
+       const id = pid.replace(/[o:]/g, '')
+       let params = {
+        q: '-hassuccessor:* AND -ismemberof:["" TO *]',
+        'q.op': 'AND',
+        defType: 'edismax',
+        wt: 'json',
+        fq: `owner:* AND ispartof:"${pid}"`,
+        start: (this.page - 1) * this.pagesize,
+        rows: this.pagesize,
+        sort: `pos_in_o_${id} asc`,
+        facet: true,
+        'facet.query': []
+      }
+      try {
+        this.$store.commit('setLoading', true)
+        let response = await this.$http.request({
+          method: 'POST',
+          url: this.instanceconfig.solr + '/select',
+          data: qs.stringify(params, { arrayFormat: 'repeat' }),
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        })
+        this.$store.commit('setLoading', false)
+        this.docs = response.data.response.docs
+        this.total = response.data.response.numFound
+      } catch (error) {
+        this.$store.commit('setLoading', false)
+        console.log(error)
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      }
+    },
     trackDownload () {
       this.$matomo.setCustomUrl('https://' + this.instanceconfig.baseurl + '/download/' + this.routepid)
       this.$matomo.setDocumentTitle('Download ' + this.routepid)
@@ -933,9 +1018,6 @@ export default {
       }
       self.checksums = []
     }
-  },
-  mounted() {
-    console.log('params', this.$route.params)
   },
   serverPrefetch () {
     // console.log('[' + this.$store.state.route.params.pid + '] prefetch')
