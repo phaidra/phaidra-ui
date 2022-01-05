@@ -66,8 +66,8 @@ export default {
     ],
     strategy: 'no_prefix',
     fallbackLocale: 'eng',
+    defaultLocale: 'eng',
     vueI18n: {
-      defaultLocale: 'eng',
       silentTranslationWarn: true,
       silentFallbackWarn: true
     }
