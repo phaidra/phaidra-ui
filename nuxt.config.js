@@ -20,6 +20,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '~/assets/css/d3NetworkCustom.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -29,6 +30,7 @@ export default {
     { src: '~/plugins/before-each.js' },
     { src: '~/plugins/after-each.js' },
     { src: '~/plugins/vue-meta.js' },
+    { src: '~/plugins/lodash.js' },
     { src: '~/plugins/vuetify.js', mode: 'client' },
     { src: '~/plugins/phaidra-vue-components', mode: 'client' }
   ],
