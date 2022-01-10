@@ -561,23 +561,114 @@
 
         </v-col>
 
+        <div no-gutters v-if="objectInfo.cmodel === 'Collection' && docs.length">
+          <p class="title font-weight-light mb-8">{{ $t('Members of') }} {{ objectInfo.pid }}</p>
+          <template v-for="(doc, i) in this.docs">
+            <v-row :key="'doc'+i">
+              <v-col cols="2" class="preview-maxwidth">
+                  <div>
+                  <p-img :src="instanceconfig.api + '/object/' + doc.pid + '/thumbnail'" class="elevation-1 mt-2">
+                    <template v-slot:placeholder>
+                      <div class="fill-height ma-0" align="center" justify="center" >
+                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                      </div>
+                    </template>
+                  </p-img>
+                  </div>
+              </v-col>
+              <v-col cols="10">
+                <v-row no-gutters class="mb-4">
+                <v-col cols="10">
+                  <h3 class="title font-weight-light primary--text" @click.stop v-if="doc.dc_title">
+                    <router-link :to="{ path: `${doc.pid}`, params: { pid: doc.pid } }">{{ doc.dc_title[0] }}</router-link>
+                  </h3>
+                  <p class="grey--text">{{doc.pid}}</p>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col cols="2" class="text-right"><span v-if="doc.created" class="grey--text">{{ doc.created | date }}</span></v-col>
+              </v-row>
+              </v-col>
+            </v-row>
+          </template>
+          <v-pagination v-if="total>pagesize" v-bind:length="totalPages" total-visible="10" v-model="page" class="mb-3" />
+        </div>
+
       </v-row>
+      <v-row>
+        <div id="d3-graph-container" style="width: 100%">
+        <svg style="position: absolute;">
+          <defs>
+            <marker id="m-end" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth" >
+              <path d="M0,0 L0,6 L9,3 z"></path>
+            </marker>
+                <marker id="m-start" markerWidth="6" markerHeight="6" refX="-4" refY="3" orient="auto" markerUnits="strokeWidth" >
+              <rect width="3" height="6"></rect>
+            </marker>
+          </defs>
+        </svg>
+        <d3-network ref='net' :net-nodes="nodes" :net-links="links" :options="options" @node-click="nodeclick"  :link-cb="lcb"/>
+    </div>
+      </v-row>
+
     </template>
   </v-container>
 </template>
 
+
 <script>
 import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
-
+import D3Network from 'vue-d3-network'
+import 'vue-d3-network/dist/vue-d3-network.css'
+import qs from 'qs'
 export default {
   mixins: [ context, config ],
+  components: {
+    D3Network
+  },
   metaInfo () {
     let metaInfo = {}
     if (this.objectInfo) {
+      let thumbnail = this.instanceconfig.api + '/object/' +  this.objectInfo.pid + '/thumbnail'
+      metaInfo.meta = [
+        {
+          hid: "og:title",
+          name: "og:title",
+          content: this.objectInfo.sort_dc_title,
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: thumbnail,
+        },
+           {
+          hid: "og:image:width",
+          name: "og:image:width",
+          content: '1200',
+        },
+           {
+          hid: "og:image:height",
+          name: "og:image:height",
+          content: '630',
+        },
+        {
+          hid: "twitter:title",
+          name: "twitter:title",
+          content: this.objectInfo.sort_dc_title,
+        },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          hid: "twitter:image",
+          name: "twitter:image",
+          content: thumbnail,
+        },
+      ]
       if (this.objectInfo.metatags) {
         metaInfo.title = this.objectInfo.metatags.citation_title + ' (' + this.instanceconfig.title + ' - ' + this.objectInfo.pid + ')'
-        metaInfo.meta = []
         Object.entries(this.objectInfo.metatags).forEach(([name, value]) => {
           if (Array.isArray(value)) {
             for (let v of value) {
@@ -598,6 +689,29 @@ export default {
     return metaInfo
   },
   computed: {
+      options(){
+      return{
+        force: 3000,
+        size:{ w: this.windowWidth, h:this.svgHeight},
+        nodeSize: this.nodeSize,
+        nodeLabels: true,
+        canvas: this.canvas,
+        linkWidth:2,
+      }
+    },
+    page: {
+
+      get () {
+        return this.currentPage
+      },
+      set (value) {
+        this.currentPage = value
+        this.getCollectionMembers()
+      }
+    },
+    totalPages: function () {
+      return Math.ceil(this.total / this.pagesize)
+    },
     isRestricted: function () {
       return this.objectInfo.datastreams.includes('POLICY')
     },
@@ -664,7 +778,11 @@ export default {
       return this.$route.params.pid
     },
     objectInfo: function () {
-      return this.$store.state.objectInfo
+      let objInfo =  this.$store.state.objectInfo
+      if(objInfo && objInfo.cmodel === 'Collection') {
+        this.getCollectionMembers(this.$route.params.pid)
+    }
+      return objInfo
     },
     objectMembers: function () {
       return this.$store.state.objectMembers
@@ -729,6 +847,19 @@ export default {
   },
   data () {
     return {
+      defaultOid: this.$route.params.pid,
+      windowWidth: 1000,
+      initialInfo: null,
+      parentCount: 0,
+      childCount: 0,
+      svgHeight: 600,
+      existingFoundElem: [],
+      allChildrens: [],
+      allParentArr: [],
+      nodes:[],
+      links:[],
+      nodeSize:10,
+      canvas:false,
       relationDialog: false,
       doiCiteDialog: false,
       doiCiteLoading: false,
@@ -742,10 +873,271 @@ export default {
         download: '-',
         detail: '-'
       },
-      checksums: []
+      checksums: [],
+      currentPage: 1,
+      pagesize: 10,
+      docs: [],
+      total: 0
     }
   },
+  mounted(){
+    this.getInitialInfo(this.defaultOid)
+    setTimeout(() => {
+    this.windowWidth = document.getElementById('d3-graph-container').offsetWidth
+
+    }, 2000);
+  },
   methods: {
+      nodeclick: function(event,node){
+      console.log('node click', event, node)
+      this.$router.push(node.id)
+    },
+    lcb: function (link) {
+      link._svgAttrs = { 'marker-end': 'url(#m-end)' }
+      return link
+    },
+    getInfo: async function (oid) {
+    let existingIndex = this.existingFoundElem.findIndex(x => x?.info?.pid === oid)
+    if(existingIndex >= 0){
+      return this.existingFoundElem[existingIndex]
+    }else{
+      const response = await fetch(
+        `https://services.phaidra.univie.ac.at/api/object/${oid}/info`
+      );
+      let data = response.json();
+      this.existingFoundElem.push(data)
+      return data;
+    }
+  },
+
+  getChild: async function (oid) {
+    const info = await fetch(
+      `https://app01.cc.univie.ac.at:8983/solr/phaidra/select?fq=ispartof:"${oid}"&indent=on&q=*:*&rows=1000&start=1&wt=json`
+    );
+    return info.json();
+  },
+   formChildren: async function(cb){
+    this.childCount += 1
+    if(this.allChildrens.length === 0){
+      let childRes = await this.getChild(this.initialInfo.oid)
+      if(childRes?.response?.docs?.length){
+        this.allChildrens = childRes.response.docs.map(elem => {
+          return {
+            oid: elem.pid,
+            parents: elem.ispartof,
+            title: elem.sort_dc_title,
+            foundChild: false,
+            nodeCount: this.childCount,
+          }
+        });
+      }else{
+        return cb(this.allChildrens)
+      }
+      return this.formChildren(cb)
+    }else{
+      const allChildRes = await Promise.all(this.allChildrens.filter(x => !x.foundChild).map(async elem => {
+        let childRes = await this.getChild(elem.oid)
+        if(childRes?.response?.docs?.length){
+          let allChildrensTemp = childRes.response.docs.map(elem => {
+            return {
+              oid: elem.pid,
+              parents: elem.ispartof,
+              title: elem.sort_dc_title,
+              foundChild: false,
+              isNew: true,
+              nodeCount: this.childCount
+            }
+          });
+          this.allChildrens = [
+            ...this.allChildrens,
+            allChildrensTemp
+          ]
+          this.allChildrens = this.allChildrens.flat()
+          return {}
+        }else{
+          let nonChildNodeIndex = this.allChildrens.findIndex(x => x.oid === elem.oid)
+          if(nonChildNodeIndex >= 0){
+            this.allChildrens[nonChildNodeIndex].foundChild = true
+          }
+          return {}
+        }
+      }))
+      this.allChildrens = this.allChildrens.map(elem => {
+        if(elem.isNew){
+          return {
+            ...elem,
+            isNew: false
+          }
+        }else{
+          return {
+            ...elem,
+            foundChild: true
+          }
+        }
+      })
+      console.log('founded childrens 1 =>>', this.allChildrens)
+      if(this.allChildrens.findIndex(x => x.foundChild === false) >= 0){
+        return this.formChildren(cb)
+      }else{
+        console.log('founded childrens =>>', this.allChildrens)
+        this.allChildrens = _.uniqBy(this.allChildrens, 'oid');
+        cb(this.allChildrens)
+      }
+    }
+  },
+  getInitialInfo: async function (oid) {
+    try {
+      const result = await this.getInfo(oid);
+      this.initialInfo = {
+        oid: result?.info?.pid,
+        parents: result?.info?.ispartof,
+        title: result?.info?.sort_dc_title,
+        nodeCount: this.parentCount
+      }
+      this.formChildren(data => {
+        this.formTree([this.initialInfo])
+      })
+    }catch(error){
+      console.log('getInitialInfo error', error )
+    }
+  },
+  formTree: async function (mainArr) {
+    try {
+      this.parentCount -= 1
+      const allParentInfo1 = await Promise.all(mainArr.map(async (element) => {
+        if(element?.parents?.length){
+          const allParentInfo = await Promise.all(element.parents.map(async (elem) => {
+            const parentInfo = await this.getInfo(elem)
+            let obj = {
+              oid: parentInfo?.info?.pid,
+              parents: parentInfo?.info?.ispartof || [],
+              title: parentInfo?.info?.sort_dc_title,
+              nodeCount: this.parentCount
+            }
+            return obj
+          }));
+          return allParentInfo
+        }else{
+          element.parents = []
+          return element
+        }
+      }))
+      let mergedParentArr = allParentInfo1.flat()
+      this.allParentArr = [
+        ...this.allParentArr,
+        allParentInfo1.flat(),
+        ...this.allChildrens
+      ]
+      const canFindParent = mergedParentArr.filter(x => x.parents.length !== 0 )
+      if(canFindParent.length){
+        return this.formTree(mergedParentArr)
+      }
+      let allParentFlat = _.uniqBy(this.allParentArr.flat(), 'oid');
+      if(allParentFlat.findIndex(x => x.oid == this.initialInfo.oid) < 0){
+        allParentFlat.push(this.initialInfo)
+      }
+      console.log('allParentFlat', allParentFlat)
+      let links = []
+      allParentFlat.forEach((elem,index) => {
+        let childOfElement = allParentFlat.filter(x => x.parents.includes(elem.oid))
+        childOfElement.forEach(childElem => {
+          links.push(
+            { sid: elem.oid, tid: childElem.oid, _color: !elem?.parents?.length ? '#db4332' : "rgb(0, 98, 164/30%)" }
+          )
+        } )
+        // allParentFlat[index].children = childOfElement
+      })
+      let alreadyFoundLevel = []
+      let isOddSaved = false
+      let isEvenSaved = false
+      let node = _.orderBy(allParentFlat, ['nodeCount'],['asc']).map((elem, index) => {
+        console.log('node elem', elem.oid, elem.nodeCount)
+        let sameLevelCount = allParentFlat.filter(x => x.nodeCount === elem.nodeCount).length
+        let existingLevelIndex = alreadyFoundLevel.findIndex(x => x.nodeCount === elem.nodeCount)
+        let yPos =  alreadyFoundLevel.length === 0 ? 200 : (alreadyFoundLevel.length + 1) * 200
+        let screenCenter = this.windowWidth / 2
+        let xPos = 25
+        if(sameLevelCount === 1){
+          xPos = screenCenter
+        }
+        if(existingLevelIndex >= 0){
+          let alreadyFoundedDetails = alreadyFoundLevel[existingLevelIndex]
+          yPos = alreadyFoundedDetails.yPos - 50
+          if(alreadyFoundedDetails.iteration%2 ===0){
+            xPos = screenCenter + ((alreadyFoundedDetails.iteration/2) * 100)
+             if(isEvenSaved){
+              yPos = yPos - 20
+            }
+            isEvenSaved = !isEvenSaved
+          }else{
+            xPos = screenCenter - ((alreadyFoundedDetails.iteration/2) * 100)
+            if(isOddSaved){
+              yPos = yPos - 20
+            }
+            isOddSaved = !isOddSaved
+          }
+          alreadyFoundedDetails.xPos = xPos
+          alreadyFoundedDetails.iteration += 1
+        }else{
+          xPos = screenCenter
+          alreadyFoundLevel.push({
+            yPos,
+            xPos,
+            nodeCount: elem.nodeCount,
+            iteration: 1
+          })
+        }
+        let nodeObj = {
+          id: elem.oid,
+          fy: yPos,
+          fx: xPos,
+          pinned: true,
+          name: elem.title.split(' ').splice(0,3).join(' ').concat(` (${elem.oid}) `).concat('...'),
+          _color: !elem?.parents?.length ? '#db4332' : null
+        }
+        return nodeObj
+      })
+      this.svgHeight = (alreadyFoundLevel.length + 1) * 200 > this.svgHeight ? (alreadyFoundLevel.length + 1) * 200 : this.svgHeight
+      this.nodes = node
+      this.links = links
+    } catch (error) {
+      console.log("form tree error", error);
+    }
+  },
+
+    async getCollectionMembers (pid) {
+       const id = pid.replace(/[o:]/g, '')
+       let params = {
+        q: '-hassuccessor:* AND -ismemberof:["" TO *]',
+        'q.op': 'AND',
+        defType: 'edismax',
+        wt: 'json',
+        fq: `owner:* AND ispartof:"${pid}"`,
+        start: (this.page - 1) * this.pagesize,
+        rows: this.pagesize,
+        sort: `pos_in_o_${id} asc`,
+        facet: true,
+        'facet.query': []
+      }
+      try {
+        this.$store.commit('setLoading', true)
+        let response = await this.$http.request({
+          method: 'POST',
+          url: this.instanceconfig.solr + '/select',
+          data: qs.stringify(params, { arrayFormat: 'repeat' }),
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+          }
+        })
+        this.$store.commit('setLoading', false)
+        this.docs = response.data.response.docs
+        this.total = response.data.response.numFound
+      } catch (error) {
+        this.$store.commit('setLoading', false)
+        console.log(error)
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      }
+    },
     trackDownload () {
       this.$matomo.setCustomUrl('https://' + this.instanceconfig.baseurl + '/download/' + this.routepid)
       this.$matomo.setDocumentTitle('Download ' + this.routepid)
@@ -896,9 +1288,6 @@ export default {
       }
       self.checksums = []
     }
-  },
-  mounted() {
-    console.log('params', this.$route.params)
   },
   serverPrefetch () {
     // console.log('[' + this.$store.state.route.params.pid + '] prefetch')
