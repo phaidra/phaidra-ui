@@ -36,6 +36,7 @@ export default {
   },
   methods: {
     exporCharts() {
+      this.allCharts = this.$store.state.chartsUrl;
       var doc = new jsPDF("p", "mm", [1250, 215]);
       let yAxis = 30;
       this.allCharts.forEach((elem, index) => {
@@ -92,8 +93,6 @@ export default {
   },
   mounted() {
     this.getChartData();
-    this.allCharts = this.$store.state.chartsUrl;
-    console.log('allCharts', this.allCharts)
   },
 };
 </script>
