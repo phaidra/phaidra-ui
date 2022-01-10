@@ -15,7 +15,8 @@ export const state = () => ({
   },
   groups: [],
   breadcrumbs: [],
-  loading: false
+  loading: false,
+  chartsUrl: []
 })
 
 export const mutations = {
@@ -53,6 +54,15 @@ export const mutations = {
       state.breadcrumbs.push(
         {
           text: 'Impressum',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/statistiks')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Statistiks',
           to: transition.to.name,
           disabled: true
         }
@@ -471,6 +481,12 @@ export const mutations = {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     // document.cookie = 'X-XSRF-TOKEN='
+  },
+  setCharts (state, url) {
+    state.chartsUrl.push(url)
+  },
+  clearCharts (state) {
+    state.chartsUrl = []
   }
 }
 
@@ -603,6 +619,13 @@ export const actions = {
   },
   switchInstance ({ commit }, instance) {
     commit('switchInstance', instance)
-  }
+  },
 
+  setCharts ({ commit, dispatch, state }, chartUrl) {
+    commit('setCharts', chartUrl)
+  },
+
+  clearCharts ({ commit, dispatch, state }) {
+    commit('clearCharts')
+  }
 }

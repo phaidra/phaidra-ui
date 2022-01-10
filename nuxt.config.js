@@ -66,8 +66,8 @@ export default {
     ],
     strategy: 'no_prefix',
     fallbackLocale: 'eng',
+    defaultLocale: 'eng',
     vueI18n: {
-      defaultLocale: 'eng',
       silentTranslationWarn: true,
       silentFallbackWarn: true
     }
@@ -95,6 +95,11 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    extend (config, { isDev, isClient }) {
+      config.node = {
+        fs: 'empty'
+      }
+    },
     transpile: ['phaidra-vue-components']
   }
 }
