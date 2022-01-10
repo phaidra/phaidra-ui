@@ -596,20 +596,17 @@
       </v-row>
       <v-row>
         <div id="d3-graph-container" style="width: 100%">
-  <svg style="position: absolute;">
-    <defs>
-      <marker id="m-end" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth" >
-        <path d="M0,0 L0,6 L9,3 z"></path>
-      </marker>
-          <marker id="m-start" markerWidth="6" markerHeight="6" refX="-4" refY="3" orient="auto" markerUnits="strokeWidth" >
-        <rect width="3" height="6"></rect>
-      </marker>
-    </defs>
-  </svg>
-
-
-      <d3-network ref='net' :net-nodes="nodes" :net-links="links" :options="options" @node-click="nodeclick"  :link-cb="lcb"/>
-
+        <svg style="position: absolute;">
+          <defs>
+            <marker id="m-end" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth" >
+              <path d="M0,0 L0,6 L9,3 z"></path>
+            </marker>
+                <marker id="m-start" markerWidth="6" markerHeight="6" refX="-4" refY="3" orient="auto" markerUnits="strokeWidth" >
+              <rect width="3" height="6"></rect>
+            </marker>
+          </defs>
+        </svg>
+        <d3-network ref='net' :net-nodes="nodes" :net-links="links" :options="options" @node-click="nodeclick"  :link-cb="lcb"/>
     </div>
       </v-row>
 
@@ -851,11 +848,7 @@ export default {
   data () {
     return {
       defaultOid: this.$route.params.pid,
-      // defaultOid: "o:L",
-      // windowWidth: document.body.clientWidth,
-      // windowWidth: document.getElementById('d3-graph-container').offsetWidth,
       windowWidth: 1000,
-      // windowWidth: null,
       initialInfo: null,
       parentCount: 0,
       childCount: 0,
@@ -863,11 +856,10 @@ export default {
       existingFoundElem: [],
       allChildrens: [],
       allParentArr: [],
-        nodes:[],
-        links:[],
+      nodes:[],
+      links:[],
       nodeSize:10,
       canvas:false,
-
       relationDialog: false,
       doiCiteDialog: false,
       doiCiteLoading: false,
@@ -891,8 +883,6 @@ export default {
   mounted(){
     this.getInitialInfo(this.defaultOid)
     setTimeout(() => {
-    console.log('mounted document', document)
-    console.log('mounted document find', document.getElementById('d3-graph-container'))
     this.windowWidth = document.getElementById('d3-graph-container').offsetWidth
 
     }, 2000);
@@ -903,8 +893,7 @@ export default {
       this.$router.push(node.id)
     },
     lcb: function (link) {
-      link._svgAttrs = { 'marker-end': 'url(#m-end)',
-                       }
+      link._svgAttrs = { 'marker-end': 'url(#m-end)' }
       return link
     },
     getInfo: async function (oid) {
@@ -992,7 +981,6 @@ export default {
       }else{
         console.log('founded childrens =>>', this.allChildrens)
         this.allChildrens = _.uniqBy(this.allChildrens, 'oid');
-        // return true
         cb(this.allChildrens)
       }
     }
@@ -1101,10 +1089,8 @@ export default {
         }
         let nodeObj = {
           id: elem.oid,
-          // name: elem.oid,
           fy: yPos,
           fx: xPos,
-          // name: elem.title,
           pinned: true,
           name: elem.title.split(' ').splice(0,3).join(' ').concat(` (${elem.oid}) `).concat('...'),
           _color: !elem?.parents?.length ? '#db4332' : null
