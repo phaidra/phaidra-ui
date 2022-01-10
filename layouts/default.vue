@@ -168,6 +168,13 @@
                                 }}</v-list-item-title></v-list-item
                               >
                               <v-list-item
+                                v-if="signedin"
+                                @click="$router.push(localeLocation({path: '/statistiks'}))"
+                                ><v-list-item-title>{{
+                                  $t("Statistiks")
+                                }}</v-list-item-title></v-list-item
+                              >
+                              <v-list-item
                                 v-if="!signedin && appconfig.enablelogin"
                                 @click="$router.push(localeLocation({path: '/login'}))"
                                 ><v-list-item-title>{{
@@ -237,6 +244,16 @@
                             v-show="signedin"
                             :to="localePath('/groups')"
                             >{{ $t("Groups") }}</nuxt-link
+                          >
+                        </v-hover>
+                          <v-hover v-slot:default="{ hover }">
+                          <nuxt-link
+                            :class="
+                              hover ? 'ph-button primary' : 'ph-button grey'
+                            "
+                            v-show="signedin"
+                            :to="localePath('/statistiks')"
+                            >{{ $t("Statistiks") }}</nuxt-link
                           >
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">
