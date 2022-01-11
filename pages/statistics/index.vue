@@ -7,17 +7,17 @@
       raised
       >{{ $t("Export All") }}</v-btn
     >
-    <StatistiksChartOne />
-    <StatistiksChartTwo :chartData="groupedbyYear" />
-    <StatistiksChartThree :chartData="groupedbyYear" />
-    <StatistiksChartFour :chartData="groupedbyObjects"/>
-    <StatistiksChartFive />
-    <StatistiksChartSix />
-    <StatistiksChartSeven />
-    <StatistiksChartEight />
-    <StatistiksChartNine />
-    <StatistiksChartTen />
-    <StatistiksChartEleven />
+    <StatisticsChartOne />
+    <StatisticsChartTwo :chartData="groupedbyYear" />
+    <StatisticsChartThree :chartData="groupedbyYear" />
+    <StatisticsChartFour :chartData="groupedbyObjects"/>
+    <StatisticsChartFive :chartData="groupedbyObjects"/>
+    <StatisticsChartSix />
+    <StatisticsChartSeven />
+    <StatisticsChartEight />
+    <StatisticsChartNine />
+    <StatisticsChartTen />
+    <StatisticsChartEleven />
   </div>
 </template>
 
@@ -44,9 +44,9 @@ export default {
         img.src = elem;
         img.crossOrigin = "";
 
-        if(index == 3) {
+        if(index == 3 || index == 4) {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 180);
-          yAxis = yAxis + 30;
+          yAxis = yAxis + 40;
         } else {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 100);
         }
