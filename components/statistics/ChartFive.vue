@@ -15,32 +15,29 @@
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
+  props: ["chartData"],
   data() {
     return {
       chartConfig: {
-        type: "pie",
+        type: "outlabeledPie",
         data: {
           datasets: [
             {
-              data: [21, 15, 1, 12, 50, 2],
+              data: [],
               backgroundColor: [
-                "rgb(1, 92, 162)",
-                "rgb(162, 27, 65)",
+                "rgb(238, 130, 238)",
+                "rgb(148, 193, 84)",
+                "rgb(167, 28, 73)",
+                "rgb(102, 102, 102)",
+                "rgb(107, 33, 133)",
                 "rgb(244, 166, 29)",
-                "rgb(219, 65, 37)",
-                "rgb(143, 192, 72)",
-                "rgb(95, 95, 95)",
+                "rgb(1, 92, 162)",
+                "rgb(255, 153, 153)",
+                "rgb(233,150,122)"
               ],
             },
           ],
-          labels: [
-            "Bilder",
-            "Bucher",
-            "Dokumente",
-            "Ressourcen",
-            "A/V",
-            "Daten Objekte",
-          ],
+          labels: [],
         },
         options: {
           title: {
@@ -48,10 +45,15 @@ export default {
             display: true,
           },
           plugins: {
-            datalabels: {
+            legend: false,
+            outlabels: {
+              text: "%l %p",
               color: "white",
-              formatter: (value) => {
-                return value + "%";
+              stretch: 5,
+              font: {
+                resizable: true,
+                minSize: 8,
+                maxSize: 8,
               },
             },
           },
@@ -63,21 +65,48 @@ export default {
           },
         },
       },
-      chartSrc: ""
+      chartSrc: "",
     };
   },
   mixins: [commonChart],
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig);
+      this.generateChartUrl(this.chartConfig, 500);
     },
     getChartSrc() {
-      let chartSrc = this.generateChartSrc(this.chartConfig);
+      let chartSrc = this.generateChartSrc(this.chartConfig, 500);
       this.$store.dispatch("setCharts", chartSrc);
       this.chartSrc = chartSrc;
     },
+    populateData() {
+      let labels = [];
+      let objCount = [];
+      let totalCount = 0;
+      for (let key in this.chartData) {
+        if(key !== 'LaTeXDocument' && key !== 'Paper' && key !== 'Zombie') {
+          let keyValue = this.chartData[key];
+          let count = 0;
+          keyValue.forEach((element) => {
+            count = count + element.obj_count;
+          });
+          totalCount = totalCount + count;
+          if (count) {
+            objCount.push(count);
+            labels.push(key);
+          }
+        }
+      }
+      let bookIndex = labels.findIndex(elem => elem == 'Book')
+      let paperIndex = labels.findIndex(elem => elem == 'Page')
+      objCount[bookIndex] = +objCount[bookIndex] + objCount[paperIndex]
+      objCount.splice(paperIndex, 1)
+      labels = labels.filter(elem => elem !== 'Page')
+      this.chartConfig.data.labels = labels;
+      this.chartConfig.data.datasets[0].data = objCount;
+    },
   },
   mounted() {
+    this.populateData();
     this.getChartSrc();
   },
 };
