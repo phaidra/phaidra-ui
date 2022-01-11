@@ -59,10 +59,10 @@ export const mutations = {
         }
       )
     }
-    if (transition.to.path.includes('/statistiks')) {
+    if (transition.to.path.includes('/statistics')) {
       state.breadcrumbs.push(
         {
-          text: 'Statistiks',
+          text: 'Statistics',
           to: transition.to.name,
           disabled: true
         }

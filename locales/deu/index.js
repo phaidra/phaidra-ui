@@ -33,6 +33,7 @@ export default {
   'New object': 'Neues Objekt',
   'My objects': 'Meine Objekte',
   'My groups': 'Meine Gruppen',
+  Statistics: 'Statistiks',
   Templates: 'Vorlagen',
   Logout: 'Logout',
   Login: 'Login',

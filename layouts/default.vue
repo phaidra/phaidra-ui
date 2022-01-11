@@ -169,9 +169,9 @@
                               >
                               <v-list-item
                                 v-if="signedin"
-                                @click="$router.push(localeLocation({path: '/statistiks'}))"
+                                @click="$router.push(localeLocation({path: '/statistics'}))"
                                 ><v-list-item-title>{{
-                                  $t("Statistiks")
+                                  $t("Statistics")
                                 }}</v-list-item-title></v-list-item
                               >
                               <v-list-item
@@ -252,8 +252,8 @@
                               hover ? 'ph-button primary' : 'ph-button grey'
                             "
                             v-show="signedin"
-                            :to="localePath('/statistiks')"
-                            >{{ $t("Statistiks") }}</nuxt-link
+                            :to="localePath('/statistics')"
+                            >{{ $t("Statistics") }}</nuxt-link
                           >
                         </v-hover>
                         <v-hover v-slot:default="{ hover }">

@@ -7,17 +7,17 @@
       raised
       >{{ $t("Export All") }}</v-btn
     >
-    <StatistiksChartOne />
-    <StatistiksChartTwo :chartData="groupedbyYear" />
-    <StatistiksChartThree :chartData="groupedbyYear" />
-    <StatistiksChartFour :chartData="groupedbyObjects"/>
-    <StatistiksChartFive />
-    <StatistiksChartSix />
-    <StatistiksChartSeven />
-    <StatistiksChartEight />
-    <StatistiksChartNine />
-    <StatistiksChartTen />
-    <StatistiksChartEleven />
+    <StatisticsChartOne />
+    <StatisticsChartTwo :chartData="groupedbyYear" />
+    <StatisticsChartThree :chartData="groupedbyYear" />
+    <StatisticsChartFour :chartData="groupedbyObjects"/>
+    <StatisticsChartFive />
+    <StatisticsChartSix />
+    <StatisticsChartSeven />
+    <StatisticsChartEight />
+    <StatisticsChartNine />
+    <StatisticsChartTen />
+    <StatisticsChartEleven />
   </div>
 </template>
 
