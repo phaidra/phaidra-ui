@@ -26,18 +26,15 @@ export default {
               data: [],
               backgroundColor: [
                 "rgb(238, 130, 238)",
-                "rgb(60, 179, 113)",
-                "rgb(157,0,255)",
-                "rgb(0, 255, 255)",
+                "rgb(148, 193, 84)",
+                "rgb(167, 28, 73)",
+                "rgb(102, 102, 102)",
+                "rgb(107, 33, 133)",
+                "rgb(244, 166, 29)",
+                "rgb(1, 92, 162)",
                 "rgb(255, 153, 153)",
                 "rgb(233,150,122)",
-                "rgb(1, 92, 162)",
-                "rgb(162, 27, 65)",
-                "rgb(244, 166, 29)",
-                "rgb(219, 65, 37)",
-                "rgb(143, 192, 72)",
-                "rgb(95, 95, 95)",
-                "rgb(238,232,170)",
+                "rgb(219, 65, 37)"
               ],
             },
           ],
@@ -75,10 +72,10 @@ export default {
   mixins: [commonChart],
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig, 630);
+      this.generateChartUrl(this.chartConfig, 500);
     },
     getChartSrc() {
-      let chartSrc = this.generateChartSrc(this.chartConfig, 630);
+      let chartSrc = this.generateChartSrc(this.chartConfig, 500);
       this.$store.dispatch("setCharts", chartSrc);
       this.chartSrc = chartSrc;
     },
@@ -87,15 +84,17 @@ export default {
       let objCount = [];
       let totalCount = 0;
       for (let key in this.chartData) {
-        let keyValue = this.chartData[key];
-        let count = 0;
-        keyValue.forEach((element) => {
-          count = count + element.obj_count;
-        });
-        totalCount = totalCount + count;
-        if (count) {
-          objCount.push(count);
-          labels.push(key);
+        if(key !== 'LaTeXDocument' && key !== 'Paper' && key !== 'Zombie' && key !== 'Page') {
+          let keyValue = this.chartData[key];
+          let count = 0;
+          keyValue.forEach((element) => {
+            count = count + element.obj_count;
+          });
+          totalCount = totalCount + count;
+          if (count) {
+            objCount.push(count);
+            labels.push(key);
+          }
         }
       }
 

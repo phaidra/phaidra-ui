@@ -6,7 +6,7 @@ export const commonChart = {
       const myChart = new QuickChart()
       myChart.setConfig(config)
       if (height) {
-        myChart.setHeight(630)
+        myChart.setHeight(height)
       } else {
         myChart.setHeight(330)
       }
@@ -17,7 +17,7 @@ export const commonChart = {
       const myChart = new QuickChart()
       myChart.setFormat('pdf')
       if (height) {
-        myChart.setHeight(630)
+        myChart.setHeight(height)
       } else {
         myChart.setHeight(330)
       }
