@@ -69,10 +69,10 @@ export default {
   mixins: [commonChart],
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig);
+      this.generateChartUrl(this.chartConfig, 230);
     },
     getChartSrc() {
-      let chartSrc = this.generateChartSrc(this.chartConfig);
+      let chartSrc = this.generateChartSrc(this.chartConfig, 230);
       this.$store.dispatch("setCharts", chartSrc);
       this.chartSrc = chartSrc;
     },
