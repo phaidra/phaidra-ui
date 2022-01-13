@@ -37,7 +37,7 @@ export default {
   methods: {
     exporCharts() {
       this.allCharts = this.$store.state.chartsUrl;
-      var doc = new jsPDF("p", "mm", [1250, 215]);
+      var doc = new jsPDF("p", "mm", [1380, 215]);
       let yAxis = 30;
       this.allCharts.forEach((elem, index) => {
         var img = new Image();
@@ -46,11 +46,16 @@ export default {
 
         if(index == 3 || index == 4) {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 180);
-          yAxis = yAxis + 40;
-        } else {
-          doc.addImage(img, "JPEG", 10, yAxis, 180, 100);
+          yAxis = yAxis + 150;
         }
-        yAxis = yAxis + 110;
+        else if(index == 9) {
+          doc.addImage(img, "JPEG", 10, yAxis, 180, 80);
+          yAxis = yAxis + 90;
+        }
+        else {
+          doc.addImage(img, "JPEG", 10, yAxis, 180, 100);
+          yAxis = yAxis + 120;
+        }
       });
 
       window.open(doc.output("bloburl"), "_blank");
