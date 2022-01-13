@@ -1,14 +1,20 @@
 <template>
   <div>
-    <v-btn
-      class="my-5"
-      style="float: right"
-      @click="exportChart"
-      color="primary"
-      raised
-      >{{ $t("Export") }}</v-btn
-    >
-    <img v-if="chartSrc" :src="chartSrc" />
+    <div style="margin: 7% 0 6%">
+        <div class="row" style="justifyContent: space-between; alignItems: center">
+          <div class="titletext primary--text">1. Anzahl der Objekt in den Repositorien</div>
+          <div style="float: right">
+            <v-btn
+              style="float: right"
+              @click="exportChart"
+              color="primary"
+              raised
+              >{{ $t("Export") }}</v-btn
+            >
+          </div>
+        </div>
+    </div>
+      <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -56,10 +62,8 @@ export default {
       this.generateChartUrl(this.chartConfig);
     },
     getChartSrc() {
-      this.$store.dispatch("clearCharts");
-      let chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", chartSrc);
-      this.chartSrc = chartSrc;
+      this.chartSrc = this.generateChartSrc(this.chartConfig);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
   },
   mounted() {
@@ -67,3 +71,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+h3 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+.titletext {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.0125em
+}
+</style>

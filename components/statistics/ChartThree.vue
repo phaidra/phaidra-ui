@@ -1,14 +1,23 @@
 <template>
-  <div style="margin-top: 35px">
-    <v-btn
-      class="my-5"
-      style="float: right"
-      @click="exportChart"
-      color="primary"
-      raised
-      >{{ $t("Export") }}</v-btn
-    >
-    <img v-if="chartSrc" :src="chartSrc" />
+  <div>
+    <div style="margin: 15% 0 6%">
+      <div class="row">
+        <h3 class="font-weight-light primary--text">Unidam</h3>
+      </div>
+        <div class="row" style="justifyContent: space-between; alignItems: center">
+          <div class="titletext primary--text">3. Objekte pro Jahr in Unidam</div>
+          <div style="float: right">
+            <v-btn
+              style="float: right"
+              @click="exportChart"
+              color="primary"
+              raised
+              >{{ $t("Export") }}</v-btn
+            >
+          </div>
+        </div>
+    </div>
+      <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -49,9 +58,8 @@ export default {
       this.generateChartUrl(this.chartConfig);
     },
     getChartSrc() {
-      let chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", chartSrc);
-      this.chartSrc = chartSrc;
+      this.chartSrc = this.generateChartSrc(this.chartConfig);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
     populateData() {
       let labels = [];
@@ -75,3 +83,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+h3 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+.titletext {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.0125em
+}
+</style>

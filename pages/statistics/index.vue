@@ -45,7 +45,7 @@ export default {
         img.crossOrigin = "";
 
         if(index == 3 || index == 4) {
-          doc.addImage(img, "JPEG", 10, yAxis, 180, 180);
+          doc.addImage(img, "JPEG", 10, yAxis, 180, 155);
           yAxis = yAxis + 150;
         }
         else if(index == 9) {
