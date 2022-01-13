@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin: 15% 0 6%">
+    <div style="margin: 7% 0 6%">
       <div class="row">
         <h3 class="font-weight-light primary--text">Unidam</h3>
       </div>

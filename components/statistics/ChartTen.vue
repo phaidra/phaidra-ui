@@ -28,7 +28,7 @@ export default {
         data: {
           datasets: [
             {
-              data: [93, 4, 1, 1, 1, 1],
+              data: [92, 4, 1, 1, 1, 1],
               backgroundColor: [
                 "rgb(1, 92, 162)",
                 "rgb(162, 27, 65)",
@@ -40,12 +40,12 @@ export default {
             },
           ],
           labels: [
-            "Historisch-Kulturwissenschaftliche Fakultät",
-            "Philologisch-Kulturwissenschaftliche Fakultät",
-            "Evangelisch-Theologische Fakultät",
-            "Sozialwissenschaftliche Fakultät",
-            "Zentrum für Sportwissenschaften",
-            "Fakultät für Geowissenschaften, Geographie und Astronomie",
+            "Historisch-Kulturwissenschaftliche Fakultät - 92%",
+            "Philologisch-Kulturwissenschaftliche Fakultät - 4%",
+            "Evangelisch-Theologische Fakultät - 1%",
+            "Sozialwissenschaftliche Fakultät - 1%",
+            "Zentrum für Sportwissenschaften - 1%",
+            "Fakultät für Geowissenschaften, Geographie und Astronomie - 1%",
           ],
         },
         options: {
@@ -55,10 +55,7 @@ export default {
           },
           plugins: {
             datalabels: {
-              color: "white",
-              formatter: (value) => {
-                return value + "%";
-              },
+              display: false
             },
           },
           legend: {
