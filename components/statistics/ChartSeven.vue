@@ -1,31 +1,36 @@
 <template>
-  <div style="margin-top: 35px">
-    <v-btn
-      class="my-5"
-      style="float: right"
-      @click="exportChart"
-      color="primary"
-      raised
-      >{{ $t("Export") }}</v-btn
-    >
-    <img v-if="chartSrc" :src="chartSrc" />
+  <div>
+    <div style="margin: 15% 0 6%">
+        <div class="row" style="justifyContent: space-between; alignItems: center">
+          <div class="titletext primary--text">7. Zuwachs der Objekte über die Jahre</div>
+          <div style="float: right">
+            <v-btn
+              style="float: right"
+              @click="exportChart"
+              color="primary"
+              raised
+              >{{ $t("Export") }}</v-btn
+            >
+          </div>
+        </div>
+    </div>
+      <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
+  props: ["chartData"],
   data() {
     return {
       chartConfig: {
         type: "line",
         data: {
-          labels: [
-            2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
-          ],
+          labels: [],
           datasets: [
             {
-              data: [0, 50.0, 55.0, 150.0, 245, 300, 350, 380, 450, 575, 875],
+              data: [],
               fill: true,
               backgroundColor: "rgb(1, 92, 162)",
               borderWidth: 1,
@@ -49,6 +54,15 @@ export default {
                 },
               },
             ],
+            yAxes: [
+              {
+               ticks : {
+                callback: function( label ) {
+                  return new Intl.NumberFormat('de-DE').format(label);
+                }
+              }
+              },
+            ],
           },
         },
       },
@@ -61,13 +75,42 @@ export default {
       this.generateChartUrl(this.chartConfig);
     },
     getChartSrc() {
-      let chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", chartSrc);
-      this.chartSrc = chartSrc;
+      this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, 520);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
+    populateData() {
+      let labels = [];
+      let objCount = []
+      let previousObjCount = 0
+      for (let key in this.chartData) {
+        labels.push(+key);
+        let keyValue = this.chartData[key]
+        let count = 0
+        keyValue.forEach(element => {
+          count = count + element.obj_count
+        });
+        previousObjCount = previousObjCount + count
+        objCount.push(previousObjCount)
+      }
+      this.chartConfig.data.labels = labels;
+      this.chartConfig.data.datasets[0].data = objCount
+    }
   },
   mounted() {
+    this.populateData()
     this.getChartSrc();
   },
 };
 </script>
+
+<style scoped>
+h3 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+.titletext {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.0125em
+}
+</style>

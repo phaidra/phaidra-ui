@@ -1,31 +1,39 @@
 <template>
   <div>
-    <v-btn
-      class="my-5"
-      style="float: right"
-      @click="exportChart"
-      color="primary"
-      raised
-      >{{ $t("Export") }}</v-btn
-    >
-    <img v-if="chartSrc" :src="chartSrc" />
+    <div style="margin: 7% 0 6%">
+        <div class="row" style="justifyContent: space-between; alignItems: center">
+          <div class="titletext primary--text">1. Anzahl der Objekt in den Repositorien</div>
+          <div style="float: right">
+            <v-btn
+              style="float: right"
+              @click="exportChart"
+              color="primary"
+              raised
+              >{{ $t("Export") }}</v-btn
+            >
+          </div>
+        </div>
+    </div>
+      <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
+  props: ['phaidraData', 'localPhaidraData'],
   data() {
     return {
+      width: 500,
       chartConfig: {
         type: "horizontalBar",
         data: {
-          labels: ["Phaidra LZA", "Unidam"],
+          labels: [],
           datasets: [
             {
               label: "Objects",
-              data: [878.713, 521.024],
-              backgroundColor: "rgb(1,92,162)",
+              data: [],
+              backgroundColor: ["rgb(1,92,162)", "rgb(143, 192, 72)"],
             }
           ],
         },
@@ -42,6 +50,9 @@ export default {
               anchor: "end",
               align: "center",
               color: "black",
+               formatter: (value) => {
+                return new Intl.NumberFormat('de-DE').format(value);
+              },
             },
           },
         },
@@ -53,17 +64,53 @@ export default {
   computed: {},
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig);
+      this.generateChartUrl(this.chartConfig, null, this.width);
     },
     getChartSrc() {
-      this.$store.dispatch("clearCharts");
-      let chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", chartSrc);
-      this.chartSrc = chartSrc;
+      this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, this.width);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true, this.width));
     },
+    populateData() {
+      let phiadraCount = 0
+      for (let key of this.phaidraData) {
+        if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper'){
+          phiadraCount = phiadraCount + key.obj_count
+        }
+      }
+
+      let localPhaidraCount = 0
+      if(this.localPhaidraData && this.localPhaidraData.length) {
+        for (let key of this.localPhaidraData) {
+          if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper'){
+            localPhaidraCount = localPhaidraCount + key.obj_count
+          }
+        }
+        this.width = 580
+        this.chartConfig.data.datasets[0].data = [phiadraCount, localPhaidraCount]
+        this.chartConfig.data.labels = ["Phaidra LZA", "Phaidra Local"]
+      } else {
+        this.width = 500
+        this.chartConfig.data.datasets[0].data = [phiadraCount]
+        this.chartConfig.data.labels = ["Phaidra LZA"]
+      }
+
+    }
   },
   mounted() {
+    this.populateData()
     this.getChartSrc();
   },
 };
 </script>
+
+<style scoped>
+h3 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+.titletext {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.0125em
+}
+</style>
