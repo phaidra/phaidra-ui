@@ -69,7 +69,7 @@ export default {
       this.generateChartUrl(this.chartConfig);
     },
     getChartSrc() {
-      this.chartSrc = this.generateChartSrc(this.chartConfig);
+      this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, 520);
       this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
   },

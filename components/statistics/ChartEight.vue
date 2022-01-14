@@ -21,19 +21,16 @@
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
+  props: ["chartData"],
   data() {
     return {
       chartConfig: {
         type: "line",
         data: {
-          labels: [
-            2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
-          ],
+          labels: [],
           datasets: [
             {
-              data: [
-                0, 1000, 1500, 1950, 3000, 3800, 4200, 4500, 5000, 5900, 7500,
-              ],
+              data: [],
               fill: true,
               backgroundColor: "rgb(1, 92, 162)",
               borderWidth: 1,
@@ -57,6 +54,15 @@ export default {
                 },
               },
             ],
+            yAxes: [
+              {
+               ticks : {
+                callback: function( label ) {
+                  return new Intl.NumberFormat('de-DE').format(label);
+                }
+              }
+              },
+            ],
           },
         },
       },
@@ -69,11 +75,29 @@ export default {
       this.generateChartUrl(this.chartConfig);
     },
    getChartSrc() {
-      this.chartSrc = this.generateChartSrc(this.chartConfig);
+      this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, 520);
       this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
+     populateData() {
+      let labels = [];
+      let sizeArr = []
+      let previousSize = 0
+      for (let key in this.chartData) {
+        labels.push(+key);
+        let keyValue = this.chartData[key]
+        let size = 0
+        keyValue.forEach(element => {
+          size = size + element.size
+        });
+        previousSize = previousSize + size
+        sizeArr.push(previousSize)
+      }
+      this.chartConfig.data.labels = labels;
+      this.chartConfig.data.datasets[0].data = sizeArr
+    }
   },
   mounted() {
+    this.populateData()
     this.getChartSrc();
   },
 };

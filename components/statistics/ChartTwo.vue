@@ -47,6 +47,17 @@ export default {
           legend: {
             display: false,
           },
+           scales: {
+            yAxes: [
+              {
+               ticks : {
+                callback: function( label ) {
+                  return new Intl.NumberFormat('de-DE').format(label);
+                }
+              }
+              },
+            ],
+          },
         },
       },
       chartSrc: ""

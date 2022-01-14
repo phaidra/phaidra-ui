@@ -1,5 +1,5 @@
 <template>
-  <div v-if="chartData.length">
+  <div v-if="phaidraData.length && localPhaidraData">
     <v-btn
       class="my-5"
       @click="exporCharts"
@@ -7,14 +7,14 @@
       raised
       >{{ $t("Export All") }}</v-btn
     >
-    <StatisticsChartOne />
+    <StatisticsChartOne v-if="localPhaidraData" :phaidraData="phaidraData" :localPhaidraData="localPhaidraData"/>
     <StatisticsChartTwo :chartData="groupedbyYear" />
     <StatisticsChartThree :chartData="groupedbyYear" />
     <StatisticsChartFour :chartData="groupedbyObjects"/>
     <StatisticsChartFive :chartData="groupedbyObjects"/>
     <StatisticsChartSix />
-    <StatisticsChartSeven />
-    <StatisticsChartEight />
+    <StatisticsChartSeven :chartData="groupedbyYear"/>
+    <StatisticsChartEight :chartData="groupedbyYear"/>
     <StatisticsChartNine />
     <StatisticsChartTen />
     <StatisticsChartEleven />
@@ -29,9 +29,11 @@ export default {
   data() {
     return {
       allCharts: [],
-      chartData: [],
+      phaidraData: [],
+      localPhaidraData: null,
       groupedbyYear: {},
       groupedbyObjects: {},
+      phaidraLocalUrl: 'https://services.phaidra-temp.univie.ac.at/api/stats/aggregates'
     };
   },
   methods: {
@@ -63,41 +65,62 @@ export default {
     },
 
     groupbyYear() {
-      const group = this.chartData.reduce((r, a) => {
+      const group = this.phaidraData.reduce((r, a) => {
         r[a.upload_date] = [...(r[a.upload_date] || []), a];
         return r;
       }, {});
       this.groupedbyYear = group;
+
+      console.log('group', group)
     },
 
     groupbyObjects() {
-      const group = this.chartData.reduce((r, a) => {
+      const group = this.phaidraData.reduce((r, a) => {
         r[a.model] = [...(r[a.model] || []), a];
         return r;
       }, {});
       this.groupedbyObjects = group;
     },
 
-    async getChartData() {
+    async getLocalPhaidraData() {
       try {
+        let res = await axios.get(this.phaidraLocalUrl);
+        if (res.status == 200) {
+          console.log(res.data.stats);
+          this.localPhaidraData = res.data.stats;
+        }
+        this.$store.commit("setLoading", false);
+      } catch (err) {
+        this.localPhaidraData = []
+        this.$store.commit("setLoading", false);
+        console.log(err);
+      }
+    },
+
+
+    async getPhaidraData() {
+      try {
+        this.$store.commit("setLoading", true);
         let res = await axios.get(
           configjs.instances[configjs.defaultinstance].api + "/stats/aggregates"
         );
         if (res.status == 200) {
           console.log(res.data.stats);
-          this.chartData = res.data.stats;
+          this.phaidraData = res.data.stats;
 
+          this.getLocalPhaidraData()
           //groupbyYear
           this.groupbyYear();
           this.groupbyObjects()
         }
       } catch (err) {
+        this.$store.commit("setLoading", false);
         console.log(err);
       }
     }
   },
   mounted() {
-    this.getChartData();
+    this.getPhaidraData();
   },
 };
 </script>
