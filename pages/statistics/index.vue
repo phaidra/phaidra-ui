@@ -70,8 +70,6 @@ export default {
         return r;
       }, {});
       this.groupedbyYear = group;
-
-      console.log('group', group)
     },
 
     groupbyObjects() {
@@ -85,15 +83,13 @@ export default {
     async getLocalPhaidraData() {
       try {
         let res = await axios.get(this.phaidraLocalUrl);
-        if (res.status == 200) {
-          console.log(res.data.stats);
+        if (res.data && res.data.stats) {
           this.localPhaidraData = res.data.stats;
         }
         this.$store.commit("setLoading", false);
       } catch (err) {
         this.localPhaidraData = []
         this.$store.commit("setLoading", false);
-        console.log(err);
       }
     },
 
@@ -105,22 +101,19 @@ export default {
           configjs.instances[configjs.defaultinstance].api + "/stats/aggregates"
         );
         if (res.status == 200) {
-          console.log(res.data.stats);
           this.phaidraData = res.data.stats;
-
-          this.getLocalPhaidraData()
           //groupbyYear
           this.groupbyYear();
           this.groupbyObjects()
         }
       } catch (err) {
         this.$store.commit("setLoading", false);
-        console.log(err);
       }
     }
   },
   mounted() {
     this.getPhaidraData();
+    this.getLocalPhaidraData();
   },
 };
 </script>

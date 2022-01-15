@@ -73,7 +73,7 @@ export default {
     populateData() {
       let phiadraCount = 0
       for (let key of this.phaidraData) {
-        if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper'){
+        if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper' && key.model !== 'Page'){
           phiadraCount = phiadraCount + key.obj_count
         }
       }
@@ -81,15 +81,16 @@ export default {
       let localPhaidraCount = 0
       if(this.localPhaidraData && this.localPhaidraData.length) {
         for (let key of this.localPhaidraData) {
-          if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper'){
+          if(key.obj_count && key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper' && key.model !== 'Page'){
             localPhaidraCount = localPhaidraCount + key.obj_count
           }
         }
+
         this.width = 580
         this.chartConfig.data.datasets[0].data = [phiadraCount, localPhaidraCount]
         this.chartConfig.data.labels = ["Phaidra LZA", "Phaidra Local"]
       } else {
-        this.width = 500
+        this.width = 520
         this.chartConfig.data.datasets[0].data = [phiadraCount]
         this.chartConfig.data.labels = ["Phaidra LZA"]
       }
