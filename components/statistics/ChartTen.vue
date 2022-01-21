@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin: 15% 0 0">
+    <div style="margin: 0">
         <div class="row" style="justifyContent: space-between; alignItems: center">
           <div class="titletext primary--text">10. Objekte verteilt nach Fakultäten</div>
           <div style="float: right">
@@ -21,6 +21,7 @@
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
+  props: ["chartData"],
   data() {
     return {
       chartConfig: {
@@ -28,7 +29,7 @@ export default {
         data: {
           datasets: [
             {
-              data: [92, 4, 1, 1, 1, 1],
+              data: [],
               backgroundColor: [
                 "rgb(1, 92, 162)",
                 "rgb(162, 27, 65)",
@@ -39,14 +40,7 @@ export default {
               ],
             },
           ],
-          labels: [
-            "Historisch-Kulturwissenschaftliche Fakultät - 92%",
-            "Philologisch-Kulturwissenschaftliche Fakultät - 4%",
-            "Evangelisch-Theologische Fakultät - 1%",
-            "Sozialwissenschaftliche Fakultät - 1%",
-            "Zentrum für Sportwissenschaften - 1%",
-            "Fakultät für Geowissenschaften, Geographie und Astronomie - 1%",
-          ],
+          labels: [],
         },
         options: {
           title: {
@@ -55,7 +49,7 @@ export default {
           },
           plugins: {
             datalabels: {
-              display: false
+              display: false,
             },
           },
           legend: {
@@ -78,8 +72,36 @@ export default {
       this.chartSrc = this.generateChartSrc(this.chartConfig, 230);
       this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 230, true));
     },
+    populateData() {
+      let labels = [];
+      let objCount = [];
+      let totalCount = 0;
+      for (let key in this.chartData) {
+        if(key) {
+          let keyValue = this.chartData[key];
+          let count = 0;
+          keyValue.forEach((element) => {
+            count = count + element.obj_count;
+          });
+          if (count) {
+            totalCount = totalCount + count;
+            objCount.push(count);
+            labels.push(key);
+          }
+        }
+      }
+      let objCountinPrecentage = objCount.map((elem) => {
+         return Math.round((elem / totalCount) * 100)
+      })
+       let labelswithPercentage = labels.map((elem, index) => {
+         return `${elem} - ${objCountinPrecentage[index]}%`
+      })
+      this.chartConfig.data.labels = labelswithPercentage;
+      this.chartConfig.data.datasets[0].data = objCountinPrecentage;
+    },
   },
   mounted() {
+    this.populateData()
     this.getChartSrc();
   },
 };

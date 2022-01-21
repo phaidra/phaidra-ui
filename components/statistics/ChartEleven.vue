@@ -24,15 +24,16 @@
 <script>
 import { commonChart } from '../../mixins/commonChart'
 export default {
+  props: ["chartData"],
   data() {
     return {
       chartConfig: {
         type: "line",
         data: {
-          labels: ['Initial', 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018],
+          labels: [],
           datasets: [
             {
-              data: [1800, 2000, 3000, 3900, 4500, 5500, 6000, 6500, 7000, 7500, 7700, 7800, 7900],
+              data: [],
               fill: true,
               backgroundColor: 'rgb(243, 166, 29)',
               borderColor: 'rgb(243, 166, 29)',
@@ -57,6 +58,15 @@ export default {
                 },
               },
             ],
+             yAxes: [
+              {
+               ticks : {
+                callback: function( label ) {
+                  return new Intl.NumberFormat('de-DE').format(label);
+                }
+              }
+              },
+            ],
           },
         },
       },
@@ -72,8 +82,26 @@ export default {
       this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, 520);
       this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
+    populateData() {
+      let labels = [];
+      let objCount = []
+      let previousObjCount = 0
+      for (let key in this.chartData) {
+        labels.push(+key);
+        let keyValue = this.chartData[key]
+        let count = 0
+        keyValue.forEach(element => {
+          count = count + element.obj_count
+        });
+        previousObjCount = previousObjCount + count
+        objCount.push(previousObjCount)
+      }
+      this.chartConfig.data.labels = labels;
+      this.chartConfig.data.datasets[0].data = objCount
+    }
   },
   mounted() {
+    this.populateData()
     this.getChartSrc();
   },
 };
