@@ -81,8 +81,12 @@ export default {
       let localPhaidraCount = 0
       if(this.localPhaidraData && this.localPhaidraData.length) {
         for (let key of this.localPhaidraData) {
-          if(key.obj_count && key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper' && key.model !== 'Page'){
-            localPhaidraCount = localPhaidraCount + key.obj_count
+          if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper' && key.model !== 'Page'){
+              if(key.obj_count) {
+                localPhaidraCount = localPhaidraCount + key.obj_count
+              } else if(key.count) {
+                localPhaidraCount = localPhaidraCount + key.count
+              }
           }
         }
 
