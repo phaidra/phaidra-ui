@@ -58,7 +58,7 @@ export default {
             legend: false,
             outlabels: {
               color: "white",
-              stretch: 10,
+              stretch: 25,
               font: {
                 resizable: true,
                 minSize: 8,
@@ -108,6 +108,7 @@ export default {
         }
       }
 
+      // convert into percentage value
       let objPerCentArr = []
       let labelsArr = []
       objCount.forEach((elem, index) => {

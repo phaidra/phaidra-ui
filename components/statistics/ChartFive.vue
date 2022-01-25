@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin: 0 0 6%">
+    <div>
         <div class="row" style="justifyContent: space-between; alignItems: center">
           <div class="titletext primary--text">5. Objekte verteilt nach Speicherbedarf*</div>
           <div style="float: right">
@@ -31,13 +31,13 @@ export default {
             {
               data: [],
               backgroundColor: [
-                "rgb(238, 130, 238)",
+                "rgb(1, 92, 162)",
+                "rgb(244, 166, 29)",
                 "rgb(148, 193, 84)",
                 "rgb(167, 28, 73)",
                 "rgb(102, 102, 102)",
                 "rgb(107, 33, 133)",
-                "rgb(244, 166, 29)",
-                "rgb(1, 92, 162)",
+                "rgb(238, 130, 238)",
                 "rgb(255, 153, 153)",
                 "rgb(233,150,122)"
               ],
@@ -55,7 +55,7 @@ export default {
             outlabels: {
               text: "%l %p",
               color: "white",
-              stretch: 5,
+              stretch: 25,
               font: {
                 resizable: true,
                 minSize: 8,
@@ -106,8 +106,21 @@ export default {
       objCount[bookIndex] = +objCount[bookIndex] + objCount[paperIndex]
       objCount.splice(paperIndex, 1)
       labels = labels.filter(elem => elem !== 'Page')
-      this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = objCount;
+
+      // convert into percentage value
+      let objPerCentArr = []
+      let labelsArr = []
+      objCount.forEach((elem, index) => {
+        let perecentValue= elem/totalCount * 100
+        if(Math.round(perecentValue) > 0) {
+          objPerCentArr.push(perecentValue)
+          labelsArr.push(labels[index])
+        }
+      })
+
+
+      this.chartConfig.data.labels = labelsArr;
+      this.chartConfig.data.datasets[0].data = objPerCentArr;
     },
   },
   mounted() {

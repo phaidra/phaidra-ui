@@ -64,7 +64,7 @@ export default {
           doc.addImage(img, "JPEG", 10, yAxis, 190, 115);
           yAxis = yAxis + 125;
         }  else if (index == 9) {
-          doc.addImage(img, "JPEG", 10, yAxis, 180, 80);
+          doc.addImage(img, "JPEG", 10, yAxis, 170, 80);
           yAxis = yAxis + 110;
         } else {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 100);
