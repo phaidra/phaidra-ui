@@ -7,6 +7,7 @@
       v-if="localPhaidraData"
       :phaidraData="phaidraData"
       :localPhaidraData="localPhaidraData"
+      :unidamData="unidamData"
     />
     <StatisticsChartTwo :chartData="groupedbyYear" />
     <StatisticsChartThree :chartData="unidamGroupedbyYear" />
