@@ -101,7 +101,9 @@ export default {
           if (count) {
             objCount.push(count);
             if(key == 'Jelinek-Katalog gesamt') {
-              key = 'katalogdaten '
+              key = 'Katalogdaten '
+            } else if(key == 'Videos gesamt') {
+              key = 'Videos'
             }
             labels.push(key);
           }
