@@ -149,6 +149,7 @@
 
 <script>
 export default {
+  middleware: "auth",
     watch: {
     templateDialog (opened) {
       if (opened) {
