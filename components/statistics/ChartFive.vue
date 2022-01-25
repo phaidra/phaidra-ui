@@ -1,20 +1,25 @@
 <template>
   <div>
     <div style="margin: 0 0 6%">
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">5. Objekte verteilt nach Speicherbedarf*</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+      <div
+        class="row"
+        style="justifycontent: space-between; alignitems: center"
+      >
+        <div class="titletext primary--text">
+          5. Objekte verteilt nach Speicherbedarf*
         </div>
+        <div style="float: right">
+          <v-btn
+            style="float: right"
+            @click="exportChart"
+            color="primary"
+            raised
+            >{{ $t("Export") }}</v-btn
+          >
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -39,7 +44,7 @@ export default {
                 "rgb(244, 166, 29)",
                 "rgb(1, 92, 162)",
                 "rgb(255, 153, 153)",
-                "rgb(233,150,122)"
+                "rgb(233,150,122)",
               ],
             },
           ],
@@ -81,33 +86,42 @@ export default {
     },
     getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig, 450);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 450, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, 450, true)
+      );
     },
     populateData() {
       let labels = [];
-      let objCount = [];
+      let size = [];
       let totalCount = 0;
       for (let key in this.chartData) {
-        if(key !== 'LaTeXDocument' && key !== 'Paper' && key !== 'Zombie') {
+        if (
+          key !== "LaTeXDocument" &&
+          key !== "Paper" &&
+          key !== "Zombie" &&
+          key !== "Collection" &&
+          key !== "Container"
+        ) {
           let keyValue = this.chartData[key];
           let count = 0;
           keyValue.forEach((element) => {
-            count = count + element.obj_count;
+            count = count + element.size;
           });
           totalCount = totalCount + count;
           if (count) {
-            objCount.push(count);
+            size.push(count);
             labels.push(key);
           }
         }
       }
-      let bookIndex = labels.findIndex(elem => elem == 'Book')
-      let paperIndex = labels.findIndex(elem => elem == 'Page')
-      objCount[bookIndex] = +objCount[bookIndex] + objCount[paperIndex]
-      objCount.splice(paperIndex, 1)
-      labels = labels.filter(elem => elem !== 'Page')
+      let bookIndex = labels.findIndex((elem) => elem == "Book");
+      let pageIndex = labels.findIndex((elem) => elem == "Page");
+      size[bookIndex] = +size[bookIndex] + size[pageIndex];
+      size.splice(pageIndex, 1);
+      labels = labels.filter((elem) => elem !== "Page");
       this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = objCount;
+      this.chartConfig.data.datasets[0].data = size;
     },
   },
   mounted() {
@@ -125,6 +139,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>

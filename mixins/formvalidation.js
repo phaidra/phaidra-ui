@@ -1,5 +1,5 @@
 export const formvalidation = {
-  data () {
+  data() {
     return {
       validationError: false,
       fieldsMissing: [],
@@ -38,7 +38,7 @@ export const formvalidation = {
     }
   },
   methods: {
-    markMandatory () {
+    markMandatory() {
       for (const s of this.form.sections) {
         for (const f of s.fields) {
           if (f.predicate === 'dcterms:type') {
@@ -73,7 +73,7 @@ export const formvalidation = {
         }
       }
     },
-    validate () {
+    validate() {
       this.validationError = false
       this.fieldsMissing = []
       let missingTitle = true
@@ -171,12 +171,6 @@ export const formvalidation = {
               }
               if (f.lastname.length < 1) {
                 f.lastnameErrorMessages.push(this.$t('Missing lastname'))
-                this.validationError = true
-              }
-            }
-            if (f.type === 'schema:Organization') {
-              if (f.organization.length < 1) {
-                f.organizationErrorMessages.push(this.$t('Missing organization'))
                 this.validationError = true
               }
             }
