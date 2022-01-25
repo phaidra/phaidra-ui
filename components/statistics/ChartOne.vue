@@ -21,7 +21,7 @@
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
-  props: ['phaidraData', 'localPhaidraData'],
+  props: ['phaidraData', 'localPhaidraData', 'unidamData'],
   data() {
     return {
       width: 500,
@@ -33,7 +33,7 @@ export default {
             {
               label: "Objects",
               data: [],
-              backgroundColor: ["rgb(1,92,162)", "rgb(143, 192, 72)"],
+              backgroundColor: [],
             }
           ],
         },
@@ -78,6 +78,11 @@ export default {
         }
       }
 
+      let unidamCount = 0
+      for (let key of this.unidamData.time_row) {
+          unidamCount = unidamCount + key.obj_count
+      }
+
       let localPhaidraCount = 0
       if(this.localPhaidraData && this.localPhaidraData.length) {
         for (let key of this.localPhaidraData) {
@@ -91,12 +96,14 @@ export default {
         }
 
         this.width = 580
-        this.chartConfig.data.datasets[0].data = [phiadraCount, localPhaidraCount]
-        this.chartConfig.data.labels = ["Phaidra LZA", "Phaidra Local"]
+        this.chartConfig.data.datasets[0].data = [phiadraCount, localPhaidraCount, unidamCount]
+         this.chartConfig.data.datasets[0].backgroundColor= ["rgb(1,92,162)", "rgb(143, 192, 72)", "rgb(243, 167, 29)"]
+        this.chartConfig.data.labels = ["Phaidra LZA", "Phaidra Local", "Unidam"]
       } else {
-        this.width = 520
-        this.chartConfig.data.datasets[0].data = [phiadraCount]
-        this.chartConfig.data.labels = ["Phaidra LZA"]
+        this.width = 550
+        this.chartConfig.data.datasets[0].data = [phiadraCount, unidamCount]
+        this.chartConfig.data.datasets[0].backgroundColor= ["rgb(1,92,162)", "rgb(243, 167, 29)"]
+        this.chartConfig.data.labels = ["Phaidra LZA", "Unidam"]
       }
 
     }
