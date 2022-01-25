@@ -431,24 +431,14 @@ export const mutations = {
     }
     state.user = data
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user))
-    }
-  },
-  setUserToken (state, token) {
-    const data = {
-      ...state.user,
-      token
-    }
-    state.user = data
-    if (token) {
-      localStorage.setItem('token', token)
+      this.$cookies.set('user', user)
     }
   },
   setUsername (state, username) {
     Vue.set(state.user, 'username', username)
   },
   setToken (state, token) {
-    localStorage.setItem('token', token)
+    this.$cookies.set('token', token)
     Vue.set(state.user, 'token', token)
   },
   setLoginData (state, logindata) {
@@ -465,12 +455,12 @@ export const mutations = {
       ...user
     }
     state.user = data
-    localStorage.setItem('user', JSON.stringify(user))
+    this.$cookies.set('user', user)
   },
   clearUser (state) {
     state.user = {}
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+     this.$cookies.remove('token')
+     this.$cookies.remove('user')
   },
   clearStore (state) {
     state.alerts = []
@@ -478,8 +468,8 @@ export const mutations = {
     state.objectMembers = []
     state.user = {}
     state.groups = []
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+     this.$cookies.remove('token')
+     this.$cookies.remove('user')
     // document.cookie = 'X-XSRF-TOKEN='
   },
   setCharts (state, url) {
@@ -491,6 +481,14 @@ export const mutations = {
 }
 
 export const actions = {
+
+  nuxtServerInit ({ commit }, { req }) {
+    const token = this.$cookies.get('token')
+    let user =  this.$cookies.get('user')
+    commit('setUserData', user)
+    commit('setToken', token);
+  },
+
 
   async fetchObjectInfo ({ commit, state }, pid) {
     try {
@@ -582,8 +580,8 @@ export const actions = {
     }
   },
   async logout ({ commit, dispatch, state }) {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+     this.$cookies.remove('token')
+     this.$cookies.remove('user')
     commit('clearStore')
     if (process.browser) {
       document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
@@ -628,4 +626,8 @@ export const actions = {
   clearCharts ({ commit, dispatch, state }) {
     commit('clearCharts')
   }
+}
+
+export const getters = {
+  token: state => state.user.token
 }

@@ -7,6 +7,7 @@
       v-if="localPhaidraData"
       :phaidraData="phaidraData"
       :localPhaidraData="localPhaidraData"
+      :unidamData="unidamData"
     />
     <StatisticsChartTwo :chartData="groupedbyYear" />
     <StatisticsChartThree :chartData="unidamGroupedbyYear" />
@@ -26,6 +27,7 @@ import configjs from "../../config/phaidra-ui";
 import axios from "axios";
 const { jsPDF } = require("jspdf");
 export default {
+  middleware: "auth",
   data() {
     return {
       allCharts: [],
@@ -60,10 +62,10 @@ export default {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 155);
           yAxis = yAxis + 150;
         } else if (index == 8) {
-          doc.addImage(img, "JPEG", 10, yAxis, 190, 155);
-          yAxis = yAxis + 150;
+          doc.addImage(img, "JPEG", 10, yAxis, 190, 115);
+          yAxis = yAxis + 125;
         }  else if (index == 9) {
-          doc.addImage(img, "JPEG", 10, yAxis, 180, 80);
+          doc.addImage(img, "JPEG", 10, yAxis, 170, 80);
           yAxis = yAxis + 110;
         } else {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 100);

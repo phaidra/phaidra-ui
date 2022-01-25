@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin: 0">
+    <div style="margin: 0 0 6%">
         <div class="row" style="justifyContent: space-between; alignItems: center">
           <div class="titletext primary--text">10. Objekte verteilt nach Fakultäten</div>
           <div style="float: right">
@@ -66,11 +66,11 @@ export default {
   mixins: [commonChart],
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig, 230);
+      this.generateChartUrl(this.chartConfig, 250);
     },
     getChartSrc() {
-      this.chartSrc = this.generateChartSrc(this.chartConfig, 230);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 230, true));
+      this.chartSrc = this.generateChartSrc(this.chartConfig, 200);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 250, true));
     },
     populateData() {
       let labels = [];
@@ -90,14 +90,23 @@ export default {
           }
         }
       }
-      let objCountinPrecentage = objCount.map((elem) => {
-         return Math.round((elem / totalCount) * 100)
+
+      // convert into percentage value
+      let objPerCentArr = []
+      let labelsArr = []
+      objCount.forEach((elem, index) => {
+        let perecentValue= Math.round(elem/totalCount * 100)
+        if(perecentValue > 0) {
+          objPerCentArr.push(perecentValue)
+          labelsArr.push(labels[index])
+        }
       })
-       let labelswithPercentage = labels.map((elem, index) => {
-         return `${elem} - ${objCountinPrecentage[index]}%`
+
+       let labelswithPercentage = labelsArr.map((elem, index) => {
+         return `${elem} - ${objPerCentArr[index]}%`
       })
       this.chartConfig.data.labels = labelswithPercentage;
-      this.chartConfig.data.datasets[0].data = objCountinPrecentage;
+      this.chartConfig.data.datasets[0].data = objPerCentArr;
     },
   },
   mounted() {

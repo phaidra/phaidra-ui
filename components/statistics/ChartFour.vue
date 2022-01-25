@@ -103,8 +103,19 @@ export default {
         }
       }
 
-      this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = objCount;
+      // convert into percentage value
+      let objPerCentArr = []
+      let labelsArr = []
+      objCount.forEach((elem, index) => {
+        let perecentValue= elem/totalCount * 100
+        if(Math.round(perecentValue) > 0) {
+          objPerCentArr.push(perecentValue)
+          labelsArr.push(labels[index])
+        }
+      })
+
+      this.chartConfig.data.labels = labelsArr;
+      this.chartConfig.data.datasets[0].data = objPerCentArr;
     },
   },
   mounted() {
