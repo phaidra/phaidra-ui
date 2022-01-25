@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin: 15% 0 6%">
+    <div style="margin: 15% 0 1%">
       <div class="row">
         <h3 class="font-weight-light primary--text">Unidam</h3>
       </div>
@@ -34,10 +34,10 @@ export default {
             {
               data: [],
                 backgroundColor: [
-                "rgb(238, 130, 238)",
-                "rgb(102, 102, 102)",
-                "rgb(167, 28, 73)",
+                "rgb(1, 92, 162)",
+                "rgb(244, 166, 29)",
                 "rgb(148, 193, 84)",
+                "rgb(167, 28, 73)",
                 "rgb(107, 33, 133)",
                 "rgb(244, 166, 29)",
                 "rgb(1, 92, 162)",
@@ -57,9 +57,8 @@ export default {
             plugins: {
             legend: false,
             outlabels: {
-              text: "%l %p",
               color: "white",
-              stretch: 5,
+              stretch: 10,
               font: {
                 resizable: true,
                 minSize: 8,
@@ -81,18 +80,18 @@ export default {
   mixins: [commonChart],
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig, 420);
+      this.generateChartUrl(this.chartConfig);
     },
    getChartSrc() {
-      this.chartSrc = this.generateChartSrc(this.chartConfig, 420);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 420, true));
+      this.chartSrc = this.generateChartSrc(this.chartConfig);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
     },
      populateData() {
       let labels = [];
       let objCount = [];
       let totalCount = 0;
       for (let key in this.chartData) {
-        if(key) {
+        if(key && key !== 'all' && key !== 'start') {
           let keyValue = this.chartData[key];
           let count = 0;
           keyValue.forEach((element) => {
@@ -101,14 +100,43 @@ export default {
           totalCount = totalCount + count;
           if (count) {
             objCount.push(count);
+            if(key == 'Jelinek-Katalog gesamt') {
+              key = 'katalogdaten '
+            }
             labels.push(key);
           }
         }
       }
-      console.log('chart9 labels', labels)
-      console.log('chart9 objCount', objCount)
-      this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = objCount;
+
+      let objPerCentArr = []
+      let labelsArr = []
+      objCount.forEach((elem, index) => {
+        let perecentValue= elem/totalCount * 100
+        if(Math.round(perecentValue) > 0) {
+          objPerCentArr.push(perecentValue)
+          labelsArr.push(labels[index])
+        }
+      })
+
+      // Rename as bilder
+      let finalLabelsArr = []
+      let finalObjPercentArr = []
+      let bilderTotal = 0
+
+      labelsArr.forEach((elem, index) => {
+        if(elem == 'Bilder gesamt' || elem == 'Evolutionäre Anthropologie Bilder gesamt') {
+          bilderTotal = bilderTotal + objPerCentArr[index]
+        } else {
+          finalLabelsArr.push(elem)
+          finalObjPercentArr.push(objPerCentArr[index])
+        }
+      })
+      finalLabelsArr.push('Bilder')
+      finalObjPercentArr.push(bilderTotal)
+
+
+      this.chartConfig.data.labels = finalLabelsArr;
+      this.chartConfig.data.datasets[0].data = finalObjPercentArr;
     },
   },
   mounted() {
