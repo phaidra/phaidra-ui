@@ -216,10 +216,7 @@
                     </template>
                     <v-list>
                       <v-list-item
-                        :to="{
-                          name: 'metadataeditor',
-                          params: { pid: member.pid },
-                        }"
+                        :to="localePath(`/metadataeditor?pid=${member.pid}`)"
                       >
                         <v-list-item-title>{{
                           $t("Edit metadata")
