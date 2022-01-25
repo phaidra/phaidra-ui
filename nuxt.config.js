@@ -38,6 +38,8 @@ export default {
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
+  middleware: ["auth"],
+
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
@@ -48,7 +50,8 @@ export default {
   modules: [
     'nuxt-i18n',
     '@nuxtjs/axios',
-    '@nuxt/http'
+    '@nuxt/http',
+    ['cookie-universal-nuxt', { alias: 'cookies' }],
   ],
   i18n: {
     langDir: 'locales/',

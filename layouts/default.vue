@@ -401,6 +401,8 @@ export default {
   methods: {
     logout: function () {
       this.$store.dispatch("logout");
+      this.$store.commit("setLoading", false);
+      this.$router.push(this.localeLocation({ path: `/`}))
     },
     useLocale: function (lang) {
       if (this.instanceconfig.ui) {
@@ -517,15 +519,6 @@ export default {
   })
   },
   mounted () {
-    let token = localStorage.getItem('token')
-    let user = localStorage.getItem('user')
-    if (user && user !== undefined) {
-      user = JSON.parse(user)
-    }
-    this.$store.commit('setUserData', user)
-    this.$store.commit('setUserToken', token)
-
-
      if (this.appconfig.monitor) {
       if (this.appconfig.monitor.sentry) {
         if (this.appconfig.monitor.sentry.dsn) {

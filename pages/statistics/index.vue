@@ -26,6 +26,7 @@ import configjs from "../../config/phaidra-ui";
 import axios from "axios";
 const { jsPDF } = require("jspdf");
 export default {
+  middleware: "auth",
   data() {
     return {
       allCharts: [],
