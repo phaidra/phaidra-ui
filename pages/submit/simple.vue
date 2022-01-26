@@ -199,7 +199,7 @@ export default {
       }
     },
     objectCreated: function (event) {
-      this.$router.push(this.localeLocation({ path: `detail/${event}` }));
+      this.$router.push(this.localeLocation({ path: `/detail/${event}` }));
       this.$vuetify.goTo(0);
     },
     createForm: function (self, index) {

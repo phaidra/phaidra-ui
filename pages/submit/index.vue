@@ -159,7 +159,7 @@ export default {
   },
   methods: {
     loadTemplate: async function (templateid) {
-      this.$router.push(this.localeLocation({ path: `submit/custom/${templateid}`}))
+      this.$router.push(this.localeLocation({ path: `/submit/custom/${templateid}`}))
       this.templateDialog = false
     }
   },

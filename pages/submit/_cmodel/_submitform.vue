@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     objectCreated: function (event) {
-      this.$router.push(this.localeLocation({ path: `detail/${event}` }));
+      this.$router.push(this.localeLocation({ path: `/detail/${event}` }));
       this.$vuetify.goTo(0);
     },
     getField: function (fieldId) {

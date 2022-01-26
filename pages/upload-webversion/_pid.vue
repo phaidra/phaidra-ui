@@ -76,7 +76,7 @@ export default {
         })
         if (response.status === 200) {
           this.$store.commit('setAlerts', [{ type: 'success', msg: 'Web-optimized version successfuly uploaded' }])
-          this.$router.push(this.localeLocation({ path: `detail/${this.parentpid}`}))
+          this.$router.push(this.localeLocation({ path: `/detail/${this.parentpid}`}))
         } else {
           if (response.data.alerts && response.data.alerts.length > 0) {
             this.$store.commit('setAlerts', response.data.alerts)

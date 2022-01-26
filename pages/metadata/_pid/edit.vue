@@ -49,7 +49,7 @@ export default {
       // to save unnecessary loadings, fetchObjectInfo is skipped in Detail.vue if we return to the same pid
       // but it must be done after metadata edit, so re-load it here
       await this.$store.dispatch("fetchObjectInfo", pid);
-      this.$router.push(this.localeLocation({ path: `detail/${pid}` }));
+      this.$router.push(this.localeLocation({ path: `/detail/${pid}` }));
       this.$vuetify.goTo(0);
     },
     postMetadataLoad: function (self, form) {
