@@ -116,7 +116,7 @@ export default {
       this.$store.commit("setAlerts", [
         { type: "success", msg: "Object " + event + " created" },
       ]);
-      this.$router.push(this.localeLocation({ path: `detail/${event}` }));
+      this.$router.push(this.localeLocation({ path: `/detail/${event}` }));
       this.$vuetify.goTo(0);
     },
     loadUwmetadata: async function (self) {
@@ -198,7 +198,7 @@ export default {
             if (response.data.pid) {
               this.$router.push(
                 this.localeLocation({
-                  path: `detail/${response.data.pid}`,
+                  path: `/detail/${response.data.pid}`,
                 })
               );
             }

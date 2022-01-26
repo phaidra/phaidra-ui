@@ -31,7 +31,7 @@ export default {
   methods: {
     objectSaved: function (event) {
       this.$store.commit('setAlerts', [{ type: 'success', msg: 'Metadata for object ' + event + ' saved' }])
-      this.$router.push(this.localeLocation({ path: `detail/${event}`}))
+      this.$router.push(this.localeLocation({ path: `/detail/${event}`}))
       this.$vuetify.goTo(0)
     },
     findNodeRec: function (pathToFind, currPath, children) {

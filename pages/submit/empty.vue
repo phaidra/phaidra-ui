@@ -43,7 +43,7 @@ export default {
       this.form.sections.splice(this.form.sections.indexOf(afterSection) + 1, 0, s)
     },
     objectCreated: function (event) {
-      this.$router.push(this.localeLocation({ path: `detail/${event}`}))
+      this.$router.push(this.localeLocation({ path: `/detail/${event}`}))
       this.$vuetify.goTo(0)
     },
     createSimpleForm: function (index) {
