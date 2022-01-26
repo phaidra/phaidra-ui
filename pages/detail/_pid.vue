@@ -1308,19 +1308,20 @@
                           objectInfo.cmodel !== 'Collection'
                         "
                       >
-                        <nuxt-link class="mb-1" :to="localePath('/rights')">{{
+                        <nuxt-link class="mb-1" :to="localePath(`/rights/${objectInfo.pid}`)">{{
                           $t("Access rights")
                         }}</nuxt-link>
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <nuxt-link
                           class="mb-1"
-                          :to="localePath('/relationships')"
+                          :to="localePath(`/relationships/${objectInfo.pid}`)"
                           >{{ $t("Relationships") }}</nuxt-link
                         >
                       </v-row>
                       <v-row no-gutters class="pt-2">
-                        <nuxt-link class="mb-1" :to="localePath('/delete')">{{
+                        <nuxt-link class="mb-1"
+                        :to="localePath(`/delete/${objectInfo.pid}`)">{{
                           $t("Delete")
                         }}</nuxt-link>
                       </v-row>
