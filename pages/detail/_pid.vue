@@ -2224,6 +2224,7 @@ export default {
     console.log("beforeRouteEnter>>>>");
     next(async function (vm) {
       console.log("process.browser", process.browser, vm.objectInfo);
+      await vm.fetchAsyncData(vm, to.params.pid);
       if (
         process.browser &&
         (!vm.objectInfo || vm.objectInfo.pid !== to.params.pid)
@@ -2232,7 +2233,7 @@ export default {
         vm.resetData(vm);
         vm.$store.commit("setLoading", true);
         vm.$store.commit("setObjectInfo", null);
-        await vm.fetchAsyncData(vm, to.params.pid);
+        // await vm.fetchAsyncData(vm, to.params.pid);
         vm.fetchUsageStats(vm, to.params.pid);
         vm.fetchChecksums(vm, to.params.pid);
         vm.$store.commit("setLoading", false);
