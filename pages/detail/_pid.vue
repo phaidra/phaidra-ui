@@ -216,31 +216,28 @@
                     </template>
                     <v-list>
                       <v-list-item
-                        :to="localePath(`/metadataeditor?pid=${member.pid}`)"
+                        :to="localePath(`/metadata/${member.pid}/edit`)"
                       >
                         <v-list-item-title>{{
                           $t("Edit metadata")
                         }}</v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        :to="{ name: 'rights', params: { pid: member.pid } }"
+                      :to="localePath(`/rights/${member.pid}`)"
                       >
                         <v-list-item-title>{{
                           $t("Access rights")
                         }}</v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        :to="{
-                          name: 'relationships',
-                          params: { pid: member.pid },
-                        }"
+                      :to="localePath(`/relationships/${member.pid}`)"
                       >
                         <v-list-item-title>{{
                           $t("Relationships")
                         }}</v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                        :to="{ name: 'delete', params: { pid: member.pid } }"
+                      :to="localePath(`/delete/${member.pid}`)"
                       >
                         <v-list-item-title>{{
                           $t("Delete")
@@ -1118,7 +1115,7 @@
                         class="pt-2"
                         v-if="objectInfo.dshash['JSON-LD']"
                       >
-                        <nuxt-link :to="localePath('metadataeditor')">{{
+                        <nuxt-link :to="localePath(`/metadata/${objectInfo.pid}/edit`)">{{
                           $t("Edit metadata")
                         }}</nuxt-link>
                       </v-row>
@@ -1127,7 +1124,7 @@
                         class="pt-2"
                         v-if="objectInfo.dshash['UWMETADATA']"
                       >
-                        <nuxt-link :to="localePath('uwmetadataeditor')">{{
+                        <nuxt-link :to="localePath(`/uwmetadata/${objectInfo.pid}/edit`)">{{
                           $t("Edit metadata")
                         }}</nuxt-link>
                       </v-row>
@@ -1139,7 +1136,7 @@
                           objectInfo.cmodel === 'Collection'
                         "
                       >
-                        <nuxt-link class="mb-1" :to="localePath('sort')">{{
+                        <nuxt-link class="mb-1" :to="localePath(`/sort/${objectInfo.pid}`)">{{
                           $t("Sort members")
                         }}</nuxt-link>
                       </v-row>
@@ -1166,7 +1163,7 @@
                         <nuxt-link
                           class="mb-1"
                           :to="
-                            localePath(`upload-webversion/${objectInfo.pid}`)
+                            localePath(`/upload-webversion/${objectInfo.pid}`)
                           "
                           >{{ $t("Upload web-optimized version") }}</nuxt-link
                         >
@@ -1294,13 +1291,7 @@
                                 :disabled="!chosenRelation"
                                 @click="
                                   $router.push(
-                                    localeLocation({
-                                      name: 'submit-related',
-                                      params: {
-                                        relatedpid: objectInfo.pid,
-                                        relation: chosenRelation,
-                                      },
-                                    })
+                                    localeLocation(`/submitrelated/${objectInfo.pid}/${chosenRelation}`)
                                   )
                                 "
                                 >{{ $t("Continue") }}</v-btn
@@ -1317,19 +1308,19 @@
                           objectInfo.cmodel !== 'Collection'
                         "
                       >
-                        <nuxt-link class="mb-1" :to="localePath('rights')">{{
+                        <nuxt-link class="mb-1" :to="localePath('/rights')">{{
                           $t("Access rights")
                         }}</nuxt-link>
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <nuxt-link
                           class="mb-1"
-                          :to="localePath('relationships')"
+                          :to="localePath('/relationships')"
                           >{{ $t("Relationships") }}</nuxt-link
                         >
                       </v-row>
                       <v-row no-gutters class="pt-2">
-                        <nuxt-link class="mb-1" :to="localePath('delete')">{{
+                        <nuxt-link class="mb-1" :to="localePath('/delete')">{{
                           $t("Delete")
                         }}</nuxt-link>
                       </v-row>

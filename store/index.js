@@ -94,23 +94,6 @@ export const mutations = {
         }
       )
     }
-    if (transition.to.name.includes('uwmetadataeditor')) {
-      if (transition.from.name.includes('detail')) {
-        state.breadcrumbs.push(
-          {
-            text: 'Detail ' + transition.from.params.pid,
-            to: { path: transition.from.path }
-          }
-        )
-      }
-      state.breadcrumbs.push(
-        {
-          text: 'Metadata editor ' + transition.to.params.pid,
-          to: { path: transition.to.path },
-          disabled: true
-        }
-      )
-    }
     if (transition.to.path.includes('/metadata') && !transition.to.path.includes('edit') && !transition.to.path.includes('help')) {
       if (transition.from.path.includes('detail')) {
         state.breadcrumbs.push(
@@ -145,6 +128,25 @@ export const mutations = {
         }
       )
     }
+
+    // if (transition.to.path.includes('uwmetadata')) {
+    //   if (transition.from.path.includes('detail')) {
+    //     state.breadcrumbs.push(
+    //       {
+    //         text: 'Detail ' + transition.from.params.pid,
+    //         to: { path: transition.from.path }
+    //       }
+    //     )
+    //   }
+    //   state.breadcrumbs.push(
+    //     {
+    //       text: 'Metadata editor ' + transition.to.params.pid,
+    //       to: { path: transition.to.path },
+    //       disabled: true
+    //     }
+    //   )
+    // }
+
     if (transition.to.path.includes('rights')) {
       if (transition.from.path.includes('detail')) {
         state.breadcrumbs.push(
@@ -162,8 +164,8 @@ export const mutations = {
         }
       )
     }
-    if (transition.to.name === 'sort') {
-      if (transition.from.name === 'detail') {
+    if (transition.to.path.includes('sort')) {
+      if (transition.from.path.includes('detail')) {
         state.breadcrumbs.push(
           {
             text: 'Detail ' + transition.from.params.pid,
@@ -230,8 +232,8 @@ export const mutations = {
         }
       )
     }
-    if (transition.to.name === 'submit-related') {
-      if (transition.from.name === 'detail') {
+    if (transition.to.path.includes('submitrelated')) {
+      if (transition.from.path.includes('detail')) {
         state.breadcrumbs.push(
           {
             text: 'Detail ' + transition.from.params.pid,
@@ -321,7 +323,7 @@ export const mutations = {
           disabled: true
         }
       )
-    } else if (transition.to.name === 'submit-custom') {
+    } else if (transition.to.path.includes('submit-custom')) {
       state.breadcrumbs.push(
         {
           text: 'Submit',
@@ -386,7 +388,7 @@ export const mutations = {
           disabled: true
         }
       )
-    } else if (transition.to.name.includes('submit')) {
+    } else if (transition.to.path.includes('submit')) {
       state.breadcrumbs.push(
         {
           text: 'Submit',
