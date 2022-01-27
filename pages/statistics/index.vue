@@ -41,7 +41,7 @@ export default {
       unidamGroupedbyObjects: {},
       unidamGroupedbyOrgUnits: {},
       phaidraLocalUrl:
-        "https://services.phaidra.univie.ac.at/api/stats/aggregates",
+        "https://services.phaidra-temp.univie.ac.at/api/stats/aggregates",
       unidamUrl:
         "https://services.phaidra.univie.ac.at/api/statistics/unidam_easydb.json",
       disciplinesUrl:
