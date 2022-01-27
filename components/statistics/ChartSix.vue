@@ -21,6 +21,7 @@
 <script>
 import { commonChart } from '../../mixins/commonChart'
 export default {
+  props: ["chartData"],
   data() {
     return {
       chartConfig: {
@@ -73,14 +74,52 @@ export default {
   mixins: [commonChart],
   methods: {
     exportChart() {
-      this.generateChartUrl(this.chartConfig, 280);
+      this.generateChartUrl(this.chartConfig, 230);
     },
     getChartSrc() {
-      this.chartSrc = this.generateChartSrc(this.chartConfig, 280);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 280, true));
+      this.chartSrc = this.generateChartSrc(this.chartConfig, 230);
+      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 230, true));
+    },
+    populateData() {
+      let labels = [];
+      let objCount = [];
+      let totalCount = 0;
+      for (let key in this.chartData) {
+          let keyValue = this.chartData[key];
+          totalCount = totalCount + keyValue;
+          if (keyValue) {
+            objCount.push(keyValue);
+            if(key == 'DigHum') {
+              labels.push('Digital Humanities');
+            } else if(key == 'LeWi') {
+              labels.push('Lebenswissenschaften');
+            } else if(key == 'MINT') {
+              labels.push('MINT Fächer');
+            } else if(key == 'SoWi') {
+              labels.push('Sozialwissenschaften')
+            } else {
+              labels.push(key)
+            }
+          }
+      }
+
+      // convert into percentage value
+      let objPerCentArr = []
+      let labelsArr = []
+      objCount.forEach((elem, index) => {
+        let perecentValue= elem/totalCount * 100
+        if(Math.round(perecentValue) > 0) {
+          objPerCentArr.push(Math.round(perecentValue))
+          labelsArr.push(labels[index])
+        }
+      })
+
+      this.chartConfig.data.labels = labelsArr;
+      this.chartConfig.data.datasets[0].data = objPerCentArr;
     },
   },
   mounted() {
+    this.populateData()
     this.getChartSrc();
   },
 };
