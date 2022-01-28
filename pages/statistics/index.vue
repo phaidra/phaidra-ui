@@ -1,5 +1,5 @@
 <template>
-  <div v-if="phaidraData.length && localPhaidraData && unidamData">
+  <div v-if="phaidraData.length && localPhaidraData && unidamData && disciplinesData">
     <v-btn class="my-5" @click="exporCharts" color="primary" raised>{{
       $t("Export All")
     }}</v-btn>
@@ -13,7 +13,7 @@
     <StatisticsChartThree :chartData="unidamGroupedbyYear" />
     <StatisticsChartFour :chartData="groupedbyObjects" />
     <StatisticsChartFive :chartData="groupedbyObjects" />
-    <StatisticsChartSix />
+    <StatisticsChartSix :chartData="disciplinesData"/>
     <StatisticsChartSeven :chartData="groupedbyYear" />
     <StatisticsChartEight :chartData="groupedbyYear" />
     <StatisticsChartNine :chartData="unidamGroupedbyObjects"/>
@@ -34,6 +34,7 @@ export default {
       phaidraData: [],
       localPhaidraData: null,
       unidamData: null,
+      disciplinesData: null,
       groupedbyYear: {},
       groupedbyObjects: {},
       unidamGroupedbyYear: {},
@@ -43,12 +44,14 @@ export default {
         "https://services.phaidra-temp.univie.ac.at/api/stats/aggregates",
       unidamUrl:
         "https://services.phaidra.univie.ac.at/api/statistics/unidam_easydb.json",
+      disciplinesUrl:
+        "https://services.phaidra.univie.ac.at/api/stats/disciplines"
     };
   },
   methods: {
     exporCharts() {
       this.allCharts = this.$store.state.chartsUrl;
-      var doc = new jsPDF("p", "mm", [1430, 215]);
+      var doc = new jsPDF("p", "mm", [1400, 215]);
       let yAxis = 30;
       this.allCharts.forEach((elem, index) => {
         var img = new Image();
@@ -61,6 +64,9 @@ export default {
         } else if (index == 4) {
           doc.addImage(img, "JPEG", 10, yAxis, 180, 155);
           yAxis = yAxis + 150;
+        } else if (index == 5) {
+          doc.addImage(img, "JPEG", 10, yAxis, 185, 90);
+          yAxis = yAxis + 115;
         } else if (index == 8) {
           doc.addImage(img, "JPEG", 10, yAxis, 190, 115);
           yAxis = yAxis + 125;
@@ -99,6 +105,17 @@ export default {
         return r;
       }, {});
       return group;
+    },
+
+    async getDisciplinesData () {
+      try {
+        let res = await axios.get(this.disciplinesUrl);
+        if(res.data && res.data.disciplines) {
+          this.disciplinesData = res.data.disciplines
+        }
+      } catch (err) {
+        this.disciplinesData = {}
+      }
     },
 
     async getUnidamData() {
@@ -150,6 +167,7 @@ export default {
   mounted() {
     this.getPhaidraData();
     this.getLocalPhaidraData();
+    this.getDisciplinesData()
     this.getUnidamData();
   },
 };
