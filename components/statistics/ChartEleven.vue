@@ -1,28 +1,24 @@
 <template>
   <div>
-    <div style="margin: 7% 0 6%">
+    <div class="my-10">
       <div class="row">
-        <h3 class="font-weight-light primary--text">Unidam</h3>
-      </div>
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">11. Zuwachs des Objekte über die Jahre</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+        <div class="titletext primary--text">
+          {{ $t("Objects per year cumulative") }}
         </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
 <script>
-import { commonChart } from '../../mixins/commonChart'
+import { commonChart } from "../../mixins/commonChart";
 export default {
   props: ["chartData"],
   data() {
@@ -35,8 +31,8 @@ export default {
             {
               data: [],
               fill: true,
-              backgroundColor: 'rgb(243, 166, 29)',
-              borderColor: 'rgb(243, 166, 29)',
+              backgroundColor: "rgb(243, 166, 29)",
+              borderColor: "rgb(243, 166, 29)",
               borderWidth: 1,
               pointRadius: 0,
             },
@@ -47,8 +43,8 @@ export default {
             display: false,
           },
           title: {
-            text: '11. Zuwachs des Objekte über die Jahre',
-            display: true
+            text: "Zuwachs des Objekte über die Jahre - UNIDAM / easyDB",
+            display: true,
           },
           scales: {
             xAxes: [
@@ -58,19 +54,19 @@ export default {
                 },
               },
             ],
-             yAxes: [
+            yAxes: [
               {
-               ticks : {
-                callback: function( label ) {
-                  return new Intl.NumberFormat('de-DE').format(label);
-                }
-              }
+                ticks: {
+                  callback: function (label) {
+                    return new Intl.NumberFormat("de-DE").format(label);
+                  },
+                },
               },
             ],
           },
         },
       },
-      chartSrc: ""
+      chartSrc: "",
     };
   },
   mixins: [commonChart],
@@ -80,28 +76,31 @@ export default {
     },
     getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, 520);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, null, true)
+      );
     },
     populateData() {
       let labels = [];
-      let objCount = []
-      let previousObjCount = 0
+      let objCount = [];
+      let previousObjCount = 0;
       for (let key in this.chartData) {
         labels.push(+key);
-        let keyValue = this.chartData[key]
-        let count = 0
-        keyValue.forEach(element => {
-          count = count + element.obj_count
+        let keyValue = this.chartData[key];
+        let count = 0;
+        keyValue.forEach((element) => {
+          count = count + element.obj_count;
         });
-        previousObjCount = previousObjCount + count
-        objCount.push(previousObjCount)
+        previousObjCount = previousObjCount + count;
+        objCount.push(previousObjCount);
       }
       this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = objCount
-    }
+      this.chartConfig.data.datasets[0].data = objCount;
+    },
   },
   mounted() {
-    this.populateData()
+    this.populateData();
     this.getChartSrc();
   },
 };
@@ -116,7 +115,7 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>
 

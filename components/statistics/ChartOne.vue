@@ -1,27 +1,26 @@
 <template>
   <div>
-    <div style="margin: 7% 0 6%">
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">1. Anzahl der Objekt in den Repositorien</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+    <div class="my-10">
+      <div class="row">
+        <div class="titletext primary--text">
+          {{ $t("Number of objects in repositories") }}
         </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
 <script>
 import { commonChart } from "../../mixins/commonChart";
 export default {
-  props: ['phaidraData', 'localPhaidraData', 'unidamData'],
+  props: ["phaidraData", "localPhaidraData", "unidamData"],
   data() {
     return {
       width: 500,
@@ -34,12 +33,12 @@ export default {
               label: "Objects",
               data: [],
               backgroundColor: [],
-            }
+            },
           ],
         },
         options: {
           title: {
-            text: "1. Anzahl der Objekt in den Repositorien",
+            text: "Anzahl der Objekte in den Repositorien",
             display: true,
           },
           legend: {
@@ -47,11 +46,11 @@ export default {
           },
           plugins: {
             datalabels: {
-              anchor: "end",
-              align: "center",
+              anchor: "bottom",
+              align: "bottom",
               color: "black",
-               formatter: (value) => {
-                return new Intl.NumberFormat('de-DE').format(value);
+              formatter: (value) => {
+                return new Intl.NumberFormat("de-DE").format(value);
               },
             },
           },
@@ -67,49 +66,81 @@ export default {
       this.generateChartUrl(this.chartConfig, null, this.width);
     },
     getChartSrc() {
-      this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, this.width);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true, this.width));
+      this.chartSrc = this.generateChartSrc(
+        this.chartConfig,
+        null,
+        null,
+        this.width
+      );
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, null, true, this.width)
+      );
     },
     populateData() {
-      let phiadraCount = 0
+      let phiadraCount = 0;
       for (let key of this.phaidraData) {
-        if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper' && key.model !== 'Page'){
-          phiadraCount = phiadraCount + key.obj_count
+        if (
+          key.model !== "LaTeXDocument" &&
+          key.model !== "Zombie" &&
+          key.model !== "Paper" &&
+          key.model !== "Page"
+        ) {
+          phiadraCount = phiadraCount + key.obj_count;
         }
       }
 
-      let unidamCount = 0
+      let unidamCount = 0;
       for (let key of this.unidamData.time_row) {
-          unidamCount = unidamCount + key.obj_count
+        unidamCount = unidamCount + key.obj_count;
       }
 
-      let localPhaidraCount = 0
-      if(this.localPhaidraData && this.localPhaidraData.length) {
+      let localPhaidraCount = 0;
+      if (this.localPhaidraData && this.localPhaidraData.length) {
         for (let key of this.localPhaidraData) {
-          if(key.model !== 'LaTeXDocument' && key.model !== 'Zombie' && key.model !== 'Paper' && key.model !== 'Page'){
-              if(key.obj_count) {
-                localPhaidraCount = localPhaidraCount + key.obj_count
-              } else if(key.count) {
-                localPhaidraCount = localPhaidraCount + key.count
-              }
+          if (
+            key.model !== "LaTeXDocument" &&
+            key.model !== "Zombie" &&
+            key.model !== "Paper" &&
+            key.model !== "Page"
+          ) {
+            if (key.obj_count) {
+              localPhaidraCount = localPhaidraCount + key.obj_count;
+            } else if (key.count) {
+              localPhaidraCount = localPhaidraCount + key.count;
+            }
           }
         }
 
-        this.width = 580
-        this.chartConfig.data.datasets[0].data = [phiadraCount, localPhaidraCount, unidamCount]
-         this.chartConfig.data.datasets[0].backgroundColor= ["rgb(1,92,162)", "rgb(143, 192, 72)", "rgb(243, 167, 29)"]
-        this.chartConfig.data.labels = ["Phaidra LZA", "Phaidra Local", "Unidam"]
+        this.width = 580;
+        this.chartConfig.data.datasets[0].data = [
+          phiadraCount,
+          localPhaidraCount,
+          unidamCount,
+        ];
+        this.chartConfig.data.datasets[0].backgroundColor = [
+          "rgb(1,92,162)",
+          "rgb(143, 192, 72)",
+          "rgb(243, 167, 29)",
+        ];
+        this.chartConfig.data.labels = [
+          "Phaidra LZA",
+          "Phaidra Local",
+          "Unidam",
+        ];
       } else {
-        this.width = 550
-        this.chartConfig.data.datasets[0].data = [phiadraCount, unidamCount]
-        this.chartConfig.data.datasets[0].backgroundColor= ["rgb(1,92,162)", "rgb(243, 167, 29)"]
-        this.chartConfig.data.labels = ["Phaidra LZA", "Unidam"]
+        this.width = 550;
+        this.chartConfig.data.datasets[0].data = [phiadraCount, unidamCount];
+        this.chartConfig.data.datasets[0].backgroundColor = [
+          "rgb(1,92,162)",
+          "rgb(243, 167, 29)",
+        ];
+        this.chartConfig.data.labels = ["Phaidra LZA", "Unidam"];
       }
-
-    }
+    },
   },
   mounted() {
-    this.populateData()
+    this.populateData();
     this.getChartSrc();
   },
 };
@@ -123,6 +154,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>

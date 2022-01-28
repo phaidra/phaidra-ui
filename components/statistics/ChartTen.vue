@@ -1,20 +1,19 @@
 <template>
   <div>
-    <div style="margin: 0 0 6%">
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">10. Objekte verteilt nach Fakultäten</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+    <div class="my-10">
+      <div class="row">
+        <div class="titletext primary--text">
+          {{ $t("Objects per faculty") }}
         </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -44,7 +43,7 @@ export default {
         },
         options: {
           title: {
-            text: "10. Objekte verteilt nach Fakultäten",
+            text: "Objekte verteilt nach Fakultäten - UNIDAM / easyDB",
             display: true,
           },
           plugins: {
@@ -60,7 +59,7 @@ export default {
           },
         },
       },
-      chartSrc: ''
+      chartSrc: "",
     };
   },
   mixins: [commonChart],
@@ -70,47 +69,44 @@ export default {
     },
     getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig, 200);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, 250, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, 250, true)
+      );
     },
     populateData() {
-      let labels = [];
-      let objCount = [];
+      let objCount = {};
       let totalCount = 0;
       for (let key in this.chartData) {
-        if(key) {
-          let keyValue = this.chartData[key];
-          let count = 0;
-          keyValue.forEach((element) => {
-            count = count + element.obj_count;
-          });
-          if (count) {
-            totalCount = totalCount + count;
-            objCount.push(count);
-            labels.push(key);
+        if (key && key !== "time_row") {
+          if (this.chartData[key].org_units) {
+            for (let u of this.chartData[key].org_units) {
+              if (!objCount[u.org_unit]) {
+                objCount[u.org_unit] = 0;
+              }
+              objCount[u.org_unit] += u.obj_count;
+              totalCount += u.obj_count;
+            }
           }
         }
       }
-
       // convert into percentage value
-      let objPerCentArr = []
-      let labelsArr = []
-      objCount.forEach((elem, index) => {
-        let perecentValue= Math.round(elem/totalCount * 100)
-        if(perecentValue > 0) {
-          objPerCentArr.push(perecentValue)
-          labelsArr.push(labels[index])
+      let objPerCentArr = [];
+      let labelsArr = [];
+      for (let key in objCount) {
+        let perecentValue = (objCount[key] / totalCount) * 100;
+        if (Math.round(perecentValue) > 0) {
+          objPerCentArr.push(perecentValue);
+          labelsArr.push(Math.ceil(perecentValue) + "% " + key);
         }
-      })
+      }
 
-       let labelswithPercentage = labelsArr.map((elem, index) => {
-         return `${elem} - ${objPerCentArr[index]}%`
-      })
-      this.chartConfig.data.labels = labelswithPercentage;
+      this.chartConfig.data.labels = labelsArr;
       this.chartConfig.data.datasets[0].data = objPerCentArr;
     },
   },
   mounted() {
-    this.populateData()
+    this.populateData();
     this.getChartSrc();
   },
 };
@@ -124,6 +120,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>

@@ -1,27 +1,15 @@
 <template>
   <div>
     <div>
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">5. Objekte verteilt nach Speicherbedarf*</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
-
+      <div class="row">
+        <div class="titletext primary--text">
+          {{ $t("Storage per object type") }}
         </div>
-        <div style="float: right">
-          <v-btn
-            style="float: right"
-            @click="exportChart"
-            color="primary"
-            raised
-            >{{ $t("Export") }}</v-btn
-          >
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
         </div>
       </div>
     </div>
@@ -58,7 +46,7 @@ export default {
         },
         options: {
           title: {
-            text: "5. Objekte verteilt nach Speicherbedarf*",
+            text: "Objekte verteilt nach Speicherbedarf - PHAIDRA",
             display: true,
           },
           plugins: {
@@ -133,7 +121,7 @@ export default {
       // convert into percentage value
       let objPerCentArr = [];
       let labelsArr = [];
-      objCount.forEach((elem, index) => {
+      size.forEach((elem, index) => {
         let perecentValue = (elem / totalCount) * 100;
         if (Math.round(perecentValue) > 0) {
           objPerCentArr.push(perecentValue);

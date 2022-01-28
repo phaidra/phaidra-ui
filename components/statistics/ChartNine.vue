@@ -1,23 +1,19 @@
 <template>
   <div>
-    <div style="margin: 15% 0 1%">
+    <div class="my-10">
       <div class="row">
-        <h3 class="font-weight-light primary--text">Unidam</h3>
-      </div>
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">9. Objekte verteilt nach Objekttypen kttype</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+        <div class="titletext primary--text">
+          {{ $t("Objects per object type") }}
         </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -33,7 +29,7 @@ export default {
           datasets: [
             {
               data: [],
-                backgroundColor: [
+              backgroundColor: [
                 "rgb(1, 92, 162)",
                 "rgb(244, 166, 29)",
                 "rgb(148, 193, 84)",
@@ -43,7 +39,7 @@ export default {
                 "rgb(1, 92, 162)",
                 "rgb(255, 153, 153)",
                 "rgb(233,150,122)",
-                "rgb(219, 65, 37)"
+                "rgb(219, 65, 37)",
               ],
             },
           ],
@@ -51,10 +47,10 @@ export default {
         },
         options: {
           title: {
-            text: "9. Objekte verteilt nach Objekttypen kttype",
+            text: "Objekte verteilt nach Objekttypen - UNIDAM / easyDB",
             display: true,
           },
-            plugins: {
+          plugins: {
             legend: false,
             outlabels: {
               color: "white",
@@ -82,68 +78,46 @@ export default {
     exportChart() {
       this.generateChartUrl(this.chartConfig);
     },
-   getChartSrc() {
+    getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, null, true)
+      );
     },
-     populateData() {
-      let labels = [];
-      let objCount = [];
+    populateData() {
+      let objCount = {};
       let totalCount = 0;
       for (let key in this.chartData) {
-        if(key && key !== 'all' && key !== 'start') {
-          let keyValue = this.chartData[key];
-          let count = 0;
-          keyValue.forEach((element) => {
-            count = count + element.obj_count;
-          });
-          totalCount = totalCount + count;
-          if (count) {
-            objCount.push(count);
-            if(key == 'Jelinek-Katalog gesamt') {
-              key = 'Katalogdaten '
-            } else if(key == 'Videos gesamt') {
-              key = 'Videos'
+        if (key && key !== "time_row") {
+          if (this.chartData[key].models) {
+            for (let m of this.chartData[key].models) {
+              if (!objCount[m.model]) {
+                objCount[m.model] = 0;
+              }
+              objCount[m.model] += m.obj_count;
+              totalCount += m.obj_count;
             }
-            labels.push(key);
           }
         }
       }
-
       // convert into percentage value
-      let objPerCentArr = []
-      let labelsArr = []
-      objCount.forEach((elem, index) => {
-        let perecentValue= elem/totalCount * 100
-        if(Math.round(perecentValue) > 0) {
-          objPerCentArr.push(perecentValue)
-          labelsArr.push(labels[index])
+      let objPerCentArr = [];
+      let labelsArr = [];
+      for (let key in objCount) {
+        let perecentValue = (objCount[key] / totalCount) * 100;
+        if (Math.round(perecentValue) > 0) {
+          objPerCentArr.push(perecentValue);
+          labelsArr.push(key);
         }
-      })
+      }
 
-      // Rename as bilder
-      let finalLabelsArr = []
-      let finalObjPercentArr = []
-      let bilderTotal = 0
-
-      labelsArr.forEach((elem, index) => {
-        if(elem == 'Bilder gesamt' || elem == 'Evolutionäre Anthropologie Bilder gesamt') {
-          bilderTotal = bilderTotal + objPerCentArr[index]
-        } else {
-          finalLabelsArr.push(elem)
-          finalObjPercentArr.push(objPerCentArr[index])
-        }
-      })
-      finalLabelsArr.push('Bilder')
-      finalObjPercentArr.push(bilderTotal)
-
-
-      this.chartConfig.data.labels = finalLabelsArr;
-      this.chartConfig.data.datasets[0].data = finalObjPercentArr;
+      this.chartConfig.data.labels = labelsArr;
+      this.chartConfig.data.datasets[0].data = objPerCentArr;
     },
   },
   mounted() {
-    this.populateData()
+    this.populateData();
     this.getChartSrc();
   },
 };
@@ -157,6 +131,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>

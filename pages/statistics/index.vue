@@ -1,24 +1,36 @@
 <template>
-  <div v-if="phaidraData.length && localPhaidraData && unidamData && disciplinesData">
-    <v-btn class="my-5" @click="exporCharts" color="primary" raised>{{
-      $t("Export All")
-    }}</v-btn>
+  <div
+    v-if="
+      phaidraData.length && localPhaidraData && unidamData && disciplinesData
+    "
+  >
     <StatisticsChartOne
       v-if="localPhaidraData"
       :phaidraData="phaidraData"
       :localPhaidraData="localPhaidraData"
       :unidamData="unidamData"
     />
+    <div class="row">
+      <h3 class="text-h4 font-weight-light primary--text mt-12">PHAIDRA LZA</h3>
+    </div>
     <StatisticsChartTwo :chartData="groupedbyYear" />
-    <StatisticsChartThree :chartData="unidamGroupedbyYear" />
     <StatisticsChartFour :chartData="groupedbyObjects" />
     <StatisticsChartFive :chartData="groupedbyObjects" />
-    <StatisticsChartSix :chartData="disciplinesData"/>
+    <StatisticsChartSix :chartData="disciplinesData" />
     <StatisticsChartSeven :chartData="groupedbyYear" />
     <StatisticsChartEight :chartData="groupedbyYear" />
-    <StatisticsChartNine :chartData="unidamGroupedbyObjects"/>
-    <StatisticsChartTen :chartData="unidamGroupedbyOrgUnits"/>
+    <div class="row">
+      <h3 class="text-h4 font-weight-light primary--text mt-12">
+        UNIDAM / easyDB
+      </h3>
+    </div>
+    <StatisticsChartThree :chartData="unidamGroupedbyYear" />
+    <StatisticsChartNine :chartData="unidamData" />
+    <StatisticsChartTen :chartData="unidamData" />
     <StatisticsChartEleven :chartData="unidamGroupedbyYear" />
+    <v-btn class="my-5" @click="exporCharts" color="primary" raised>{{
+      $t("Export All")
+    }}</v-btn>
   </div>
 </template>
 
@@ -38,14 +50,12 @@ export default {
       groupedbyYear: {},
       groupedbyObjects: {},
       unidamGroupedbyYear: {},
-      unidamGroupedbyObjects: {},
-      unidamGroupedbyOrgUnits: {},
       phaidraLocalUrl:
         "https://services.phaidra-temp.univie.ac.at/api/stats/aggregates",
       unidamUrl:
         "https://services.phaidra.univie.ac.at/api/statistics/unidam_easydb.json",
       disciplinesUrl:
-        "https://services.phaidra.univie.ac.at/api/stats/disciplines"
+        "https://services.phaidra.univie.ac.at/api/stats/disciplines",
     };
   },
   methods: {
@@ -70,7 +80,7 @@ export default {
         } else if (index == 8) {
           doc.addImage(img, "JPEG", 10, yAxis, 190, 115);
           yAxis = yAxis + 125;
-        }  else if (index == 9) {
+        } else if (index == 9) {
           doc.addImage(img, "JPEG", 10, yAxis, 170, 80);
           yAxis = yAxis + 110;
         } else {
@@ -80,7 +90,6 @@ export default {
       });
 
       window.open(doc.output("bloburl"), "_blank");
-      // doc.save("abc.pdf");
     },
 
     groupbyYear(data) {
@@ -107,14 +116,14 @@ export default {
       return group;
     },
 
-    async getDisciplinesData () {
+    async getDisciplinesData() {
       try {
         let res = await axios.get(this.disciplinesUrl);
-        if(res.data && res.data.disciplines) {
-          this.disciplinesData = res.data.disciplines
+        if (res.data && res.data.disciplines) {
+          this.disciplinesData = res.data.disciplines;
         }
       } catch (err) {
-        this.disciplinesData = {}
+        this.disciplinesData = {};
       }
     },
 
@@ -125,12 +134,10 @@ export default {
           this.unidamData = res.data;
           if (res.data.time_row) {
             this.unidamGroupedbyYear = this.groupbyYear(res.data.time_row);
-            this.unidamGroupedbyObjects = this.groupbyObjects(res.data.time_row);
-            this.unidamGroupedbyOrgUnits = this.groupbyOrgUnit(res.data.time_row);
           }
         }
       } catch (err) {
-        this.unidamData = []
+        this.unidamData = [];
       }
     },
 
@@ -167,7 +174,7 @@ export default {
   mounted() {
     this.getPhaidraData();
     this.getLocalPhaidraData();
-    this.getDisciplinesData()
+    this.getDisciplinesData();
     this.getUnidamData();
   },
 };

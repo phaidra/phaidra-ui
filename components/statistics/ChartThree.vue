@@ -1,23 +1,17 @@
 <template>
   <div>
-    <div style="margin: 15% 0 6%">
+    <div class="my-10">
       <div class="row">
-        <h3 class="font-weight-light primary--text">Unidam</h3>
-      </div>
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">3. Objekte pro Jahr in Unidam</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+        <div class="titletext primary--text">{{ $t("Objects per year") }}</div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
         </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -41,7 +35,7 @@ export default {
         },
         options: {
           title: {
-            text: "3. Objekte pro Jahr in Unidam",
+            text: "Objekte pro Jahr - UNIDAM / easyDB",
             display: true,
           },
           legend: {
@@ -50,11 +44,11 @@ export default {
           scales: {
             yAxes: [
               {
-               ticks : {
-                callback: function( label ) {
-                  return new Intl.NumberFormat('de-DE').format(label);
-                }
-              }
+                ticks: {
+                  callback: function (label) {
+                    return new Intl.NumberFormat("de-DE").format(label);
+                  },
+                },
               },
             ],
           },
@@ -70,7 +64,10 @@ export default {
     },
     getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, null, true)
+      );
     },
     populateData() {
       let labels = [];
@@ -103,6 +100,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>

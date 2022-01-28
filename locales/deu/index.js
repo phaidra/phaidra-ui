@@ -797,7 +797,7 @@ export default {
   'Remove expiration date': 'Ablaufdatum entfernen',
   'Remove right': 'Rechte entfernen',
   'Restrict access rights to organisational units/subunits':
-  'Zugriffsbeschränkung auf Organisationseinheiten',
+    'Zugriffsbeschränkung auf Organisationseinheiten',
   'Select organizational unit': 'Organisationseinheit auswählen',
   'Restrict access rights to particular persons': 'Zugriffsbeschränkung auf Personen',
   'Restrict access rights to particular groups': 'Zugriffsbeschränkung auf vorab definierte Gruppen',
@@ -887,6 +887,14 @@ export default {
   2018: '2018',
   2019: '2019',
   2020: '2020',
-  2021: '2021'
+  2021: '2021',
 
+  'Number of object in repositories': 'Anzahl der Objekte in den Repositorien',
+  'Objects per year': 'Objekte pro Jahr',
+  'Objects per object type': 'Objekte verteilt auf Objekttypen',
+  'Storage per object type': 'Objekte verteilt nach Speicherbedarf',
+  'Objects per discipline': 'Objekte verteilt nach Disziplinen',
+  'Objects per year cumulative': 'Zuwachs der Objekte über die Jahre',
+  'Storage per year cumulative': 'Zuwachs des Speicherplatzes über die Jahre',
+  'Objects per faculty': 'Objekte verteilt nach Fakultäten'
 }

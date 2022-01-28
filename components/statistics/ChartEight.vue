@@ -1,20 +1,19 @@
 <template>
   <div>
-    <div style="margin: 15% 0 6%">
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">8. Zuwachs des Speicherplatzes über die Jahre</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+    <div class="my-10">
+      <div class="row">
+        <div class="titletext primary--text">
+          {{ $t("Storage per year cumulative") }}
         </div>
+        <v-spacer></v-spacer>
+        <div>
+          <v-btn @click="exportChart" color="primary" raised>{{
+            $t("Export")
+          }}</v-btn>
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -43,7 +42,7 @@ export default {
             display: false,
           },
           title: {
-            text: "8. Zuwachs des Speicherplatzes über die Jahre",
+            text: "Zuwachs des Speicherplatzes über die Jahre - PHAIDRA",
             display: true,
           },
           scales: {
@@ -56,11 +55,11 @@ export default {
             ],
             yAxes: [
               {
-               ticks : {
-                callback: function( label ) {
-                  return new Intl.NumberFormat('de-DE').format(label);
-                }
-              }
+                ticks: {
+                  callback: function (label) {
+                    return new Intl.NumberFormat("de-DE").format(label);
+                  },
+                },
               },
             ],
           },
@@ -74,30 +73,33 @@ export default {
     exportChart() {
       this.generateChartUrl(this.chartConfig);
     },
-   getChartSrc() {
+    getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig, null, null, 520);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, null, true)
+      );
     },
-     populateData() {
+    populateData() {
       let labels = [];
-      let sizeArr = []
-      let previousSize = 0
+      let sizeArr = [];
+      let previousSize = 0;
       for (let key in this.chartData) {
         labels.push(+key);
-        let keyValue = this.chartData[key]
-        let size = 0
-        keyValue.forEach(element => {
-          size = size + element.size
+        let keyValue = this.chartData[key];
+        let size = 0;
+        keyValue.forEach((element) => {
+          size = size + element.size;
         });
-        previousSize = previousSize + size
-        sizeArr.push(previousSize)
+        previousSize = previousSize + size;
+        sizeArr.push(previousSize);
       }
       this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = sizeArr
-    }
+      this.chartConfig.data.datasets[0].data = sizeArr;
+    },
   },
   mounted() {
-    this.populateData()
+    this.populateData();
     this.getChartSrc();
   },
 };
@@ -111,6 +113,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>

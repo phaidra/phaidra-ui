@@ -1,23 +1,23 @@
 <template>
   <div>
-    <div style="margin: 15% 0 6%">
+    <div class="my-10">
       <div class="row">
-        <h3 class="font-weight-light primary--text">Phaidra</h3>
-      </div>
-        <div class="row" style="justifyContent: space-between; alignItems: center">
-          <div class="titletext primary--text">2. Objekte pro Jahr in Phaidra LZA</div>
-          <div style="float: right">
-            <v-btn
-              style="float: right"
-              @click="exportChart"
-              color="primary"
-              raised
-              >{{ $t("Export") }}</v-btn
-            >
-          </div>
+        <div class="titletext primary--text">
+          {{ $t("Objects per year") }}
         </div>
+        <v-spacer></v-spacer>
+        <div style="float: right">
+          <v-btn
+            style="float: right"
+            @click="exportChart"
+            color="primary"
+            raised
+            >{{ $t("Export") }}</v-btn
+          >
+        </div>
+      </div>
     </div>
-      <img v-if="chartSrc" :src="chartSrc" />
+    <img v-if="chartSrc" :src="chartSrc" />
   </div>
 </template>
 
@@ -41,26 +41,26 @@ export default {
         },
         options: {
           title: {
-            text: "2. Objekte pro Jahr in Phaidra LZA",
+            text: "Objekte pro Jahr - PHAIDRA",
             display: true,
           },
           legend: {
             display: false,
           },
-           scales: {
+          scales: {
             yAxes: [
               {
-               ticks : {
-                callback: function( label ) {
-                  return new Intl.NumberFormat('de-DE').format(label);
-                }
-              }
+                ticks: {
+                  callback: function (label) {
+                    return new Intl.NumberFormat("de-DE").format(label);
+                  },
+                },
               },
             ],
           },
         },
       },
-      chartSrc: ""
+      chartSrc: "",
     };
   },
   mixins: [commonChart],
@@ -70,23 +70,26 @@ export default {
     },
     getChartSrc() {
       this.chartSrc = this.generateChartSrc(this.chartConfig);
-      this.$store.dispatch("setCharts", this.generateChartSrc(this.chartConfig, null, true));
+      this.$store.dispatch(
+        "setCharts",
+        this.generateChartSrc(this.chartConfig, null, true)
+      );
     },
     populateData() {
       let labels = [];
-      let objCount = []
+      let objCount = [];
       for (let key in this.chartData) {
         labels.push(+key);
-        let keyValue = this.chartData[key]
-        let count = 0
-        keyValue.forEach(element => {
-          count = count + element.obj_count
+        let keyValue = this.chartData[key];
+        let count = 0;
+        keyValue.forEach((element) => {
+          count = count + element.obj_count;
         });
-        objCount.push(count)
+        objCount.push(count);
       }
       this.chartConfig.data.labels = labels;
-      this.chartConfig.data.datasets[0].data = objCount
-    }
+      this.chartConfig.data.datasets[0].data = objCount;
+    },
   },
   mounted() {
     this.populateData();
@@ -103,6 +106,6 @@ h3 {
 .titletext {
   font-size: 18px;
   font-weight: 500;
-  letter-spacing: 0.0125em
+  letter-spacing: 0.0125em;
 }
 </style>
