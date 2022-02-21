@@ -52,7 +52,11 @@ export default {
     '@nuxtjs/axios',
     '@nuxt/http',
     ['cookie-universal-nuxt', { alias: 'cookies' }],
+    '@nuxtjs/sentry'
   ],
+  sentry: {
+    dsn: config.global.monitor.sentry.dsn
+  },
   i18n: {
     langDir: 'locales/',
     locales: [
