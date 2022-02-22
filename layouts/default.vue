@@ -517,24 +517,6 @@ export default {
 
     return tcText + clamp
   })
-  },
-  mounted () {
-     if (this.appconfig.monitor) {
-      if (this.appconfig.monitor.sentry) {
-        if (this.appconfig.monitor.sentry.dsn) {
-          Sentry.init({
-            dsn: this.appconfig.monitor.sentry.dsn,
-            integrations: [
-              new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
-              new Integrations.CaptureConsole({
-                levels: ['error']
-              })
-            ]
-          })
-        }
-      }
-    }
-
   }
 };
 </script>

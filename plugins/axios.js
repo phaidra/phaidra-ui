@@ -2,7 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
-export default ({ app }) => {
+export default ({ app, $sentry }) => {
   axios.interceptors.request.use((config) => {
     const token =  app.$cookies.get('token')
     if (token && token !== null) {
@@ -12,6 +12,17 @@ export default ({ app }) => {
   }, function (error) {
     return Promise.reject(error)
   })
+
+  axios.interceptors.response.use(
+    async response => {
+      return response;
+    },
+    error => {
+      $sentry.captureException(error)
+      throw new Error(error)
+    },
+  );
+
 }
 
 
