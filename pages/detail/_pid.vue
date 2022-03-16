@@ -222,23 +222,19 @@
                           $t("Edit metadata")
                         }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item
-                      :to="localePath(`/rights/${member.pid}`)"
-                      >
+                      <v-list-item :to="localePath(`/rights/${member.pid}`)">
                         <v-list-item-title>{{
                           $t("Access rights")
                         }}</v-list-item-title>
                       </v-list-item>
                       <v-list-item
-                      :to="localePath(`/relationships/${member.pid}`)"
+                        :to="localePath(`/relationships/${member.pid}`)"
                       >
                         <v-list-item-title>{{
                           $t("Relationships")
                         }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item
-                      :to="localePath(`/delete/${member.pid}`)"
-                      >
+                      <v-list-item :to="localePath(`/delete/${member.pid}`)">
                         <v-list-item-title>{{
                           $t("Delete")
                         }}</v-list-item-title>
@@ -1115,18 +1111,20 @@
                         class="pt-2"
                         v-if="objectInfo.dshash['JSON-LD']"
                       >
-                        <nuxt-link :to="localePath(`/metadata/${objectInfo.pid}/edit`)">{{
-                          $t("Edit metadata")
-                        }}</nuxt-link>
+                        <nuxt-link
+                          :to="localePath(`/metadata/${objectInfo.pid}/edit`)"
+                          >{{ $t("Edit metadata") }}</nuxt-link
+                        >
                       </v-row>
                       <v-row
                         no-gutters
                         class="pt-2"
                         v-if="objectInfo.dshash['UWMETADATA']"
                       >
-                        <nuxt-link :to="localePath(`/uwmetadata/${objectInfo.pid}/edit`)">{{
-                          $t("Edit metadata")
-                        }}</nuxt-link>
+                        <nuxt-link
+                          :to="localePath(`/uwmetadata/${objectInfo.pid}/edit`)"
+                          >{{ $t("Edit metadata") }}</nuxt-link
+                        >
                       </v-row>
                       <v-row
                         no-gutters
@@ -1136,9 +1134,11 @@
                           objectInfo.cmodel === 'Collection'
                         "
                       >
-                        <nuxt-link class="mb-1" :to="localePath(`/sort/${objectInfo.pid}`)">{{
-                          $t("Sort members")
-                        }}</nuxt-link>
+                        <nuxt-link
+                          class="mb-1"
+                          :to="localePath(`/sort/${objectInfo.pid}`)"
+                          >{{ $t("Sort members") }}</nuxt-link
+                        >
                       </v-row>
                       <v-row
                         no-gutters
@@ -1291,7 +1291,9 @@
                                 :disabled="!chosenRelation"
                                 @click="
                                   $router.push(
-                                    localeLocation(`/submitrelated/${objectInfo.pid}/${chosenRelation}`)
+                                    localeLocation(
+                                      `/submitrelated/${objectInfo.pid}/${chosenRelation}`
+                                    )
                                   )
                                 "
                                 >{{ $t("Continue") }}</v-btn
@@ -1308,9 +1310,11 @@
                           objectInfo.cmodel !== 'Collection'
                         "
                       >
-                        <nuxt-link class="mb-1" :to="localePath(`/rights/${objectInfo.pid}`)">{{
-                          $t("Access rights")
-                        }}</nuxt-link>
+                        <nuxt-link
+                          class="mb-1"
+                          :to="localePath(`/rights/${objectInfo.pid}`)"
+                          >{{ $t("Access rights") }}</nuxt-link
+                        >
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <nuxt-link
@@ -1320,10 +1324,11 @@
                         >
                       </v-row>
                       <v-row no-gutters class="pt-2">
-                        <nuxt-link class="mb-1"
-                        :to="localePath(`/delete/${objectInfo.pid}`)">{{
-                          $t("Delete")
-                        }}</nuxt-link>
+                        <nuxt-link
+                          class="mb-1"
+                          :to="localePath(`/delete/${objectInfo.pid}`)"
+                          >{{ $t("Delete") }}</nuxt-link
+                        >
                       </v-row>
                     </v-card-text>
                   </v-card>
@@ -1414,7 +1419,10 @@
           />
         </div>
       </v-row>
-      <v-row>
+      <v-row v-if="showCollectionTree" class="mt-8">
+        <p class="title font-weight-light">
+          {{ $t("Collection structure") }}
+        </p>
         <div id="d3-graph-container" style="width: 100%">
           <svg style="position: absolute">
             <defs>
@@ -1567,6 +1575,12 @@ export default {
     isRestricted: function () {
       return this.objectInfo.datastreams.includes("POLICY");
     },
+    showCollectionTree: function () {
+      return (
+        this.objectInfo === "Collection" ||
+        this.objectInfo?.relationships?.ispartof?.length > 0
+      );
+    },
     showPreview: function () {
       return (
         this.objectInfo.cmodel !== "Resource" &&
@@ -1619,7 +1633,6 @@ export default {
             continue;
           } else {
             let type = id.substr(0, id.indexOf(":"));
-            console.log(type);
             let idvalue = id.substr(id.indexOf(":") + 1);
             switch (type) {
               case "hdl":
@@ -1728,7 +1741,6 @@ export default {
   },
   data() {
     return {
-      defaultOid: this.$route.params.pid,
       windowWidth: 1000,
       initialInfo: null,
       parentCount: 0,
@@ -1761,16 +1773,8 @@ export default {
       total: 0,
     };
   },
-  mounted() {
-    this.getInitialInfo(this.defaultOid);
-    setTimeout(() => {
-      this.windowWidth =
-        document.getElementById("d3-graph-container").offsetWidth;
-    }, 2000);
-  },
   methods: {
     nodeclick: function (event, node) {
-      console.log("node click", event, node);
       this.$router.push(node.id);
     },
     lcb: function (link) {
@@ -1785,17 +1789,17 @@ export default {
         return this.existingFoundElem[existingIndex];
       } else {
         const response = await fetch(
-          `https://services.phaidra.univie.ac.at/api/object/${oid}/info`
+          this.instanceconfig.api + `/object/${oid}/info`
         );
         let data = response.json();
         this.existingFoundElem.push(data);
         return data;
       }
     },
-
     getChild: async function (oid) {
       const info = await fetch(
-        `https://app01.cc.univie.ac.at:8983/solr/phaidra/select?fq=ispartof:"${oid}"&indent=on&q=*:*&rows=1000&start=1&wt=json`
+        this.instanceconfig.solr +
+          `/select?fq=ispartof:"${oid}"&indent=on&q=*:*&rows=1000&start=1&wt=json`
       );
       return info.json();
     },
@@ -1871,20 +1875,26 @@ export default {
         }
       }
     },
-    getInitialInfo: async function (oid) {
+    fetchCollectionTree: async function (oid) {
       try {
-        const result = await this.getInfo(oid);
         this.initialInfo = {
-          oid: result?.info?.pid,
-          parents: result?.info?.ispartof,
-          title: result?.info?.sort_dc_title,
+          oid: this.objectInfo.pid,
+          parents: this.objectInfo.ispartof,
+          title: this.objectInfo.sort_dc_title,
           nodeCount: this.parentCount,
         };
+        console.log("initialInfo");
+        console.log(this.initialInfo);
         this.formChildren((data) => {
           this.formTree([this.initialInfo]);
         });
       } catch (error) {
         console.log("getInitialInfo error", error);
+      } finally {
+        setTimeout(() => {
+          this.windowWidth =
+            document.getElementById("d3-graph-container").offsetWidth;
+        }, 6000);
       }
     },
     formTree: async function (mainArr) {
@@ -2065,8 +2075,11 @@ export default {
     async fetchAsyncData(self, pid) {
       await self.$store.dispatch("fetchObjectInfo", pid);
       self.postMetadataLoad(self);
-      if (self.objectInfo.cmodel === "Container") {
-        await self.$store.dispatch("fetchObjectMembers", self.objectInfo);
+      if (self.$store.state.objectInfo.cmodel === "Container") {
+        await self.$store.dispatch(
+          "fetchObjectMembers",
+          self.$store.state.objectInfo
+        );
       }
     },
     async fetchUsageStats(self, pid) {
@@ -2216,26 +2229,35 @@ export default {
       self.checksums = [];
     },
   },
+  mounted() {
+    if (this.showCollectionTree) {
+      this.fetchCollectionTree(this.$route.params.pid);
+      setTimeout(() => {
+        this.windowWidth =
+          document.getElementById("d3-graph-container").offsetWidth;
+      }, 2000);
+    }
+  },
   serverPrefetch() {
     // console.log('[' + this.$store.state.route.params.pid + '] prefetch')
     return this.fetchAsyncData(this, this.$route.params.pid);
   },
   beforeRouteEnter: async function (to, from, next) {
-    console.log("beforeRouteEnter>>>>");
     next(async function (vm) {
-      console.log("process.browser", process.browser, vm.objectInfo);
-      await vm.fetchAsyncData(vm, to.params.pid);
       if (
         process.browser &&
         (!vm.objectInfo || vm.objectInfo.pid !== to.params.pid)
       ) {
-        console.log("beforeRouteEnter>>>> if");
         vm.resetData(vm);
         vm.$store.commit("setLoading", true);
         vm.$store.commit("setObjectInfo", null);
-        // await vm.fetchAsyncData(vm, to.params.pid);
+        await vm.fetchAsyncData(vm, to.params.pid);
         vm.fetchUsageStats(vm, to.params.pid);
         vm.fetchChecksums(vm, to.params.pid);
+        console.log("showtree:" + vm.showCollectionTree);
+        if (vm.showCollectionTree) {
+          vm.fetchCollectionTree(vm, to.params.pid);
+        }
         vm.$store.commit("setLoading", false);
       }
     });
@@ -2243,9 +2265,14 @@ export default {
   beforeRouteUpdate: async function (to, from, next) {
     this.resetData(this);
     this.$store.commit("setLoading", true);
+    this.$store.commit("setObjectInfo", null);
     await this.fetchAsyncData(this, to.params.pid);
     this.fetchUsageStats(this, to.params.pid);
     this.fetchChecksums(this, to.params.pid);
+    console.log("showtree:" + this.showCollectionTree);
+    if (this.showCollectionTree) {
+      this.fetchCollectionTree(this, to.params.pid);
+    }
     this.$store.commit("setLoading", false);
     next();
   },

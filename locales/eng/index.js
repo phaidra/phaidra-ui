@@ -186,7 +186,7 @@ export default {
   'dcterms:language': 'Language',
   'schema:subtitleLanguage': 'Subtitle language',
   'dcterms:type': 'Resource type',
-  'edm:hasType': 'Type / Genre',
+  'edm:hasType': 'Type',
   'bf:physicalLocation': 'Physical location',
   'bf:shelfMark': 'Call number',
   'edm:rights': 'License',

@@ -56,6 +56,12 @@ export const formvalidation = {
           if (f.component === 'p-keyword') {
             f.label = f.label + ' *'
           }
+          if (f.component === 'p-subject-oefos') {
+            f.label = f.label + ' *'
+          }
+          if (f.component === 'p-association') {
+            f.label = f.label + ' *'
+          }
           if ((f.component === 'p-entity') || (f.component === 'p-entity-extended')) {
             f.label = f.label + ' *'
             f.roleLabel = f.roleLabel + ' *'
@@ -84,6 +90,8 @@ export const formvalidation = {
       let missingResourceType = true
       let missingObjectType = true
       let missingFile = true
+      let missingAssociation = true
+      let missingOefos = true
       let resourceType = null
       for (const s of this.form.sections) {
         for (const f of s.fields) {
@@ -119,10 +127,12 @@ export const formvalidation = {
             missingObjectType = false
             if (Object.prototype.hasOwnProperty.call(f, 'selectedTerms')) {
               if (f.selectedTerms.length < 1) {
+                f.errorMessage = []
                 f.errorMessages.push(this.$t('Please select one or more object types'))
                 this.validationError = true
               }
             } else if (f.value.length < 1) {
+              f.errorMessage = []
               f.errorMessages.push(this.$t('Please select one or more object types'))
               this.validationError = true
             }
@@ -185,6 +195,22 @@ export const formvalidation = {
               }
             }
           }
+          if (f.component === 'p-subject-oefos') {
+            missingOefos = false
+            f.errorMessages = []
+            if (f.value.length < 1) {
+              f.errorMessages.push(this.$t('Please select'))
+              this.validationError = true
+            }
+          }
+          if (f.component === 'p-association') {
+            missingAssociation = false
+            f.errorMessages = []
+            if (f.value.length < 1) {
+              f.errorMessages.push(this.$t('Please select'))
+              this.validationError = true
+            }
+          }
           if (f.component === 'p-file') {
             missingFile = false
             f.fileErrorMessages = []
@@ -226,6 +252,12 @@ export const formvalidation = {
       }
       if (missingObjectType) {
         this.fieldsMissing.push(this.$t('Object type'))
+      }
+      if (missingAssociation) {
+        this.fieldsMissing.push(this.$t('Association'))
+      }
+      if (missingOefos) {
+        this.fieldsMissing.push(this.$t('OEFOS Classification'))
       }
       if (missingFile) {
         this.fieldsMissing.push(this.$t('File'))

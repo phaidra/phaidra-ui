@@ -615,7 +615,7 @@ export default {
   'dcterms:language': 'Sprache',
   'schema:subtitleLanguage': 'Untertitel-Sprache',
   'dcterms:type': 'Resource Type',
-  'edm:hasType': 'Typ / Genre',
+  'edm:hasType': 'Typ',
   'bf:physicalLocation': 'Standort',
   'bf:shelfMark': 'Signatur',
   'dcterms:provenance': 'Provenienz',

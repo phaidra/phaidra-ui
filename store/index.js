@@ -20,7 +20,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  updateBreadcrumbs (state, transition) {
+  updateBreadcrumbs(state, transition) {
     state.breadcrumbs = [
       {
         text: state.instanceconfig.institution,
@@ -76,6 +76,25 @@ export const mutations = {
           disabled: true
         }
       )
+    }
+    if (transition.to.path.includes('lists')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Lists',
+          to: { name: transition.to.path, params: { token: transition.to.params.token } },
+          disabled: true
+        }
+      )
+    } else {
+      if (transition.to.path.includes('list')) {
+        state.breadcrumbs.push(
+          {
+            text: 'List ' + transition.to.params.token,
+            to: { name: transition.to.path, params: { token: transition.to.params.token } },
+            disabled: true
+          }
+        )
+      }
     }
     if (transition.to.path.includes('detail')) {
       if (transition.from.path.includes('/search')) {
@@ -397,25 +416,25 @@ export const mutations = {
       )
     }
   },
-  setLoading (state, loading) {
+  setLoading(state, loading) {
     state.loading = loading
   },
-  setGroups (state, groups) {
+  setGroups(state, groups) {
     state.groups = groups
   },
-  setObjectInfo (state, objectInfo) {
+  setObjectInfo(state, objectInfo) {
     state.objectInfo = objectInfo
   },
-  setObjectMembers (state, objectMembers) {
+  setObjectMembers(state, objectMembers) {
     state.objectMembers = objectMembers
   },
-  switchInstance (state, instance) {
+  switchInstance(state, instance) {
     state.instance = state.config.instances[instance]
   },
-  hideSnackbar (state) {
+  hideSnackbar(state) {
     state.snackbar = false
   },
-  setAlerts (state, alerts) {
+  setAlerts(state, alerts) {
     for (const a of alerts) {
       if (a.type === 'success') {
         state.snackbar = true
@@ -423,10 +442,10 @@ export const mutations = {
     }
     state.alerts = alerts
   },
-  clearAlert (state, alert) {
+  clearAlert(state, alert) {
     state.alerts = state.alerts.filter(e => e !== alert)
   },
-  setUserData (state, user) {
+  setUserData(state, user) {
     const data = {
       ...state.user,
       ...user
@@ -436,14 +455,14 @@ export const mutations = {
       this.$cookies.set('user', user)
     }
   },
-  setUsername (state, username) {
+  setUsername(state, username) {
     Vue.set(state.user, 'username', username)
   },
-  setToken (state, token) {
+  setToken(state, token) {
     this.$cookies.set('token', token)
     Vue.set(state.user, 'token', token)
   },
-  setLoginData (state, logindata) {
+  setLoginData(state, logindata) {
     const user = {
       username: logindata.username,
       firstname: logindata.firstname,
@@ -459,40 +478,40 @@ export const mutations = {
     state.user = data
     this.$cookies.set('user', user)
   },
-  clearUser (state) {
+  clearUser(state) {
     state.user = {}
-     this.$cookies.remove('token')
-     this.$cookies.remove('user')
+    this.$cookies.remove('token')
+    this.$cookies.remove('user')
   },
-  clearStore (state) {
+  clearStore(state) {
     state.alerts = []
     state.objectInfo = null
     state.objectMembers = []
     state.user = {}
     state.groups = []
-     this.$cookies.remove('token')
-     this.$cookies.remove('user')
+    this.$cookies.remove('token')
+    this.$cookies.remove('user')
     // document.cookie = 'X-XSRF-TOKEN='
   },
-  setCharts (state, url) {
+  setCharts(state, url) {
     state.chartsUrl.push(url)
   },
-  clearCharts (state) {
+  clearCharts(state) {
     state.chartsUrl = []
   }
 }
 
 export const actions = {
 
-  nuxtServerInit ({ commit }, { req }) {
+  nuxtServerInit({ commit }, { req }) {
     const token = this.$cookies.get('token')
-    let user =  this.$cookies.get('user')
+    let user = this.$cookies.get('user')
     commit('setUserData', user)
     commit('setToken', token);
   },
 
 
-  async fetchObjectInfo ({ commit, state }, pid) {
+  async fetchObjectInfo({ commit, state }, pid) {
     try {
       let response
       if (state.user.token) {
@@ -510,7 +529,7 @@ export const actions = {
     } catch (error) {
     }
   },
-  async fetchObjectMembers ({ dispatch, commit, state }, parent) {
+  async fetchObjectMembers({ dispatch, commit, state }, parent) {
     commit('setObjectMembers', [])
     try {
       if (parent.members.length > 0) {
@@ -537,7 +556,7 @@ export const actions = {
     } catch (error) {
     }
   },
-  async getLoginData ({ commit, dispatch, state }) {
+  async getLoginData({ commit, dispatch, state }) {
     try {
       const response = await axios.get(state.instanceconfig.api + '/directory/user/data', {
         headers: {
@@ -559,7 +578,7 @@ export const actions = {
       }
     }
   },
-  async login ({ commit, dispatch, state }, credentials) {
+  async login({ commit, dispatch, state }, credentials) {
     commit('clearStore')
     commit('setUsername', credentials.username)
     try {
@@ -581,9 +600,9 @@ export const actions = {
     } catch (error) {
     }
   },
-  async logout ({ commit, dispatch, state }) {
-     this.$cookies.remove('token')
-     this.$cookies.remove('user')
+  async logout({ commit, dispatch, state }) {
+    this.$cookies.remove('token')
+    this.$cookies.remove('user')
     commit('clearStore')
     if (process.browser) {
       document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
@@ -602,7 +621,7 @@ export const actions = {
       commit('clearStore')
     }
   },
-  async getUserGroups ({ commit, state }) {
+  async getUserGroups({ commit, state }) {
     commit('clearAlerts')
     try {
       const response = await axios.get(state.instanceconfig.api + '/groups', {
@@ -617,15 +636,15 @@ export const actions = {
     } catch (error) {
     }
   },
-  switchInstance ({ commit }, instance) {
+  switchInstance({ commit }, instance) {
     commit('switchInstance', instance)
   },
 
-  setCharts ({ commit, dispatch, state }, chartUrl) {
+  setCharts({ commit, dispatch, state }, chartUrl) {
     commit('setCharts', chartUrl)
   },
 
-  clearCharts ({ commit, dispatch, state }) {
+  clearCharts({ commit, dispatch, state }) {
     commit('clearCharts')
   }
 }

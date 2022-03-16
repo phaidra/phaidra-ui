@@ -2,15 +2,11 @@
   <v-container fluid>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{
-          $t("Research data")
-        }}</span>
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <v-btn large class="primary" @click="$router.push(localeLocation({path: '/submit/upload'}))">
+        <v-btn
+          large
+          class="primary"
+          @click="$router.push(localeLocation({ path: '/submit/upload' }))"
+        >
           <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Upload") }}
         </v-btn>
       </v-col>
@@ -76,97 +72,113 @@
           large
           dark
           color="grey white--text mr-8"
-          :to="localePath({ path: '/submit/empty'})"
+          :to="localePath({ path: '/submit/empty' })"
         >
           <v-icon dark class="mr-4">mdi-script-outline</v-icon>
           {{ $t("Create new template") }}
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{
-          $t("Legacy (Uwmetadata)")
-        }}</span>
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <v-btn
-          large
-          dark
-          color="grey white--text mr-8"
-          :to="localePath({ path: '/submit/uwm/asset'})"
-        >
-          {{ $t("File") }}
-        </v-btn>
-        <v-btn
-          large
-          dark
-          color="grey white--text mr-8"
-          :to="localePath({ path: '/submit/uwm/collection'})"
-        >
-          {{ $t("Collection") }}
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{
-          $t("Extra")
-        }}</span>
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <v-btn large dark color="grey white--text mr-8" :to="localePath('/submit/ksa-eda')">
-          <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("EDA") }}
-        </v-btn>
-        <v-btn
-          large
-          dark
-          color="grey white--text mr-8"
-          :to="localePath('/submit/fb-psychologie')"
-        >
-          <v-icon dark class="mr-4">mdi-file-star</v-icon>
-          {{ $t("FB Psychologie") }}
-        </v-btn>
-        <v-btn
-          large
-          dark
-          color="grey white--text mr-8"
-          :to="localePath('/submit/bruckneruni')"
-        >
-          <v-icon dark class="mr-4">mdi-file-star</v-icon>
-          {{ $t("Bruckneruni") }}
-        </v-btn>
-      </v-col>
-    </v-row>
+    <template v-if="false">
+      <v-row class="my-6" justify="start">
+        <v-col cols="12">
+          <span class="title font-weight-light primary--text">{{
+            $t("Legacy (Uwmetadata)")
+          }}</span>
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+      <v-row class="my-6" justify="start">
+        <v-col cols="12">
+          <v-btn
+            large
+            dark
+            color="grey white--text mr-8"
+            :to="localePath({ path: '/submit/uwm/asset' })"
+          >
+            {{ $t("File") }}
+          </v-btn>
+          <v-btn
+            large
+            dark
+            color="grey white--text mr-8"
+            :to="localePath({ path: '/submit/uwm/collection' })"
+          >
+            {{ $t("Collection") }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
+    <template
+      v-if="
+        this.user.username === 'ethnograpp95' ||
+        this.user.username === 'ethnograps52' ||
+        this.user.username === 'bib-phaidra'
+      "
+    >
+      <v-row class="my-6" justify="start">
+        <v-col cols="12">
+          <span class="title font-weight-light primary--text">{{
+            $t("Extra")
+          }}</span>
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+      <v-row class="my-6" justify="start">
+        <v-col cols="12">
+          <v-btn
+            v-if="
+              this.user.username === 'ethnograpp95' ||
+              this.user.username === 'ethnograps52'
+            "
+            large
+            dark
+            color="grey white--text mr-8"
+            :to="localePath('/submit/ksa-eda')"
+          >
+            <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("EDA") }}
+          </v-btn>
+          <v-btn
+            v-if="this.user.username === 'bib-phaidra'"
+            large
+            dark
+            color="grey white--text mr-8"
+            :to="localePath('/submit/bruckneruni')"
+          >
+            <v-icon dark class="mr-4">mdi-file-star</v-icon>
+            {{ $t("Bruckneruni") }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
 <script>
+import { context } from "../../mixins/context";
+
 export default {
+  mixins: [context],
   middleware: "auth",
-    watch: {
-    templateDialog (opened) {
+  watch: {
+    templateDialog(opened) {
       if (opened) {
         // this.$refs.templates.loadTemplates()
       }
-    }
+    },
   },
   methods: {
     loadTemplate: async function (templateid) {
-      this.$router.push(this.localeLocation({ path: `/submit/custom/${templateid}`}))
-      this.templateDialog = false
-    }
+      this.$router.push(
+        this.localeLocation({ path: `/submit/custom/${templateid}` })
+      );
+      this.templateDialog = false;
+    },
   },
-  data () {
+  data() {
     return {
-      templateDialog: false
-    }
-  }
+      templateDialog: false,
+    };
+  },
 };
 </script>

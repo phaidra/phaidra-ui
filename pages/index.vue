@@ -179,9 +179,7 @@
               </h3>
             </v-row>
             <v-divider class="my-4"></v-divider>
-            <v-row class="pl-2 mb-4">
-              <a href="mailto:phaidra@univie.ac.at">phaidra@univie.ac.at</a>
-            </v-row>
+
             <v-row class="pl-2 mb-4">
               {{ $t("If you have technical problems please contact") }}:
               <a href="mailto:support.phaidra@univie.ac.at"

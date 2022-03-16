@@ -125,10 +125,12 @@
                             <v-list>
                               <v-list-item
                                 @click="
-                                  $router.push(localeLocation({
-                                    path: '/search',
-                                    query: { reset: 1 },
-                                  }))
+                                  $router.push(
+                                    localeLocation({
+                                      path: '/search',
+                                      query: { reset: 1 },
+                                    })
+                                  )
                                 "
                                 ><v-list-item-title>{{
                                   $t("Search")
@@ -136,7 +138,11 @@
                               >
                               <v-list-item
                                 v-if="signedin"
-                                @click="$router.push(localeLocation({path: '/submit'}))"
+                                @click="
+                                  $router.push(
+                                    localeLocation({ path: '/submit' })
+                                  )
+                                "
                                 ><v-list-item-title>{{
                                   $t("Submit")
                                 }}</v-list-item-title></v-list-item
@@ -144,10 +150,12 @@
                               <v-list-item
                                 v-if="signedin"
                                 @click="
-                                  $router.push(localeLocation({
-                                    path: '/search',
-                                    query: { reset: 1, owner: user.username },
-                                  }))
+                                  $router.push(
+                                    localeLocation({
+                                      path: '/search',
+                                      query: { reset: 1, owner: user.username },
+                                    })
+                                  )
                                 "
                                 ><v-list-item-title>{{
                                   $t("My objects")
@@ -155,28 +163,33 @@
                               >
                               <v-list-item
                                 v-if="signedin"
-                                @click="$router.push(localeLocation({path:'/lists'}))"
+                                @click="
+                                  $router.push(
+                                    localeLocation({ path: '/lists' })
+                                  )
+                                "
                                 ><v-list-item-title>{{
                                   $t("Object lists")
                                 }}</v-list-item-title></v-list-item
                               >
                               <v-list-item
                                 v-if="signedin"
-                                @click="$router.push(localeLocation({path: '/groups'}))"
+                                @click="
+                                  $router.push(
+                                    localeLocation({ path: '/groups' })
+                                  )
+                                "
                                 ><v-list-item-title>{{
                                   $t("Groups")
                                 }}</v-list-item-title></v-list-item
                               >
                               <v-list-item
-                                v-if="signedin"
-                                @click="$router.push(localeLocation({path: '/statistics'}))"
-                                ><v-list-item-title>{{
-                                  $t("Statistics")
-                                }}</v-list-item-title></v-list-item
-                              >
-                              <v-list-item
                                 v-if="!signedin && appconfig.enablelogin"
-                                @click="$router.push(localeLocation({path: '/login'}))"
+                                @click="
+                                  $router.push(
+                                    localeLocation({ path: '/login' })
+                                  )
+                                "
                                 ><v-list-item-title>{{
                                   $t("Login")
                                 }}</v-list-item-title></v-list-item
@@ -219,10 +232,12 @@
                               hover ? 'ph-button primary' : 'ph-button grey'
                             "
                             v-show="signedin"
-                            :to="localePath({
-                              path: '/search',
-                              query: { reset: 1, owner: user.username },
-                            })"
+                            :to="
+                              localePath({
+                                path: '/search',
+                                query: { reset: 1, owner: user.username },
+                              })
+                            "
                             >{{ $t("My objects") }}</nuxt-link
                           >
                         </v-hover>
@@ -246,7 +261,7 @@
                             >{{ $t("Groups") }}</nuxt-link
                           >
                         </v-hover>
-                          <v-hover v-slot:default="{ hover }">
+                        <v-hover v-slot:default="{ hover }">
                           <nuxt-link
                             :class="
                               hover ? 'ph-button primary' : 'ph-button grey'
@@ -327,7 +342,6 @@
 
               <transition name="fade" mode="out-in">
                 <keep-alive>
-                  <!-- <router-view class="mb-3"></router-view> -->
                   <Nuxt />
                 </keep-alive>
               </transition>
@@ -352,15 +366,13 @@ import "@/compiled-icons/univie-right";
 import "@/compiled-icons/univie-sprache";
 import { config } from "../mixins/config";
 import { context } from "../mixins/context";
-import Vue from 'vue'
-import moment from 'moment'
-import * as Sentry from '@sentry/browser'
-import * as Integrations from '@sentry/integrations'
-import '@/assets/css/material-icons.css'
+import Vue from "vue";
+import moment from "moment";
+import "@/assets/css/material-icons.css";
 
 export default {
   mixins: [config, context],
-   metaInfo() {
+  metaInfo() {
     let metaInfo = {
       title: config.title,
       meta: [
@@ -388,7 +400,7 @@ export default {
           hid: "twitter:card",
           name: "twitter:card",
           content: "summary_large_image",
-        }
+        },
       ],
     };
     return metaInfo;
@@ -402,7 +414,7 @@ export default {
     logout: function () {
       this.$store.dispatch("logout");
       this.$store.commit("setLoading", false);
-      this.$router.push(this.localeLocation({ path: `/`}))
+      this.$router.push(this.localeLocation({ path: `/` }));
     },
     useLocale: function (lang) {
       if (this.instanceconfig.ui) {
@@ -414,8 +426,9 @@ export default {
     },
     changeLocale: function (lang) {
       this.$i18n.locale = lang;
-      this.$router.push(this.switchLocalePath(lang))
-      this.$store.dispatch('vocabulary/sortRoles', this.$i18n.locale)
+      this.$router.push(this.switchLocalePath(lang));
+      this.$store.dispatch("vocabulary/sortRoles", this.$i18n.locale);
+      this.$store.dispatch("vocabulary/sortObjectTypes", this.$i18n.locale);
     },
     dismiss: function (alert) {
       this.$store.commit("clearAlert", alert);
@@ -469,55 +482,60 @@ export default {
   created: function () {
     this.$vuetify.theme.themes.light.primary = this.instanceconfig.primary;
 
-    Vue.filter('datetime', function (value) {
+    Vue.filter("datetime", function (value) {
       if (value) {
-        return moment(String(value)).format('DD.MM.YYYY hh:mm:ss')
+        return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
       }
-    })
-    Vue.filter('date', function (value) {
+    });
+    Vue.filter("date", function (value) {
       if (value) {
-        return moment(String(value)).format('DD.MM.YYYY')
+        return moment(String(value)).format("DD.MM.YYYY");
       }
-    })
-    Vue.filter('unixtime', function (value) {
+    });
+    Vue.filter("unixtime", function (value) {
       if (value) {
-        return moment.unix(String(value)).format('DD.MM.YYYY hh:mm:ss')
+        return moment.unix(String(value)).format("DD.MM.YYYY hh:mm:ss");
       }
-    })
+    });
 
-    Vue.filter('datetime', function (value) {
+    Vue.filter("datetime", function (value) {
       if (value) {
-        return moment(String(value)).format('DD.MM.YYYY hh:mm:ss')
+        return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
       }
-    })
+    });
 
-    Vue.filter('bytes', function (bytes, precision) {
-      if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-'
-      if (typeof precision === 'undefined') precision = 1
-      var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB']
-      var number = Math.floor(Math.log(bytes) / Math.log(1024))
-      return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number]
-    })
+    Vue.filter("bytes", function (bytes, precision) {
+      if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return "-";
+      if (typeof precision === "undefined") precision = 1;
+      var units = ["bytes", "kB", "MB", "GB", "TB", "PB"];
+      var number = Math.floor(Math.log(bytes) / Math.log(1024));
+      return (
+        (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +
+        " " +
+        units[number]
+      );
+    });
 
-    Vue.filter('truncate', function (text, length, clamp) {
-    clamp = clamp || '...'
-    length = length || 30
+    Vue.filter("truncate", function (text, length, clamp) {
+      clamp = clamp || "...";
+      length = length || 30;
 
-    if (text.length <= length) return text
+      if (text.length <= length) return text;
 
-    var tcText = text.slice(0, length - clamp.length)
-    var last = tcText.length - 1
+      var tcText = text.slice(0, length - clamp.length);
+      var last = tcText.length - 1;
 
-    while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1
+      while (last > 0 && tcText[last] !== " " && tcText[last] !== clamp[0])
+        last -= 1;
 
-    // Fix for case when text does not have any space
-    last = last || length - clamp.length
+      // Fix for case when text does not have any space
+      last = last || length - clamp.length;
 
-    tcText = tcText.slice(0, last)
+      tcText = tcText.slice(0, last);
 
-    return tcText + clamp
-  })
-  }
+      return tcText + clamp;
+    });
+  },
 };
 </script>
 <style lang="sass">

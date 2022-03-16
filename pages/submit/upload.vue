@@ -182,6 +182,8 @@ export default {
       this.$vuetify.goTo(0);
     },
     createForm: function (self, index) {
+      this.$store.dispatch("vocabulary/sortObjectTypes", this.$i18n.locale);
+
       self.validationError = false;
       self.fieldsMissing = [];
 
@@ -214,7 +216,7 @@ export default {
             fields: [],
           },
           {
-            title: "Association",
+            title: "Project",
             mode: "expansion",
             addbutton: false,
             disablemenu: true,
@@ -259,6 +261,7 @@ export default {
 
       let ot = fields.getField("object-type-checkboxes");
       ot.resourceType = defaultResourceType;
+      ot.showLabel = true;
       self.form.sections[0].fields.push(ot);
 
       self.form.sections[0].fields.push(fields.getField("title"));
@@ -277,7 +280,12 @@ export default {
       let role = fields.getField("role");
       role.ordergroup = "role";
       role.roleVocabulary = "submitrolepredicate";
+      role.identifierType = "ids:orcid";
+      role.showIdentifier = true;
       self.form.sections[0].fields.push(role);
+
+      self.form.sections[0].fields.push(fields.getField("oefos-subject"));
+      self.form.sections[0].fields.push(fields.getField("association"));
 
       let lic = fields.getField("license");
       lic.showValueDefinition = true;
@@ -285,7 +293,6 @@ export default {
       self.form.sections[0].fields.push(lic);
 
       self.form.sections[1].fields.push(fields.getField("gnd-subject"));
-      self.form.sections[1].fields.push(fields.getField("oefos-subject"));
       self.form.sections[1].fields.push(fields.getField("bk-subject"));
 
       self.form.sections[2].fields.push(fields.getField("temporal-coverage"));
@@ -293,7 +300,6 @@ export default {
       place.showtype = false;
       self.form.sections[2].fields.push(place);
 
-      self.form.sections[3].fields.push(fields.getField("association"));
       self.form.sections[3].fields.push(fields.getField("project"));
 
       self.form.sections[4].fields.push(fields.getField("date-edtf"));
