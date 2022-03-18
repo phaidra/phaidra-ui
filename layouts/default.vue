@@ -472,6 +472,16 @@ export default {
       }
       return false;
     },
+    showSnackbar: {
+      get: function () {
+        return this.$store.state.snackbar;
+      },
+      set: function (newValue) {
+        if (!newValue) {
+          this.$store.commit("hideSnackbar");
+        }
+      },
+    },
     breadcrumbs() {
       return this.$store.state.breadcrumbs;
     },

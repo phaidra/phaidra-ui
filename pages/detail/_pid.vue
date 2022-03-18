@@ -1477,6 +1477,9 @@ export default {
   components: {
     D3Network,
   },
+  validate({ params }) {
+    return /^o:\d+$/.test(params.pid);
+  },
   metaInfo() {
     let metaInfo = {};
     if (this.objectInfo) {
@@ -2088,12 +2091,7 @@ export default {
       self.stats.detail = null;
       try {
         let response = await self.$http.get(
-          self.instanceconfig.api + "/stats/" + pid,
-          {
-            headers: {
-              "X-XSRF-TOKEN": self.user.token,
-            },
-          }
+          self.instanceconfig.api + "/stats/" + pid
         );
         if (response.data.stats) {
           self.stats.download = response.data.stats.downloads;
@@ -2240,7 +2238,7 @@ export default {
   },
   serverPrefetch() {
     // console.log('[' + this.$store.state.route.params.pid + '] prefetch')
-    return this.fetchAsyncData(this, this.$route.params.pid);
+    this.fetchAsyncData(this, this.$route.params.pid);
   },
   beforeRouteEnter: async function (to, from, next) {
     next(async function (vm) {
@@ -2267,7 +2265,7 @@ export default {
     this.$store.commit("setLoading", true);
     this.$store.commit("setObjectInfo", null);
     await this.fetchAsyncData(this, to.params.pid);
-    this.fetchUsageStats(this, to.params.pid);
+
     this.fetchChecksums(this, to.params.pid);
     console.log("showtree:" + this.showCollectionTree);
     if (this.showCollectionTree) {

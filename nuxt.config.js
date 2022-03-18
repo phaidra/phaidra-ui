@@ -40,6 +40,8 @@ export default {
 
   middleware: ["auth"],
 
+  serverMiddleware: ['~/server-middleware/redirect'],
+
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
@@ -63,13 +65,13 @@ export default {
       {
         name: 'English',
         code: 'eng',
-        iso: 'eng',
+        iso: 'en', // keep 2-letters, used for browser language detection
         file: 'eng'
       },
       {
         name: 'Deutsch',
         code: 'deu',
-        iso: 'deu',
+        iso: 'de',
         file: 'deu'
       }
     ],
@@ -79,6 +81,11 @@ export default {
     vueI18n: {
       silentTranslationWarn: true,
       silentFallbackWarn: true
+    },
+    detectBrowserLanguage: {
+      useCookie: true,
+      redirectOn: 'root',
+      alwaysRedirect: true // seems not working...
     }
   },
 
@@ -104,7 +111,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    extend (config, { isDev, isClient }) {
+    extend(config, { isDev, isClient }) {
       config.node = {
         fs: 'empty'
       }

@@ -12,12 +12,9 @@
         </v-col>
         <v-col class="text-right">
           <nuxt-link :to="localePath('impressum')">Impressum</nuxt-link> |
-          <nuxt-link :to="localePath('termsofuse')">Terms of Use</nuxt-link> |
-          <nuxt-link :to="localePath('repostats')">Statistics</nuxt-link>
-
-          <!-- <router-link :to="'impressum'">Impressum</router-link> |
-          <router-link :to="'termsofuse'">Terms of Use</router-link> |
-          <router-link :to="'/repostats'">Statistics</router-link> -->
+          <nuxt-link :to="localePath('termsofuse')">Terms of Use</nuxt-link
+          ><!-- |
+          <nuxt-link :to="localePath('statistics')">Statistics</nuxt-link>-->
         </v-col>
       </v-row>
     </v-col>

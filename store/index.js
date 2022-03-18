@@ -268,7 +268,7 @@ export const mutations = {
         }
       )
     }
-    if (transition.to.path.includes('stats')) {
+    if (transition.to.path.includes('stats') && (!transition.to.path.includes('repostats'))) {
       if (transition.from.path.includes('detail')) {
         state.breadcrumbs.push(
           {
@@ -459,7 +459,6 @@ export const mutations = {
     Vue.set(state.user, 'username', username)
   },
   setToken(state, token) {
-    this.$cookies.set('token', token)
     Vue.set(state.user, 'token', token)
   },
   setLoginData(state, logindata) {
@@ -480,18 +479,16 @@ export const mutations = {
   },
   clearUser(state) {
     state.user = {}
-    this.$cookies.remove('token')
+    this.$cookies.remove('X-XSRF-TOKEN')
     this.$cookies.remove('user')
   },
   clearStore(state) {
-    state.alerts = []
     state.objectInfo = null
     state.objectMembers = []
     state.user = {}
     state.groups = []
-    this.$cookies.remove('token')
+    this.$cookies.remove('X-XSRF-TOKEN')
     this.$cookies.remove('user')
-    // document.cookie = 'X-XSRF-TOKEN='
   },
   setCharts(state, url) {
     state.chartsUrl.push(url)
@@ -504,12 +501,11 @@ export const mutations = {
 export const actions = {
 
   nuxtServerInit({ commit }, { req }) {
-    const token = this.$cookies.get('token')
+    const token = this.$cookies.get('X-XSRF-TOKEN')
     let user = this.$cookies.get('user')
     commit('setUserData', user)
     commit('setToken', token);
   },
-
 
   async fetchObjectInfo({ commit, state }, pid) {
     try {
@@ -580,6 +576,9 @@ export const actions = {
   },
   async login({ commit, dispatch, state }, credentials) {
     commit('clearStore')
+    if (process.browser) {
+      document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+    }
     commit('setUsername', credentials.username)
     try {
       const response = await axios.get(state.instanceconfig.api + '/signin', {
@@ -601,9 +600,8 @@ export const actions = {
     }
   },
   async logout({ commit, dispatch, state }) {
-    this.$cookies.remove('token')
+    commit('clearAlerts')
     this.$cookies.remove('user')
-    commit('clearStore')
     if (process.browser) {
       document.cookie = 'X-XSRF-TOKEN=; domain=' + window.location.hostname + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
     }
@@ -613,11 +611,13 @@ export const actions = {
           'X-XSRF-TOKEN': state.user.token
         }
       })
-      commit('clearStore')
       if (response.data.alerts && response.data.alerts.length > 0) {
-        // commit('setAlerts', response.data.alerts)
+        console.log(response.data.alerts)
       }
     } catch (error) {
+      console.log(error)
+    } finally {
+      commit('setAlerts', [{ type: 'danger', msg: 'You have been logged out' }])
       commit('clearStore')
     }
   },
@@ -634,6 +634,7 @@ export const actions = {
       }
       commit('setGroups', response.data.groups)
     } catch (error) {
+      console.log(error)
     }
   },
   switchInstance({ commit }, instance) {
@@ -647,8 +648,4 @@ export const actions = {
   clearCharts({ commit, dispatch, state }) {
     commit('clearCharts')
   }
-}
-
-export const getters = {
-  token: state => state.user.token
 }

@@ -1,68 +1,81 @@
 <template>
-
   <v-container fluid>
-    <v-row v-if="objectInfo">
-      <v-col v-if="objectInfo.metadata['JSON-LD']">
-        <code>{{ objectInfo.metadata['JSON-LD'] }}</code>
-      </v-col>
-    </v-row>
+    <v-card class="mt-8" v-if="objectInfo && objectInfo.metadata['JSON-LD']">
+      <v-card-title class="title font-weight-light grey white--text"
+        >{{ routepid }} JSON-LD</v-card-title
+      >
+      <v-card-text>
+        <vue-json-pretty
+          :data="objectInfo.metadata['JSON-LD']"
+        ></vue-json-pretty>
+      </v-card-text>
+    </v-card>
   </v-container>
-
 </template>
 
 <script>
-import configjs from '../../../config/phaidra-ui'
-import axios from 'axios'
-import { context } from '../../../mixins/context'
-import { config } from '../../../mixins/config'
+import VueJsonPretty from "vue-json-pretty";
+import "vue-json-pretty/lib/styles.css";
+import configjs from "../../../config/phaidra-ui";
+import axios from "axios";
+import { context } from "../../../mixins/context";
+import { config } from "../../../mixins/config";
 
 export default {
-  mixins: [ context, config ],
+  mixins: [context, config],
+  components: {
+    VueJsonPretty,
+  },
   computed: {
     routepid: function () {
-      return this.$route.params.pid
+      return this.$route.params.pid;
     },
     objectInfo: function () {
-      return this.$store.state.objectInfo
-    }
+      return this.$store.state.objectInfo;
+    },
   },
-  data () {
+  data() {
     return {
-      active: null
-    }
+      active: null,
+    };
   },
   methods: {
-    async fetchAsyncData (self, pid) {
-      await self.$store.dispatch('fetchObjectInfo', pid)
-    }
+    async fetchAsyncData(self, pid) {
+      await self.$store.dispatch("fetchObjectInfo", pid);
+    },
   },
-  serverPrefetch () {
-    console.log('[' + this.$route.params.pid + '] prefetch')
-    return this.fetchAsyncData(this, this.$route.params.pid)
+  serverPrefetch() {
+    console.log("[" + this.$route.params.pid + "] prefetch");
+    return this.fetchAsyncData(this, this.$route.params.pid);
   },
   beforeRouteEnter: async function (to, from, next) {
-    let inforesponse
+    let inforesponse;
     try {
-      console.log('[' + to.params.pid + '] fetching object info')
-      inforesponse = await axios.get(configjs.instances[configjs.defaultinstance].api + '/object/' + to.params.pid + '/info')
-      console.log('[' + to.params.pid + '] fetching object info done')
+      console.log("[" + to.params.pid + "] fetching object info");
+      inforesponse = await axios.get(
+        configjs.instances[configjs.defaultinstance].api +
+          "/object/" +
+          to.params.pid +
+          "/info"
+      );
+      console.log("[" + to.params.pid + "] fetching object info done");
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-    next(vm => {
+    next((vm) => {
       if (inforesponse) {
         if (inforesponse.data) {
-          vm.$store.commit('setObjectInfo', inforesponse.data.info)
+          vm.$store.commit("setObjectInfo", inforesponse.data.info);
         }
       }
-    })
+    });
   },
   beforeRouteUpdate: async function (to, from, next) {
-    await this.fetchAsyncData(this, to.params.pid)
-    next()
+    await this.fetchAsyncData(this, to.params.pid);
+    next();
   },
   mounted() {
-    console.log('this.$route.params.pid', this.$route)
-  }
-}
+    console.log("this.$route.params.pid", this.$route);
+  },
+};
 </script>
