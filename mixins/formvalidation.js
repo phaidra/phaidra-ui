@@ -93,10 +93,16 @@ export const formvalidation = {
       let missingAssociation = true
       let missingOefos = true
       let resourceType = null
+      let hasReadonlyOefos = false
       for (const s of this.form.sections) {
         for (const f of s.fields) {
           if (f.predicate === 'dcterms:type') {
             resourceType = f.value
+          }
+          if (f.component === 'p-vocab-ext-readonly') {
+            if (f.value.startsWith('oefos2012')) {
+              hasReadonlyOefos = true
+            }
           }
         }
       }
@@ -198,9 +204,11 @@ export const formvalidation = {
           if (f.component === 'p-subject-oefos') {
             missingOefos = false
             f.errorMessages = []
-            if (f.value.length < 1) {
-              f.errorMessages.push(this.$t('Please select'))
-              this.validationError = true
+            if (!hasReadonlyOefos) {
+              if (f.value.length < 1) {
+                f.errorMessages.push(this.$t('Please select'))
+                this.validationError = true
+              }
             }
           }
           if (f.component === 'p-association') {
