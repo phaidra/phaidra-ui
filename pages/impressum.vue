@@ -132,7 +132,5 @@
 </template>
 
 <script>
-export default {
-  scrollToTop: true,
-};
+export default {};
 </script>

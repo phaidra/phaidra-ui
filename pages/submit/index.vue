@@ -72,7 +72,7 @@
           large
           dark
           color="grey white--text mr-8"
-          :to="localePath({ path: '/submit/empty' })"
+          @click="$router.push(localePath({ path: '/submit/empty' }))"
         >
           <v-icon dark class="mr-4">mdi-script-outline</v-icon>
           {{ $t("Create new template") }}
@@ -94,7 +94,7 @@
             large
             dark
             color="grey white--text mr-8"
-            :to="localePath({ path: '/submit/uwm/asset' })"
+            @click="$router.push(localePath({ path: '/submit/uwm/asset' }))"
           >
             {{ $t("File") }}
           </v-btn>
@@ -102,7 +102,9 @@
             large
             dark
             color="grey white--text mr-8"
-            :to="localePath({ path: '/submit/uwm/collection' })"
+            @click="
+              $router.push(localePath({ path: '/submit/uwm/collection' }))
+            "
           >
             {{ $t("Collection") }}
           </v-btn>
@@ -134,7 +136,7 @@
             large
             dark
             color="grey white--text mr-8"
-            :to="localePath('/submit/ksa-eda')"
+            @click="$router.push(localePath('/submit/ksa-eda'))"
           >
             <v-icon dark class="mr-4">mdi-file-star</v-icon> {{ $t("EDA") }}
           </v-btn>
@@ -143,7 +145,7 @@
             large
             dark
             color="grey white--text mr-8"
-            :to="localePath('/submit/bruckneruni')"
+            @click="$router.push(localePath('/submit/bruckneruni'))"
           >
             <v-icon dark class="mr-4">mdi-file-star</v-icon>
             {{ $t("Bruckneruni") }}
