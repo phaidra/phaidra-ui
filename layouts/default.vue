@@ -426,6 +426,7 @@ export default {
     },
     changeLocale: function (lang) {
       this.$i18n.locale = lang;
+      this.$i18n.setLocaleCookie(lang);
       this.$router.push(this.switchLocalePath(lang));
       this.$store.dispatch("vocabulary/sortRoles", this.$i18n.locale);
       this.$store.dispatch("vocabulary/sortObjectTypes", this.$i18n.locale);

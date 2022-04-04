@@ -254,9 +254,9 @@ export default {
       this.form.sections[1].fields.push(fields.getField("height"));
       this.form.sections[1].fields.push(fields.getField("width"));
       this.form.sections[1].fields.push(fields.getField("inscription"));
-      this.form.sections[1].fields.push(
-        fields.getField("spatial-geonames-search")
-      );
+      let spgs = fields.getField("spatial-geonames-search");
+      spgs.showtype = true;
+      this.form.sections[1].fields.push(spgs);
       var localname = fields.getField("spatial-text");
       localname.label = "Depicted/Represented place (native name)";
       this.form.sections[1].fields.push(localname);
