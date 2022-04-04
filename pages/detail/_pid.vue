@@ -615,9 +615,16 @@
                             rel.created | date
                           }}</v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -646,9 +653,16 @@
                       >
                         <v-row :key="'version' + i">
                           <v-col cols="12" md="12">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -678,9 +692,16 @@
                         <v-row :key="'format' + i">
                           <v-col cols="12" md="5">{{ rel.dc_format[0] }}</v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -721,9 +742,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -767,9 +795,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -812,9 +847,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -858,9 +900,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -905,9 +954,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -950,9 +1006,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -996,9 +1059,16 @@
                             ></p-img>
                           </v-col>
                           <v-col cols="12" md="7">
-                            <nuxt-link :to="localePath(`/detail/${rel.pid}`)">{{
-                              rel.dc_title[0]
-                            }}</nuxt-link>
+                            <nuxt-link
+                              v-if="rel['dc_title']"
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.dc_title[0] }}</nuxt-link
+                            >
+                            <nuxt-link
+                              v-else
+                              :to="localePath(`/detail/${rel.pid}`)"
+                              >{{ rel.pid }}</nuxt-link
+                            >
                           </v-col>
                         </v-row>
                         <v-divider
@@ -1139,15 +1209,6 @@
                           :to="localePath(`/sort/${objectInfo.pid}`)"
                           >{{ $t("Sort members") }}</nuxt-link
                         >
-                      </v-row>
-                      <v-row
-                        no-gutters
-                        class="pt-2"
-                        v-if="objectInfo.cmodel === 'Container'"
-                      >
-                        <nuxt-link class="mb-1" :to="localePath('addmember')">{{
-                          $t("Upload member")
-                        }}</nuxt-link>
                       </v-row>
                       <v-row
                         no-gutters
