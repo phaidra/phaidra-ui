@@ -89,5 +89,6 @@ sw.*
 # Vim swap files
 *.swp
 
+# customizable stuff
 components/ext
 assets/ext
