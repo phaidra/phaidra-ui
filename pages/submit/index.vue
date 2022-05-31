@@ -11,6 +11,7 @@
         </v-btn>
       </v-col>
     </v-row>
+    <template v-if="instanceconfig.irbaseurl !== ''">
     <v-row class="my-6" justify="start">
       <v-col cols="12">
         <span class="title font-weight-light primary--text">{{
@@ -30,6 +31,7 @@
         </v-btn>
       </v-col>
     </v-row>
+    </template>
     <v-row class="my-6" justify="start">
       <v-col cols="12">
         <span class="title font-weight-light primary--text">{{
@@ -158,9 +160,10 @@
 
 <script>
 import { context } from "../../mixins/context";
+import { config } from "../../mixins/config";
 
 export default {
-  mixins: [context],
+  mixins: [context,config],
   middleware: "auth",
   watch: {
     templateDialog(opened) {
