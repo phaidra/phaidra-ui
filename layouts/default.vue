@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row no-gutters>
         <v-col>
-          <header></header>
+          <ExtHeader></ExtHeader>
           <v-row>
             <v-col cols="12" md="8" offset-md="2" class="content">
               <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
@@ -53,12 +53,6 @@
                   <Nuxt />
                 </keep-alive>
               </transition>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12" v-if="isUnivie">
-              <quicklinks-footer></quicklinks-footer>
             </v-col>
           </v-row>
           <p-footer></p-footer>
@@ -119,56 +113,11 @@ export default {
     };
   },
   methods: {
-    logout: function () {
-      this.$store.dispatch("logout");
-      this.$store.commit("setLoading", false);
-      this.$router.push(this.localeLocation({ path: `/` }));
-    },
-    useLocale: function (lang) {
-      if (this.instanceconfig.ui) {
-        if (this.instanceconfig.ui.languages) {
-          return this.instanceconfig.ui.languages.includes(lang);
-        }
-      }
-      return false;
-    },
-    changeLocale: function (lang) {
-      this.$i18n.locale = lang;
-      this.$i18n.setLocaleCookie(lang);
-      this.$router.push(this.switchLocalePath(lang));
-      this.$store.dispatch("vocabulary/sortRoles", this.$i18n.locale);
-      this.$store.dispatch("vocabulary/sortObjectTypes", this.$i18n.locale);
-    },
     dismiss: function (alert) {
       this.$store.commit("clearAlert", alert);
     },
   },
   computed: {
-    localeLabel: function () {
-      if (this.instanceconfig.ui) {
-        if (this.instanceconfig.ui.twoletterlang === 1) {
-          switch (this.$i18n.locale) {
-            case "eng":
-              return "eng";
-            case "deu":
-              return "deu";
-            default:
-              return "";
-          }
-        }
-      }
-      return this.$i18n.locale;
-    },
-    isUnivie() {
-      switch (this.instanceconfig.baseurl) {
-        case "phaidra.univie.ac.at":
-        case "phaidra-sandbox.univie.ac.at":
-        case "phaidra-entw.univie.ac.at":
-          return true;
-        default:
-          return false;
-      }
-    },
     showAlerts: function () {
       if (this.$store.state.alerts.length > 0) {
         let onlySuccess = true;
