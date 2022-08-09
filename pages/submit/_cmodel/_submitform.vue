@@ -100,7 +100,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -110,7 +110,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let psc = this.getField("spatial-getty");
+      let psc = this.getField("spatial-geonames");
       psc.type = "dcterms:spatial";
       s.push(psc);
 
@@ -149,7 +149,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -204,7 +204,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -369,7 +369,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -426,7 +426,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -465,7 +465,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -540,7 +540,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -581,7 +581,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -661,7 +661,7 @@ export default {
       di.type = "dcterms:issued";
       s.push(di);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -708,7 +708,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -759,7 +759,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -800,7 +800,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -851,7 +851,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -906,7 +906,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -943,7 +943,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 
@@ -990,7 +990,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -1033,7 +1033,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -1084,7 +1084,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -1117,7 +1117,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -1152,7 +1152,7 @@ export default {
 
       s.push(this.getField("temporal-coverage"));
 
-      let sc = this.getField("spatial-getty");
+      let sc = this.getField("spatial-geonames");
       sc.type = "dcterms:spatial";
       s.push(sc);
 
@@ -1177,7 +1177,7 @@ export default {
       dc.type = "dcterms:created";
       s.push(dc);
 
-      let pc = this.getField("spatial-getty");
+      let pc = this.getField("spatial-geonames");
       pc.type = "vra:placeOfCreation";
       s.push(pc);
 

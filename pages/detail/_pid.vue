@@ -322,10 +322,11 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-                <span v-if="id.label" class="caption text--secondary">{{
-                  $t(id.label)
-                }}</span
-                ><br /><span>{{ id.value }}</span>
+                <span v-if="id.label" class="caption text--secondary">
+                  <template v-if="id.label === 'Handle'">https://hdl.handle.net/{{ $t(id.label) }}</template>
+                  <template v-else>{{ $t(id.label) }}</template>
+                </span
+                ><br /><span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">{{ id.value }}</span>
               </p>
             </v-col>
           </v-row>

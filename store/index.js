@@ -289,27 +289,27 @@ export const mutations = {
     if (transition.to.path.includes('submit') && transition.to.params && transition.to.params.cmodel && !transition.to.params.submitform) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
       state.breadcrumbs.push(
         {
-          text: 'Submit ' + transition.to.params.cmodel,
+          text: 'Upload ' + transition.to.params.cmodel,
           disabled: true
         }
       )
     } else if (transition.to.path.includes('submit') && transition.to.params && transition.to.params.cmodel && transition.to.params.submitform) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
       if (transition.to.params.cmodel !== 'resource') {
         state.breadcrumbs.push(
           {
-            text: 'Submit ' + transition.to.params.cmodel,
+            text: 'Upload ' + transition.to.params.cmodel,
             to: { path: transition.from.path }
           }
         )
@@ -317,14 +317,14 @@ export const mutations = {
       if (transition.to.params.submitform !== 'general') {
         state.breadcrumbs.push(
           {
-            text: 'Submit ' + transition.to.params.cmodel + ' ' + transition.to.params.submitform,
+            text: 'Upload ' + transition.to.params.cmodel + ' ' + transition.to.params.submitform,
             disabled: true
           }
         )
       } else {
         state.breadcrumbs.push(
           {
-            text: 'Submit ' + transition.to.params.cmodel,
+            text: 'Upload ' + transition.to.params.cmodel,
             disabled: true
           }
         )
@@ -332,46 +332,46 @@ export const mutations = {
     } else if (transition.to.path.includes('submit/simple')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
       state.breadcrumbs.push(
         {
-          text: 'Simple submit',
+          text: 'Simple upload',
           disabled: true
         }
       )
     } else if (transition.to.path.includes('submit-custom')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
       state.breadcrumbs.push(
         {
-          text: 'Submit template ' + transition.to.params.templateid,
+          text: 'Upload template ' + transition.to.params.templateid,
           disabled: true
         }
       )
     } else if (transition.to.path.includes('submit/uwm')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
       state.breadcrumbs.push(
         {
-          text: 'Legacy submit (UWMetadata)',
+          text: 'Legacy Upload (UWMetadata)',
           disabled: true
         }
       )
     } else if (transition.to.path.includes('/submit/empty')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
@@ -384,7 +384,7 @@ export const mutations = {
     } else if (transition.to.path.includes('submit/ksa-eda')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
@@ -397,7 +397,7 @@ export const mutations = {
     } else if (transition.to.path.includes('submit/bruckneruni')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           to: transition.from.path
         }
       )
@@ -410,7 +410,7 @@ export const mutations = {
     } else if (transition.to.path.includes('submit')) {
       state.breadcrumbs.push(
         {
-          text: 'Submit',
+          text: 'Upload',
           disabled: true
         }
       )

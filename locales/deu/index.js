@@ -527,7 +527,7 @@ export default {
   'Keywords *': 'Stichworte *',
   Filename: 'Dateiname',
   'Temporal coverage': 'Zeitliche Abdeckung',
-  Provenance: 'Provenienz',
+  Provenance: 'Provenienzvermerk',
   'Physical location': 'Aufbewahrungsort',
   'Accession number': 'Aktenvermerk',
   Place: 'Ort',
@@ -618,7 +618,7 @@ export default {
   'edm:hasType': 'Typ',
   'bf:physicalLocation': 'Standort',
   'bf:shelfMark': 'Signatur',
-  'dcterms:provenance': 'Provenienz',
+  'dcterms:provenance': 'Provenienzvermerk',
 
   'rdau:P60550': 'Umfang',
   'schema:numberOfPages': 'Seitenanzahl',
@@ -680,6 +680,7 @@ export default {
   'Represented/depicted place': 'Abgebildeter Ort',
   'Available language': 'Gesprochene Sprachen',
   Association: 'Organisationseinheit',
+  'Association *': 'Organisationseinheit *',
   'Resource type': 'Ressourcentyp',
   'MIME type': 'MIME Typ',
   'File name': 'Dateiname',
@@ -695,7 +696,7 @@ export default {
   'Save as template': 'Als Vorlage speichern',
   'File to upload': 'Datei zum Hochladen',
   'File to upload *': 'Datei zum Hochladen *',
-  'File type': 'Datei Typ',
+  'File type': 'Dateityp',
 
   SELECTION_LIMIT: 'Cannot select more than {limit} results.',
 
@@ -868,6 +869,14 @@ export default {
   Extend: 'Erweitern',
   Classification: 'Klassifikation',
   'Physical object': 'Physisches Objekt',
+  'Language of object': 'Sprache des Objektes',
+  'Create new object': 'Neues Objekt erstellen',
+  'Upload publication': 'Publikation hochladen',
+  'Open template': 'Vorlage öffnen',
+  'Upload Picture, Audio, Video, Document, Data or create an empty Collection.': 'Bild, Audio, Video, Dokument oder Daten hochladen, oder eine leere Collection erstellen',
+  'Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ...': 'Beiträge in Zeitschriften, Forschungsberichte, Rezensionen, Working Papers, Konferenzbeiträge, Monografien, einzelne Kapitel in Monografien...',
+  'Open a previously created upload template.': 'Eine gespeicherte Vorlage öffnen.',
+  'Compose your own upload form.': 'Ein eigenes Upload-formular erstellen.',
 
   'Search results': 'Search results',
   Restricted: 'Restricted',
@@ -896,5 +905,10 @@ export default {
   'Objects per discipline': 'Objekte verteilt nach Disziplinen',
   'Objects per year cumulative': 'Zuwachs der Objekte über die Jahre',
   'Storage per year cumulative': 'Zuwachs des Speicherplatzes über die Jahre',
-  'Objects per faculty': 'Objekte verteilt nach Fakultäten'
+  'Objects per faculty': 'Objekte verteilt nach Fakultäten',
+  'Add metadatafield': 'Metadatenfeld hinzufügen',
+  'Terminology services': 'Terminologiedienste',
+  Coverage: 'Geltungsbereich',
+  'Represented object': 'Abgebildetes Objekt',
+  'Bibliographic metadata': 'Bibliographische Metadaten'
 }

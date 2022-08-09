@@ -1,59 +1,63 @@
 <template>
   <v-container fluid>
     <v-row class="my-6" justify="start">
-      <v-col cols="12">
+      <v-col cols="3">
         <v-btn
           large
           class="primary"
           @click="$router.push(localeLocation({ path: '/submit/upload' }))"
         >
-          <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Upload") }}
+          <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Create new object") }}
         </v-btn>
+        </v-col>
+      <v-col align-self="center">
+        <span>
+        {{
+          $t(
+            "Upload Picture, Audio, Video, Document, Data or create an empty Collection."
+          )
+        }}
+        </span>
       </v-col>
     </v-row>
+    <v-divider class="my-2"></v-divider>
     <template v-if="instanceconfig.irbaseurl !== ''">
     <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{
-          $t("Publications")
-        }}</span>
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
+      <v-col cols="3">
         <v-btn
           large
           class="primary"
           :href="'https://uscholar.univie.ac.at/login'"
         >
-          <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("u:scholar") }}
+          <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication") }}
         </v-btn>
+      </v-col>
+      <v-col align-self="center">
+        <span>
+        {{
+          $t(
+            "Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ..."
+          )
+        }}
+      </span>
       </v-col>
     </v-row>
     </template>
+    <v-divider class="my-2"></v-divider>
     <v-row class="my-6" justify="start">
-      <v-col cols="12">
-        <span class="title font-weight-light primary--text">{{
-          $t("Templates")
-        }}</span>
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row class="my-6" justify="start">
-      <v-col cols="12">
+      <v-col cols="3">
         <v-dialog class="pb-4" v-model="templateDialog" width="700px">
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" large dark color="grey" class="mr-8">
+            <v-btn v-on="on" large dark color="grey">
               <v-icon dark class="mr-4">mdi-script</v-icon>
-              {{ $t("Choose template") }}
+              {{ $t("Open template") }}
             </v-btn>
           </template>
           <v-card>
             <v-card-title
               dark
               class="title font-weight-light grey white--text"
-              >{{ $t("Choose template") }}</v-card-title
+              >{{ $t("Open template") }}</v-card-title
             >
             <v-card-text>
               <p-templates
@@ -70,15 +74,38 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+      </v-col>
+      <v-col align-self="center">
+        <span>
+            {{
+              $t(
+                "Open a previously created upload template."
+              )
+            }}
+          </span>
+      </v-col>
+    </v-row>
+    <v-divider class="my-2"></v-divider>
+    <v-row class="my-6" justify="start">
+      <v-col cols="3">
         <v-btn
           large
           dark
-          color="grey white--text mr-8"
+          color="grey white--text"
           @click="$router.push(localePath({ path: '/submit/empty' }))"
         >
           <v-icon dark class="mr-4">mdi-script-outline</v-icon>
           {{ $t("Create new template") }}
         </v-btn>
+      </v-col>
+      <v-col align-self="center">
+        <span>
+            {{
+              $t(
+                "Compose your own upload form."
+              )
+            }}
+          </span>
       </v-col>
     </v-row>
     <template v-if="false">

@@ -31,7 +31,6 @@ export default {
     enablelogin: 1,
     enabledelete: 1,
     suggesters: {
-      getty: 'https://ws.gbv.de/suggest/getty/',
       gnd: 'https://ws.gbv.de/suggest/gnd/',
       geonames: 'https://ws.gbv.de/suggest/geonames/'
     },

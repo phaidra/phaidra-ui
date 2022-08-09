@@ -26,6 +26,7 @@
           :templating="false"
           :importing="false"
           :addbutton="true"
+          :mouseoverfielddef="true"
           :help="true"
           :debug="false"
           :feedback="true"
@@ -196,7 +197,7 @@ export default {
             fields: [],
           },
           {
-            title: "Classification",
+            title: "Terminology services",
             mode: "expansion",
             addbutton: false,
             disablemenu: true,
@@ -257,6 +258,7 @@ export default {
 
       let file = fields.getField("file");
       file.fileInputClass = "mb-2";
+      file.showMimetype = false;
       self.form.sections[0].fields.push(file);
 
       let ot = fields.getField("object-type-checkboxes");
@@ -264,9 +266,13 @@ export default {
       ot.showLabel = true;
       self.form.sections[0].fields.push(ot);
 
-      self.form.sections[0].fields.push(fields.getField("title"));
+      let title = fields.getField("title")
+      title.multilingual = false
+      self.form.sections[0].fields.push(title);
 
-      self.form.sections[0].fields.push(fields.getField("description"));
+      let description = fields.getField("description")
+      description.multilingual = false
+      self.form.sections[0].fields.push(description);
 
       let lang = fields.getField("language");
       lang.value = this.$i18n.locale;
@@ -274,6 +280,7 @@ export default {
       self.form.sections[0].fields.push(lang);
 
       let kw = fields.getField("keyword");
+      kw.multilingual = false;
       kw.disableSuggest = true;
       self.form.sections[0].fields.push(kw);
 
@@ -295,29 +302,47 @@ export default {
       self.form.sections[1].fields.push(fields.getField("gnd-subject"));
       self.form.sections[1].fields.push(fields.getField("bk-subject"));
 
-      self.form.sections[2].fields.push(fields.getField("temporal-coverage"));
+      let tempcov = fields.getField("temporal-coverage")
+      tempcov.multilingual = false;
+      self.form.sections[2].fields.push(tempcov);
       let place = fields.getField("spatial-geonames-search");
       place.showtype = false;
       self.form.sections[2].fields.push(place);
 
-      self.form.sections[3].fields.push(fields.getField("project"));
+      let proj = fields.getField("project")
+      proj.multilingual = false
+      self.form.sections[3].fields.push(proj);
 
       self.form.sections[4].fields.push(fields.getField("date-edtf"));
-      self.form.sections[4].fields.push(fields.getField("inscription"));
+      let inscrip = fields.getField("inscription")
+      inscrip.multilingual = false
+      self.form.sections[4].fields.push(inscrip);
       self.form.sections[4].fields.push(fields.getField("shelf-mark"));
       self.form.sections[4].fields.push(fields.getField("accession-number"));
-      self.form.sections[4].fields.push(fields.getField("provenance"));
+      let prov = fields.getField("provenance")
+      prov.multilingual = false
+      self.form.sections[4].fields.push(prov);
       self.form.sections[4].fields.push(fields.getField("production-company"));
       self.form.sections[4].fields.push(fields.getField("production-place"));
-      self.form.sections[4].fields.push(fields.getField("physical-location"));
-      self.form.sections[4].fields.push(fields.getField("condition-note"));
+      let loc = fields.getField("physical-location")
+      loc.multilingual = false
+      self.form.sections[4].fields.push(loc);
+      let cond = fields.getField("condition-note")
+      cond.multilingual = false
+      self.form.sections[4].fields.push(cond);
       self.form.sections[4].fields.push(fields.getField("height"));
       self.form.sections[4].fields.push(fields.getField("width"));
-      self.form.sections[4].fields.push(fields.getField("material-text"));
-      self.form.sections[4].fields.push(fields.getField("technique-text"));
+      let mat = fields.getField("material-text")
+      mat.multilingual = false
+      self.form.sections[4].fields.push(mat);
+      let tech = fields.getField("technique-text")
+      tech.multilingual = false
+      self.form.sections[4].fields.push(tech);
 
       self.form.sections[5].fields.push(fields.getField("series"));
-      self.form.sections[5].fields.push(fields.getField("bf-publication"));
+      let publ = fields.getField("bf-publication")
+      publ.label = 'PUBLISHER_VERLAG'
+      self.form.sections[5].fields.push(publ);
 
       for (let s of this.form.sections) {
         for (let f of s.fields) {
