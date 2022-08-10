@@ -86,7 +86,7 @@ export default {
         {
           hid: "og:title",
           name: "og:title",
-          content: "The Essential Meta Tags for Facebook",
+          content: "Title",
         },
         {
           hid: "twitter:description",
@@ -96,7 +96,7 @@ export default {
         {
           hid: "twitter:title",
           name: "twitter:title",
-          content: "The Essential Meta Tags for Twitter",
+          content: "Title",
         },
         {
           hid: "twitter:card",

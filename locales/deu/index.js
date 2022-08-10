@@ -1,7 +1,6 @@
 
 export default {
   Submit: 'Submit',
-  'Object lists': 'Object lists',
   Groups: 'Groups',
   'University of Vienna': 'University of Vienna',
   'Phaidra - Sandbox': 'Phaidra - Sandbox',
@@ -13,7 +12,8 @@ export default {
   Username: 'Username',
   Ok: 'Ok',
   'Loading...': 'Loading...',
-  'Select a collection': 'Select a collection',
+  'Select a collection': 'Collection auswählen',
+  Select: 'Auswählen',
   Authors: 'Authors',
 
   German: 'Deutsch',
@@ -734,9 +734,8 @@ export default {
   'Select all results': 'Alle Ergebnisse auswählen',
   'Clear selection': 'Auswahl löschen',
   'Selected results': 'Auswahl',
-  'Add to object list': 'zur Objektliste hinzufügen',
-  'Remove from object list': 'aus Objektliste entfernen',
   'Add to collection': 'zur Collection hinzufügen',
+  'Add objects to collection': 'Objekte zur Collection hinzufügen',
   'Remove from collection': 'aus Collection entfernen',
   Cite: 'Zitieren',
   'Get BibTex': 'BibTex erstellen',
@@ -910,5 +909,13 @@ export default {
   'Terminology services': 'Terminologiedienste',
   Coverage: 'Geltungsbereich',
   'Represented object': 'Abgebildetes Objekt',
-  'Bibliographic metadata': 'Bibliographische Metadaten'
+  'Bibliographic metadata': 'Bibliographische Metadaten',
+  'Object lists': 'Objeklisten',
+  'Add to object list': 'zur Objektliste hinzufügen',
+  'Create public link': 'Öffentlicher Link erstellen',
+  'Remove public link': 'Öffentlicher Link entfernen',
+  'New list': 'Neue Liste',
+  'Remove from object list': 'aus Objektliste entfernen',
+  'Manage object lists': 'Objektlisten verwalten',
+  Load: 'Laden'
 }

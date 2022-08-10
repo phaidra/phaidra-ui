@@ -80,7 +80,7 @@ export const mutations = {
     if (transition.to.path.includes('lists')) {
       state.breadcrumbs.push(
         {
-          text: 'Lists',
+          text: 'Object lists',
           to: { name: transition.to.path, params: { token: transition.to.params.token } },
           disabled: true
         }
@@ -89,7 +89,7 @@ export const mutations = {
       if (transition.to.path.includes('list')) {
         state.breadcrumbs.push(
           {
-            text: 'List ' + transition.to.params.token,
+            text: transition.to.params.token,
             to: { name: transition.to.path, params: { token: transition.to.params.token } },
             disabled: true
           }

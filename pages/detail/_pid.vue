@@ -73,22 +73,6 @@
               </div>
             </v-alert>
           </v-row>
-          <v-row
-            justify="center"
-            v-if="objectInfo.relationships.hasthumbnail.length > 0"
-          >
-            <img
-              class="py-2"
-              v-for="(thumb, i) in objectInfo.relationships.hasthumbnail"
-              :src="
-                instanceconfig.api +
-                '/object/' +
-                thumb.pid +
-                '/thumbnail?h=480&w=480'
-              "
-              :key="'thmb' + i"
-            />
-          </v-row>
           <v-row justify="center" v-if="showPreview">
             <template v-if="objectInfo.cmodel === 'Book'">
               <v-btn
@@ -117,7 +101,7 @@
                   :style="
                     objectInfo.cmodel === 'Audio'
                       ? 'height: 60px; width: 100%; border: 0px;'
-                      : 'height: 500px; width: 100%; border: 0px;'
+                      : objectInfo.cmodel === 'Container' ? 'height: 300px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'
                   "
                   scrolling="no"
                   border="0"
@@ -163,15 +147,22 @@
           </client-only>
 
           <template v-if="objectInfo.cmodel === 'Container'">
-            <h3 class="title font-weight-light grey--text text--darken-2">
-              {{ $t("Members") }} ({{ objectInfo.members.length }})
-            </h3>
-
+            <v-toolbar class="my-10 grey white--text" elevation="1">
+              <v-toolbar-title>
+                {{ $t("Members") }} ({{ objectInfo.members.length }})
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-pagination
+                v-if="objectInfo.members.length > membersPageSize"
+                v-model="membersPage"
+                :length="Math.ceil(objectInfo.members.length/membersPageSize)"
+              ></v-pagination>
+            </v-toolbar>
             <v-row v-if="objectMembers">
               <v-card
                 class="mb-3 pt-4"
                 width="100%"
-                v-for="member in objectMembers"
+                v-for="member in objectMembersPage"
                 :key="'member_' + member.pid"
               >
                 <iframe
@@ -1654,7 +1645,9 @@ export default {
           (this.objectInfo.cmodel === "Asset" &&
             (this.mimetype === "model/nxz" ||
               this.mimetype === "model/ply"))) &&
-        this.objectInfo.cmodel !== "Container" &&
+        (this.objectInfo.cmodel !== "Container" ||
+          (this.objectInfo.cmodel === "Container" &&
+            (this.objectInfo.relationships.hasthumbnail.length > 0))) &&
         this.objectInfo.readrights &&
         !(this.objectInfo.cmodel === "Video" && this.isRestricted)
       );
@@ -1743,6 +1736,13 @@ export default {
     },
     objectMembers: function () {
       return this.$store.state.objectMembers;
+    },
+    objectMembersPage: function () {
+      if(this.objectMembers.length < this.membersPageSize) {
+        return this.objectMembers
+      } else {
+        return this.objectMembers.slice((this.membersPage-1)*this.membersPageSize,((this.membersPage-1)*this.membersPageSize)+this.membersPageSize)
+      }
     },
     downloadable: function () {
       switch (this.objectInfo.cmodel) {
@@ -1836,6 +1836,8 @@ export default {
       pagesize: 10,
       docs: [],
       total: 0,
+      membersPage: 1,
+      membersPageSize: 10
     };
   },
   methods: {
