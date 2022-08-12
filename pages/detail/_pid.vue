@@ -1534,76 +1534,7 @@ export default {
     return /^o:\d+$/.test(params.pid);
   },
   metaInfo() {
-    let metaInfo = {};
-    if (this.objectInfo) {
-      let thumbnail =
-        this.instanceconfig.api +
-        "/object/" +
-        this.objectInfo.pid +
-        "/thumbnail";
-      metaInfo.meta = [
-        {
-          hid: "og:title",
-          name: "og:title",
-          content: this.objectInfo.sort_dc_title,
-        },
-        {
-          hid: "og:image",
-          name: "og:image",
-          content: thumbnail,
-        },
-        {
-          hid: "og:image:width",
-          name: "og:image:width",
-          content: "1200",
-        },
-        {
-          hid: "og:image:height",
-          name: "og:image:height",
-          content: "630",
-        },
-        {
-          hid: "twitter:title",
-          name: "twitter:title",
-          content: this.objectInfo.sort_dc_title,
-        },
-        {
-          hid: "twitter:card",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-        {
-          hid: "twitter:image",
-          name: "twitter:image",
-          content: thumbnail,
-        },
-      ];
-      if (this.objectInfo.metatags) {
-        metaInfo.title =
-          this.objectInfo.metatags.citation_title +
-          " (" +
-          this.instanceconfig.title +
-          " - " +
-          this.objectInfo.pid +
-          ")";
-        Object.entries(this.objectInfo.metatags).forEach(([name, value]) => {
-          if (Array.isArray(value)) {
-            for (let v of value) {
-              metaInfo.meta.push({
-                name: name,
-                content: v,
-              });
-            }
-          } else {
-            metaInfo.meta.push({
-              name: name,
-              content: value,
-            });
-          }
-        });
-      }
-    }
-    return metaInfo;
+    return this.detailsMetaInfo;
   },
   computed: {
     options() {
@@ -1837,8 +1768,85 @@ export default {
       docs: [],
       total: 0,
       membersPage: 1,
-      membersPageSize: 10
+      membersPageSize: 10,
+      detailsMetaInfo: null,
     };
+  },
+  async fetch() {
+    const data = await this.getInfo(this.$route.params.pid);
+    let metaInfo = {}
+    if (data.info) {
+      const detailInfo = data.info;
+      if (detailInfo) {
+        let thumbnail =
+          this.instanceconfig.api +
+          "/object/" +
+          detailInfo.pid +
+          "/thumbnail";
+        metaInfo.meta = [
+          {
+            hid: "og:title",
+            name: "og:title",
+            content: detailInfo.sort_dc_title,
+          },
+          {
+            hid: "og:image",
+            name: "og:image",
+            content: thumbnail,
+          },
+          {
+            hid: "og:image:width",
+            name: "og:image:width",
+            content: "1200",
+          },
+          {
+            hid: "og:image:height",
+            name: "og:image:height",
+            content: "630",
+          },
+          {
+            hid: "twitter:title",
+            name: "twitter:title",
+            content: detailInfo.sort_dc_title,
+          },
+          {
+            hid: "twitter:card",
+            name: "twitter:card",
+            content: "summary_large_image",
+          },
+          {
+            hid: "twitter:image",
+            name: "twitter:image",
+            content: thumbnail,
+          },
+        ];
+        if (detailInfo.metatags) {
+          metaInfo.title =
+            detailInfo.metatags.citation_title +
+            " (" +
+            this.instanceconfig.title +
+            " - " +
+            detailInfo.pid +
+            ")";
+          Object.entries(detailInfo.metatags).forEach(([name, value]) => {
+            if (Array.isArray(value)) {
+              for (let v of value) {
+                metaInfo.meta.push({
+                  name: name,
+                  content: v,
+                });
+              }
+            } else {
+              metaInfo.meta.push({
+                name: name,
+                content: value,
+              });
+            }
+          });
+        }
+      }
+    }
+    this.detailsMetaInfo = metaInfo
   },
   methods: {
     nodeclick: function (event, node) {

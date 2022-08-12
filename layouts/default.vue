@@ -77,33 +77,6 @@ export default {
   metaInfo() {
     let metaInfo = {
       title: config.title,
-      meta: [
-        {
-          hid: "og:description",
-          name: "og:description",
-          content: "Description",
-        },
-        {
-          hid: "og:title",
-          name: "og:title",
-          content: "Title",
-        },
-        {
-          hid: "twitter:description",
-          name: "twitter:description",
-          content: "Description",
-        },
-        {
-          hid: "twitter:title",
-          name: "twitter:title",
-          content: "Title",
-        },
-        {
-          hid: "twitter:card",
-          name: "twitter:card",
-          content: "summary_large_image",
-        },
-      ],
     };
     return metaInfo;
   },
