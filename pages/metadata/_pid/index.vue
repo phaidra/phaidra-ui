@@ -1,13 +1,12 @@
 <template>
   <v-container fluid>
+    <v-btn class="mt-4" :to="{ path: `/detail/${routepid}`, params: { pid: routepid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
     <v-card class="mt-8" v-if="objectInfo && objectInfo.metadata['JSON-LD']">
-      <v-card-title class="title font-weight-light grey white--text"
-        >{{ routepid }} JSON-LD</v-card-title
-      >
+      <v-card-title class="title font-weight-light grey white--text">{{ routepid }} JSON-LD</v-card-title>
       <v-card-text>
-        <vue-json-pretty
-          :data="objectInfo.metadata['JSON-LD']"
-        ></vue-json-pretty>
+        <vue-json-pretty :data="objectInfo.metadata['JSON-LD']"></vue-json-pretty>
       </v-card-text>
     </v-card>
   </v-container>
@@ -54,9 +53,9 @@ export default {
       console.log("[" + to.params.pid + "] fetching object info");
       inforesponse = await axios.get(
         configjs.instances[configjs.defaultinstance].api +
-          "/object/" +
-          to.params.pid +
-          "/info"
+        "/object/" +
+        to.params.pid +
+        "/info"
       );
       console.log("[" + to.params.pid + "] fetching object info done");
     } catch (error) {

@@ -1,7 +1,11 @@
 <template>
   <v-row>
+    <v-btn :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
     <v-col v-if="signedin">
-      <p-m-sort v-if="members.length > 0" :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members=$event" @order-saved="orderSaved($event)"></p-m-sort>
+      <p-m-sort v-if="members.length > 0" :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members = $event"
+        @order-saved="orderSaved($event)"></p-m-sort>
     </v-col>
   </v-row>
 </template>
@@ -12,16 +16,16 @@ import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
 
 export default {
-  mixins: [ context, config ],
+  mixins: [context, config],
   computed: {
     loadedcmodel: function () {
       return 'cmodel' in this.doc ? this.doc.cmodel : 'unknown'
     },
-    pid () {
+    pid() {
       return this.$route.params.pid
     }
   },
-  data () {
+  data() {
     return {
       members: [],
       doc: {}
@@ -64,7 +68,7 @@ export default {
 
       return promise
     },
-    loadMembers (self, pid) {
+    loadMembers(self, pid) {
       this.members = []
 
       var params = {
@@ -125,6 +129,7 @@ export default {
   border: 1px solid #efefef;
   border-radius: 3;
 }
+
 .list-item {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -144,6 +149,7 @@ export default {
   color: #333;
   font-weight: 400;
 }
+
 .list-item-title {
   padding-left: 20px;
 }

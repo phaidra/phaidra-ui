@@ -1,20 +1,13 @@
 <template>
   <client-only>
-    <p-i-form
-      :form="form"
-      :targetpid="pid"
-      :enablerights="false"
-      :enablerelationships="false"
-      :templating="false"
-      :importing="false"
-      :addbutton="true"
-      :help="true"
-      :debug="false"
-      :feedback="false"
-      :guidelines-url="'https://static.phaidra-sandbox.univie.ac.at/guidelines/3.5.5Guidelinespicture_borndigital_'"
-      :validate="validate"
-      v-on:object-saved="objectSaved($event)"
-    ></p-i-form>
+    <div>
+      <v-btn class="mt-4" :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+        <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+      </v-btn>
+      <p-i-form :form="form" :targetpid="pid" :enablerights="false" :enablerelationships="false" :templating="false"
+        :importing="false" :addbutton="true" :help="false" :debug="false" :feedback="false" :validate="validate"
+        v-on:object-saved="objectSaved($event)" class="mt-4"></p-i-form>
+    </div>
   </client-only>
 </template>
 

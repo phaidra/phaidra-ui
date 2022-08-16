@@ -317,7 +317,7 @@
                   <template v-if="id.label === 'Handle'">https://hdl.handle.net/{{ $t(id.label) }}</template>
                   <template v-else>{{ $t(id.label) }}</template>
                 </span
-                ><br /><span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">{{ id.value }}</span>
+                ><br /><span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''"><a :href="id.value">{{ id.value }}</a></span>
               </p>
             </v-col>
           </v-row>

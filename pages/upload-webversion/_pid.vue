@@ -1,7 +1,12 @@
 <template>
   <v-col>
+    <v-btn class="my-2" :to="{ path: `/detail/${parentpid}`, params: { pid: parentpid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
     <v-card>
-      <v-card-title class="title font-weight-light grey white--text">{{ $t('Upload web-optimized version of') }} {{ parentpid }}</v-card-title>
+      <v-card-title class="title font-weight-light grey white--text">{{ $t('Upload web-optimized version of') }} {{
+          parentpid
+      }}</v-card-title>
       <v-card-text>
         <v-container fluid>
           <v-row>
@@ -14,12 +19,8 @@
           <v-row>
             <v-col cols="12" md="10">
               <client-only>
-              <p-i-file
-                :label="$t('Select file')"
-                :mimeLabel="$t('Select mime type')"
-                v-on:input-file="file = $event"
-                v-on:input-mimetype="mimetype = $event['@id']"
-              ></p-i-file>
+                <p-i-file :label="$t('Select file')" :mimeLabel="$t('Select mime type')" v-on:input-file="file = $event"
+                  v-on:input-mimetype="mimetype = $event['@id']"></p-i-file>
               </client-only>
             </v-col>
             <v-col cols="12" md="2">
@@ -37,8 +38,8 @@ import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
 
 export default {
-  mixins: [ context, config ],
-  data () {
+  mixins: [context, config],
+  data() {
     return {
       loading: false,
       checkbox: false,
@@ -76,7 +77,7 @@ export default {
         })
         if (response.status === 200) {
           this.$store.commit('setAlerts', [{ type: 'success', msg: 'Web-optimized version successfuly uploaded' }])
-          this.$router.push(this.localeLocation({ path: `/detail/${this.parentpid}`}))
+          this.$router.push(this.localeLocation({ path: `/detail/${this.parentpid}` }))
         } else {
           if (response.data.alerts && response.data.alerts.length > 0) {
             this.$store.commit('setAlerts', response.data.alerts)

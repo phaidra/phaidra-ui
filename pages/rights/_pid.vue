@@ -1,9 +1,14 @@
 <template>
-  <v-row>
-    <v-col v-if="signedin && pid">
-      <p-m-rights :pid="pid" :rights="rights" v-on:load-rights="loadRights()"></p-m-rights>
-    </v-col>
-  </v-row>
+  <div>
+    <v-btn class="mt-4" :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
+    <v-row>
+      <v-col v-if="signedin && pid">
+        <p-m-rights :pid="pid" :rights="rights" v-on:load-rights="loadRights()"></p-m-rights>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -11,13 +16,13 @@ import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
 
 export default {
-  mixins: [ context, config ],
+  mixins: [context, config],
   computed: {
-    pid () {
+    pid() {
       return this.$route.params.pid
     }
   },
-  data () {
+  data() {
     return {
       loading: false,
       rights: {}

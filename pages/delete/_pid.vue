@@ -1,9 +1,15 @@
 <template>
-  <v-row>
-    <v-col v-if="signedin">
-      <p-m-delete v-if="appconfig.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members" @object-deleted="objectDeleted($event)"></p-m-delete>
-    </v-col>
-  </v-row>
+  <div>
+    <v-btn class="my-4" :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
+    <v-row>
+      <v-col v-if="signedin">
+        <p-m-delete v-if="appconfig.enabledelete" :pid="pid" :cmodel="loadedcmodel" :members="members"
+          @object-deleted="objectDeleted($event)"></p-m-delete>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -13,16 +19,16 @@ import { context } from '../../mixins/context'
 import { config } from '../../mixins/config'
 
 export default {
-  mixins: [ context, config ],
+  mixins: [context, config],
   computed: {
     loadedcmodel: function () {
       return 'cmodel' in this.doc ? this.doc.cmodel : 'unknown'
     },
-    pid () {
+    pid() {
       return this.$route.params.pid
     }
   },
-  data () {
+  data() {
     return {
       members: [],
       doc: {},
@@ -63,7 +69,7 @@ export default {
 
       return promise
     },
-    loadMembers (self, pid) {
+    loadMembers(self, pid) {
       this.members = []
 
       var params = {
@@ -97,7 +103,7 @@ export default {
       if (this.pid === this.parentpid) {
         this.$router.push(this.localeLocation({ path: '/search' }))
       } else {
-        this.$router.push(this.localeLocation({ path: `/detail/${this.parentpid}`}))
+        this.$router.push(this.localeLocation({ path: `/detail/${this.parentpid}` }))
       }
     }
   },

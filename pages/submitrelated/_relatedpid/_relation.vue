@@ -1,68 +1,57 @@
 <template>
   <v-col>
-    <v-alert
-      v-if="
-        relation === 'hassuccessor' &&
-        objectInfo &&
-        objectInfo.relationships.ispartof.length > 0
-      "
-      type="info"
-    >
+    <v-btn class="my-4" :to="{ path: `/detail/${relatedpid}`, params: { pid: relatedpid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
+    <v-alert v-if="
+      relation === 'hassuccessor' &&
+      objectInfo &&
+      objectInfo.relationships.ispartof.length > 0
+    " type="info">
       <div>{{ relatedpid + " " + $t("is part of collections:") }}</div>
-      <div
-        v-for="(col, i) in objectInfo.relationships.ispartof"
-        :key="'cola' + i"
-      >
+      <div v-for="(col, i) in objectInfo.relationships.ispartof" :key="'cola' + i">
         {{ col.pid + " (owner:" + col.owner + "): " + col.dc_title[0] }}
       </div>
       <div>
         {{
-          $t(
-            "Should the collection membership in collections you own be transferred to new version?"
-          )
+            $t(
+              "Should the collection membership in collections you own be transferred to new version?"
+            )
         }}
-        <v-switch
-          v-model="transferMembership"
-          :label="transferMembership ? $t('Yes') : $t('No')"
-        ></v-switch>
+        <v-switch v-model="transferMembership" :label="transferMembership ? $t('Yes') : $t('No')"></v-switch>
       </div>
     </v-alert>
     <v-card>
       <v-card-title class="title font-weight-light grey white--text">
         <span class="mr-1">{{ $t("Submit of") }}</span>
         <span v-if="relation === 'references'">{{
-          $t("an object referencing")
+            $t("an object referencing")
         }}</span>
         <span v-if="relation === 'isbacksideof'">{{
-          $t("the back side of")
+            $t("the back side of")
         }}</span>
         <span v-if="relation === 'isthumbnailfor'">{{
-          $t("a thumbnail for")
+            $t("a thumbnail for")
         }}</span>
         <span v-if="relation === 'hassuccessor'">{{
-          $t("a new version of")
+            $t("a new version of")
         }}</span>
         <span v-if="relation === 'isalternativeformatof'">{{
-          $t("an alternative format of")
+            $t("an alternative format of")
         }}</span>
         <span v-if="relation === 'isalternativeversionof'">{{
-          $t("an alternative version of")
+            $t("an alternative version of")
         }}</span>
         <span v-if="relation === 'hascollectionmember'">{{
-          $t("a new member of collection")
+            $t("a new member of collection")
         }}</span>
         <span v-if="relation === 'hasmember'">{{
-          $t("new member of container")
+            $t("new member of container")
         }}</span>
         <span class="ml-1">{{ relatedpid }}</span>
       </v-card-title>
       <v-card-text v-if="!transferringMembership">
-        <v-alert
-          :value="validationError"
-          dismissible
-          type="error"
-          transition="slide-y-transition"
-        >
+        <v-alert :value="validationError" dismissible type="error" transition="slide-y-transition">
           <span>{{ $t("Please fill in the required fields") }}</span>
           <template v-if="fieldsMissing.length > 0">
             <br />
@@ -72,43 +61,25 @@
             </ul>
           </template>
         </v-alert>
-        <p-i-form
-          :form="form"
-          :rights="rights"
-          :relationships="relationships"
-          :foreignRelationships="foreignRelationships"
-          :enablerights="true"
-          :enablerelationships="false"
-          :templating="true"
-          :importing="false"
-          :addbutton="true"
-          :help="true"
-          :debug="true"
-          :feedback="true"
-          :feedback-user="this.user"
-          :feedback-context="'Related object submit'"
-          :validate="validate"
-          v-on:load-form="form = $event"
-          v-on:object-created="objectCreated($event)"
-          v-on:form-input-resource-type="handleInputResourceType($event)"
-          v-on:input-rights="rights = $event"
-          v-on:input-relationships="relationships = $event"
-        ></p-i-form>
+        <p-i-form :form="form" :rights="rights" :relationships="relationships"
+          :foreignRelationships="foreignRelationships" :enablerights="true" :enablerelationships="false"
+          :templating="true" :importing="false" :addbutton="true" :help="false" :debug="true" :feedback="true"
+          :feedback-user="this.user" :feedback-context="'Related object submit'" :validate="validate"
+          v-on:load-form="form = $event" v-on:object-created="objectCreated($event)"
+          v-on:form-input-resource-type="handleInputResourceType($event)" v-on:input-rights="rights = $event"
+          v-on:input-relationships="relationships = $event"></p-i-form>
       </v-card-text>
       <v-card-text v-else>
         <v-row class="mx-4">
           <v-col cols="12">
             <v-row no-gutters>
-              <v-progress-linear
-                indeterminate
-                color="primary"
-              ></v-progress-linear>
+              <v-progress-linear indeterminate color="primary"></v-progress-linear>
             </v-row>
             <v-row no-gutters class="primary--text mt-1">
-              <span>{{ $t("Transferring relationships...") }}</span
-              ><span class="ml-2" v-if="transferMembershipAction">{{
-                transferMembershipAction
-              }}</span>
+              <span>{{ $t("Transferring relationships...") }}</span><span class="ml-2"
+                v-if="transferMembershipAction">{{
+                    transferMembershipAction
+                }}</span>
             </v-row>
           </v-col>
         </v-row>
