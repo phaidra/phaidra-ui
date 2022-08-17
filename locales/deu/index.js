@@ -808,7 +808,7 @@ export default {
   'rdau:P60059': 'Regionalcode',
   'ebucore:filename': 'Dateiname',
   'ebucore:hasMimeType': 'MIME Typ',
-  'opaque:cco_accessionNumber': 'Aktenvermerk',
+  'opaque:cco_accessionNumber': 'Eingangsnummer',
   'schema:width': 'Breite',
   'schema:height': 'Höhe',
   'schema:depth': 'Tiefe',
