@@ -15,6 +15,7 @@
               :sort-desc="true"
               hide-default-footer
               class="elevation-1 my-8"
+              :no-data-text="$t('No data available')"
             ></v-data-table>
             <v-data-table
               :headers="newTypeHeaders"
@@ -24,6 +25,7 @@
               :sort-desc="true"
               hide-default-footer
               class="elevation-1 my-8"
+              :no-data-text="$t('No data available')"
             ></v-data-table>
             <v-data-table
               :headers="cmodelHeaders"
@@ -33,6 +35,7 @@
               :sort-desc="true"
               hide-default-footer
               class="elevation-1 my-8"
+              :no-data-text="$t('No data available')"
             ></v-data-table>
             <v-data-table
               :headers="cmodelStorageHeaders"
@@ -42,6 +45,7 @@
               :sort-desc="true"
               hide-default-footer
               class="elevation-1 my-8"
+              :no-data-text="$t('No data available')"
             ></v-data-table>
             <v-data-table
               :headers="ownerHeaders"
@@ -51,6 +55,7 @@
               :sort-desc="true"
               hide-default-footer
               class="elevation-1 my-8"
+              :no-data-text="$t('No data available')"
             ></v-data-table>
           </v-card-text>
         </v-card>

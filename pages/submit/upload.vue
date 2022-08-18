@@ -304,7 +304,7 @@ export default {
       let tempcov = fields.getField("temporal-coverage")
       tempcov.multilingual = false;
       self.form.sections[2].fields.push(tempcov);
-      let place = fields.getField("spatial-geonames-search");
+      let place = fields.getField("spatial-geonames");
       place.showtype = false;
       self.form.sections[2].fields.push(place);
 
@@ -340,7 +340,6 @@ export default {
 
       self.form.sections[5].fields.push(fields.getField("series"));
       let publ = fields.getField("bf-publication")
-      publ.label = 'PUBLISHER_VERLAG'
       self.form.sections[5].fields.push(publ);
 
       for (let s of this.form.sections) {

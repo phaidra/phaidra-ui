@@ -3,18 +3,19 @@
     <v-col cols="12" md="8" offset-md="2">
       <v-row class="my-5">
         <v-col cols="auto" class="text-left">
-          <span class="grey--text text--darken-2"
-            ><address>
+          <span class="grey--text text--darken-2">
+            <address>
               {{ instanceconfig.address }} | <abbr title="Telefon">T</abbr>
               {{ instanceconfig.phone }}
-            </address></span
-          >
+            </address>
+          </span>
         </v-col>
         <v-col class="text-right">
-          <nuxt-link :to="localePath('impressum')">Impressum</nuxt-link> |
-          <nuxt-link :to="localePath('termsofuse')">Terms of Use</nuxt-link
-          ><!-- |
-          <nuxt-link :to="localePath('statistics')">Statistics</nuxt-link>-->
+          <nuxt-link :to="localePath('impressum')">{{ $t('Impressum') }}</nuxt-link> |
+          <nuxt-link :to="localePath('termsofuse')">{{ $t('Terms of Use') }}</nuxt-link> |
+          <nuxt-link :to="localePath('credits')">{{ $t('Credits') }}</nuxt-link>
+          <!-- |
+          <nuxt-link :to="localePath('statistics')">{{ $t('Statistics') }}</nuxt-link>-->
         </v-col>
       </v-row>
     </v-col>

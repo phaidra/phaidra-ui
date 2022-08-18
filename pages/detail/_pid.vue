@@ -74,7 +74,22 @@
             </v-alert>
           </v-row>
           <v-row justify="center" v-if="showPreview">
-            <template v-if="objectInfo.cmodel === 'Book'">
+          <template v-if="(objectInfo.cmodel === 'Book') && (objectInfo.datastreams.includes('IIIF-MANIFEST'))">
+              <v-btn
+                large
+                raised
+                color="primary"
+                :href="
+                  instanceconfig.api +
+                    '/object/' +
+                    objectInfo.pid +
+                    '/preview'
+                "
+                target="_blank"
+                >{{ $t("Open in Bookviewer") }}</v-btn
+              >
+            </template>
+            <template v-else-if="objectInfo.cmodel === 'Book'">
               <v-btn
                 large
                 raised
@@ -236,6 +251,111 @@
               </v-card>
             </v-row>
           </template>
+          <template v-if="objectInfo.cmodel === 'Collection' && docs.length">
+            <v-toolbar class="my-10 grey white--text" elevation="1">
+              <v-toolbar-title>
+                {{ $t("Members of") }} {{ objectInfo.pid }}
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-pagination
+                v-if="total > pagesize"
+                v-bind:length="totalPages"
+                total-visible="10"
+                v-model="page"
+              ></v-pagination>
+            </v-toolbar>
+            <v-row v-for="(doc, i) in this.docs" :key="'doc' + i">
+              <v-col cols="2" class="preview-maxwidth">
+                <div>
+                  <p-img
+                    :src="
+                      instanceconfig.api + '/object/' + doc.pid + '/thumbnail'
+                    "
+                    class="elevation-1 mt-2"
+                  >
+                    <template v-slot:placeholder>
+                      <div
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-progress-circular
+                          indeterminate
+                          color="grey lighten-5"
+                        ></v-progress-circular>
+                      </div>
+                    </template>
+                  </p-img>
+                </div>
+              </v-col>
+              <v-col cols="10">
+                <v-row no-gutters class="mb-4">
+                  <v-col cols="10">
+                    <h3
+                      class="title font-weight-light primary--text"
+                      @click.stop
+                      v-if="doc.dc_title"
+                    >
+                      <router-link
+                        :to="{ path: `${doc.pid}`, params: { pid: doc.pid } }"
+                        >{{ doc.dc_title[0] }}</router-link
+                      >
+                    </h3>
+                    <p class="grey--text">{{ doc.pid }}</p>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="2" class="text-right"
+                    ><span v-if="doc.created" class="grey--text">{{
+                      doc.created | date
+                    }}</span></v-col
+                  >
+                </v-row>
+              </v-col>
+            </v-row>
+        </template>
+      <v-row v-if="showCollectionTree" class="mt-8">
+        <v-toolbar class="my-10 grey white--text" elevation="1">
+          <v-toolbar-title>
+            {{ $t("Collection structure") }}
+          </v-toolbar-title>
+        </v-toolbar>
+        <div id="d3-graph-container" style="width: 100%">
+          <svg style="position: absolute">
+            <defs>
+              <marker
+                id="m-end"
+                markerWidth="10"
+                markerHeight="10"
+                refX="9"
+                refY="3"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L0,6 L9,3 z"></path>
+              </marker>
+              <marker
+                id="m-start"
+                markerWidth="6"
+                markerHeight="6"
+                refX="-4"
+                refY="3"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <rect width="3" height="6"></rect>
+              </marker>
+            </defs>
+          </svg>
+          <d3-network
+            ref="net"
+            :net-nodes="nodes"
+            :net-links="links"
+            :options="options"
+            @node-click="nodeclick"
+            :link-cb="lcb"
+          />
+        </div>
+      </v-row>
         </v-col>
 
         <v-col cols="12" md="4" class="mt-4">
@@ -601,8 +721,8 @@
                       >{{ $t("Versions") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template v-for="(rel, i) in objectInfo.versions">
-                        <v-row :key="'version' + i">
+                      <div v-for="(rel, i) in objectInfo.versions" :key="'version' + i">
+                        <v-row>
                           <v-col cols="12" md="5">{{
                             rel.created | date
                           }}</v-col>
@@ -623,7 +743,7 @@
                           v-if="i + 1 < objectInfo.versions.length"
                           :key="'versiond' + i"
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -640,10 +760,10 @@
                       >{{ $t("Alternative versions") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
-                        v-for="(rel, i) in objectInfo.alternativeversions"
+                      <div
+                        v-for="(rel, i) in objectInfo.alternativeversions"  :key="'version' + i"
                       >
-                        <v-row :key="'version' + i">
+                        <v-row>
                           <v-col cols="12" md="12">
                             <nuxt-link
                               v-if="rel['dc_title']"
@@ -661,7 +781,7 @@
                           v-if="i + 1 < objectInfo.alternativeversions.length"
                           :key="'altversiond' + i"
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -678,10 +798,10 @@
                       >{{ $t("Alternative formats") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
-                        v-for="(rel, i) in objectInfo.alternativeformats"
+                      <div
+                        v-for="(rel, i) in objectInfo.alternativeformats" :key="'format' + i"
                       >
-                        <v-row :key="'format' + i">
+                        <v-row>
                           <v-col cols="12" md="5">{{ rel.dc_format[0] }}</v-col>
                           <v-col cols="12" md="7">
                             <nuxt-link
@@ -700,7 +820,7 @@
                           v-if="i + 1 < objectInfo.alternativeformats.length"
                           :key="'altformatsd' + i"
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -717,10 +837,10 @@
                       >{{ $t("This object is in collection") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
-                        v-for="(rel, i) in objectInfo.relationships.ispartof"
+                      <div
+                        v-for="(rel, i) in objectInfo.relationships.ispartof" :key="'ispartof' + i"
                       >
-                        <v-row :key="'ispartof' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -752,7 +872,7 @@
                             i + 1 < objectInfo.relationships.ispartof.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -769,11 +889,11 @@
                       >{{ $t("This object is a back side of") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
+                      <div
                         v-for="(rel, i) in objectInfo.relationships
-                          .isbacksideof"
+                          .isbacksideof" :key="'isbacksideof' + i"
                       >
-                        <v-row :key="'isbacksideof' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -805,7 +925,7 @@
                             i + 1 < objectInfo.relationships.isbacksideof.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -822,10 +942,10 @@
                       >{{ $t("This object has a back side") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
-                        v-for="(rel, i) in objectInfo.relationships.hasbackside"
+                      <div
+                        v-for="(rel, i) in objectInfo.relationships.hasbackside" :key="'hasbackside' + i"
                       >
-                        <v-row :key="'hasbackside' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -857,7 +977,7 @@
                             i + 1 < objectInfo.relationships.hasbackside.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -874,11 +994,11 @@
                       >{{ $t("This object is thumbnail for") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
+                      <div
                         v-for="(rel, i) in objectInfo.relationships
-                          .isthumbnailfor"
+                          .isthumbnailfor" :key="'isthumbnailfor' + i"
                       >
-                        <v-row :key="'isthumbnailfor' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -911,7 +1031,7 @@
                             objectInfo.relationships.isthumbnailfor.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -928,11 +1048,11 @@
                       >{{ $t("This object has thumbnail") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
+                      <div
                         v-for="(rel, i) in objectInfo.relationships
-                          .hasthumbnail"
+                          .hasthumbnail" :key="'hasthumbnail' + i"
                       >
-                        <v-row :key="'hasthumbnail' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -964,7 +1084,7 @@
                             i + 1 < objectInfo.relationships.hasthumbnail.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -981,10 +1101,10 @@
                       >{{ $t("This object references") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
-                        v-for="(rel, i) in objectInfo.relationships.references"
+                      <div
+                        v-for="(rel, i) in objectInfo.relationships.references" :key="'references' + i"
                       >
-                        <v-row :key="'references' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -1016,7 +1136,7 @@
                             i + 1 < objectInfo.relationships.references.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -1033,11 +1153,11 @@
                       >{{ $t("This object is referenced by") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <template
+                      <div
                         v-for="(rel, i) in objectInfo.relationships
-                          .isreferencedby"
+                          .isreferencedby" :key="'isreferencedby' + i"
                       >
-                        <v-row :key="'isreferencedby' + i" align="center">
+                        <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
                               :src="
@@ -1070,7 +1190,7 @@
                             objectInfo.relationships.isreferencedby.length
                           "
                         ></v-divider>
-                      </template>
+                      </div>
                     </v-card-text>
                   </v-card>
                 </v-col>
@@ -1091,7 +1211,7 @@
                       >
                         <nuxt-link
                           :to="localePath(`/metadata/${objectInfo.pid}`)"
-                          >{{ $t("Show metadata") }}</nuxt-link
+                          >{{ $t("Metadata JSON") }}</nuxt-link
                         >
                       </v-row>
                       <v-row
@@ -1141,7 +1261,6 @@
                       <v-row
                         no-gutters
                         class="pt-2"
-                        v-if="objectInfo.dshash['UWMETADATA']"
                       >
                         <a
                           class="mb-1"
@@ -1405,113 +1524,6 @@
             </v-col>
           </v-row>
         </v-col>
-
-        <div
-          no-gutters
-          v-if="objectInfo.cmodel === 'Collection' && docs.length"
-        >
-          <p class="title font-weight-light mb-8">
-            {{ $t("Members of") }} {{ objectInfo.pid }}
-          </p>
-          <template v-for="(doc, i) in this.docs">
-            <v-row :key="'doc' + i">
-              <v-col cols="2" class="preview-maxwidth">
-                <div>
-                  <p-img
-                    :src="
-                      instanceconfig.api + '/object/' + doc.pid + '/thumbnail'
-                    "
-                    class="elevation-1 mt-2"
-                  >
-                    <template v-slot:placeholder>
-                      <div
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                      >
-                        <v-progress-circular
-                          indeterminate
-                          color="grey lighten-5"
-                        ></v-progress-circular>
-                      </div>
-                    </template>
-                  </p-img>
-                </div>
-              </v-col>
-              <v-col cols="10">
-                <v-row no-gutters class="mb-4">
-                  <v-col cols="10">
-                    <h3
-                      class="title font-weight-light primary--text"
-                      @click.stop
-                      v-if="doc.dc_title"
-                    >
-                      <router-link
-                        :to="{ path: `${doc.pid}`, params: { pid: doc.pid } }"
-                        >{{ doc.dc_title[0] }}</router-link
-                      >
-                    </h3>
-                    <p class="grey--text">{{ doc.pid }}</p>
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="2" class="text-right"
-                    ><span v-if="doc.created" class="grey--text">{{
-                      doc.created | date
-                    }}</span></v-col
-                  >
-                </v-row>
-              </v-col>
-            </v-row>
-          </template>
-          <v-pagination
-            v-if="total > pagesize"
-            v-bind:length="totalPages"
-            total-visible="10"
-            v-model="page"
-            class="mb-3"
-          />
-        </div>
-      </v-row>
-      <v-row v-if="showCollectionTree" class="mt-8">
-        <p class="title font-weight-light">
-          {{ $t("Collection structure") }}
-        </p>
-        <div id="d3-graph-container" style="width: 100%">
-          <svg style="position: absolute">
-            <defs>
-              <marker
-                id="m-end"
-                markerWidth="10"
-                markerHeight="10"
-                refX="9"
-                refY="3"
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <path d="M0,0 L0,6 L9,3 z"></path>
-              </marker>
-              <marker
-                id="m-start"
-                markerWidth="6"
-                markerHeight="6"
-                refX="-4"
-                refY="3"
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <rect width="3" height="6"></rect>
-              </marker>
-            </defs>
-          </svg>
-          <d3-network
-            ref="net"
-            :net-nodes="nodes"
-            :net-links="links"
-            :options="options"
-            @node-click="nodeclick"
-            :link-cb="lcb"
-          />
-        </div>
       </v-row>
     </template>
   </v-container>

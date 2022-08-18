@@ -71,6 +71,7 @@ import { context } from "../mixins/context";
 import Vue from "vue";
 import moment from "moment";
 import "@/assets/css/material-icons.css";
+import { nextTick } from 'vue'
 
 export default {
   mixins: [config, context],
@@ -88,7 +89,7 @@ export default {
   methods: {
     dismiss: function (alert) {
       this.$store.commit("clearAlert", alert);
-    },
+    }
   },
   computed: {
     showAlerts: function () {
@@ -121,8 +122,6 @@ export default {
     },
   },
   created: function () {
-    this.$vuetify.theme.themes.light.primary = this.instanceconfig.primary;
-
     Vue.filter("datetime", function (value) {
       if (value) {
         return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
@@ -176,7 +175,7 @@ export default {
 
       return tcText + clamp;
     });
-  },
+  }
 };
 </script>
 <style lang="sass">
