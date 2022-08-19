@@ -144,7 +144,7 @@
       v-if="
         this.user.username === 'ethnograpp95' ||
         this.user.username === 'ethnograps52' ||
-        this.user.username === 'bib-phaidra'
+        this.user.username === 'bib-phaidra' || this.user.username === 'hudakr4'
       "
     >
       <v-row class="my-6" justify="start">
@@ -160,7 +160,7 @@
           <v-btn
             v-if="
               this.user.username === 'ethnograpp95' ||
-              this.user.username === 'ethnograps52'
+              this.user.username === 'ethnograps52' || this.user.username === 'hudakr4'
             "
             large
             dark
