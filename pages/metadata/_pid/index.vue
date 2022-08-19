@@ -48,25 +48,8 @@ export default {
     return this.fetchAsyncData(this, this.$route.params.pid);
   },
   beforeRouteEnter: async function (to, from, next) {
-    let inforesponse;
-    try {
-      console.log("[" + to.params.pid + "] fetching object info");
-      inforesponse = await axios.get(
-        configjs.instances[configjs.defaultinstance].api +
-        "/object/" +
-        to.params.pid +
-        "/info"
-      );
-      console.log("[" + to.params.pid + "] fetching object info done");
-    } catch (error) {
-      console.error(error);
-    }
-    next((vm) => {
-      if (inforesponse) {
-        if (inforesponse.data) {
-          vm.$store.commit("setObjectInfo", inforesponse.data.info);
-        }
-      }
+    next( async function (vm) {
+      await vm.fetchAsyncData(vm, to.params.pid);
     });
   },
   beforeRouteUpdate: async function (to, from, next) {

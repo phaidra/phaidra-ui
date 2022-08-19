@@ -206,6 +206,7 @@
                 <v-card-actions class="pa-3" v-if="objectInfo.readrights">
                   <v-spacer></v-spacer>
                   <v-btn
+                    class="ml-2"
                     raised
                     :href="
                       instanceconfig.api + '/object/' + member.pid + '/download'
@@ -215,7 +216,7 @@
                   >
                   <v-menu offset-y v-if="objectInfo.writerights === 1">
                     <template v-slot:activator="{ on }">
-                      <v-btn raised color="primary" dark v-on="on"
+                      <v-btn class="ml-2" raised color="primary" dark v-on="on"
                         >{{ $t("Edit")
                         }}<v-icon right dark>arrow_drop_down</v-icon></v-btn
                       >
@@ -254,7 +255,7 @@
           <template v-if="objectInfo.cmodel === 'Collection' && docs.length">
             <v-toolbar class="my-10 grey white--text" elevation="1">
               <v-toolbar-title>
-                {{ $t("Members of") }} {{ objectInfo.pid }}
+                {{ $t("Members") }} ({{ total }})
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-pagination
@@ -1311,14 +1312,28 @@
                         no-gutters
                         class="pt-2"
                         v-if="
+                          ((objectInfo.cmodel === 'Container') && (objectInfo.members.length <= 100 )) ||
+                          ((objectInfo.cmodel === 'Collection') && (total <= 100 ))
+                        "
+                      >
+                        <nuxt-link
+                          class="mb-1"
+                          :to="localePath(`/sort/${objectInfo.pid}`)"
+                          >{{ $t("Sort members (drag & drop)") }}</nuxt-link
+                        >
+                      </v-row>
+                      <v-row
+                        no-gutters
+                        class="pt-2"
+                        v-if="
                           objectInfo.cmodel === 'Container' ||
                           objectInfo.cmodel === 'Collection'
                         "
                       >
                         <nuxt-link
                           class="mb-1"
-                          :to="localePath(`/sort/${objectInfo.pid}`)"
-                          >{{ $t("Sort members") }}</nuxt-link
+                          :to="localePath(`/sorttextinput/${objectInfo.pid}`)"
+                          >{{ $t("Sort members (text input)") }}</nuxt-link
                         >
                       </v-row>
                       <v-row
@@ -1575,10 +1590,11 @@ export default {
       return this.objectInfo.datastreams.includes("POLICY");
     },
     showCollectionTree: function () {
-      return (
-        this.objectInfo === "Collection" ||
-        this.objectInfo?.relationships?.ispartof?.length > 0
-      );
+      return false
+      // return (
+      //   this.objectInfo === "Collection" ||
+      //   this.objectInfo?.relationships?.ispartof?.length > 0
+      // );
     },
     showPreview: function () {
       return (

@@ -8,9 +8,8 @@
     <v-row>
       <v-col v-if="signedin">
         <template v-if="members.length > 0">
-          <p-m-sort v-if="members.length <= 100 " :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members = $event"
-          @order-saved="orderSaved($event)"></p-m-sort>
-          <div v-else>{{ $t('This object has more than 100 members and can not be sorted with drag & drop') }}</div>
+          <p-m-sort-textinput :pid="pid" :cmodel="loadedcmodel" :members="members" @input="members = $event"
+          @order-saved="orderSaved($event)"></p-m-sort-textinput>
         </template>
       </v-col>
     </v-row>
@@ -35,7 +34,8 @@ export default {
   data() {
     return {
       members: [],
-      doc: {}
+      doc: {},
+      count: 0
     }
   },
   methods: {
@@ -78,7 +78,32 @@ export default {
 
       return promise
     },
-    loadMembers(self, pid, rel) {
+    loadMembers: async function (self, pid, rel) {
+
+      var params = {
+        q: rel + ':"' + pid + '"',
+        defType: 'edismax',
+        wt: 'json',
+        qf: rel + '^5',
+        rows: 0
+      }
+
+      var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })
+      var url = this.instanceconfig.solr + '/select?' + query
+      var promise = fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      })
+        .then(function (response) { return response.json() })
+        .then(function (json) {
+          self.count = json.response.numFound
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+
+      await promise
+
       this.members = []
 
       var params = {
@@ -86,9 +111,9 @@ export default {
         defType: 'edismax',
         wt: 'json',
         qf: rel + '^5',
-        fl: 'pid,cmodel,dc_title,created',
+        fl: 'pid',
         sort: 'pos_in_' + pid.replace(':', '_') + ' asc',
-        rows: 100
+        rows: this.count
       }
 
       var query = qs.stringify(params, { encodeValuesOnly: true, indices: false })

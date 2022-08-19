@@ -545,6 +545,13 @@ export const actions = {
           }
           members.push(memresponse.data.info)
         }
+        const posField = 'pos_in_' + parent.pid.replace(':', '_')
+        for (const m of members) {
+          if (!m[posField]) {
+            m[posField] = members.length
+          }
+        }
+        members.sort((a, b) => a[posField] - b[posField])
         commit('setObjectMembers', members)
       } else {
         commit('setObjectMembers', [])
