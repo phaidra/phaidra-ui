@@ -1175,5 +1175,7 @@ export default {
   'This container has more than 100 members and can not be sorted with drag & drop': 'Dieses Container hat mehr als 100 Mitglieder und kann mit drag & drop nicht sortiert werden.',
   'Define order': 'Reihenfolge definieren',
   'Load current order': 'Aktuelle Reihenfolge laden',
-  'Please provide the order of the members by ordering the PIDs': 'Bestimmen Sie bitte die Reihenfolge von Mitglieder mit der Reihenfolge von PIDs'
+  'Please provide the order of the members by ordering the PIDs': 'Bestimmen Sie bitte die Reihenfolge von Mitglieder mit der Reihenfolge von PIDs',
+  'Confirm each keyword with enter': 'Bestätigen Sie jedes Stichwort mit der Enter-Taste',
+  'Press Enter to initiate search': 'Bestätigen Sie die Suchanfrage mit der Enter-Taste'
 }

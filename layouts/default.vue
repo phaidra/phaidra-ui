@@ -55,7 +55,7 @@
               </transition>
             </v-col>
           </v-row>
-          <p-footer></p-footer>
+          <ExtFooter></ExtFooter>
         </v-col>
       </v-row>
     </v-container>
@@ -80,11 +80,6 @@ export default {
       title: config.title,
     };
     return metaInfo;
-  },
-  data() {
-    return {
-      quicklinksenabled: 0,
-    };
   },
   methods: {
     dismiss: function (alert) {
