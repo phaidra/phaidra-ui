@@ -22,28 +22,58 @@
     </v-row>
     <v-divider class="my-2"></v-divider>
     <template v-if="instanceconfig.irbaseurl !== ''">
-    <v-row class="my-6" justify="start">
-      <v-col cols="3">
-        <v-btn
-          large
-          class="primary"
-          :href="'https://uscholar.univie.ac.at/login'"
-        >
-          <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication") }}
-        </v-btn>
-      </v-col>
-      <v-col align-self="center">
-        <span>
-        {{
-          $t(
-            "Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ..."
-          )
-        }}
-      </span>
-      </v-col>
-    </v-row>
+      <v-row class="my-6" justify="start">
+        <v-col cols="3">
+          <v-btn
+            large
+            class="primary"
+            :href="'https://uscholar.univie.ac.at/login'"
+          >
+            <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication") }}
+          </v-btn>
+        </v-col>
+        <v-col align-self="center">
+          <span>
+          {{
+            $t(
+              "Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ..."
+            )
+          }}
+        </span>
+        </v-col>
+      </v-row>
+      <v-divider class="my-2"></v-divider>
     </template>
-    <v-divider class="my-2"></v-divider>
+    <template v-if="instanceconfig.uwmsubmit">
+      <v-row class="my-6" justify="start">
+        <v-col cols="12">
+          <span class="title font-weight-light primary--text">{{
+            $t("Legacy (Uwmetadata)")
+          }}</span>
+        </v-col>
+      </v-row>
+      <v-row class="my-6" justify="start">
+        <v-col cols="12">
+          <v-btn
+            large
+            dark
+            color="grey white--text mr-8"
+            :to="localePath({ path: '/submit/uwm/asset'})"
+          >
+            {{ $t("File") }}
+          </v-btn>
+          <v-btn
+            large
+            dark
+            color="grey white--text mr-8"
+            :to="localePath({ path: '/submit/uwm/collection'})"
+          >
+            {{ $t("Collection") }}
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-divider class="my-2"></v-divider>
+    </template>
     <v-row class="my-6" justify="start">
       <v-col cols="3">
         <v-dialog class="pb-4" v-model="templateDialog" width="700px">

@@ -17,6 +17,7 @@
               v-bind.sync="fileField"
               :mimetype="mimetype"
               v-on:input-file="file = $event"
+              v-on:input-mimetype="mimetype = $event ? $event['@id'] : $event"
               input-style="outlined"
               :auto-mimetype="true"
               :fileErrorMessages="fileErrorMessages"
@@ -62,6 +63,14 @@ import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
 export default {
   mixins: [config, context, vocabulary],
   computed: {
+    alpha2locale: function () {
+      switch (this.$i18n.locale) {
+        case 'eng': return 'en'
+        case 'deu': return 'de'
+        case 'ita': return 'it'
+        default: return 'en'
+      }
+    },
     objectType: function () {
       if (this.$route.params.cmodel === "collection") {
         return "collection";
@@ -137,11 +146,23 @@ export default {
         }
         if (response.data.tree) {
           self.form = response.data.tree;
+          this.setLanguageRec(self.form)
         }
       } catch (error) {
         console.log(error);
       } finally {
         self.loading = false;
+      }
+    },
+    setLanguageRec: function (nodes) {
+      for (const n of nodes) {
+        if (n.input_type === 'language_select') {
+          n.ui_value = this.alpha2locale
+        }
+        n.value_lang = this.alpha2locale
+        if (n.children && (n.children.length > 0)) {
+          this.setLanguageRec(n.children)
+        }
       }
     },
     getMetadata: function () {
