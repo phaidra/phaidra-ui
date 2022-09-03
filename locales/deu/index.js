@@ -1013,6 +1013,8 @@ export default {
   'Should the collection membership in collections you own be transferred to new version?': 'Sollen die Mitgliedschaften in Sammlungen auf die neue Version übertragen werden?',
   'Subject (BK)': 'Schlagwort (BK)',
   'Subject (ÖFOS)': 'Schlagwort (ÖFOS)',
+  'Subject (BK) *': 'Schlagwort (BK) *',
+  'Subject (ÖFOS) *': 'Schlagwort (ÖFOS) *',
   Extend: 'Erweitern',
   Classification: 'Klassifikation',
   'Physical object': 'Physisches Objekt',
@@ -1177,5 +1179,6 @@ export default {
   'Load current order': 'Aktuelle Reihenfolge laden',
   'Please provide the order of the members by ordering the PIDs': 'Bestimmen Sie bitte die Reihenfolge von Mitglieder mit der Reihenfolge von PIDs',
   'Confirm each keyword with enter': 'Bestätigen Sie jedes Stichwort mit der Enter-Taste',
-  'Press Enter to initiate search': 'Bestätigen Sie die Suchanfrage mit der Enter-Taste'
+  'Press Enter to initiate search': 'Bestätigen Sie die Suchanfrage mit der Enter-Taste',
+  'Select a term': 'Wählen Sie einen Begriff aus'
 }

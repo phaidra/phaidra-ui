@@ -106,6 +106,24 @@ export default {
         this.form.sections[0].fields.splice(2, 0, otf2);
       }
     },
+    makrOefosMandatory: function () {
+      for (const s of this.form.sections) {
+        for (const f of s.fields) {
+          if (f.component === 'p-subject-oefos') {
+            f.label = this.$t('Subject (ÖFOS)') + ' *'
+          }
+        }
+      }
+    },
+    unmakrOefosMandatory: function () {
+      for (const s of this.form.sections) {
+        for (const f of s.fields) {
+          if (f.component === 'p-subject-oefos') {
+            f.label = this.$t('Subject (ÖFOS)')
+          }
+        }
+      }
+    },
     handleInputResourceType: function (rt) {
       switch (rt) {
         case "https://pid.phaidra.org/vocabulary/44TN-P1S0":
@@ -120,9 +138,10 @@ export default {
               }
             }
           }
+          this.makrOefosMandatory()
           break;
         case "https://pid.phaidra.org/vocabulary/GXS7-ENXJ":
-          // collection => remove file, language, license and object type field
+          // collection => remove file, language, license, oefos and object type field
           for (let s of this.form.sections) {
             for (let f of s.fields) {
               if (f.component === "p-file") {
@@ -155,6 +174,7 @@ export default {
               }
             }
           }
+          this.unmakrOefosMandatory()
           break;
         default:
           // add fields which were removed if switching from collection
@@ -174,6 +194,7 @@ export default {
             lang.label = "Language of object";
             this.form.sections[0].fields.splice(4, 0, lang);
           }
+          this.makrOefosMandatory()
           break;
       }
     },

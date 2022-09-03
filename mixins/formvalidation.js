@@ -112,6 +112,7 @@ export const formvalidation = {
           missingFile = false
           missingLicense = false
           missingObjectType = false
+          missingOefos = false
           break
         case 'https://pid.phaidra.org/vocabulary/T8GH-F4V8':
           // resource
@@ -201,13 +202,15 @@ export const formvalidation = {
               }
             }
           }
-          if (f.component === 'p-subject-oefos') {
-            missingOefos = false
-            f.errorMessages = []
-            if (!hasReadonlyOefos) {
-              if (f.value.length < 1) {
-                f.errorMessages.push(this.$t('Please select'))
-                this.validationError = true
+          if (resourceType !== 'https://pid.phaidra.org/vocabulary/GXS7-ENXJ') {
+            if (f.component === 'p-subject-oefos') {
+              missingOefos = false
+              f.errorMessages = []
+              if (!hasReadonlyOefos) {
+                if (f.value.length < 1) {
+                  f.errorMessages.push(this.$t('Please select'))
+                  this.validationError = true
+                }
               }
             }
           }
