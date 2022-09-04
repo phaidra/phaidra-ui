@@ -48,7 +48,7 @@ export const formvalidation = {
             f.label = f.label + ' *'
           }
           if (f.component === 'p-title') {
-            f.titleLabel = f.titleLabel ? f.titleLabel + ' *' : this.$t(f.type) + ' *'
+            f.titleLabel = f.titleLabel ? f.titleLabel + ' *' : f.type + ' *'
           }
           if ((f.predicate === 'bf:note') && (f.type === 'bf:Note')) {
             f.label = f.label + ' *'
