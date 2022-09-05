@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+    <v-btn class="my-4" :to="{ path: `/detail/${routepid}`, params: { pid: routepid } }">
       <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
     </v-btn>
     <v-tabs>
