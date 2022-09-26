@@ -1053,7 +1053,7 @@ export default {
   Coverage: 'Geltungsbereich',
   'Represented object': 'Abgebildetes Objekt',
   'Bibliographic metadata': 'Bibliographische Metadaten',
-  'Object lists': 'Objeklisten',
+  'Object lists': 'Objektlisten',
   'Add to object list': 'zur Objektliste hinzufügen',
   'Create public link': 'Öffentlicher Link erstellen',
   'Remove public link': 'Öffentlicher Link entfernen',

@@ -629,9 +629,14 @@
                               {{ objectInfo.owner.lastname }}</a
                             >
                           </v-col>
-                          <v-col v-else cols="8">{{
-                            objectInfo.owner.username
-                          }}</v-col>
+                          <v-col v-else-if="objectInfo.owner.displayname" cols="8">
+                            <a :href="'mailto:' + objectInfo.owner.email"
+                              >{{ objectInfo.owner.displayname }}</a
+                            >
+                          </v-col>
+                          <v-col v-else cols="8"><a :href="'mailto:' + objectInfo.owner.email"
+                              >{{ objectInfo.owner.username }}</a
+                            ></v-col>
                         </v-row>
                         <v-row no-gutters class="pt-2">
                           <v-col
