@@ -548,7 +548,7 @@ export default {
         self.form.sections[1].fields.push(fields.getField("bk-subject"));
 
         self.form.sections[2].fields.push(fields.getField("temporal-coverage"));
-        let place = fields.getField("spatial-geonames-search");
+        let place = fields.getField("spatial-geonames");
         place.showtype = false;
         self.form.sections[2].fields.push(place);
 

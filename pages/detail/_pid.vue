@@ -156,7 +156,7 @@
 
             <v-row v-else-if="objectInfo.dshash['MODS']">
               <p-d-mods-rec
-                :children="objectInfo.metadata['MODS']"
+                :children="objectInfo.metadata['mods']"
               ></p-d-mods-rec>
             </v-row>
           </client-only>
@@ -629,9 +629,14 @@
                               {{ objectInfo.owner.lastname }}</a
                             >
                           </v-col>
-                          <v-col v-else cols="8">{{
-                            objectInfo.owner.username
-                          }}</v-col>
+                          <v-col v-else-if="objectInfo.owner.displayname" cols="8">
+                            <a :href="'mailto:' + objectInfo.owner.email"
+                              >{{ objectInfo.owner.displayname }}</a
+                            >
+                          </v-col>
+                          <v-col v-else cols="8"><a :href="'mailto:' + objectInfo.owner.email"
+                              >{{ objectInfo.owner.username }}</a
+                            ></v-col>
                         </v-row>
                         <v-row no-gutters class="pt-2">
                           <v-col
@@ -2342,6 +2347,7 @@ export default {
   },
   beforeRouteEnter: async function (to, from, next) {
     next(async function (vm) {
+      console.log('beforeRouteEnter')
       if (
         process.browser &&
         (!vm.objectInfo || vm.objectInfo.pid !== to.params.pid)
@@ -2350,7 +2356,6 @@ export default {
         vm.$store.commit("setLoading", true);
         vm.$store.commit("setObjectInfo", null);
         await vm.fetchAsyncData(vm, to.params.pid);
-        vm.fetchUsageStats(vm, to.params.pid);
         vm.fetchChecksums(vm, to.params.pid);
         console.log("showtree:" + vm.showCollectionTree);
         if (vm.showCollectionTree) {
@@ -2358,9 +2363,11 @@ export default {
         }
         vm.$store.commit("setLoading", false);
       }
+      vm.fetchUsageStats(vm, to.params.pid);
     });
   },
   beforeRouteUpdate: async function (to, from, next) {
+    console.log('beforeRouteUpdate')
     this.resetData(this);
     this.$store.commit("setLoading", true);
     this.$store.commit("setObjectInfo", null);
