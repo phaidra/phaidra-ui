@@ -106,7 +106,22 @@
             </template>
             <template v-else>
               <v-col cols="12">
+                <div class="iframe-container" v-if="objectInfo.cmodel === 'Video'">
+                  <iframe
+                    :src="
+                      instanceconfig.api +
+                      '/object/' +
+                      objectInfo.pid +
+                      '/preview'
+                    "
+                    width="100%"
+                    frameborder="0"
+                    scrolling="no"
+                    class="responsive-iframe"
+                    >Content</iframe>
+                </div>
                 <iframe
+                v-else
                   :src="
                     instanceconfig.api +
                     '/object/' +
@@ -2415,5 +2430,23 @@ h3 {
 
 .ph-box {
   line-height: 1rem;
+}
+
+.iframe-container {
+    overflow: hidden;
+    padding-top: 56.25%;
+    position: relative;
+    width: 100%;
+}
+
+.responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+
 }
 </style>
