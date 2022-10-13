@@ -280,6 +280,8 @@ export default {
 
   SUBJECT_SECTION: 'Subject',
 
+  ADD_COLLECTION_MEMBERS_HELP: 'Managing collection members: After you create the collection, you can go to search and use the checkbox icon in search results (top right) to enable the selection of objects. After you have selected the desired objects, use the "Selected results" menu to add or remove members from a collection.',
+
   uwm_etheses: 'E-Theses',
   uwm_etheses_note_2: 'Note 2',
   uwm_etheses_note_1: 'Note 1',

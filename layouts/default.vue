@@ -50,7 +50,7 @@
 
               <transition name="fade" mode="out-in">
                 <keep-alive>
-                  <Nuxt />
+                  <Nuxt/>
                 </keep-alive>
               </transition>
             </v-col>

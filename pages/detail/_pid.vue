@@ -1328,6 +1328,46 @@
                           >{{ $t("Edit metadata") }}</nuxt-link
                         >
                       </v-row>
+
+                      <v-row
+                        no-gutters
+                        class="pt-2"
+                      >
+                      <v-dialog
+                        v-model="collectionHelpDialog"
+                        width="800"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <a
+                            class="mb-1"
+                            v-on="on"
+                            >{{ $t("Manage members") }}</a
+                          >
+                        </template>
+                        <v-card>
+                          <v-card-title class="text-h5 grey lighten-2">
+                            {{ $t("Manage members") }}
+                          </v-card-title>
+
+                          <v-card-text>
+                            <p class="mt-4">{{$t('ADD_COLLECTION_MEMBERS_HELP')}}</p>
+                          </v-card-text>
+
+                          <v-divider></v-divider>
+
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="collectionHelpDialog = false"
+                            >
+                              OK
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                      </v-row>
                       <v-row
                         no-gutters
                         class="pt-2"
@@ -1818,6 +1858,7 @@ export default {
       membersPage: 1,
       membersPageSize: 10,
       detailsMetaInfo: null,
+      collectionHelpDialog: false
     };
   },
   async fetch() {
