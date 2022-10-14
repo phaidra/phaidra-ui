@@ -450,10 +450,13 @@
                   </v-card>
                 </v-dialog>
                 <span v-if="id.label" class="caption text--secondary">
-                  <template v-if="id.label === 'Handle'">https://hdl.handle.net/{{ $t(id.label) }}</template>
-                  <template v-else>{{ $t(id.label) }}</template>
-                </span
-                ><br /><span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''"><a :href="id.value">{{ id.value }}</a></span>
+                  {{ $t(id.label) }}
+                </span>
+                <br />
+                <span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">
+                  <template v-if="id.label === 'Handle'"><a :href="'https://hdl.handle.net/' + id.value">https://hdl.handle.net/{{ $t(id.value) }}</a></template>
+                  <template v-else><a :href="id.value">{{ id.value }}</a></template>
+                </span>
               </p>
             </v-col>
           </v-row>
