@@ -13,9 +13,11 @@
 <script>
 import { context } from "../../../mixins/context";
 import { config } from "../../../mixins/config";
+import { formvalidation } from "../../../mixins/formvalidation";
+
 export default {
   name: 'submit-custom',
-  mixins: [context, config],
+  mixins: [context, formvalidation, config],
   data() {
     return {
       form: {},
@@ -23,9 +25,6 @@ export default {
     }
   },
   methods: {
-    validate: function () {
-      return true
-    },
     objectCreated: function (event) {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)

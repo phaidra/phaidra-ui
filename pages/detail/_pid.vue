@@ -159,6 +159,7 @@
                 :jsonld="objectInfo.metadata['JSON-LD']"
                 :pid="objectInfo.pid"
                 :bold-label-fields="['dce:title', 'role', 'edm:rights']"
+                :predicatesToHide="['ebucore:filename', 'ebucore:hasMimeType']"
               ></p-d-jsonld>
             </v-row>
 
@@ -214,6 +215,7 @@
                       :jsonld="member.metadata['JSON-LD']"
                       :pid="member.pid"
                       :bold-label-fields="['dce:title', 'role', 'edm:rights']"
+                      :predicatesToHide="['ebucore:filename', 'ebucore:hasMimeType']"
                     ></p-d-jsonld>
                   </client-only>
                 </v-card-text>

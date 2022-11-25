@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row class="my-6" justify="start">
-      <v-col cols="3">
+      <v-col cols="12" md="3">
         <v-btn
           large
           class="primary"
@@ -23,13 +23,13 @@
     <v-divider class="my-2"></v-divider>
     <template v-if="instanceconfig.irbaseurl !== ''">
       <v-row class="my-6" justify="start">
-        <v-col cols="3">
+        <v-col cols="12" md="4">
           <v-btn
             large
             class="primary"
             :href="'https://uscholar.univie.ac.at/login'"
           >
-            <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication") }}
+            <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication (via u:scholar)") }}
           </v-btn>
         </v-col>
         <v-col align-self="center">
@@ -75,7 +75,7 @@
       <v-divider class="my-2"></v-divider>
     </template>
     <v-row class="my-6" justify="start">
-      <v-col cols="3">
+      <v-col cols="12" md="3">
         <v-dialog class="pb-4" v-model="templateDialog" width="700px">
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" large dark color="grey">
@@ -117,7 +117,7 @@
     </v-row>
     <v-divider class="my-2"></v-divider>
     <v-row class="my-6" justify="start">
-      <v-col cols="3">
+      <v-col cols="12" md="3">
         <v-btn
           large
           dark

@@ -64,7 +64,7 @@
         <p-i-form :form="form" :rights="rights" :relationships="relationships"
           :foreignRelationships="foreignRelationships" :enablerights="true" :enablerelationships="false"
           :templating="true" :importing="false" :addbutton="true" :help="false" :debug="true" :feedback="true"
-          :feedback-user="this.user" :feedback-context="'Related object submit'" :validate="validate"
+          :feedback-user="this.user" :feedback-context="'Related object submit'" :validate="validate" :mouseoverfielddef="true"
           v-on:load-form="form = $event" v-on:object-created="objectCreated($event)"
           v-on:form-input-resource-type="handleInputResourceType($event)" v-on:input-rights="rights = $event"
           v-on:input-relationships="relationships = $event"></p-i-form>

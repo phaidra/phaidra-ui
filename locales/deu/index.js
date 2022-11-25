@@ -1021,7 +1021,7 @@ export default {
   'Physical object': 'Physisches Objekt',
   'Language of object': 'Sprache des Objektes',
   'Create new object': 'Neues Objekt erstellen',
-  'Upload publication': 'Publikation hochladen',
+  'Upload publication (via u:scholar)': 'Publikation hochladen (über u:scholar)',
   'Open template': 'Vorlage öffnen',
   'Upload Picture, Audio, Video, Document, Data or create an empty Collection.': 'Bild, Audio, Video, Dokument oder Daten hochladen, oder eine leere Collection erstellen',
   'Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ...': 'Beiträge in Zeitschriften, Forschungsberichte, Rezensionen, Working Papers, Konferenzbeiträge, Monografien, einzelne Kapitel in Monografien...',

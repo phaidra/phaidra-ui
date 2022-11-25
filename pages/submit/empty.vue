@@ -18,7 +18,8 @@
 </template>
 
 <script>
-import { context } from '../../mixins/context'
+import fields from "phaidra-vue-components/src/utils/fields";
+import { context } from "../../mixins/context";
 
 export default {
   mixins: [ context ],
@@ -57,6 +58,51 @@ export default {
           }
         ]
       }
+
+      let defaultResourceType =
+          "https://pid.phaidra.org/vocabulary/44TN-P1S0";
+
+        let rt = fields.getField("resource-type-buttongroup");
+        rt.vocabulary = "resourcetypenocontainer";
+        rt.value = defaultResourceType;
+        this.form.sections[0].fields.push(rt);
+
+        let file = fields.getField("file");
+        file.fileInputClass = "mb-2";
+        this.form.sections[0].fields.push(file);
+
+        let ot = fields.getField("object-type-checkboxes");
+        ot.resourceType = defaultResourceType;
+        ot.showLabel = true;
+        this.form.sections[0].fields.push(ot);
+
+        this.form.sections[0].fields.push(fields.getField("title"));
+
+        this.form.sections[0].fields.push(fields.getField("description"));
+
+        let lang = fields.getField("language");
+        lang.value = this.$i18n.locale;
+        lang.label = "Language of object";
+        this.form.sections[0].fields.push(lang);
+
+        let kw = fields.getField("keyword");
+        kw.disableSuggest = true;
+        this.form.sections[0].fields.push(kw);
+
+        let role = fields.getField("role");
+        role.ordergroup = "role";
+        role.roleVocabulary = "submitrolepredicate";
+        role.identifierType = "ids:orcid";
+        role.showIdentifier = true;
+        this.form.sections[0].fields.push(role);
+
+        this.form.sections[0].fields.push(fields.getField("oefos-subject"));
+        this.form.sections[0].fields.push(fields.getField("association"));
+
+        let lic = fields.getField("license");
+        lic.showValueDefinition = true;
+        lic.vocabulary = "alllicenses";
+        this.form.sections[0].fields.push(lic);
     }
   },
   mounted: function () {
