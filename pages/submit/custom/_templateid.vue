@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <p-i-form :form="form" :rights="rights" :enablerights="true" :addbutton="true" :templating="true"
-          :validate="validate" v-on:load-form="form = $event" v-on:object-created="objectCreated($event)"
+          :validate="skipValidation ? dontValidate : validate" v-on:load-form="form = $event" v-on:object-created="objectCreated($event)"
           v-on:input-rights="rights = $event"></p-i-form>
       </v-col>
     </v-row>
@@ -21,10 +21,14 @@ export default {
   data() {
     return {
       form: {},
-      rights: {}
+      rights: {},
+      skipValidation: false
     }
   },
   methods: {
+    dontValidate: function () {
+      return true;
+    },
     objectCreated: function (event) {
       this.$router.push({ name: 'detail', params: { pid: event } })
       this.$vuetify.goTo(0)
@@ -43,6 +47,9 @@ export default {
           self.$store.commit('setAlerts', response.data.alerts)
         }
         self.form = response.data.template.form
+        if (response.data.template.hasOwnProperty('skipValidation')) {
+          self.skipValidation = response.data.template.skipValidation
+        }
       } catch (error) {
         console.log(error)
         self.$store.commit('setAlerts', [{ type: 'danger', msg: error }])

@@ -1185,5 +1185,6 @@ export default {
   'Select a term': 'Wählen Sie einen Begriff aus',
   'Download search results as a CSV file': 'Speichern der Trefferliste als CSV File',
   ADD_COLLECTION_MEMBERS_HELP: 'Collection-Mitglieder verwalten: Nach Sie die Collection erstellt haben, suchen Sie nach Objekten für Ihre Sammlung in der Suche und wählen Sie aus der Trefferliste unter "Suchergebnisse auswählen" (kleines Rechteck oben rechts) die einzelnen Objekte aus. Klicken Sie anschließend auf "Auswahl" rechts oben und wählen Sie "Zu Collection hinzufügen", es erscheinen die von Ihnen vorab angelegten Collections, wählen Sie die passende aus.',
-  'Manage members': 'Mitglieder verwalten'
+  'Manage members': 'Mitglieder verwalten',
+  'Restricted access': 'eingeschränkter Zugang'
 }
