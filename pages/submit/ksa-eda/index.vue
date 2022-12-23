@@ -203,7 +203,7 @@ export default {
             fields: [],
           },
           {
-            title: "Subject",
+            title: "Analog object",
             type: "phaidra:Subject",
             id: 3,
             multiplicable: true,

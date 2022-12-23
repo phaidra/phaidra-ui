@@ -236,6 +236,7 @@ export const formvalidation = {
             } else if (this.allowedMimetypes[resourceType]) {
               if (!this.allowedMimetypes[resourceType].includes(f.mimetype)) {
                 f.mimetypeErrorMessages.push(this.$t('This file type is not supported for the chosen resource type.'))
+                f.fileErrorMessages.push(this.$t('Wrong file format.'))
                 this.validationError = true
               }
             }

@@ -1644,8 +1644,10 @@ export default {
         return this.currentPage;
       },
       set(value) {
-        this.currentPage = value;
-        this.getCollectionMembers();
+        if (this.currentPage != value) {
+          this.currentPage = value;
+          this.getCollectionMembers();
+        }
       },
     },
     totalPages: function () {
@@ -1752,11 +1754,7 @@ export default {
       return this.$route.params.pid;
     },
     objectInfo: function () {
-      let objInfo = this.$store.state.objectInfo;
-      if (objInfo && objInfo.cmodel === "Collection") {
-        this.getCollectionMembers(this.$route.params.pid);
-      }
-      return objInfo;
+      return this.$store.state.objectInfo;
     },
     objectMembers: function () {
       return this.$store.state.objectMembers;
@@ -2242,13 +2240,20 @@ export default {
       this.$matomo.trackPageView();
     },
     async fetchAsyncData(self, pid) {
+      console.log('fetching object info ' + pid);
       await self.$store.dispatch("fetchObjectInfo", pid);
       self.postMetadataLoad(self);
+      console.log('cmodel: ' + self.$store.state.objectInfo.cmodel);
       if (self.$store.state.objectInfo.cmodel === "Container") {
+        console.log('fetching container members');
         await self.$store.dispatch(
           "fetchObjectMembers",
           self.$store.state.objectInfo
         );
+      }
+      if (self.$store.state.objectInfo.cmodel === "Collection") {
+        console.log('fetching collection members');
+        await self.getCollectionMembers(pid);
       }
     },
     async fetchUsageStats(self, pid) {

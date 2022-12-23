@@ -1187,5 +1187,7 @@ export default {
   ADD_COLLECTION_MEMBERS_HELP: 'Collection-Mitglieder verwalten: Nachdem Sie die Collection erstellt haben, suchen Sie nach Objekten für Ihre Sammlung in der Suche und wählen Sie aus der Trefferliste unter "Suchergebnisse auswählen" (kleines Rechteck oben rechts) die einzelnen Objekte aus. Klicken Sie anschließend auf "Auswahl" rechts oben und wählen Sie "Zu Collection hinzufügen", es erscheinen die von Ihnen vorab angelegten Collections, wählen Sie die passende aus.',
   'Manage members': 'Mitglieder verwalten',
   'An object type represents real-world entity. For example, an object type can represent a photography, an interview, a lecture or a letter.': 'Ein Objekttyp stellt eine reale Entität dar. Ein Objekttyp kann zum Beispiel eine Fotografie, ein Interview, einen Vortrag oder einen Brief darstellen',
-  'Restricted access': 'eingeschränkter Zugang'
+  'Restricted access': 'eingeschränkter Zugang',
+  'Analog object': 'Analoges Objekt',
+  'Wrong file format.': 'Falsches Dateityp.'
 }

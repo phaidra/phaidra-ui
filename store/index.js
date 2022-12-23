@@ -572,7 +572,7 @@ export const actions = {
       commit('setLoginData', response.data.user_data)
     } catch (error) {
       if (error.response.status === 401) {
-        commit('setAlerts', [{ type: 'danger', msg: 'You have been logged out' }])
+        commit('setAlerts', [{ type: 'success', msg: 'You have been logged out' }])
         commit('setToken', null)
         commit('setLoginData', { username: null, firstname: null, lastname: null, email: null, org_units_l1: null, org_units_l2: null })
         if (process.browser) {
@@ -624,7 +624,7 @@ export const actions = {
     } catch (error) {
       console.log(error)
     } finally {
-      commit('setAlerts', [{ type: 'danger', msg: 'You have been logged out' }])
+      commit('setAlerts', [{ type: 'success', msg: 'You have been logged out' }])
       commit('clearStore')
     }
   },
