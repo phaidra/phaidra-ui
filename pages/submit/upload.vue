@@ -32,7 +32,7 @@
           :feedback="true"
           :feedback-user="this.user"
           :feedback-context="'Upload'"
-          :validate="validate"
+          :validate="validationMethod"
           v-on:load-form="form = $event"
           v-on:object-created="objectCreated($event)"
           v-on:form-input-resource-type="handleInputResourceType($event)"
@@ -47,12 +47,13 @@
 import arrays from "phaidra-vue-components/src/utils/arrays";
 import fields from "phaidra-vue-components/src/utils/fields";
 import { context } from "../../mixins/context";
+import { config } from "../../mixins/config";
 import { formvalidation } from "../../mixins/formvalidation";
 import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
 
 export default {
   layout: "main",
-  mixins: [context, vocabulary, formvalidation],
+  mixins: [context, config, vocabulary, formvalidation],
   data() {
     return {
       form: { sections: [] },
@@ -60,6 +61,18 @@ export default {
     };
   },
   methods: {
+    validationMethod: function () {
+      if (this.instanceconfig.submit?.validationmethod) {
+        return this[this.instanceconfig.submit?.validationmethod]()
+      }
+      return this.validate()
+    },
+    markMandatoryMethod: function() {
+      if (this.instanceconfig.submit?.markmandatorymethod) {
+        return this[this.instanceconfig.submit?.markmandatorymethod]()
+      }
+      return this.markMandatory()
+    },
     addRemovedFieldsCol: function (rt) {
       let haslicense = false;
       for (let s of this.form.sections) {
@@ -70,7 +83,9 @@ export default {
         }
       }
       if (!haslicense) {
-        this.form.sections[0].fields.push(fields.getField("license"));
+        let f = fields.getField("license")
+        f.label = f.label + ' *'
+        this.form.sections[0].fields.push(f);
       }
       let hasfile = false;
       for (let s of this.form.sections) {
@@ -106,7 +121,12 @@ export default {
         this.form.sections[0].fields.splice(2, 0, otf2);
       }
     },
-    makrOefosMandatory: function () {
+    markOefosMandatory: function () {
+      if (this.instanceconfig.submit?.markmandatorymethod) {
+        if (this.instanceconfig.submit?.markmandatorymethod === 'markMandatoryNoOefosNoAssoc') {
+          return
+        }
+      }
       for (const s of this.form.sections) {
         for (const f of s.fields) {
           if (f.component === 'p-subject-oefos') {
@@ -115,7 +135,7 @@ export default {
         }
       }
     },
-    unmakrOefosMandatory: function () {
+    unmarkOefosMandatory: function () {
       for (const s of this.form.sections) {
         for (const f of s.fields) {
           if (f.component === 'p-subject-oefos') {
@@ -138,7 +158,7 @@ export default {
               }
             }
           }
-          this.makrOefosMandatory()
+          this.markOefosMandatory()
           break;
         case "https://pid.phaidra.org/vocabulary/GXS7-ENXJ":
           // collection => remove file, language, license, oefos and object type field
@@ -174,7 +194,7 @@ export default {
               }
             }
           }
-          this.unmakrOefosMandatory()
+          this.unmarkOefosMandatory()
           break;
         default:
           // add fields which were removed if switching from collection
@@ -194,7 +214,7 @@ export default {
             lang.label = "Language of object";
             this.form.sections[0].fields.splice(4, 0, lang);
           }
-          this.makrOefosMandatory()
+          this.markOefosMandatory()
           break;
       }
     },
@@ -379,7 +399,7 @@ export default {
         }
       }
 
-      this.markMandatory();
+      this.markMandatoryMethod()
     },
   },
   beforeRouteEnter: function (to, from, next) {
