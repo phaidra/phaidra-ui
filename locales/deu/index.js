@@ -1189,5 +1189,6 @@ export default {
   'An object type represents real-world entity. For example, an object type can represent a photography, an interview, a lecture or a letter.': 'Ein Objekttyp stellt eine reale Entität dar. Ein Objekttyp kann zum Beispiel eine Fotografie, ein Interview, einen Vortrag oder einen Brief darstellen',
   'Restricted access': 'eingeschränkter Zugang',
   'Analog object': 'Analoges Objekt',
-  'Wrong file format.': 'Falsches Dateityp.'
+  'Wrong file format.': 'Falsches Dateityp.',
+  LICENSE_DISCLAIMER: '<b>Haftungsausschluss</b><br/>Der Diensteanbieter (PHAIDRA, {institution}) und Creative Commons sind nicht Partei der hier auszuwählenden Lizenzverträge. Durch Ihr Angebot, Ihren Schutzgegenstand einer Creative Commons Lizenz zu unterstellen und die Annahme Ihres Angebots durch andere Nutzer kommt ein Vertragsverhältnis zwischen Ihnen und dem jeweiligen Nutzer zustande. Daran ist weder der Diensteanbieter noch Creative Commons beteiligt. Dem Diensteanbieter und Creative Commons erwachsen daraus keinerlei Rechte und Pflichten.<br/>Weder der Diensteanbieter ist eine Rechtsanwaltsgesellschaft noch Creative Commons. Sie leisten keine Rechtsberatung. Sie erbringen die hier stehenden Informationen ohne Gewähr und übernehmen keine Haftung für eventuelle Schäden, die sich aus ihrem Gebrauch ergeben.'
 }
