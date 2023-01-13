@@ -21,7 +21,7 @@
           :form="form"
           :rights="rights"
           :enablerights="true"
-          :enablerelationships="true"
+          :enablerelationships="false"
           :enablepreview="true"
           :templating="false"
           :importing="false"
