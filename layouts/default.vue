@@ -5,7 +5,7 @@
         <v-col>
           <ExtHeader></ExtHeader>
           <v-row>
-            <v-col cols="12" md="8" offset-md="2" class="content">
+            <v-col cols="12" md="10" offset-md="1" class="content">
               <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
 
               <template v-for="(alert, i) in alerts">
