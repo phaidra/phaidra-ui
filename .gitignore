@@ -92,3 +92,4 @@ sw.*
 # customizable stuff
 components/ext
 assets/ext
+static/favicon.ico

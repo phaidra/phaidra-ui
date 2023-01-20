@@ -74,22 +74,7 @@
             </v-alert>
           </v-row>
           <v-row justify="center" v-if="showPreview">
-          <template v-if="(objectInfo.cmodel === 'Book') && (objectInfo.datastreams.includes('IIIF-MANIFEST'))">
-              <v-btn
-                large
-                raised
-                color="primary"
-                :href="
-                  instanceconfig.api +
-                    '/object/' +
-                    objectInfo.pid +
-                    '/preview'
-                "
-                target="_blank"
-                >{{ $t("Open in Bookviewer") }}</v-btn
-              >
-            </template>
-            <template v-else-if="objectInfo.cmodel === 'Book'">
+            <template v-if="(objectInfo.cmodel === 'Book') && (objectInfo.datastreams.includes('UWMETADATA'))">
               <v-btn
                 large
                 raised
@@ -99,6 +84,21 @@
                   '/objects/' +
                   objectInfo.pid +
                   '/methods/bdef:Book/view'
+                "
+                target="_blank"
+                >{{ $t("Open in Bookviewer") }}</v-btn
+              >
+            </template>
+          <template v-else-if="(objectInfo.cmodel === 'Book') && (objectInfo.datastreams.includes('IIIF-MANIFEST'))">
+              <v-btn
+                large
+                raised
+                color="primary"
+                :href="
+                  instanceconfig.api +
+                    '/object/' +
+                    objectInfo.pid +
+                    '/preview'
                 "
                 target="_blank"
                 >{{ $t("Open in Bookviewer") }}</v-btn
@@ -869,12 +869,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -922,12 +920,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -974,12 +970,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1027,12 +1021,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1081,12 +1073,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1133,12 +1123,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1186,12 +1174,10 @@
                         <v-row align="center">
                           <v-col cols="12" md="5" class="preview-maxwidth">
                             <p-img
-                              :src="
-                                'https://' +
-                                instanceconfig.baseurl +
-                                '/preview/' +
+                              :src="instanceconfig.api +
+                                '/object/' +
                                 rel.pid +
-                                '///120'
+                                'thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1671,9 +1657,7 @@ export default {
           (this.objectInfo.cmodel === "Asset" &&
             (this.mimetype === "model/nxz" ||
               this.mimetype === "model/ply"))) &&
-        (this.objectInfo.cmodel !== "Container" ||
-          (this.objectInfo.cmodel === "Container" &&
-            (this.objectInfo.relationships.hasthumbnail.length > 0))) &&
+        this.objectInfo.cmodel !== "Container" &&
         this.objectInfo.readrights &&
         !(this.objectInfo.cmodel === "Video" && this.isRestricted)
       );
