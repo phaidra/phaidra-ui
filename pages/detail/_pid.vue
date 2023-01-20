@@ -872,7 +872,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -923,7 +923,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -973,7 +973,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1024,7 +1024,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1076,7 +1076,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1126,7 +1126,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
@@ -1177,7 +1177,7 @@
                               :src="instanceconfig.api +
                                 '/object/' +
                                 rel.pid +
-                                'thumbnail'
+                                '/thumbnail'
                               "
                               class="elevation-1 mt-2"
                             ></p-img>
