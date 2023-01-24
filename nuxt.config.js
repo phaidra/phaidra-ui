@@ -95,10 +95,12 @@ export default {
     theme: {
       themes: {
         light: {
-          primary: config.instances[config.defaultinstance].primary
+          primary: config.instances[config.defaultinstance].primary,
+          error: '#dd4814'
         },
         dark: {
-          primary: config.instances[config.defaultinstance].primary
+          primary: config.instances[config.defaultinstance].primary,
+          error: '#dd4814'
         }
       }
     }

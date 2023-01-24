@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row class="my-6" justify="start">
-      <v-col cols="12" md="3">
+      <div class="d-flex flex-row ml-6">
         <v-btn
           large
           class="primary"
@@ -9,8 +9,8 @@
         >
           <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Create new object") }}
         </v-btn>
-        </v-col>
-      <v-col align-self="center">
+        </div>
+      <div class="d-flex flex-row pt-3 ml-6">
         <span>
         {{
           $t(
@@ -18,12 +18,12 @@
           )
         }}
         </span>
-      </v-col>
+      </div>
     </v-row>
     <v-divider class="my-2"></v-divider>
     <template v-if="instanceconfig.irbaseurl !== ''">
       <v-row class="my-6" justify="start">
-        <v-col cols="12" md="4">
+        <div class="d-flex flex-row ml-6">
           <v-btn
             large
             class="primary"
@@ -31,16 +31,15 @@
           >
             <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication (via u:scholar)") }}
           </v-btn>
-        </v-col>
-        <v-col align-self="center">
-          <span>
+        </div>
+          <div class="d-flex flex-row pt-3 ml-6">
           {{
             $t(
               "Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ..."
             )
           }}
-        </span>
-        </v-col>
+
+        </div>
       </v-row>
       <v-divider class="my-2"></v-divider>
     </template>
@@ -75,7 +74,7 @@
       <v-divider class="my-2"></v-divider>
     </template>
     <v-row class="my-6" justify="start">
-      <v-col cols="12" md="3">
+      <div class="d-flex flex-row ml-6">
         <v-dialog class="pb-4" v-model="templateDialog" width="700px">
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" large dark color="grey">
@@ -104,8 +103,8 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-      </v-col>
-      <v-col align-self="center">
+      </div>
+      <div class="d-flex flex-row pt-3 ml-6">
         <span>
             {{
               $t(
@@ -113,11 +112,11 @@
               )
             }}
           </span>
-      </v-col>
+      </div>
     </v-row>
     <v-divider class="my-2"></v-divider>
     <v-row class="my-6" justify="start">
-      <v-col cols="12" md="3">
+      <div class="d-flex flex-row ml-6">
         <v-btn
           large
           dark
@@ -127,8 +126,8 @@
           <v-icon dark class="mr-4">mdi-script-outline</v-icon>
           {{ $t("Create new template") }}
         </v-btn>
-      </v-col>
-      <v-col align-self="center">
+      </div>
+      <div class="d-flex flex-row pt-3 ml-6">
         <span>
             {{
               $t(
@@ -136,7 +135,7 @@
               )
             }}
           </span>
-      </v-col>
+      </div>
     </v-row>
     <template v-if="false">
       <v-row class="my-6" justify="start">
