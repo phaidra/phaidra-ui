@@ -1,24 +1,8 @@
 <template>
   <v-container fluid>
     <template v-if="objectInfo">
-      <v-row v-if="objectInfo.cmodel === 'Page'" justify="center">
-        <v-col cols="6">
-          <v-row justify="center" class="mt-5">{{
-            $t("PAGE_OF_BOOK", { bookpid: objectInfo.bookpid })
-          }}</v-row>
-          <v-row justify="center" class="mt-4"
-            ><v-btn
-              large
-              raised
-              color="primary"
-              :to="localePath({ path: `/detail/${objectInfo.bookpid}` })"
-              >{{ $t("Go to book") }}</v-btn
-            ></v-row
-          >
-        </v-col>
-      </v-row>
       <v-row
-        v-else-if="objectInfo.ismemberof && objectInfo.ismemberof.length > 0"
+        v-if="objectInfo.ismemberof && objectInfo.ismemberof.length > 0"
         justify="center"
       >
         <template v-if="objectInfo.ismemberof.length === 1">
@@ -64,6 +48,22 @@
       </v-row>
       <v-row v-else>
         <v-col cols="12" md="8" class="mt-8">
+          <v-row v-if="objectInfo.cmodel === 'Page'" justify="center">
+            <v-col cols="6">
+              <v-row justify="center" class="mt-5">{{
+                $t("PAGE_OF_BOOK", { bookpid: objectInfo.bookpid })
+              }}</v-row>
+              <v-row justify="center" class="mt-4"
+                ><v-btn
+                  large
+                  raised
+                  color="primary"
+                  :to="localePath({ path: `/detail/${objectInfo.bookpid}` })"
+                  >{{ $t("Go to book") }}</v-btn
+                ></v-row
+              >
+            </v-col>
+          </v-row>
           <v-row v-if="hasLaterVersion" justify="center">
             <v-alert type="info" color="primary">
               <div>
@@ -649,12 +649,16 @@
                               {{ objectInfo.owner.lastname }}</a
                             >
                           </v-col>
-                          <v-col v-else-if="objectInfo.owner.displayname" cols="8">
-                            <a :href="'mailto:' + objectInfo.owner.email"
-                              >{{ objectInfo.owner.displayname }}</a
-                            >
+                          <v-col v-else-if="objectInfo.owner.displayname" cols="8" offset="1">
+                            <v-row>
+                                <v-col>
+                                  <a :href="'mailto:' + objectInfo.owner.email"
+                                    >{{ objectInfo.owner.displayname }}</a
+                                  >
+                                </v-col>
+                            </v-row>
                           </v-col>
-                          <v-col v-else cols="8"><a :href="'mailto:' + objectInfo.owner.email"
+                          <v-col v-else cols="8"  offset="1"><a :href="'mailto:' + objectInfo.owner.email"
                               >{{ objectInfo.owner.username }}</a
                             ></v-col>
                         </v-row>
@@ -1758,6 +1762,7 @@ export default {
         case "Picture":
         case "Asset":
         case "Book":
+        case "Page":
           return true;
         default:
           return false;
@@ -1770,6 +1775,7 @@ export default {
         case "Audio":
         case "Picture":
         case "Book":
+        case "Page":
           return true;
         default:
           return false;
