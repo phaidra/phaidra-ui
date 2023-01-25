@@ -576,7 +576,7 @@ export const actions = {
         commit('setToken', null)
         commit('setLoginData', { username: null, firstname: null, lastname: null, email: null, org_units_l1: null, org_units_l2: null })
         if (process.browser) {
-          document.cookie = 'XSRF-TOKEN=; domain=' + window.location.hostname.replace('ui.', '') + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+          document.cookie = 'XSRF-TOKEN=; domain=' + state.instanceconfig.cookiedomain + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
         }
       }
     }
@@ -584,7 +584,7 @@ export const actions = {
   async login({ commit, dispatch, state }, credentials) {
     commit('clearStore')
     if (process.browser) {
-      document.cookie = 'XSRF-TOKEN=; domain=' + window.location.hostname.replace('ui.', '') + '; path=/ ; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+      document.cookie = 'XSRF-TOKEN=; domain=' + state.instanceconfig.cookiedomain + '; path=/ ; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
     }
     commit('setUsername', credentials.username)
     try {
@@ -598,7 +598,7 @@ export const actions = {
       }
       if (response.status === 200) {
         if (process.browser) {
-          document.cookie = 'XSRF-TOKEN=' + response.data['XSRF-TOKEN'] + '; domain=' + window.location.hostname.replace('ui.', '') + '; path=/; secure; samesite=strict'
+          document.cookie = 'XSRF-TOKEN=' + response.data['XSRF-TOKEN'] + '; domain=' + state.instanceconfig.cookiedomain + '; path=/; secure; samesite=strict'
         }
         commit('setToken', response.data['XSRF-TOKEN'])
         dispatch('getLoginData')
@@ -610,7 +610,7 @@ export const actions = {
     commit('clearAlerts')
     this.$cookies.remove('user')
     if (process.browser) {
-      document.cookie = 'XSRF-TOKEN=; domain=' + window.location.hostname.replace('ui.', '') + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+      document.cookie = 'XSRF-TOKEN=; domain=' + state.instanceconfig.cookiedomain + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
     }
     try {
       const response = await axios.get(state.instanceconfig.api + '/signout', {

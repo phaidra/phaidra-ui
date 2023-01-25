@@ -278,7 +278,7 @@ export default {
 
   MEMBER_OF_CONTAINER: 'This object is a member of container {containerpid}',
 
-  SUBJECT_SECTION: 'Subject',
+  SUBJECT_SECTION: 'Represented object',
 
   ADD_COLLECTION_MEMBERS_HELP: 'Managing collection members: After you create the collection, you can go to search and use the checkbox icon in search results (top right) to enable the selection of objects. After you have selected the desired objects, use the "Selected results" menu to add or remove members from a collection.',
 

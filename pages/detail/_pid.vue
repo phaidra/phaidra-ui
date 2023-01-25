@@ -1498,7 +1498,8 @@
                                           ></v-radio>
                                         </template>
                                         <v-radio
-                                          v-else
+                                          v-else-if="r['@id'] !==
+                                            'http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#hasTrack'"
                                           :key="'rele' + i"
                                           :label="
                                             getLocalizedTermLabel(

@@ -838,7 +838,7 @@ export default {
   'Object type': 'Objekttyp',
   'Object type (checkboxes)': 'Objekttyp (checkboxes)',
   Material: 'Material',
-  SUBJECT_SECTION: 'Subject',
+  SUBJECT_SECTION: 'Repräsentiertes Objekt',
   'Represented/depicted place': 'Abgebildeter Ort',
   Association: 'Organisationseinheit',
   'Association *': 'Organisationseinheit *',
