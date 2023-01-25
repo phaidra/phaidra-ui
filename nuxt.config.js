@@ -11,7 +11,7 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: config?.instances?[config?.defaultinstance].primary },
+      { name: 'theme-color', content: config.instances[config.defaultinstance]['primary'] },
       { hid: 'description', name: 'description', content: '' }
     ],
     link: [
