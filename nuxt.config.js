@@ -3,21 +3,21 @@ const path = require('path')
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'phaidra-ui-nuxt',
-    htmlAttrs: {
-      lang: 'en'
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: config.instances[config.defaultinstance]['primary'] },
-      { hid: 'description', name: 'description', content: '' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
-  },
+  // head: {
+  //   title: 'phaidra-ui-nuxt',
+  //   htmlAttrs: {
+  //     lang: 'en'
+  //   },
+  //   meta: [
+  //     { charset: 'utf-8' },
+  //     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+  //     { name: 'theme-color', content: config.instances[config.defaultinstance]['primary'] },
+  //     { hid: 'description', name: 'description', content: '' }
+  //   ],
+  //   link: [
+  //     { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+  //   ]
+  // },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [

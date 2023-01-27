@@ -71,17 +71,16 @@ import { context } from "../mixins/context";
 import Vue from "vue";
 import moment from "moment";
 import "@/assets/css/material-icons.css";
-import { nextTick } from 'vue'
 
 export default {
   mixins: [config, context],
   metaInfo() {
     let metaInfo = {
-      title: config.title,
+      title: this.$t(this.instanceconfig.title) + ' - ' + this.$t(this.instanceconfig.institution),
       meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      { name: 'theme-color', content: this.instanceconfig.primary }
       ]
     };
     return metaInfo;
