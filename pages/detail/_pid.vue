@@ -258,7 +258,7 @@
                           $t("Relationships")
                         }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item :to="localePath(`/delete/${member.pid}`)">
+                      <v-list-item v-if="instanceconfig.enabledelete === 1" :to="localePath(`/delete/${member.pid}`)">
                         <v-list-item-title>{{
                           $t("Delete")
                         }}</v-list-item-title>
@@ -1586,6 +1586,7 @@
                       <v-row no-gutters class="pt-2">
                         <nuxt-link
                           class="mb-1"
+                          v-if="instanceconfig.enabledelete === 1"
                           :to="localePath(`/delete/${objectInfo.pid}`)"
                           >{{ $t("Delete") }}</nuxt-link
                         >
