@@ -484,7 +484,6 @@
                       <v-row no-gutters class="pt-2" justify="start">
                         <v-btn
                           class="mr-2 mb-2"
-                          @click="trackDownload()"
                           v-if="downloadable && objectInfo.readrights"
                           :href="
                             instanceconfig.api +
@@ -879,7 +878,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -930,7 +929,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -980,7 +979,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1031,7 +1030,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1083,7 +1082,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1133,7 +1132,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1184,7 +1183,7 @@
                                   rel.pid +
                                   '/thumbnail'
                                 "
-                                class="elevation-1 mt-2"
+                                class="elevation-1 my-4"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1655,7 +1654,7 @@ export default {
       set(value) {
         if (this.currentPage != value) {
           this.currentPage = value;
-          this.getCollectionMembers();
+          this.getCollectionMembers(this.objectInfo.pid);
         }
       },
     },
@@ -2240,13 +2239,6 @@ export default {
         console.log(error);
         this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
       }
-    },
-    trackDownload() {
-      this.$matomo.setCustomUrl(
-        "https://" + this.instanceconfig.baseurl + "/download/" + this.routepid
-      );
-      this.$matomo.setDocumentTitle("Download " + this.routepid);
-      this.$matomo.trackPageView();
     },
     async fetchAsyncData(self, pid) {
       console.log('fetching object info ' + pid);

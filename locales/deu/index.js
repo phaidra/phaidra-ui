@@ -469,7 +469,7 @@ export default {
   uwm_organization_curriculum: 'Studienrichtung',
   uwm_organization_curriculum_kennzahl: 'Studienkennzahl',
   uwm_organization_curriculum_spl: 'Studienprogrammleitung',
-  uwm_organization_orgassignment: 'Organisationszuordnung',
+  uwm_organization_orgassignment: 'Zuordnung',
   uwm_organization_orgassignment_department: 'Institut',
   uwm_organization_orgassignment_faculty: 'Fakultaet',
   uwm_organization_approbation_period: 'Approbationsdatum',
