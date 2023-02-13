@@ -468,7 +468,6 @@
               <v-row
                 class="mb-6"
                 v-if="
-                  (viewable && objectInfo.readrights) ||
                   (downloadable && objectInfo.readrights) ||
                   objectInfo.cmodel === 'Collection' ||
                   objectInfo.cmodel === 'Resource'
@@ -494,7 +493,6 @@
                           color="primary"
                           >{{ $t("Download") }}</v-btn
                         >
-                        <!--<v-btn class="mb-2" v-if="viewable && objectInfo.readrights" target="_blank" :href="instanceconfig.api + '/object/' + objectInfo.pid + '/get'" color="primary">{{ $t('View') }}</v-btn>-->
                         <v-btn
                           v-if="objectInfo.cmodel === 'Collection'"
                           :to="
@@ -1779,22 +1777,10 @@ export default {
         case "Audio":
         case "Picture":
         case "Asset":
-        case "Book":
         case "Page":
           return true;
-        default:
-          return false;
-      }
-    },
-    viewable: function () {
-      switch (this.objectInfo.cmodel) {
-        case "PDFDocument":
-        case "Video":
-        case "Audio":
-        case "Picture":
         case "Book":
-        case "Page":
-          return true;
+          return this.objectInfo.datastreams.includes("UWMETADATA")
         default:
           return false;
       }
