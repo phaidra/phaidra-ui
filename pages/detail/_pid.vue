@@ -456,8 +456,7 @@
                 </span>
                 <br />
                 <span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">
-                  <template v-if="id.label === 'Handle'"><a :href="'https://hdl.handle.net/' + id.value">https://hdl.handle.net/{{ $t(id.value) }}</a></template>
-                  <template v-else><a :href="id.value">{{ id.value }}</a></template>
+                  <a :href="id.value">{{ id.value }}</a>
                 </span>
               </p>
             </v-col>
@@ -1339,6 +1338,7 @@
                       </v-row>
 
                       <v-row
+                        v-if="objectInfo.cmodel === 'Collection'"
                         no-gutters
                         class="pt-2"
                       >
@@ -1724,13 +1724,13 @@ export default {
             let idvalue = id.substr(id.indexOf(":") + 1);
             switch (type) {
               case "hdl":
-                ids.push({ label: "Handle", value: idvalue });
+                ids.push({ label: "Handle", value: 'https://hdl.handle.net/' + idvalue });
                 break;
               case "doi":
-                ids.push({ label: "DOI", value: idvalue });
+                ids.push({ label: "DOI", value: 'https://doi.org/' + idvalue });
                 break;
               case "urn":
-                ids.push({ label: "URN", value: idvalue });
+                ids.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
                 break;
               case "isbn":
               case "ISBN":
