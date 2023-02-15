@@ -930,6 +930,7 @@ export default {
   'Enter group name': 'Gruppennamen eingeben',
   'Loading group members...': 'Gruppenmitglieder werden geladen',
   'User search': 'Personensuche',
+  'Username search': 'Benutzernamesuche',
   'Start typing to search': 'Suchbegriff eingeben',
   Apply: 'Bestätigen',
   'Delete group': 'Gruppe löschen',
