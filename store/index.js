@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import qs from 'qs'
 import config from '../config/phaidra-ui'
 
 export const state = () => ({
@@ -10,6 +11,7 @@ export const state = () => ({
   alerts: [],
   objectInfo: null,
   objectMembers: [],
+  collectionMembers: [],
   user: {
     token: null
   },
@@ -428,6 +430,12 @@ export const mutations = {
   setObjectMembers(state, objectMembers) {
     state.objectMembers = objectMembers
   },
+  setCollectionMembers(state, collectionMembers) {
+    state.collectionMembers = collectionMembers
+  },
+  setCollectionMembersTotal(state, collectionMembersTotal) {
+    state.collectionMembersTotal = collectionMembersTotal
+  },
   switchInstance(state, instance) {
     state.instance = state.config.instances[instance]
   },
@@ -485,6 +493,7 @@ export const mutations = {
   clearStore(state) {
     state.objectInfo = null
     state.objectMembers = []
+    state.collectionMembers = []
     state.user = {}
     state.groups = []
     this.$cookies.remove('XSRF-TOKEN')
@@ -557,6 +566,38 @@ export const actions = {
         commit('setObjectMembers', [])
       }
     } catch (error) {
+    }
+  },
+  async fetchCollectionMembers({ dispatch, commit, state }, options) {
+    commit('setCollectionMembers', [])
+    commit('setCollectionMembersTotal', 0)
+    const id = options.pid.replace(/[o:]/g, '')
+    const params = {
+      q: '-hassuccessor:* AND -ismemberof:["" TO *]',
+      defType: 'edismax',
+      wt: 'json',
+      fq: `owner:* AND ispartof:"${options.pid}"`,
+      start: (options.page - 1) * options.pagesize,
+      rows: options.pagesize,
+      sort: `pos_in_o_${id} asc`
+    }
+    try {
+      commit('setLoading', true)
+      const response = await axios.request({
+        method: 'POST',
+        url: state.instanceconfig.solr + '/select',
+        data: qs.stringify(params, { arrayFormat: 'repeat' }),
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        }
+      })
+      //console.log(response.data)
+      commit('setCollectionMembers', response.data.response.docs)
+      commit('setCollectionMembersTotal', response.data.response.numFound)
+    } catch (error) {
+      commit('setAlerts', [{ type: 'danger', msg: error }])
+    } finally {
+      commit('setLoading', false)
     }
   },
   async getLoginData({ commit, dispatch, state }) {

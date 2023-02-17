@@ -153,29 +153,27 @@
           </v-row>
 
           <v-divider class="mt-12 mb-10" v-if="showPreview"></v-divider>
-          <client-only>
-            <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
-              <p-d-jsonld
-                :jsonld="objectInfo.metadata['JSON-LD']"
-                :pid="objectInfo.pid"
-                :bold-label-fields="['dce:title', 'role', 'edm:rights']"
-                :predicatesToHide="['ebucore:filename', 'ebucore:hasMimeType']"
-              ></p-d-jsonld>
-            </v-row>
+          <v-row justify="center" v-if="objectInfo.dshash['JSON-LD']">
+            <p-d-jsonld
+              :jsonld="objectInfo.metadata['JSON-LD']"
+              :pid="objectInfo.pid"
+              :bold-label-fields="['dce:title', 'role', 'edm:rights']"
+              :predicatesToHide="['ebucore:filename', 'ebucore:hasMimeType']"
+            ></p-d-jsonld>
+          </v-row>
 
-            <v-row v-else-if="objectInfo.dshash['UWMETADATA']">
-              <p-d-uwm-rec
-                :children="objectInfo.metadata['uwmetadata']"
-                :cmodel="objectInfo.cmodel"
-              ></p-d-uwm-rec>
-            </v-row>
+          <v-row v-else-if="objectInfo.dshash['UWMETADATA']">
+            <p-d-uwm-rec
+              :children="objectInfo.metadata['uwmetadata']"
+              :cmodel="objectInfo.cmodel"
+            ></p-d-uwm-rec>
+          </v-row>
 
-            <v-row v-else-if="objectInfo.dshash['MODS']">
-              <p-d-mods-rec
-                :children="objectInfo.metadata['mods']"
-              ></p-d-mods-rec>
-            </v-row>
-          </client-only>
+          <v-row v-else-if="objectInfo.dshash['MODS']">
+            <p-d-mods-rec
+              :children="objectInfo.metadata['mods']"
+            ></p-d-mods-rec>
+          </v-row>
 
           <template v-if="objectInfo.cmodel === 'Container'">
             <v-toolbar class="my-10 grey white--text" elevation="1">
@@ -210,14 +208,12 @@
                   >Content</iframe
                 >
                 <v-card-text class="ma-2">
-                  <client-only>
-                    <p-d-jsonld
-                      :jsonld="member.metadata['JSON-LD']"
-                      :pid="member.pid"
-                      :bold-label-fields="['dce:title', 'role', 'edm:rights']"
-                      :predicatesToHide="['ebucore:filename', 'ebucore:hasMimeType']"
-                    ></p-d-jsonld>
-                  </client-only>
+                  <p-d-jsonld
+                    :jsonld="member.metadata['JSON-LD']"
+                    :pid="member.pid"
+                    :bold-label-fields="['dce:title', 'role', 'edm:rights']"
+                    :predicatesToHide="['ebucore:filename', 'ebucore:hasMimeType']"
+                  ></p-d-jsonld>
                 </v-card-text>
                 <v-divider light v-if="objectInfo.readrights"></v-divider>
                 <v-card-actions class="pa-3" v-if="objectInfo.readrights">
@@ -269,25 +265,25 @@
               </v-card>
             </v-row>
           </template>
-          <template v-if="objectInfo.cmodel === 'Collection' && docs.length">
+          <template v-if="objectInfo.cmodel === 'Collection' && collMembers.length">
             <v-toolbar class="my-10 grey white--text" elevation="1">
               <v-toolbar-title>
-                {{ $t("Members") }} ({{ total }})
+                {{ $t("Members") }} ({{ collMembersTotal }})
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-pagination
-                v-if="total > pagesize"
-                v-bind:length="totalPages"
+                v-if="collMembersTotal > collMembersPagesize"
+                v-bind:length="collMembersTotalPages"
                 total-visible="10"
-                v-model="page"
+                v-model="collMembersPage"
               ></v-pagination>
             </v-toolbar>
-            <v-row v-for="(doc, i) in this.docs" :key="'doc' + i">
+            <v-row v-for="(collMember, i) in this.collMembers" :key="'collMember' + i">
               <v-col cols="2" class="preview-maxwidth">
                 <div>
                   <p-img
                     :src="
-                      instanceconfig.api + '/object/' + doc.pid + '/thumbnail'
+                      instanceconfig.api + '/object/' + collMember.pid + '/thumbnail'
                     "
                     class="elevation-1 mt-2"
                   >
@@ -312,68 +308,25 @@
                     <h3
                       class="title font-weight-light primary--text"
                       @click.stop
-                      v-if="doc.dc_title"
+                      v-if="collMember.dc_title"
                     >
                       <router-link
-                        :to="{ path: `${doc.pid}`, params: { pid: doc.pid } }"
-                        >{{ doc.dc_title[0] }}</router-link
+                        :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }"
+                        >{{ collMember.dc_title[0] }}</router-link
                       >
                     </h3>
-                    <p class="grey--text">{{ doc.pid }}</p>
+                    <p class="grey--text">{{ collMember.pid }}</p>
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="2" class="text-right"
-                    ><span v-if="doc.created" class="grey--text">{{
-                      doc.created | date
+                    ><span v-if="collMember.created" class="grey--text">{{
+                      collMember.created | date
                     }}</span></v-col
                   >
                 </v-row>
               </v-col>
             </v-row>
-        </template>
-      <v-row v-if="showCollectionTree" class="mt-8">
-        <v-toolbar class="my-10 grey white--text" elevation="1">
-          <v-toolbar-title>
-            {{ $t("Collection structure") }}
-          </v-toolbar-title>
-        </v-toolbar>
-        <div id="d3-graph-container" style="width: 100%">
-          <svg style="position: absolute">
-            <defs>
-              <marker
-                id="m-end"
-                markerWidth="10"
-                markerHeight="10"
-                refX="9"
-                refY="3"
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <path d="M0,0 L0,6 L9,3 z"></path>
-              </marker>
-              <marker
-                id="m-start"
-                markerWidth="6"
-                markerHeight="6"
-                refX="-4"
-                refY="3"
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <rect width="3" height="6"></rect>
-              </marker>
-            </defs>
-          </svg>
-          <d3-network
-            ref="net"
-            :net-nodes="nodes"
-            :net-links="links"
-            :options="options"
-            @node-click="nodeclick"
-            :link-cb="lcb"
-          />
-        </div>
-      </v-row>
+          </template>
         </v-col>
 
         <v-col cols="12" md="4" class="mt-4">
@@ -620,124 +573,124 @@
                 </v-col>
               </v-row>
 
+              <v-row class="mb-6">
+                <v-col class="pt-0">
+                  <v-card tile>
+                    <v-card-title
+                      class="ph-box title font-weight-light grey white--text"
+                      >{{ $t("Details") }}</v-card-title
+                    >
+                    <v-card-text class="mt-4">
+                      <v-row no-gutters class="pt-2">
+                        <v-col
+                          class="caption grey--text text--darken-2"
+                          cols="3"
+                          >{{ $t("Uploader") }}</v-col
+                        >
+                        <v-col
+                          cols="8"
+                          offset="1"
+                          v-if="objectInfo.owner.firstname"
+                        >
+                          <a :href="'mailto:' + objectInfo.owner.email"
+                            >{{ objectInfo.owner.firstname }}
+                            {{ objectInfo.owner.lastname }}</a
+                          >
+                        </v-col>
+                        <v-col v-else-if="objectInfo.owner.displayname" cols="8" offset="1">
+                          <v-row>
+                              <v-col>
+                                <a :href="'mailto:' + objectInfo.owner.email"
+                                  >{{ objectInfo.owner.displayname }}</a
+                                >
+                              </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col v-else cols="8"  offset="1"><a :href="'mailto:' + objectInfo.owner.email"
+                            >{{ objectInfo.owner.username }}</a
+                          ></v-col>
+                      </v-row>
+                      <v-row no-gutters class="pt-2">
+                        <v-col
+                          class="caption grey--text text--darken-2"
+                          cols="3"
+                          >{{ $t("Object type") }}</v-col
+                        >
+                        <v-col cols="8" offset="1">{{
+                          objectInfo.cmodel
+                        }}</v-col>
+                      </v-row>
+                      <v-row
+                        v-if="objectInfo.dc_format"
+                        no-gutters
+                        class="pt-2"
+                      >
+                        <v-col
+                          class="caption grey--text text--darken-2"
+                          cols="3"
+                          >{{ $t("Format") }}</v-col
+                        >
+                        <v-col cols="8" offset="1">
+                          <template v-if="objectInfo.dc_format && objectInfo.dc_format.length > 1">
+                            <v-row>
+                              <v-col
+                                v-for="(v, i) in objectInfo.dc_format"
+                                :key="i"
+                                >{{ v }}</v-col
+                              >
+                            </v-row>
+                          </template>
+                          <template v-else>{{
+                            objectInfo.dc_format[0]
+                          }}</template>
+                        </v-col>
+                      </v-row>
+                      <v-row no-gutters class="pt-2">
+                        <v-col
+                          class="caption grey--text text--darken-2"
+                          cols="3"
+                          >{{ $t("Created") }}</v-col
+                        >
+                        <v-col cols="8" offset="1">{{
+                          objectInfo.created | datetime
+                        }}</v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+
               <client-only>
-                <v-row class="mb-6">
+                <v-row class="my-6">
                   <v-col class="pt-0">
                     <v-card tile>
                       <v-card-title
                         class="ph-box title font-weight-light grey white--text"
-                        >{{ $t("Details") }}</v-card-title
                       >
-                      <v-card-text class="mt-4">
-                        <v-row no-gutters class="pt-2">
-                          <v-col
-                            class="caption grey--text text--darken-2"
-                            cols="3"
-                            >{{ $t("Uploader") }}</v-col
-                          >
-                          <v-col
-                            cols="8"
-                            offset="1"
-                            v-if="objectInfo.owner.firstname"
-                          >
-                            <a :href="'mailto:' + objectInfo.owner.email"
-                              >{{ objectInfo.owner.firstname }}
-                              {{ objectInfo.owner.lastname }}</a
-                            >
-                          </v-col>
-                          <v-col v-else-if="objectInfo.owner.displayname" cols="8" offset="1">
-                            <v-row>
-                                <v-col>
-                                  <a :href="'mailto:' + objectInfo.owner.email"
-                                    >{{ objectInfo.owner.displayname }}</a
-                                  >
-                                </v-col>
-                            </v-row>
-                          </v-col>
-                          <v-col v-else cols="8"  offset="1"><a :href="'mailto:' + objectInfo.owner.email"
-                              >{{ objectInfo.owner.username }}</a
-                            ></v-col>
-                        </v-row>
-                        <v-row no-gutters class="pt-2">
-                          <v-col
-                            class="caption grey--text text--darken-2"
-                            cols="3"
-                            >{{ $t("Object type") }}</v-col
-                          >
-                          <v-col cols="8" offset="1">{{
-                            objectInfo.cmodel
-                          }}</v-col>
-                        </v-row>
-                        <v-row
-                          v-if="objectInfo.dc_format"
-                          no-gutters
-                          class="pt-2"
+                        <nuxt-link
+                          class="white--text"
+                          :to="localePath(`/stats/${objectInfo.pid}`)"
                         >
-                          <v-col
-                            class="caption grey--text text--darken-2"
-                            cols="3"
-                            >{{ $t("Format") }}</v-col
-                          >
-                          <v-col cols="8" offset="1">
-                            <template v-if="objectInfo.dc_format && objectInfo.dc_format.length > 1">
-                              <v-row>
-                                <v-col
-                                  v-for="(v, i) in objectInfo.dc_format"
-                                  :key="i"
-                                  >{{ v }}</v-col
-                                >
-                              </v-row>
-                            </template>
-                            <template v-else>{{
-                              objectInfo.dc_format[0]
-                            }}</template>
+                          {{ $t("Usage statistics") }}</nuxt-link
+                        >
+                      </v-card-title>
+                      <v-card-text class="mt-4">
+                        <v-row>
+                          <v-col>
+                            <v-icon>mdi-eye-outline</v-icon
+                            ><span class="ml-2">{{ stats.detail }}</span>
                           </v-col>
-                        </v-row>
-                        <v-row no-gutters class="pt-2">
-                          <v-col
-                            class="caption grey--text text--darken-2"
-                            cols="3"
-                            >{{ $t("Created") }}</v-col
-                          >
-                          <v-col cols="8" offset="1">{{
-                            objectInfo.created | datetime
-                          }}</v-col>
+                          <v-col v-if="objectInfo.cmodel !== 'Resource'">
+                            <v-icon>mdi-download</v-icon
+                            ><span class="ml-2">{{ stats.download }}</span>
+                          </v-col>
+                          <v-spacer></v-spacer>
                         </v-row>
                       </v-card-text>
                     </v-card>
                   </v-col>
                 </v-row>
               </client-only>
-
-              <v-row class="my-6">
-                <v-col class="pt-0">
-                  <v-card tile>
-                    <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
-                    >
-                      <nuxt-link
-                        class="white--text"
-                        :to="localePath(`/stats/${objectInfo.pid}`)"
-                      >
-                        {{ $t("Usage statistics") }}</nuxt-link
-                      >
-                    </v-card-title>
-                    <v-card-text class="mt-4">
-                      <v-row>
-                        <v-col>
-                          <v-icon>mdi-eye-outline</v-icon
-                          ><span class="ml-2">{{ stats.detail }}</span>
-                        </v-col>
-                        <v-col v-if="objectInfo.cmodel !== 'Resource'">
-                          <v-icon>mdi-download</v-icon
-                          ><span class="ml-2">{{ stats.download }}</span>
-                        </v-col>
-                        <v-spacer></v-spacer>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
 
               <v-row v-if="objectInfo.versions && objectInfo.versions.length > 0" class="my-6">
                 <v-col class="pt-0">
@@ -1620,14 +1573,9 @@
 import { context } from "../../mixins/context";
 import { config } from "../../mixins/config";
 import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
-import D3Network from "vue-d3-network";
-import "vue-d3-network/dist/vue-d3-network.css";
 import qs from "qs";
 export default {
   mixins: [context, config, vocabulary],
-  components: {
-    D3Network,
-  },
   validate({ params }) {
     return /^o:\d+$/.test(params.pid);
   },
@@ -1635,39 +1583,25 @@ export default {
     return this.detailsMetaInfo;
   },
   computed: {
-    options() {
-      return {
-        force: 3000,
-        size: { w: this.windowWidth, h: this.svgHeight },
-        nodeSize: this.nodeSize,
-        nodeLabels: true,
-        canvas: this.canvas,
-        linkWidth: 2,
-      };
-    },
-    page: {
+    collMembersPage: {
       get() {
-        return this.currentPage;
+        return this.collMembersCurrentPage;
       },
       set(value) {
-        if (this.currentPage != value) {
-          this.currentPage = value;
-          this.getCollectionMembers(this.objectInfo.pid);
+        if (this.collMembersCurrentPage != value) {
+          this.collMembersCurrentPage = value;
+          this.$store.dispatch(
+            "fetchCollectionMembers",
+            { pid: this.routepid, page: this.collMembersCurrentPage, pagesize: this.collMembersPagesize }
+          );
         }
       },
     },
-    totalPages: function () {
-      return Math.ceil(this.total / this.pagesize);
+    collMembersTotalPages: function () {
+      return Math.ceil(this.collMembersTotal / this.collMembersPagesize);
     },
     isRestricted: function () {
       return this.objectInfo.datastreams.includes("POLICY");
-    },
-    showCollectionTree: function () {
-      return false
-      // return (
-      //   this.objectInfo === "Collection" ||
-      //   this.objectInfo?.relationships?.ispartof?.length > 0
-      // );
     },
     showPreview: function () {
       return (
@@ -1760,6 +1694,12 @@ export default {
     objectInfo: function () {
       return this.$store.state.objectInfo;
     },
+    collMembers: function () {
+      return this.$store.state.collectionMembers;
+    },
+    collMembersTotal: function () {
+      return this.$store.state.collectionMembersTotal;
+    },
     objectMembers: function () {
       return this.$store.state.objectMembers;
     },
@@ -1822,18 +1762,6 @@ export default {
   },
   data() {
     return {
-      windowWidth: 1000,
-      initialInfo: null,
-      parentCount: 0,
-      childCount: 0,
-      svgHeight: 600,
-      existingFoundElem: [],
-      allChildrens: [],
-      allParentArr: [],
-      nodes: [],
-      links: [],
-      nodeSize: 10,
-      canvas: false,
       relationDialog: false,
       doiCiteDialog: false,
       doiCiteLoading: false,
@@ -1848,399 +1776,107 @@ export default {
         detail: "-",
       },
       checksums: [],
-      currentPage: 1,
-      pagesize: 10,
-      docs: [],
-      total: 0,
       membersPage: 1,
       membersPageSize: 10,
       detailsMetaInfo: null,
-      collectionHelpDialog: false
+      collectionHelpDialog: false,
+      collMembersCurrentPage: 1,
+      collMembersPagesize: 10
     };
   },
   async fetch() {
-    const data = await this.getInfo(this.$route.params.pid);
+    await this.fetchAsyncData(this, this.$route.params.pid);
     let metaInfo = {}
-    if (data.info) {
-      const detailInfo = data.info;
-      if (detailInfo) {
-        let thumbnail =
-          this.instanceconfig.api +
-          "/object/" +
-          detailInfo.pid +
-          "/thumbnail";
-        metaInfo.meta = [
-          {
-            hid: "og:title",
-            name: "og:title",
-            content: detailInfo.sort_dc_title,
-          },
-          {
-            hid: "og:image",
-            name: "og:image",
-            content: thumbnail,
-          },
-          {
-            hid: "og:image:width",
-            name: "og:image:width",
-            content: "1200",
-          },
-          {
-            hid: "og:image:height",
-            name: "og:image:height",
-            content: "630",
-          },
-          {
-            hid: "twitter:title",
-            name: "twitter:title",
-            content: detailInfo.sort_dc_title,
-          },
-          {
-            hid: "twitter:card",
-            name: "twitter:card",
-            content: "summary_large_image",
-          },
-          {
-            hid: "twitter:image",
-            name: "twitter:image",
-            content: thumbnail,
-          },
-        ];
-        if (detailInfo.metatags) {
-          metaInfo.title =
-            detailInfo.metatags.citation_title +
-            " (" +
-            this.instanceconfig.title +
-            " - " +
-            detailInfo.pid +
-            ")";
-          Object.entries(detailInfo.metatags).forEach(([name, value]) => {
-            if (Array.isArray(value)) {
-              for (let v of value) {
-                metaInfo.meta.push({
-                  name: name,
-                  content: v,
-                });
-              }
-            } else {
+    if (this.objectInfo) {
+      let thumbnail =
+        this.instanceconfig.api +
+        "/object/" +
+        this.objectInfo.pid +
+        "/thumbnail";
+      metaInfo.meta = [
+        {
+          hid: "og:title",
+          name: "og:title",
+          content: this.objectInfo.sort_dc_title,
+        },
+        {
+          hid: "og:image",
+          name: "og:image",
+          content: thumbnail,
+        },
+        {
+          hid: "og:image:width",
+          name: "og:image:width",
+          content: "1200",
+        },
+        {
+          hid: "og:image:height",
+          name: "og:image:height",
+          content: "630",
+        },
+        {
+          hid: "twitter:title",
+          name: "twitter:title",
+          content: this.objectInfo.sort_dc_title,
+        },
+        {
+          hid: "twitter:card",
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          hid: "twitter:image",
+          name: "twitter:image",
+          content: thumbnail,
+        },
+      ];
+      if (this.objectInfo.metatags) {
+        metaInfo.title =
+          this.objectInfo.metatags.citation_title +
+          " (" +
+          this.instanceconfig.title +
+          " - " +
+          this.objectInfo.pid +
+          ")";
+        Object.entries(this.objectInfo.metatags).forEach(([name, value]) => {
+          if (Array.isArray(value)) {
+            for (let v of value) {
               metaInfo.meta.push({
                 name: name,
-                content: value,
+                content: v,
               });
             }
-          });
-        }
+          } else {
+            metaInfo.meta.push({
+              name: name,
+              content: value,
+            });
+          }
+        });
       }
     }
     this.detailsMetaInfo = metaInfo
   },
   methods: {
-    nodeclick: function (event, node) {
-      this.$router.push(node.id);
-    },
-    lcb: function (link) {
-      link._svgAttrs = { "marker-end": "url(#m-end)" };
-      return link;
-    },
-    getInfo: async function (oid) {
-      let existingIndex = this.existingFoundElem.findIndex(
-        (x) => x?.info?.pid === oid
-      );
-      if (existingIndex >= 0) {
-        return this.existingFoundElem[existingIndex];
-      } else {
-        const response = await fetch(
-          this.instanceconfig.api + `/object/${oid}/info`
-        );
-        let data = response.json();
-        this.existingFoundElem.push(data);
-        return data;
-      }
-    },
-    getChild: async function (oid) {
-      const info = await fetch(
-        this.instanceconfig.solr +
-          `/select?fq=ispartof:"${oid}"&indent=on&q=*:*&rows=1000&start=1&wt=json`
-      );
-      return info.json();
-    },
-    formChildren: async function (cb) {
-      this.childCount += 1;
-      if (this.allChildrens.length === 0) {
-        let childRes = await this.getChild(this.initialInfo.oid);
-        if (childRes?.response?.docs?.length) {
-          this.allChildrens = childRes.response.docs.map((elem) => {
-            return {
-              oid: elem.pid,
-              parents: elem.ispartof,
-              title: elem.sort_dc_title,
-              foundChild: false,
-              nodeCount: this.childCount,
-            };
-          });
-        } else {
-          return cb(this.allChildrens);
-        }
-        return this.formChildren(cb);
-      } else {
-        const allChildRes = await Promise.all(
-          this.allChildrens
-            .filter((x) => !x.foundChild)
-            .map(async (elem) => {
-              let childRes = await this.getChild(elem.oid);
-              if (childRes?.response?.docs?.length) {
-                let allChildrensTemp = childRes.response.docs.map((elem) => {
-                  return {
-                    oid: elem.pid,
-                    parents: elem.ispartof,
-                    title: elem.sort_dc_title,
-                    foundChild: false,
-                    isNew: true,
-                    nodeCount: this.childCount,
-                  };
-                });
-                this.allChildrens = [...this.allChildrens, allChildrensTemp];
-                this.allChildrens = this.allChildrens.flat();
-                return {};
-              } else {
-                let nonChildNodeIndex = this.allChildrens.findIndex(
-                  (x) => x.oid === elem.oid
-                );
-                if (nonChildNodeIndex >= 0) {
-                  this.allChildrens[nonChildNodeIndex].foundChild = true;
-                }
-                return {};
-              }
-            })
-        );
-        this.allChildrens = this.allChildrens.map((elem) => {
-          if (elem.isNew) {
-            return {
-              ...elem,
-              isNew: false,
-            };
-          } else {
-            return {
-              ...elem,
-              foundChild: true,
-            };
-          }
-        });
-        console.log("founded childrens 1 =>>", this.allChildrens);
-        if (this.allChildrens.findIndex((x) => x.foundChild === false) >= 0) {
-          return this.formChildren(cb);
-        } else {
-          console.log("founded childrens =>>", this.allChildrens);
-          this.allChildrens = _.uniqBy(this.allChildrens, "oid");
-          cb(this.allChildrens);
-        }
-      }
-    },
-    fetchCollectionTree: async function (oid) {
-      try {
-        this.initialInfo = {
-          oid: this.objectInfo.pid,
-          parents: this.objectInfo.ispartof,
-          title: this.objectInfo.sort_dc_title,
-          nodeCount: this.parentCount,
-        };
-        console.log("initialInfo");
-        console.log(this.initialInfo);
-        this.formChildren((data) => {
-          this.formTree([this.initialInfo]);
-        });
-      } catch (error) {
-        console.log("getInitialInfo error", error);
-      } finally {
-        setTimeout(() => {
-          this.windowWidth =
-            document.getElementById("d3-graph-container").offsetWidth;
-        }, 6000);
-      }
-    },
-    formTree: async function (mainArr) {
-      try {
-        this.parentCount -= 1;
-        const allParentInfo1 = await Promise.all(
-          mainArr.map(async (element) => {
-            if (element?.parents?.length) {
-              const allParentInfo = await Promise.all(
-                element.parents.map(async (elem) => {
-                  const parentInfo = await this.getInfo(elem);
-                  let obj = {
-                    oid: parentInfo?.info?.pid,
-                    parents: parentInfo?.info?.ispartof || [],
-                    title: parentInfo?.info?.sort_dc_title,
-                    nodeCount: this.parentCount,
-                  };
-                  return obj;
-                })
-              );
-              return allParentInfo;
-            } else {
-              element.parents = [];
-              return element;
-            }
-          })
-        );
-        let mergedParentArr = allParentInfo1.flat();
-        this.allParentArr = [
-          ...this.allParentArr,
-          allParentInfo1.flat(),
-          ...this.allChildrens,
-        ];
-        const canFindParent = mergedParentArr.filter(
-          (x) => x.parents.length !== 0
-        );
-        if (canFindParent.length) {
-          return this.formTree(mergedParentArr);
-        }
-        let allParentFlat = _.uniqBy(this.allParentArr.flat(), "oid");
-        if (allParentFlat.findIndex((x) => x.oid == this.initialInfo.oid) < 0) {
-          allParentFlat.push(this.initialInfo);
-        }
-        console.log("allParentFlat", allParentFlat);
-        let links = [];
-        allParentFlat.forEach((elem, index) => {
-          let childOfElement = allParentFlat.filter((x) =>
-            x.parents.includes(elem.oid)
-          );
-          childOfElement.forEach((childElem) => {
-            links.push({
-              sid: elem.oid,
-              tid: childElem.oid,
-              _color: !elem?.parents?.length
-                ? "#db4332"
-                : "rgb(0, 98, 164/30%)",
-            });
-          });
-          // allParentFlat[index].children = childOfElement
-        });
-        let alreadyFoundLevel = [];
-        let isOddSaved = false;
-        let isEvenSaved = false;
-        let node = _.orderBy(allParentFlat, ["nodeCount"], ["asc"]).map(
-          (elem, index) => {
-            console.log("node elem", elem.oid, elem.nodeCount);
-            let sameLevelCount = allParentFlat.filter(
-              (x) => x.nodeCount === elem.nodeCount
-            ).length;
-            let existingLevelIndex = alreadyFoundLevel.findIndex(
-              (x) => x.nodeCount === elem.nodeCount
-            );
-            let yPos =
-              alreadyFoundLevel.length === 0
-                ? 200
-                : (alreadyFoundLevel.length + 1) * 200;
-            let screenCenter = this.windowWidth / 2;
-            let xPos = 25;
-            if (sameLevelCount === 1) {
-              xPos = screenCenter;
-            }
-            if (existingLevelIndex >= 0) {
-              let alreadyFoundedDetails = alreadyFoundLevel[existingLevelIndex];
-              yPos = alreadyFoundedDetails.yPos - 50;
-              if (alreadyFoundedDetails.iteration % 2 === 0) {
-                xPos =
-                  screenCenter + (alreadyFoundedDetails.iteration / 2) * 100;
-                if (isEvenSaved) {
-                  yPos = yPos - 20;
-                }
-                isEvenSaved = !isEvenSaved;
-              } else {
-                xPos =
-                  screenCenter - (alreadyFoundedDetails.iteration / 2) * 100;
-                if (isOddSaved) {
-                  yPos = yPos - 20;
-                }
-                isOddSaved = !isOddSaved;
-              }
-              alreadyFoundedDetails.xPos = xPos;
-              alreadyFoundedDetails.iteration += 1;
-            } else {
-              xPos = screenCenter;
-              alreadyFoundLevel.push({
-                yPos,
-                xPos,
-                nodeCount: elem.nodeCount,
-                iteration: 1,
-              });
-            }
-            let nodeObj = {
-              id: elem.oid,
-              fy: yPos,
-              fx: xPos,
-              pinned: true,
-              name: elem.title
-                .split(" ")
-                .splice(0, 3)
-                .join(" ")
-                .concat(` (${elem.oid}) `)
-                .concat("..."),
-              _color: !elem?.parents?.length ? "#db4332" : null,
-            };
-            return nodeObj;
-          }
-        );
-        this.svgHeight =
-          (alreadyFoundLevel.length + 1) * 200 > this.svgHeight
-            ? (alreadyFoundLevel.length + 1) * 200
-            : this.svgHeight;
-        this.nodes = node;
-        this.links = links;
-      } catch (error) {
-        console.log("form tree error", error);
-      }
-    },
-
-    async getCollectionMembers(pid) {
-      const id = pid.replace(/[o:]/g, "");
-      let params = {
-        q: '-hassuccessor:* AND -ismemberof:["" TO *]',
-        "q.op": "AND",
-        defType: "edismax",
-        wt: "json",
-        fq: `owner:* AND ispartof:"${pid}"`,
-        start: (this.page - 1) * this.pagesize,
-        rows: this.pagesize,
-        sort: `pos_in_o_${id} asc`,
-        facet: true,
-        "facet.query": [],
-      };
-      try {
-        this.$store.commit("setLoading", true);
-        let response = await this.$http.request({
-          method: "POST",
-          url: this.instanceconfig.solr + "/select",
-          data: qs.stringify(params, { arrayFormat: "repeat" }),
-          headers: {
-            "content-type": "application/x-www-form-urlencoded",
-          },
-        });
-        this.$store.commit("setLoading", false);
-        this.docs = response.data.response.docs;
-        this.total = response.data.response.numFound;
-      } catch (error) {
-        this.$store.commit("setLoading", false);
-        console.log(error);
-        this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
-      }
-    },
     async fetchAsyncData(self, pid) {
       console.log('fetching object info ' + pid);
       await self.$store.dispatch("fetchObjectInfo", pid);
       self.postMetadataLoad(self);
-      console.log('cmodel: ' + self.$store.state.objectInfo.cmodel);
+      // console.log('cmodel: ' + self.$store.state.objectInfo.cmodel);
       if (self.$store.state.objectInfo.cmodel === "Container") {
-        console.log('fetching container members');
+        console.log('fetching container members ' + pid);
         await self.$store.dispatch(
           "fetchObjectMembers",
           self.$store.state.objectInfo
         );
       }
       if (self.$store.state.objectInfo.cmodel === "Collection") {
-        console.log('fetching collection members');
-        await self.getCollectionMembers(pid);
+        console.log('fetching collection members ' + pid + ' page ' + this.collMembersCurrentPage + ' size ' + this.collMembersPagesize);
+        await self.$store.dispatch(
+          "fetchCollectionMembers",
+          { pid: pid, page: this.collMembersCurrentPage, pagesize: this.collMembersPagesize }
+        );
+        // await self.getCollectionMembers(pid);
       }
     },
     async fetchUsageStats(self, pid) {
@@ -2394,10 +2030,6 @@ export default {
       }, 2000);
     }
   },
-  serverPrefetch() {
-    // console.log('[' + this.$store.state.route.params.pid + '] prefetch')
-    this.fetchAsyncData(this, this.$route.params.pid);
-  },
   beforeRouteEnter: async function (to, from, next) {
     next(async function (vm) {
       console.log('beforeRouteEnter')
@@ -2411,9 +2043,6 @@ export default {
         await vm.fetchAsyncData(vm, to.params.pid);
         vm.fetchChecksums(vm, to.params.pid);
         console.log("showtree:" + vm.showCollectionTree);
-        if (vm.showCollectionTree) {
-          vm.fetchCollectionTree(vm, to.params.pid);
-        }
         vm.$store.commit("setLoading", false);
       }
       vm.fetchUsageStats(vm, to.params.pid);
@@ -2425,12 +2054,8 @@ export default {
     this.$store.commit("setLoading", true);
     this.$store.commit("setObjectInfo", null);
     await this.fetchAsyncData(this, to.params.pid);
-
     this.fetchChecksums(this, to.params.pid);
     console.log("showtree:" + this.showCollectionTree);
-    if (this.showCollectionTree) {
-      this.fetchCollectionTree(this, to.params.pid);
-    }
     this.$store.commit("setLoading", false);
     next();
   },
