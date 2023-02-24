@@ -175,7 +175,7 @@
             ></p-d-mods-rec>
           </v-row>
 
-          <template v-if="objectInfo.cmodel === 'Container'">
+          <template v-if="(objectInfo.cmodel === 'Container') && !objectInfo.datastreams.includes('CONTAINERINFO')">
             <v-toolbar class="my-10 grey white--text" elevation="1">
               <v-toolbar-title>
                 {{ $t("Members") }} ({{ objectInfo.members.length }})
@@ -264,6 +264,35 @@
                 </v-card-actions>
               </v-card>
             </v-row>
+          </template>
+          <template v-if="objectInfo.readrights && (objectInfo.cmodel === 'Container') && objectInfo.datastreams.includes('CONTAINERINFO')">
+            <v-toolbar class="my-10 grey white--text" elevation="1">
+              <v-toolbar-title>
+                {{ $t("Members") }} ({{ objectInfo.legacy_container_members.length }})
+              </v-toolbar-title>
+            </v-toolbar>
+            <template v-for="(legacyCMember, i) in objectInfo.legacy_container_members">
+            <v-row class="ml-4 pa-2" :key="'legacyCMember' + i">
+              <v-col cols="10" class="pt-5">
+                {{legacyCMember.filename}}
+              </v-col>
+              <v-col cols="2">
+                <v-btn
+                  v-if="objectInfo.readrights"
+                  :href="
+                    instanceconfig.api +
+                    '/object/' +
+                    objectInfo.pid +
+                    '/comp/' +
+                    legacyCMember.ds
+                  "
+                  color="primary"
+                  >{{ $t("Download") }}</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-divider></v-divider>
+            </template>
           </template>
           <template v-if="objectInfo.cmodel === 'Collection' && collMembers.length">
             <v-toolbar class="my-10 grey white--text" elevation="1">
