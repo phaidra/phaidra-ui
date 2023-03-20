@@ -91,5 +91,6 @@ sw.*
 
 # customizable stuff
 components/ext
+pages/ext
 assets/ext
 static/favicon.ico
