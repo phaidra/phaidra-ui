@@ -117,6 +117,7 @@
                     width="100%"
                     frameborder="0"
                     scrolling="no"
+                    allowfullscreen="yes"
                     class="responsive-iframe"
                     >Content</iframe>
                 </div>
