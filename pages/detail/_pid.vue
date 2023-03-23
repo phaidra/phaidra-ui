@@ -135,7 +135,7 @@
                       : objectInfo.cmodel === 'Container' ? 'height: 300px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'
                   "
                   scrolling="no"
-                  border="0"
+                  frameborder="0"
                   >Content</iframe
                 >
                 <a
@@ -205,7 +205,7 @@
                       : 'height: 500px; width: 100%; border: 0px;'
                   "
                   scrolling="no"
-                  border="0"
+                  frameborder="0"
                   >Content</iframe
                 >
                 <v-card-text class="ma-2">
@@ -527,7 +527,6 @@
                               objectInfo.pid +
                               '.tif/full/pct:50/0/default.jpg'
                             "
-                            primary
                             >{{ $t("View scaled to 50%") }}</a
                           >
                         </v-row>
@@ -540,7 +539,6 @@
                               objectInfo.pid +
                               '.tif/full/pct:25/0/default.jpg'
                             "
-                            primary
                             >{{ $t("View scaled to 25%") }}</a
                           >
                         </v-row>
@@ -561,7 +559,6 @@
                             objectInfo.pid +
                             '/diss/Content/downloadwebversion'
                           "
-                          primary
                           >{{ $t("Download web-optimized version") }}</a
                         >
                       </v-row>
