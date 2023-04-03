@@ -418,7 +418,7 @@ export default {
   uwm_etheses_title_page: 'Titelblatt',
   uwm_etheses_consent_form: 'Einverständniserklärung',
   uwm_digitalbook: 'Digitales Buch',
-  uwm_digitalbook_alephurl: 'Aleph-URL',
+  uwm_digitalbook_alephurl: 'Link zu bibliografischen Angaben',
   uwm_digitalbook_medium: 'Medium',
   uwm_digitalbook_release_notes: 'Veröffentlichungsdaten',
   uwm_digitalbook_edition: 'Auflage',

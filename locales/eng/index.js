@@ -293,7 +293,7 @@ export default {
   uwm_etheses_title_page: 'Title page',
   uwm_etheses_consent_form: 'Consent form',
   uwm_digitalbook: 'Digital Book',
-  uwm_digitalbook_alephurl: 'Aleph-URL',
+  uwm_digitalbook_alephurl: 'Link to bibliographic information',
   uwm_digitalbook_medium: 'Medium',
   uwm_digitalbook_release_notes: 'Publication Dates',
   uwm_digitalbook_edition: 'Edition/ Print Run',
