@@ -453,15 +453,15 @@ export const mutations = {
   clearAlert(state, alert) {
     state.alerts = state.alerts.filter(e => e !== alert)
   },
+  clearAlerts(state, alert) {
+    state.alerts = []
+  },
   setUserData(state, user) {
     const data = {
       ...state.user,
       ...user
     }
     state.user = data
-    if (user) {
-      this.$cookies.set('user', user)
-    }
   },
   setUsername(state, username) {
     Vue.set(state.user, 'username', username)
@@ -483,12 +483,10 @@ export const mutations = {
       ...user
     }
     state.user = data
-    this.$cookies.set('user', user)
   },
   clearUser(state) {
     state.user = {}
     this.$cookies.remove('XSRF-TOKEN')
-    this.$cookies.remove('user')
   },
   clearStore(state) {
     state.objectInfo = null
@@ -497,7 +495,6 @@ export const mutations = {
     state.user = {}
     state.groups = []
     this.$cookies.remove('XSRF-TOKEN')
-    this.$cookies.remove('user')
   },
   setCharts(state, url) {
     state.chartsUrl.push(url)
@@ -509,11 +506,12 @@ export const mutations = {
 
 export const actions = {
 
-  nuxtServerInit({ commit }, { req }) {
+  async nuxtServerInit({ commit, dispatch }, { req }) {
     const token = this.$cookies.get('XSRF-TOKEN')
-    let user = this.$cookies.get('user')
-    commit('setUserData', user)
     commit('setToken', token)
+    if (token) {
+      await dispatch('getLoginData')
+    }
   },
 
   async fetchObjectInfo({ commit, state }, pid) {
@@ -591,11 +589,10 @@ export const actions = {
           'content-type': 'application/x-www-form-urlencoded'
         }
       })
-      //console.log(response.data)
       commit('setCollectionMembers', response.data.response.docs)
       commit('setCollectionMembersTotal', response.data.response.numFound)
     } catch (error) {
-      commit('setAlerts', [{ type: 'danger', msg: error }])
+      commit('setAlerts', [{ type: 'error', msg: error }])
     } finally {
       commit('setLoading', false)
     }
@@ -616,17 +613,14 @@ export const actions = {
         commit('setAlerts', [{ type: 'success', msg: 'You have been logged out' }])
         commit('setToken', null)
         commit('setLoginData', { username: null, firstname: null, lastname: null, email: null, org_units_l1: null, org_units_l2: null })
-        if (process.browser) {
-          document.cookie = 'XSRF-TOKEN=; domain=' + state.instanceconfig.cookiedomain + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
-        }
+        this.$cookies.remove('XSRF-TOKEN')
       }
     }
   },
   async login({ commit, dispatch, state }, credentials) {
     commit('clearStore')
-    if (process.browser) {
-      document.cookie = 'XSRF-TOKEN=; domain=' + state.instanceconfig.cookiedomain + '; path=/ ; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
-    }
+    commit('clearAlerts')
+    this.$cookies.remove('XSRF-TOKEN')
     commit('setUsername', credentials.username)
     try {
       const response = await axios.get(state.instanceconfig.api + '/signin', {
@@ -638,9 +632,13 @@ export const actions = {
         commit('setAlerts', response.data.alerts)
       }
       if (response.status === 200) {
-        if (process.browser) {
-          document.cookie = 'XSRF-TOKEN=' + response.data['XSRF-TOKEN'] + '; domain=' + state.instanceconfig.cookiedomain + '; path=/; secure; samesite=strict'
+        this.$cookies.set('XSRF-TOKEN', response.data['XSRF-TOKEN'], {
+          domain: state.instanceconfig.cookiedomain,
+          path: '/',
+          secure: true,
+          sameSite: 'strict'
         }
+        )
         commit('setToken', response.data['XSRF-TOKEN'])
         dispatch('getLoginData')
       }
@@ -649,10 +647,7 @@ export const actions = {
   },
   async logout({ commit, dispatch, state }) {
     commit('clearAlerts')
-    this.$cookies.remove('user')
-    if (process.browser) {
-      document.cookie = 'XSRF-TOKEN=; domain=' + state.instanceconfig.cookiedomain + '; path=/; secure; samesite=strict; expires=Thu, 01 Jan 1970 00:00:01 GMT'
-    }
+    this.$cookies.remove('XSRF-TOKEN')
     try {
       const response = await axios.get(state.instanceconfig.api + '/signout', {
         headers: {

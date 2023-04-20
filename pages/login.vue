@@ -96,7 +96,7 @@ export default {
           this.touAgreed = true
         } catch (error) {
           console.log(error)
-          this.$store.commit('setAlerts', [ { type: 'danger', msg: error } ])
+          this.$store.commit('setAlerts', [ { type: 'error', msg: error } ])
         } finally {
           this.loading = false
         }
@@ -132,7 +132,6 @@ export default {
         }
       } catch (error) {
         console.log(error)
-        this.$store.commit('setAlerts', [ { type: 'danger', msg: error } ])
       } finally {
         this.loading = false
       }

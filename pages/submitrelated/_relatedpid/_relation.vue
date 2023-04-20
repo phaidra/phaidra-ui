@@ -314,7 +314,7 @@ export default {
               }
             } catch (error) {
               console.log(error);
-              this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
+              this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
             }
             this.transferMembershipAction = this.$t("ADD_COLLECTION_MEMBER", {
               newpid: newpid,
@@ -343,7 +343,7 @@ export default {
               }
             } catch (error) {
               console.log(error);
-              this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
+              this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
             }
           }
         }

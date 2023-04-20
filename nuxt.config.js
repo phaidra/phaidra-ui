@@ -2,6 +2,7 @@ import config from './config/phaidra-ui'
 const path = require('path')
 
 export default {
+  render: { csp: true },
   // Global page headers: https://go.nuxtjs.dev/config-head
   // head: {
   //   title: 'phaidra-ui-nuxt',
@@ -39,7 +40,7 @@ export default {
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
-  middleware: ["auth"],
+  middleware: ['auth'],
 
   serverMiddleware: ['~/server-middleware/redirect'],
 
@@ -55,7 +56,8 @@ export default {
     '@nuxtjs/axios',
     '@nuxt/http',
     ['cookie-universal-nuxt', { alias: 'cookies' }],
-    '@nuxtjs/sentry'
+    '@nuxtjs/sentry',
+    'nuxt-helmet'
   ],
   sentry: {
     dsn: config?.global?.monitor?.sentry?.dsn
@@ -83,11 +85,7 @@ export default {
       silentTranslationWarn: true,
       silentFallbackWarn: true
     },
-    detectBrowserLanguage: {
-      useCookie: true,
-      redirectOn: 'root',
-      alwaysRedirect: true // seems not working...
-    }
+    detectBrowserLanguage: false
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

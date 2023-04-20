@@ -135,7 +135,7 @@
                       : objectInfo.cmodel === 'Container' ? 'height: 300px; width: 100%; border: 0px;' : 'height: 500px; width: 100%; border: 0px;'
                   "
                   scrolling="no"
-                  border="0"
+                  frameborder="0"
                   >Content</iframe
                 >
                 <a
@@ -205,7 +205,7 @@
                       : 'height: 500px; width: 100%; border: 0px;'
                   "
                   scrolling="no"
-                  border="0"
+                  frameborder="0"
                   >Content</iframe
                 >
                 <v-card-text class="ma-2">
@@ -360,90 +360,145 @@
         </v-col>
 
         <v-col cols="12" md="4" class="mt-4">
-          <v-row justify="end" class="mb-2">
-            <v-col cols="12" class="pt-0">
-              <p
-                class="text-right"
-                v-for="(id, i) in identifiers"
-                :key="'id' + i"
+          <v-row justify="end">
+            <v-col cols="12" md="9">
+              <v-row
+                class="mb-6"
               >
-                <v-dialog
-                  @input="loadCitationStyles()"
-                  v-if="id.label === 'DOI'"
-                  class="pb-4"
-                  v-model="doiCiteDialog"
-                  width="800px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      v-on="on"
-                      x-small
-                      class="mr-2 font-weight-regular"
-                      color="primary"
-                      >{{ $t("Cite") }}</v-chip
-                    >
-                  </template>
-                  <v-card>
+                <v-col class="pt-0">
+                  <v-card tile>
                     <v-card-title
-                      dark
-                      class="title font-weight-light grey white--text"
-                      >{{ $t("Cite") }}</v-card-title
+                      class="ph-box title font-weight-light grey white--text"
+                      >{{ $t('Citable links') }}</v-card-title
                     >
-                    <v-card-text>
-                      <v-container>
-                        <v-row align="center" justify="center">
-                          <v-btn
-                            color="primary"
-                            class="mx-3"
-                            @click="getBibTex()"
-                            >{{ $t("Get BibTex") }}</v-btn
+                    <v-card-text class="mt-4">
+                      <v-row no-gutters class="pt-2" justify="start">
+                       <v-col cols="12" class="pt-0">
+                          <p
+                            class="text-right"
+                            v-for="(id, i) in identifiers.persistent"
+                            :key="'id' + i"
                           >
-                          <span>{{ $t("or") }}</span>
-                          <v-btn
-                            color="primary"
-                            class="mx-3"
-                            @click="getCitation()"
-                            >{{ $t("Get citation") }}</v-btn
-                          >
-                          <v-autocomplete
-                            :loading="citationStylesLoading"
-                            v-model="citationStyle"
-                            :items="citationStyles"
-                            :label="$t('Style')"
-                          ></v-autocomplete>
-                        </v-row>
-                        <v-row align="center" justify="center">
-                          <v-textarea
-                            hide-details
-                            height="300px"
-                            readonly
-                            filled
-                            v-model="citeResult"
-                          ></v-textarea>
-                        </v-row>
-                      </v-container>
+                            <v-dialog
+                              @input="loadCitationStyles()"
+                              v-if="id.label === 'DOI'"
+                              class="pb-4"
+                              v-model="doiCiteDialog"
+                              width="800px"
+                            >
+                              <template v-slot:activator="{ on }">
+                                <v-chip
+                                  v-on="on"
+                                  x-small
+                                  class="mr-2 font-weight-regular"
+                                  color="primary"
+                                  >{{ $t("Cite") }}</v-chip
+                                >
+                              </template>
+                              <v-card>
+                                <v-card-title
+                                  dark
+                                  class="title font-weight-light grey white--text"
+                                  >{{ $t("Cite") }}</v-card-title
+                                >
+                                <v-card-text>
+                                  <v-container>
+                                    <v-row align="center" justify="center">
+                                      <v-btn
+                                        color="primary"
+                                        class="mx-3"
+                                        @click="getBibTex()"
+                                        >{{ $t("Get BibTex") }}</v-btn
+                                      >
+                                      <span>{{ $t("or") }}</span>
+                                      <v-btn
+                                        color="primary"
+                                        class="mx-3"
+                                        @click="getCitation()"
+                                        >{{ $t("Get citation") }}</v-btn
+                                      >
+                                      <v-autocomplete
+                                        :loading="citationStylesLoading"
+                                        v-model="citationStyle"
+                                        :items="citationStyles"
+                                        :label="$t('Style')"
+                                      ></v-autocomplete>
+                                    </v-row>
+                                    <v-row align="center" justify="center">
+                                      <v-textarea
+                                        hide-details
+                                        height="300px"
+                                        readonly
+                                        filled
+                                        v-model="citeResult"
+                                      ></v-textarea>
+                                    </v-row>
+                                  </v-container>
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-actions>
+                                  <v-spacer></v-spacer>
+                                  <v-btn
+                                    :loading="doiCiteLoading"
+                                    @click="doiCiteDialog = false"
+                                    >{{ $t("Close") }}</v-btn
+                                  >
+                                </v-card-actions>
+                              </v-card>
+                            </v-dialog>
+                            <span v-if="id.label" class="caption text--secondary">
+                              {{ $t(id.label) }}
+                            </span>
+                            <br />
+                            <span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">
+                              <a :href="id.value">{{ id.value }}</a>
+                            </span>
+                          </p>
+                        </v-col>
+                      </v-row>
                     </v-card-text>
-                    <v-divider></v-divider>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        :loading="doiCiteLoading"
-                        @click="doiCiteDialog = false"
-                        >{{ $t("Close") }}</v-btn
-                      >
-                    </v-card-actions>
                   </v-card>
-                </v-dialog>
-                <span v-if="id.label" class="caption text--secondary">
-                  {{ $t(id.label) }}
-                </span>
-                <br />
-                <span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">
-                  <a :href="id.value">{{ id.value }}</a>
-                </span>
-              </p>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
+
+          <v-row justify="end" v-if="identifiers.other.length > 0">
+            <v-col cols="12" md="9">
+              <v-row
+                class="mb-6"
+              >
+                <v-col class="pt-0">
+                  <v-card tile>
+                    <v-card-title
+                      class="ph-box title font-weight-light grey white--text"
+                      >{{ $t('Other links') }}</v-card-title
+                    >
+                    <v-card-text class="mt-4">
+                      <v-row no-gutters class="pt-2" justify="start">
+                       <v-col cols="12" class="pt-0">
+                          <p
+                            class="text-right"
+                            v-for="(id, i) in identifiers.other"
+                            :key="'id' + i"
+                          >
+                            <span v-if="id.label" class="caption text--secondary">
+                              {{ $t(id.label) }}
+                            </span>
+                            <br />
+                            <span>
+                              <a :href="id.value">{{ id.value }}</a>
+                            </span>
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+
           <v-row justify="end" class="mb-8" no-gutters v-if="isRestricted"><v-chip label dark color="red lighten-1 font-weight-regular"><v-icon small left>mdi-lock</v-icon>{{ $t('Restricted access') }}</v-chip></v-row>
           <v-row justify="end">
             <v-col cols="12" md="9">
@@ -527,7 +582,6 @@
                               objectInfo.pid +
                               '.tif/full/pct:50/0/default.jpg'
                             "
-                            primary
                             >{{ $t("View scaled to 50%") }}</a
                           >
                         </v-row>
@@ -540,7 +594,6 @@
                               objectInfo.pid +
                               '.tif/full/pct:25/0/default.jpg'
                             "
-                            primary
                             >{{ $t("View scaled to 25%") }}</a
                           >
                         </v-row>
@@ -561,7 +614,6 @@
                             objectInfo.pid +
                             '/diss/Content/downloadwebversion'
                           "
-                          primary
                           >{{ $t("Download web-optimized version") }}</a
                         >
                       </v-row>
@@ -1662,8 +1714,8 @@ export default {
       return null;
     },
     identifiers: function () {
-      let ids = [];
-      ids.push({
+      let ids = { persistent: [], other: [] };
+      ids.persistent.push({
         label: "Persistent identifier",
         value:
           "https://" + this.instanceconfig.baseurl + "/" + this.objectInfo.pid,
@@ -1688,29 +1740,36 @@ export default {
             let idvalue = id.substr(id.indexOf(":") + 1);
             switch (type) {
               case "hdl":
-                ids.push({ label: "Handle", value: 'https://hdl.handle.net/' + idvalue });
+                ids.persistent.push({ label: "Handle", value: 'https://hdl.handle.net/' + idvalue });
                 break;
               case "doi":
-                ids.push({ label: "DOI", value: 'https://doi.org/' + idvalue });
+                ids.persistent.push({ label: "DOI", value: 'https://doi.org/' + idvalue });
                 break;
               case "urn":
-                ids.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
+                ids.persistent.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
                 break;
               case "isbn":
               case "ISBN":
-                ids.push({ label: "ISBN", value: idvalue });
+                ids.other.push({ label: "ISBN", value: idvalue });
                 break;
               case "HTTP/WWW":
-                ids.push({ label: "URL", value: idvalue });
+                ids.other.push({ label: "URL", value: idvalue });
                 break;
               case "PrintISSN":
-                ids.push({ label: "PrintISSN", value: idvalue });
+                ids.other.push({ label: "PrintISSN", value: idvalue });
                 break;
               case "uri":
-                ids.push({ label: "URI", value: idvalue });
+                ids.other.push({ label: "URI", value: idvalue });
+                break;
+              case "acnumber":
+                ids.other.push({ label: "AC", value: 'https://ubdata.univie.ac.at/' + idvalue });
                 break;
               default:
-                ids.push({ value: idvalue });
+                if (idvalue.substr(0, 2) === 'AC') {
+                  ids.other.push({ label: "AC", value: 'https://ubdata.univie.ac.at/' + idvalue });
+                } else {
+                  ids.other.push({ value: idvalue });
+                }
                 break;
             }
           }
@@ -1986,7 +2045,7 @@ export default {
         }
       } catch (error) {
         console.log(error);
-        this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
+        this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
       } finally {
         this.citationStylesLoading = false;
       }
@@ -2010,7 +2069,7 @@ export default {
         }
       } catch (error) {
         console.log(error);
-        this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
+        this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
       } finally {
         this.doiCiteLoading = false;
       }
@@ -2038,7 +2097,7 @@ export default {
         }
       } catch (error) {
         console.log(error);
-        this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
+        this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
       } finally {
         this.doiCiteLoading = false;
       }

@@ -85,7 +85,7 @@ export default {
         }
       } catch (error) {
         console.log(error)
-        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+        this.$store.commit('setAlerts', [{ type: 'error', msg: error }])
       } finally {
         this.loading = false
       }

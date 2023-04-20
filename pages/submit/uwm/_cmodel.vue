@@ -227,7 +227,7 @@ export default {
             if (response.data.alerts && response.data.alerts.length > 0) {
               if (response.data.status === 401) {
                 response.data.alerts.push({
-                  type: "danger",
+                  type: "error",
                   msg: "Please log in",
                 });
               }
@@ -236,7 +236,7 @@ export default {
           }
         } catch (error) {
           console.log(error);
-          this.$store.commit("setAlerts", [{ type: "danger", msg: error }]);
+          this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
         } finally {
           this.$vuetify.goTo(0);
           this.loading = false;
