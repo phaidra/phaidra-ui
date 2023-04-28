@@ -846,7 +846,7 @@ export default {
   'Project Id': 'Projektnummer',
   'Metadata editor': 'Metadateneditor',
   'Metadata preview': 'Metadatenansicht',
-  Remove: 'Löschen',
+  Remove: 'Entfernen',
   Duplicate: 'Duplizieren',
   'Save as template': 'Als Vorlage speichern',
   'File to upload': 'Datei zum Hochladen',

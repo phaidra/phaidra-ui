@@ -308,54 +308,72 @@
                 v-model="collMembersPage"
               ></v-pagination>
             </v-toolbar>
-            <v-row v-for="(collMember, i) in this.collMembers" :key="'collMember' + i">
-              <v-col cols="2" class="preview-maxwidth">
-                <div>
-                  <p-img
-                    :src="
-                      instanceconfig.api + '/object/' + collMember.pid + '/thumbnail'
-                    "
-                    class="elevation-1 mt-2"
-                  >
-                    <template v-slot:placeholder>
-                      <div
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                      >
-                        <v-progress-circular
-                          indeterminate
-                          color="grey lighten-5"
-                        ></v-progress-circular>
-                      </div>
-                    </template>
-                  </p-img>
-                </div>
-              </v-col>
-              <v-col cols="10">
-                <v-row no-gutters class="mb-4">
-                  <v-col cols="10">
-                    <h3
-                      class="title font-weight-light primary--text"
-                      @click.stop
-                      v-if="collMember.dc_title"
+            <div v-for="(collMember, i) in this.collMembers" :key="'collMember' + i">
+              <v-row class="my-4">
+                <v-col cols="1" >
+                  <div class="preview-maxwidth">
+                    <p-img
+                      :src="
+                        instanceconfig.api + '/object/' + collMember.pid + '/thumbnail'
+                      "
+                      class="elevation-1 mt-2"
                     >
-                      <router-link
-                        :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }"
-                        >{{ collMember.dc_title[0] }}</router-link
+                      <template v-slot:placeholder>
+                        <div
+                          class="fill-height ma-0"
+                          align="center"
+                          justify="center"
+                        >
+                          <v-progress-circular
+                            indeterminate
+                            color="grey lighten-5"
+                          ></v-progress-circular>
+                        </div>
+                      </template>
+                    </p-img>
+                  </div>
+                </v-col>
+                <v-col cols="10">
+                  <v-row no-gutters class="mb-4">
+                    <v-col cols="10">
+                      <h3
+                        class="title font-weight-light primary--text"
+                        @click.stop
+                        v-if="collMember.dc_title"
                       >
-                    </h3>
-                    <p class="grey--text">{{ collMember.pid }}</p>
-                  </v-col>
+                        <router-link
+                          :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }"
+                          >{{ collMember.dc_title[0] }}</router-link
+                        >
+                      </h3>
+                      <p class="grey--text">{{ collMember.pid }}</p>
+                    </v-col>
+                    <v-spacer></v-spacer>
+                    <v-col cols="1" class="text-right"
+                      ><span v-if="collMember.created" class="grey--text">{{
+                        collMember.created | date
+                      }}</span></v-col
+                    >
+                  </v-row>
+                </v-col>
+                <v-col cols="1" v-if="objectInfo.writerights === 1" justify="center">
+                  <v-btn icon class="mt-4" @click="collMemberToRemove = collMember.pid; confirmColMemDeleteDlg = true"><v-icon color="red lighten-1">mdi-delete</v-icon></v-btn>
+                </v-col>
+              </v-row>
+              <v-divider></v-divider>
+            </div>
+            <v-dialog v-model="confirmColMemDeleteDlg" width="500" >
+              <v-card>
+                <v-card-title class="title font-weight-light grey lighten-2" primary-title >{{ $t('Remove') }}</v-card-title>
+                <v-card-text class="my-4">{{ $t('REMOVE_COLLECTION_MEMBER', { oldpid: collMemberToRemove, collection: objectInfo.pid })}}</v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-col cols="2" class="text-right"
-                    ><span v-if="collMember.created" class="grey--text">{{
-                      collMember.created | date
-                    }}</span></v-col
-                  >
-                </v-row>
-              </v-col>
-            </v-row>
+                  <v-btn color="red" class="white--text" :loading="$store.state.loading" :disabled="$store.state.loading" @click="removeFromCollection()">{{ $t('Remove') }}</v-btn>
+                  <v-btn :disabled="$store.state.loading" @click="collMemberToRemove = null; confirmColMemDeleteDlg = false">{{ $t('Cancel') }}</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </template>
         </v-col>
 
@@ -1373,51 +1391,62 @@
                       </v-row>
 
                       <v-row
+                        no-gutters
+                        class="pt-2"
+                      >
+                        <a
+                            class="mb-1"
+                            @click="$refs.addcollectiondialog.open()"
+                        >{{ $t("Add to collection") }}</a>
+                        <collection-dialog ref="addcollectiondialog" @collection-selected="addToCollection($event)"></collection-dialog>
+                      </v-row>
+
+                      <v-row
                         v-if="objectInfo.cmodel === 'Collection'"
                         no-gutters
                         class="pt-2"
                       >
-                      <v-dialog
-                        v-model="collectionHelpDialog"
-                        width="800"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <a
-                            class="mb-1"
-                            v-on="on"
-                            >{{ $t("Manage members") }}</a
-                          >
-                        </template>
-                        <v-card>
-                          <v-card-title class="text-h5 grey lighten-2">
-                            {{ $t("Manage members") }}
-                          </v-card-title>
-
-                          <v-card-text>
-                            <p class="mt-4">{{$t('ADD_COLLECTION_MEMBERS_HELP')}}</p>
-                          </v-card-text>
-
-                          <v-divider></v-divider>
-
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="collectionHelpDialog = false"
+                        <v-dialog
+                          v-model="collectionHelpDialog"
+                          width="800"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <a
+                              class="mb-1"
+                              v-on="on"
+                              >{{ $t("Manage members") }}</a
                             >
-                              OK
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
+                          </template>
+                          <v-card>
+                            <v-card-title class="text-h5 grey lighten-2">
+                              {{ $t("Manage members") }}
+                            </v-card-title>
+
+                            <v-card-text>
+                              <p class="mt-4">{{$t('ADD_COLLECTION_MEMBERS_HELP')}}</p>
+                            </v-card-text>
+
+                            <v-divider></v-divider>
+
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="primary"
+                                text
+                                @click="collectionHelpDialog = false"
+                              >
+                                OK
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
                       </v-row>
                       <v-row
                         no-gutters
                         class="pt-2"
                         v-if="
-                          ((objectInfo.cmodel === 'Container') && (objectInfo.members.length <= 100 )) ||
-                          ((objectInfo.cmodel === 'Collection') && (total <= 100 ))
+                          ((objectInfo.cmodel === 'Container') && (objectInfo.members.length <= 500 )) ||
+                          ((objectInfo.cmodel === 'Collection') && (collMembersTotal <= 500 ))
                         "
                       >
                         <nuxt-link
@@ -1870,7 +1899,9 @@ export default {
       detailsMetaInfo: null,
       collectionHelpDialog: false,
       collMembersCurrentPage: 1,
-      collMembersPagesize: 10
+      collMembersPagesize: 10,
+      confirmColMemDeleteDlg: false,
+      collMemberToRemove: null
     };
   },
   async fetch() {
@@ -2109,6 +2140,72 @@ export default {
       };
       self.checksums = [];
     },
+    addToCollection: async function (collection) {
+      try {
+        this.$store.commit('setLoading', true)
+        var httpFormData = new FormData()
+        httpFormData.append('metadata', JSON.stringify({ metadata: { members: [ { 'pid': this.objectInfo.pid } ] } }))
+        let response = await this.$http.request({
+          method: 'POST',
+          url: this.instanceconfig.api + '/collection/' + collection.pid + '/members/add',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            "X-XSRF-TOKEN": this.user.token,
+          },
+          data: httpFormData
+        })
+        if (response.data.status === 200) {
+          this.$store.commit('setAlerts', [ { msg: this.$t('Collection successfuly updated'), type: 'success' } ])
+          await this.$store.dispatch(
+            "fetchCollectionMembers",
+            { pid: this.objectInfo.pid, page: this.collMembersCurrentPage, pagesize: this.collMembersPagesize }
+          )
+        } else {
+          if (response.data.alerts && response.data.alerts.length > 0) {
+            this.$store.commit('setAlerts', response.data.alerts)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.$store.commit('setLoading', false)
+      }
+    },
+    removeFromCollection: async function () {
+      try {
+        this.$store.commit('setLoading', true)
+        var httpFormData = new FormData()
+        httpFormData.append('metadata', JSON.stringify({ metadata: { members: [ { 'pid': this.collMemberToRemove } ] } }))
+        let response = await this.$http.request({
+          method: 'POST',
+          url: this.instanceconfig.api + '/collection/' + this.objectInfo.pid + '/members/remove',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-XSRF-TOKEN': this.$store.state.user.token
+          },
+          data: httpFormData
+        })
+        if (response.data.status === 200) {
+          this.$store.commit('setAlerts', [ { msg: this.$t('Collection successfuly updated'), type: 'success' } ])
+          await this.$store.dispatch(
+            "fetchCollectionMembers",
+            { pid: this.objectInfo.pid, page: this.collMembersCurrentPage, pagesize: this.collMembersPagesize }
+          )
+          this.confirmColMemDeleteDlg = false
+        } else {
+          if (response.data.alerts && response.data.alerts.length > 0) {
+            this.$store.commit('setAlerts', response.data.alerts)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.collMemberToRemove = null
+        this.$store.commit('setLoading', false)
+      }
+    }
   },
   mounted() {
     if (this.showCollectionTree) {
