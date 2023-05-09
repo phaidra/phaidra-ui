@@ -265,7 +265,7 @@ export const formvalidation = {
               f.fileErrorMessages.push(this.$t('Please select'))
               this.validationError = true
             }
-            if (f.mimetype.length < 1) {
+            if (f.mimetype.length < 1 && (resourceType !== 'https://pid.phaidra.org/vocabulary/7AVS-Y482')) {
               f.mimetypeErrorMessages.push(this.$t('Please select'))
               this.validationError = true
             } else if (this.allowedMimetypes[resourceType]) {
