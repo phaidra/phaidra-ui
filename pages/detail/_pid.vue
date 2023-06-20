@@ -630,7 +630,7 @@
                             instanceconfig.api +
                             '/object/' +
                             objectInfo.pid +
-                            '/diss/Content/downloadwebversion'
+                            '/get?trywebversion=1'
                           "
                           >{{ $t("Download web-optimized version") }}</a
                         >
