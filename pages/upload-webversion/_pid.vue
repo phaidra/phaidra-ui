@@ -65,6 +65,7 @@ export default {
         var httpFormData = new FormData()
         httpFormData.append('dscontent', this.file)
         httpFormData.append('mimetype', this.mimetype)
+        httpFormData.append('label', this.file.name)
         httpFormData.append('controlgroup', 'M')
         let response = await this.$http.request({
           method: 'POST',
