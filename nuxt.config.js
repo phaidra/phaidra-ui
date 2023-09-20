@@ -21,13 +21,13 @@ export default {
   // },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '~/assets/css/d3NetworkCustom.css'
-  ],
+  // css: [
+  //   '~/assets/css/d3NetworkCustom.css'
+  // ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/axios', mode: 'client' },
+    { src: '~/plugins/axios' },
     { src: '~/plugins/svg-icon' },
     { src: '~/plugins/before-each.js' },
     { src: '~/plugins/after-each.js' },
@@ -59,6 +59,10 @@ export default {
     '@nuxtjs/sentry',
     'nuxt-helmet'
   ],
+  axios: {
+    baseURL: 'http://localhost:8899/api',
+    browserBaseURL: 'http://localhost:8899/api'
+  },
   sentry: {
     dsn: config?.global?.monitor?.sentry?.dsn
   },
