@@ -469,6 +469,7 @@ export const mutations = {
     Vue.set(state.user, 'token', token)
   },
   setLoginData(state, logindata) {
+    console.log('setLoginData: ')
     const user = {
       username: logindata.username,
       firstname: logindata.firstname,
@@ -477,6 +478,7 @@ export const mutations = {
       org_units_l1: logindata.org_units_l1,
       org_units_l2: logindata.org_units_l2
     }
+    console.log(user)
     const data = {
       ...state.user,
       ...user
@@ -514,6 +516,8 @@ export const actions = {
   },
 
   async fetchObjectInfo({ commit, state }, pid) {
+
+    console.log('fetching object info in store: ' + pid)
     try {
       let response
       if (state.user.token) {
@@ -578,13 +582,16 @@ export const actions = {
     commit('setCollectionMembersTotal', 0)
     const id = options.pid.replace(/[o:]/g, '')
     const params = {
-      q: '-hassuccessor:* AND -ismemberof:["" TO *]',
+      q: '-ismemberof:["" TO *]',
       defType: 'edismax',
       wt: 'json',
       fq: `owner:* AND ispartof:"${options.pid}"`,
       start: (options.page - 1) * options.pagesize,
       rows: options.pagesize,
       sort: `pos_in_o_${id} asc`
+    }
+    if (options.onlylatestversion) {
+      params.q = '-hassuccessor:* AND ' + params.q
     }
     try {
       commit('setLoading', true)
@@ -596,6 +603,7 @@ export const actions = {
           'content-type': 'application/x-www-form-urlencoded'
         }
       })
+      console.log('fetchCollectionMembers response:')
       commit('setCollectionMembers', response.data.response.docs)
       commit('setCollectionMembersTotal', response.data.response.numFound)
     } catch (error) {
@@ -605,6 +613,7 @@ export const actions = {
     }
   },
   async getLoginData({ commit, dispatch, state }) {
+    console.log('getLoginData token: ' + state.user.token)
     try {
       const response = await this.$axios.get('/directory/user/data', {
         headers: {
@@ -641,13 +650,15 @@ export const actions = {
         commit('setAlerts', response.data.alerts)
       }
       if (response.status === 200) {
-        this.$cookies.set('XSRF-TOKEN', response.data['XSRF-TOKEN'], {
-          domain: state.instanceconfig.cookiedomain,
+        let cookieOptions = {
           path: '/',
           secure: true,
           sameSite: 'Strict'
         }
-        )
+        if (state.instanceconfig.cookiedomain) {
+          cookieOptions.domain = state.instanceconfig.cookiedomain
+        }
+        this.$cookies.set('XSRF-TOKEN', response.data['XSRF-TOKEN'], cookieOptions)
         console.log('setting token ' + response.data['XSRF-TOKEN'])
         commit('setToken', response.data['XSRF-TOKEN'])
         dispatch('getLoginData')
