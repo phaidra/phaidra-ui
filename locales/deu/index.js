@@ -954,7 +954,7 @@ export default {
   'Restrict access rights to particular persons': 'Zugriffsbeschränkung auf Personen',
   'Restrict access rights to particular groups': 'Zugriffsbeschränkung auf vorab definierte Gruppen',
   'Selection limit': 'Auswahleinschränkung',
-  'Collection successfuly updated': 'Collection erfolgreich aktualisiert',
+  'Collection successfully updated': 'Collection erfolgreich aktualisiert',
   'Select a list': 'Liste auswählen',
   'Select an object': 'Objekt auswählen',
   'Select an organizational unit': 'Organisationseinheit auswählen',
