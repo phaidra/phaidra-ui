@@ -2,7 +2,7 @@
 
 > User interface using phaidra-api
 
-## Prerequisities
+## Prerequisites
 
 ``` bash
 # install nodejs
