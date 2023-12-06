@@ -2605,7 +2605,6 @@ export default {
     this.resetData(this);
     this.$store.commit("setLoading", true);
     this.$store.commit("setObjectInfo", null);
-    await this.fetchAsyncData(this, to.params.pid);
     this.fetchChecksums(this, to.params.pid);
     console.log("showtree:" + this.showCollectionTree);
     this.$store.commit("setLoading", false);
