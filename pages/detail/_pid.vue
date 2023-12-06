@@ -2593,7 +2593,6 @@ export default {
         vm.resetData(vm);
         vm.$store.commit("setLoading", true);
         vm.$store.commit("setObjectInfo", null);
-        await vm.fetchAsyncData(vm, to.params.pid);
         vm.fetchChecksums(vm, to.params.pid);
         console.log("showtree:" + vm.showCollectionTree);
         vm.$store.commit("setLoading", false);
@@ -2606,7 +2605,6 @@ export default {
     this.resetData(this);
     this.$store.commit("setLoading", true);
     this.$store.commit("setObjectInfo", null);
-    await this.fetchAsyncData(this, to.params.pid);
     this.fetchChecksums(this, to.params.pid);
     console.log("showtree:" + this.showCollectionTree);
     this.$store.commit("setLoading", false);
