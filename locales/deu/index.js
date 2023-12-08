@@ -1195,5 +1195,6 @@ export default {
   'PHAIDRA - University of Vienna': 'PHAIDRA - Universität Wien',
   'Citable links': 'Zitierfähige links',
   'Other links': 'Weitere links',
-  'Only latest versions': 'Nur letzte Versionen'
+  'Only latest versions': 'Nur letzte Versionen',
+  'Thema Subject Codes': 'Thema Klassifizierung'
 }
