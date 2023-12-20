@@ -236,7 +236,7 @@ export default {
       this.templateDialog = false;
     },
     getExistingSelectedDefaultTemplate: async function () {
-      let response = await this.$axios.get("/settings", {
+      let response = await this.$axios.get("/app_settings", {
         headers: {
           "X-XSRF-TOKEN": this.$store.state.user.token,
         },

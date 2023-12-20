@@ -40,7 +40,7 @@ export default {
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: {
     global: true,
-    dirs: ['~/override-components', '~/components'],
+    dirs: ['~/custom-components', '~/components'],
   },
 
   middleware: ['auth'],
