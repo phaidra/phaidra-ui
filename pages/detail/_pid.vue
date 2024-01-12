@@ -2146,7 +2146,11 @@ export default {
                 ids.persistent.push({ label: "Handle", value: 'https://hdl.handle.net/' + idvalue });
                 break;
               case "doi":
-                ids.persistent.push({ label: "DOI", value: 'https://doi.org/' + idvalue });
+                let doi = idvalue
+                if (!(doi.includes('https:') || doi.includes('http:'))) {
+                  doi = 'https://doi.org/' + idvalue
+                }
+                ids.persistent.push({ label: "DOI", value: doi });
                 break;
               case "urn":
                 ids.persistent.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
