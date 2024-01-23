@@ -31,7 +31,7 @@
                     <div
                       v-for="(rel, i) in objectInfo.relationships.ispartof" :key="'ispartof' + i"
                     >
-                      <v-row align="center">
+                      <v-row v-if="rel" align="center">
                         <v-col cols="12" md="5" class="preview-maxwidth">
                           <p-img
                             :src="instanceconfig.api +
@@ -1255,7 +1255,7 @@
                         v-for="(rel, i) in objectInfo.alternativeformats" :key="'format' + i"
                       >
                         <v-row>
-                          <v-col cols="12" md="5">{{ rel.dc_format[0] }}</v-col>
+                          <v-col cols="12" md="5"><template v-if="rel.dc_format">{{ rel.dc_format[0] }}</template></v-col>
                           <v-col cols="12" md="7">
                             <nuxt-link
                               v-if="rel['dc_title']"
