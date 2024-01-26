@@ -254,6 +254,7 @@ export default {
   'frapo:hasFundingAgency': 'Fördergeber',
   'bf:provisionActivity': 'Veröffentlichung',
   'cito:cites': 'Verweist auf',
+  'cito:citesAsDataSource': 'Dataset Referenz',
   'cito:isCitedBy': 'Zitiert von',
   'dcterms:type': 'Ressourcentyp',
   'bf:soundCharacteristic': 'Audioformat',
