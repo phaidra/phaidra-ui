@@ -261,6 +261,7 @@ export default {
   'bf:supplementaryContent': 'Zusätzlicher Inhalt',
   'dcterms:audience': 'Zielgruppe',
   'rdau:P60048': 'Trägertyp',
+  'phaidra:levelOfDescription': 'Verzeichnungsstufe',
   SELECTION_LIMIT: 'Es können nicht mehr als {limit} Ergebnisse ausgewählt werden.',
   'Research data poster': 'Forschungsdaten-Poster',
   'Add subject metadata section': 'Physisches Objekt beschreiben',
@@ -1197,5 +1198,6 @@ export default {
   'Citable links': 'Zitierfähige links',
   'Other links': 'Weitere links',
   'Only latest versions': 'Nur letzte Versionen',
-  'Thema Subject Codes': 'Thema Klassifizierung'
+  'Thema Subject Codes': 'Thema Klassifizierung',
+  'Members': 'Mitglieder'
 }

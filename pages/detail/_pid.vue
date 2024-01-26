@@ -553,7 +553,7 @@
           <template v-if="(objectInfo.cmodel === 'Container') && !objectInfo.datastreams.includes('CONTAINERINFO')">
             <v-toolbar class="my-10 grey white--text" elevation="1">
               <v-toolbar-title>
-                {{ $t("Members") }} ({{ objectInfo.members.length }})
+                {{ $t("Members") }} ({{ collMembersTotal }})
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-pagination
