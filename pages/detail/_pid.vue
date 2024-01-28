@@ -2155,6 +2155,9 @@ export default {
               case "urn":
                 ids.persistent.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
                 break;
+              case "issn":
+                ids.persistent.push({ label: "ISSN", value: 'http://issn.org/resource/ISSN/' + idvalue });
+                break;
               case "isbn":
               case "ISBN":
                 ids.other.push({ label: "ISBN", value: idvalue });

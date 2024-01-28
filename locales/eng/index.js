@@ -230,6 +230,8 @@ export default {
 
   'dcterms:provenance': 'Provenance',
 
+  'bibo:issue': 'Issue',
+  'bibo:volume': 'Volume',
   'schema:numberOfPages': 'Number of pages',
   'bf:soundCharacteristic': 'Sound characteristic',
   'bf:supplementaryContent': 'Supplementary content',
