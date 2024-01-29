@@ -127,14 +127,14 @@ export default {
             fields: [],
           },
           {
-            title: "Digitized object",
+            title: "Represented object",
             type: "phaidra:Subject",
             removable: true,
             id: 2,
             fields: [],
           },
           {
-            title: "Analog object",
+            title: "Represented object",
             type: "phaidra:Subject",
             id: 3,
             multiplicable: true,
@@ -167,6 +167,9 @@ export default {
       this.form.sections[0].fields.push(fields.getField("project"));
       this.form.sections[0].fields.push(fields.getField("funder"));
 
+      let lvlDig = fields.getField("level-of-description")
+      lvlDig.value = 'https://pid.phaidra.org/vocabulary/HQ7N-3Q2W'
+      this.form.sections[1].fields.push(lvlDig);
       this.form.sections[1].fields.push(fields.getField("title"));
       this.form.sections[1].fields.push(fields.getField("role"));
       this.form.sections[1].fields.push(fields.getField("shelf-mark"));
@@ -194,6 +197,9 @@ export default {
       localname.label = "Depicted/Represented place (native name)";
       this.form.sections[1].fields.push(localname);
 
+      let lvlRep = fields.getField("level-of-description")
+      lvlRep.value = 'https://pid.phaidra.org/vocabulary/TG30-5EM3'
+      this.form.sections[1].fields.push(lvlRep);
       this.form.sections[2].fields.push(fields.getField("title"));
       this.form.sections[2].fields.push(fields.getField("description"));
       this.form.sections[2].fields.push(fields.getField("shelf-mark"));

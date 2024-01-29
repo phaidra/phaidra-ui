@@ -262,6 +262,7 @@ export default {
   'dcterms:audience': 'Zielgruppe',
   'rdau:P60048': 'Trägertyp',
   'phaidra:levelOfDescription': 'Verzeichnungsstufe',
+  'Level of description': 'Verzeichnungsstufe',
   SELECTION_LIMIT: 'Es können nicht mehr als {limit} Ergebnisse ausgewählt werden.',
   'Research data poster': 'Forschungsdaten-Poster',
   'Add subject metadata section': 'Physisches Objekt beschreiben',
