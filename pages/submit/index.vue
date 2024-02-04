@@ -5,7 +5,7 @@
         <v-btn
           large
           class="primary"
-          @click="$router.push(localeLocation({ path: '/submit/upload' }))"
+          @click="onCreateNewObjectClick()"
         >
           <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Create new object") }}
         </v-btn>
@@ -235,11 +235,30 @@ export default {
       );
       this.templateDialog = false;
     },
+    getExistingSelectedDefaultTemplate: async function () {
+      let response = await this.$axios.get("/app_settings", {
+        headers: {
+          "X-XSRF-TOKEN": this.$store.state.user.token,
+        },
+      });
+      this.selectedTemplateId = response?.data?.settings?.defaultTemplateId
+    },
+    onCreateNewObjectClick: function () {
+      if(this.selectedTemplateId){
+        this.loadTemplate(this.selectedTemplateId)
+      } else {
+        this.$router.push(this.localeLocation({ path: '/submit/upload' }))
+      }
+    }
   },
   data() {
     return {
       templateDialog: false,
+      selectedTemplateId: null
     };
+  },
+  mounted() {
+    this.getExistingSelectedDefaultTemplate()
   },
 };
 </script>

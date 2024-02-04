@@ -21,6 +21,9 @@ export const state = () => ({
 })
 
 export const mutations = {
+  setInstanceConfig(state, instanceconfig) {
+    state.instanceconfig = instanceconfig
+  },
   updateBreadcrumbs(state, transition) {
     state.breadcrumbs = [
       {
@@ -471,6 +474,7 @@ export const mutations = {
   setLoginData(state, logindata) {
     console.log('setLoginData: ')
     const user = {
+      isadmin: logindata.isadmin,
       username: logindata.username,
       firstname: logindata.firstname,
       lastname: logindata.lastname,
