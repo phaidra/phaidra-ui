@@ -56,7 +56,9 @@ export default {
               f.disabled = true;
             }
           }
+          f.removable = true
         }
+        s.removable = true
       }
       self.form = form;
     },

@@ -6,11 +6,11 @@
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" large dark color="grey">
               <v-icon dark class="mr-4">mdi-script</v-icon>
-              {{ $t("Open template") }}
+              {{ $t("Select submit template") }}
             </v-btn>
           </template>
           <v-card>
-            <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Open template") }}</v-card-title>
+            <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Select submit template") }}</v-card-title>
             <v-card-text>
               <p-templates class="mt-4" ref="templates" :items-per-page="5" :id-only="true" :isDefaultSelect="true"
                 :selectedTemplateId="selectedTemplateId" v-on:load-template="onTemplateSelect($event)"></p-templates>
@@ -25,7 +25,7 @@
         <span>
           {{
             $t(
-              "Open a previously created upload template."
+              "Select which template should be used as the submit form."
             )
           }}
         </span>
@@ -56,6 +56,7 @@
                       <v-col cols="12">
                         <v-text-field
                           label="Api"
+                          readonly
                           v-model="parsedConfigData.api"
                         ></v-text-field>
                       </v-col>
@@ -63,16 +64,15 @@
                     <v-row>
                       <v-col cols="12">
                         <v-text-field
-                          readonly
                           label="Primary Color"
                           v-model="parsedConfigData.primary"
                         ></v-text-field>
-                        <v-color-picker
+                        <!--<v-color-picker
                           dot-size="25"
                           v-model="parsedConfigData.primary"
                           hide-canvas
                           hide-inputs
-                        ></v-color-picker>
+                        ></v-color-picker>-->
                       </v-col>
                     </v-row>
                     <v-row>
