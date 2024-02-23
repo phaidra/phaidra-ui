@@ -553,7 +553,7 @@
           <template v-if="(objectInfo.cmodel === 'Container') && !objectInfo.datastreams.includes('CONTAINERINFO')">
             <v-toolbar class="my-10 grey white--text" elevation="1">
               <v-toolbar-title>
-                {{ $t("Members") }} ({{ collMembersTotal }})
+                {{ $t("Members") }} ({{ objectInfo.members.length }})
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-pagination
@@ -672,17 +672,18 @@
           <template v-if="objectInfo.cmodel === 'Collection' && collMembers.length">
             <v-toolbar class="my-10 grey white--text" elevation="1">
               <v-toolbar-title>
-                {{ $t("Members") }} ({{ collMembersTotal }})
+                {{ $t("Members") }} ({{ $store.state.collectionMembersTotal /* leave it like this, computed property wasn't working on first access */ }})
               </v-toolbar-title>
+              <v-switch @click="refreshCollectionMembers()" class="mx-2" dark hide-details :label="$t('Only latest versions')" v-model="collOnlyLatestVersions"></v-switch>
               <v-spacer></v-spacer>
               <v-pagination
-                v-if="collMembersTotal > collMembersPagesize"
+                v-if="$store.state.collectionMembersTotal > collMembersPagesize"
                 v-bind:length="collMembersTotalPages"
                 total-visible="10"
                 v-model="collMembersPage"
               ></v-pagination>
             </v-toolbar>
-            <div v-for="(collMember, i) in this.collMembers" :key="'collMember' + i">
+            <div v-for="(collMember, i) in collMembers" :key="'collMember' + i">
               <v-row class="my-4">
                 <v-col cols="1" >
                   <div class="preview-maxwidth">
@@ -1820,7 +1821,7 @@
                         class="pt-2"
                         v-if="
                           ((objectInfo.cmodel === 'Container') && (objectInfo.members.length <= 500 )) ||
-                          ((objectInfo.cmodel === 'Collection') && (collMembersTotal <= 500 ))
+                          ((objectInfo.cmodel === 'Collection') && ($store.state.collectionMembersTotal <= 500 ))
                         "
                       >
                         <nuxt-link
@@ -2083,7 +2084,7 @@ export default {
       },
     },
     collMembersTotalPages: function () {
-      return Math.ceil(this.collMembersTotal / this.collMembersPagesize);
+      return Math.ceil(this.$store.state.collectionMembersTotal / this.collMembersPagesize);
     },
     isRestricted: function () {
       return this.objectInfo.datastreams.includes("POLICY");
@@ -2095,7 +2096,9 @@ export default {
         (this.objectInfo.cmodel !== "Asset" ||
           (this.objectInfo.cmodel === "Asset" &&
             (this.mimetype === "model/nxz" ||
-              this.mimetype === "model/ply"))) &&
+              this.mimetype === "model/ply" ||
+              this.mimetype === "application/x-wacz")
+              )) &&
         this.objectInfo.cmodel !== "Container" &&
         this.objectInfo.readrights &&
         !(this.objectInfo.cmodel === "Video" && this.isRestricted)
@@ -2197,6 +2200,7 @@ export default {
       return this.$store.state.collectionMembers;
     },
     collMembersTotal: function () {
+      // this somehow does not work on first page access
       return this.$store.state.collectionMembersTotal;
     },
     objectMembers: function () {
@@ -2282,7 +2286,8 @@ export default {
       collMembersCurrentPage: 1,
       collMembersPagesize: 10,
       confirmColMemDeleteDlg: false,
-      collMemberToRemove: null
+      collMemberToRemove: null,
+      collOnlyLatestVersions: true
     };
   },
   async fetch() {
@@ -2372,13 +2377,19 @@ export default {
         );
       }
       if (self.$store.state.objectInfo.cmodel === "Collection") {
-        console.log('fetching collection members ' + pid + ' page ' + this.collMembersCurrentPage + ' size ' + this.collMembersPagesize);
+        console.log('fetching collection members ' + pid + ' page ' + self.collMembersCurrentPage + ' size ' + self.collMembersPagesize);
         await self.$store.dispatch(
           "fetchCollectionMembers",
-          { pid: pid, page: this.collMembersCurrentPage, pagesize: this.collMembersPagesize }
+          { pid: pid, page: self.collMembersCurrentPage, pagesize: self.collMembersPagesize, onlylatestversion: self.collOnlyLatestVersions }
         );
-        // await self.getCollectionMembers(pid);
       }
+    },
+    async refreshCollectionMembers () {
+      console.log('fetching collection members ' + this.objectInfo.pid + ' page ' + this.collMembersCurrentPage + ' size ' + this.collMembersPagesize);
+      await this.$store.dispatch(
+        "fetchCollectionMembers",
+        { pid: this.objectInfo.pid, page: this.collMembersCurrentPage, pagesize: this.collMembersPagesize, onlylatestversion: this.collOnlyLatestVersions }
+      );
     },
     async fetchUsageStats(self, pid) {
       console.log("fetchUsageStats");
