@@ -92,6 +92,27 @@ export default {
     return metaInfo;
   },
   methods: {
+    async fetchAppSettings() {
+    try {
+      if(!this?.$store?.state?.user?.token) {
+        return true
+      }
+      const response = await this.$axios.get('/app_settings', {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'X-XSRF-TOKEN': this.$store.state.user.token
+        },
+      });
+
+      const newBaseURL = response?.data?.settings?.instanceConfig?.api;
+      console.log('newBaseURL', newBaseURL)
+
+      // Update the Axios base URL
+      this.$axios.setBaseURL(newBaseURL);
+    } catch (error) {
+      console.error('Error fetching app settings:', error);
+    }
+  },
     dismiss: function (alert) {
       this.$store.commit("clearAlert", alert);
     },
@@ -124,10 +145,9 @@ export default {
             this.$vuetify.theme.themes.light.primary = settingResponse?.data?.settings?.instanceConfig?.primary
             this.$vuetify.theme.themes.dark.primary = settingResponse?.data?.settings?.instanceConfig?.primary
           }
-          if(settingResponse?.data?.settings?.instanceConfig?.api){
-            this.$axios.defaults.baseURL = settingResponse?.data?.settings?.instanceConfig?.api
+          if(settingResponse?.data?.settings?.instanceConfig){
+            this.$store.commit("setInstanceConfig", settingResponse?.data?.settings?.instanceConfig);
           }
-          this.$store.commit("setInstanceConfig", settingResponse?.data?.settings?.instanceConfig);
         }
         // this.isConfigLoading = false;
       } catch (error) {}
@@ -173,7 +193,8 @@ export default {
       return this.$store.state.alerts;
     },
   },
-  created: function () {
+  async created () {
+    await this.fetchAppSettings();
     Vue.filter("datetime", function (value) {
       if (value) {
         return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
