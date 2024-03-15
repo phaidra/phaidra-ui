@@ -293,6 +293,8 @@ export default {
         };
 
         for (let i = fromYear; i <= toYear; i++) {
+
+          try {
             let year = i
           
             let params = {
@@ -317,7 +319,9 @@ export default {
               stats.total += res.data.stats.stats_fields.size.sum
               stats[year] = gb > 0 ? this.tofixed(gb) : 0
             }
-
+          } catch (error) {
+            console.log(error);
+          }
             
         }
         stats.total = stats.total > 0 ? this.tofixed(stats.total/1000000000) : 0
