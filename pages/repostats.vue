@@ -228,7 +228,7 @@ export default {
                 hasValue = true;
               }
               stats.objectType = this.getLocalizedTermLabel(
-                "objecttypeuwm",
+                "objecttype",
                 term["@id"]
               );
               stats[a[j].substring(0, 4)] = a[j + 1];
