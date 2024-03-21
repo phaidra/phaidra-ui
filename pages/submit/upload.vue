@@ -37,6 +37,7 @@
           v-on:object-created="objectCreated($event)"
           v-on:form-input-resource-type="handleInputResourceType($event)"
           v-on:input-rights="rights = $event"
+          :showYarm="true"
         ></p-i-form>
       </v-col>
     </v-row>
