@@ -22,7 +22,14 @@ export const state = () => ({
 
 export const mutations = {
   setInstanceConfig(state, instanceconfig) {
-    state.instanceconfig = instanceconfig
+    let configurable = [
+      'title', 'institution', 'institutionurl', 'address', 'phone', 'email', 'languages', 'owneremailoverride', 'enabledelete', 'markmandatorymethod', 'validationmethod'
+    ] 
+    for (const p of configurable) {
+      if (instanceconfig.hasOwnProperty(p)) {
+        state.instanceconfig[p] = instanceconfig[p]
+      }
+    }
   },
   updateBreadcrumbs(state, transition) {
     state.breadcrumbs = [
@@ -491,6 +498,7 @@ export const mutations = {
   },
   clearUser(state) {
     state.user = {}
+    // on signout, this was already be deleted by API
     this.$cookies.remove('XSRF-TOKEN')
   },
   clearStore(state) {
@@ -499,6 +507,7 @@ export const mutations = {
     state.collectionMembers = []
     state.user = {}
     state.groups = []
+    // on signout, this was already be deleted by API
     this.$cookies.remove('XSRF-TOKEN')
   },
   setCharts(state, url) {
@@ -633,16 +642,13 @@ export const actions = {
       console.log(error)
       if (error.response?.status === 401) {
         commit('setAlerts', [{ type: 'success', msg: 'You have been logged out' }])
-        commit('setToken', null)
-        commit('setLoginData', { username: null, firstname: null, lastname: null, email: null, org_units_l1: null, org_units_l2: null })
-        this.$cookies.remove('XSRF-TOKEN')
+        commit('clearStore')
       }
     }
   },
   async login({ commit, dispatch, state }, credentials) {
     commit('clearStore')
     commit('clearAlerts')
-    this.$cookies.remove('XSRF-TOKEN')
     commit('setUsername', credentials.username)
     try {
       const response = await this.$axios.get('/signin', {
@@ -654,15 +660,6 @@ export const actions = {
         commit('setAlerts', response.data.alerts)
       }
       if (response.status === 200) {
-        let cookieOptions = {
-          path: '/',
-          secure: true,
-          sameSite: 'Strict'
-        }
-        if (state.instanceconfig.cookiedomain) {
-          cookieOptions.domain = state.instanceconfig.cookiedomain
-        }
-        this.$cookies.set('XSRF-TOKEN', response.data['XSRF-TOKEN'], cookieOptions)
         console.log('setting token ' + response.data['XSRF-TOKEN'])
         commit('setToken', response.data['XSRF-TOKEN'])
         dispatch('getLoginData')
@@ -674,7 +671,6 @@ export const actions = {
   },
   async logout({ commit, dispatch, state }) {
     commit('clearAlerts')
-    this.$cookies.remove('XSRF-TOKEN')
     try {
       const response = await this.$axios.get('/signout', {
         headers: {
