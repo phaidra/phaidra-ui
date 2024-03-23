@@ -1044,6 +1044,7 @@
                           target="_blank"
                           >u:theses</a
                         >
+                        <span v-else>{{ adminset }}</span>
                       </v-row>
                     </v-card-text>
                   </v-card>
