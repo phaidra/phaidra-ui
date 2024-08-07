@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-container fluid v-if="!loading">
-      <v-row no-gutters>
+    <v-container class="px-4" fluid v-if="!loading">
+      <v-row>
         <v-col>
           <ExtHeader></ExtHeader>
           <v-row>
@@ -88,6 +88,11 @@ export default {
       { name: 'theme-color', content: this.instanceconfig.primary }
       ]
     };
+    if (this.instanceconfig.cms_css && (this.instanceconfig.cms_css !== '')) {
+      metaInfo.style = [ 
+        { cssText: this.instanceconfig.cms_css, type: 'text/css' } 
+      ]
+    }
     return metaInfo;
   },
   methods: {
@@ -97,14 +102,12 @@ export default {
     loadInstanceConfigToStore: async function() {
       this.loading = true
       try {
-        let settingResponse = await this.$axios.get("/app_settings", {
-          headers: {
-            "X-XSRF-TOKEN": this.$store.state.user.token,
-          },
-        });
+        let settingResponse = await this.$axios.get("/app_settings");
         if(settingResponse?.data?.settings?.instanceConfig){
           this.$store.commit("setInstanceConfig", settingResponse?.data?.settings?.instanceConfig);
         }
+        this.$store.commit("setInstanceConfigBaseUrl", this.$config.baseURL);
+        this.$store.commit("setInstanceConfigApiBaseUrl", this.$config.apiBaseURL);
       } catch (error) {
         console.error(error)
       } finally {
@@ -120,6 +123,9 @@ export default {
     await this.loadInstanceConfigToStore()
   },
   computed: {
+    prettyInstanceconfig: function () {
+      return JSON.stringify(this.instanceconfig, null, 2)
+    },
     showAlerts: function () {
       if (this.$store.state.alerts.length > 0) {
         let onlySuccess = true;

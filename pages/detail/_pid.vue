@@ -834,6 +834,8 @@
                                 <v-card-actions>
                                   <v-spacer></v-spacer>
                                   <v-btn
+                                    dark
+                                    color="grey"
                                     :loading="doiCiteLoading"
                                     @click="doiCiteDialog = false"
                                     >{{ $t("Close") }}</v-btn
@@ -850,6 +852,56 @@
                             </span>
                           </p>
                         </v-col>
+                      </v-row>
+                      <v-row no-gutters justify="end" v-if="!doi">
+                        <v-dialog
+                          class="pb-4"
+                          v-model="doiRequestDialog"
+                          width="800px"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-btn v-on="on" color="primary" @click="doiRequestDialog = true" :loading="doiRequestLoading">{{  $t('Request DOI') }}</v-btn>
+                          </template>
+                          <v-card>
+                            <v-card-title
+                              dark
+                              class="title font-weight-light grey white--text"
+                              >{{ $t("Request DOI") }}</v-card-title
+                            >
+                            <v-card-text>
+                              <v-container>
+                                <v-row class="mt-4">
+                                  <v-col cols="12">
+                                  {{ $t('Do you want to request a DOI for this object?') }}
+                                  </v-col>
+                                </v-row>
+                                <v-row align="center" justify="center">
+                                  <v-col cols="12">
+                                    <strong>{{ $t('Note') }}</strong>: {{ $t(' After the request, please wait for the DOI support to contact you via email.') }}
+                                  </v-col>
+                                </v-row>
+                              </v-container>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                              <v-btn
+                                dark
+                                color="grey"
+                                :loading="doiRequestLoading"
+                                @click="doiRequestDialog = false"
+                                >{{ $t("Close") }}</v-btn
+                              >
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="primary"
+                                :loading="doiRequestLoading"
+                                @click="requestDOI()"
+                                >{{ $t("Request DOI") }}</v-btn
+                              >
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                        
                       </v-row>
                     </v-card-text>
                   </v-card>
@@ -944,7 +996,7 @@
                             instanceconfig.api +
                             '/object/' +
                             objectInfo.pid +
-                            '/diss/Resource/get'
+                            '/resourcelink/redirect'
                           "
                           color="primary"
                           >{{ $t("Open link") }}</v-btn
@@ -1847,7 +1899,7 @@
                           >{{ $t("Sort members (text input)") }}</nuxt-link
                         >
                       </v-row>
-                      <v-row
+                      <!-- <v-row
                         no-gutters
                         class="pt-2"
                         v-if="
@@ -1865,7 +1917,7 @@
                           "
                           >{{ $t("Upload web-optimized version") }}</nuxt-link
                         >
-                      </v-row>
+                      </v-row> -->
                       <v-row
                         no-gutters
                         class="pt-2"
@@ -2108,9 +2160,7 @@ export default {
       );
     },
     uscholarlink: function () {
-      return (
-        "https://" + this.instanceconfig.irbaseurl + "/" + this.objectInfo.pid
-      );
+      return (this.instanceconfig.irbaseurl + "/" + this.objectInfo.pid);
     },
     doi: function () {
       for (let id of this.objectInfo.dc_identifier) {
@@ -2126,23 +2176,11 @@ export default {
       let ids = { persistent: [], other: [] };
       ids.persistent.push({
         label: "Persistent identifier",
-        value:
-          "https://" + this.instanceconfig.baseurl + "/" + this.objectInfo.pid,
+        value: this.instanceconfig.baseurl + "/" + this.objectInfo.pid,
       });
       if (this.objectInfo.dc_identifier) {
         for (let id of this.objectInfo.dc_identifier) {
-          if (
-            id ===
-              "https://" +
-                this.instanceconfig.baseurl +
-                "/" +
-                this.objectInfo.pid ||
-            id ===
-              "http://" +
-                this.instanceconfig.baseurl +
-                "/" +
-                this.objectInfo.pid
-          ) {
+          if (id === this.instanceconfig.baseurl + "/" + this.objectInfo.pid) {
             continue;
           } else {
             let type = id.substr(0, id.indexOf(":"));
@@ -2269,6 +2307,8 @@ export default {
   data() {
     return {
       relationDialog: false,
+      doiRequestDialog: false,
+      doiRequestLoading: false,
       doiCiteDialog: false,
       doiCiteLoading: false,
       citeResult: "",
@@ -2519,6 +2559,32 @@ export default {
         this.$store.commit("setAlerts", [{ type: "error", msg: error }]);
       } finally {
         this.doiCiteLoading = false;
+      }
+    },
+    requestDOI: async function (self) {
+      try {
+        this.doiRequestDialog = false;
+        this.doiRequestLoading = true;
+        let response = await this.$axios.request({
+          method: 'POST',
+          url: '/utils/' + this.pid + '/requestdoi',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            "X-XSRF-TOKEN": this.user.token,
+          }
+        })
+        if (response.data.status === 200) {
+          this.$store.commit('setAlerts', [ { msg: this.$t('DOI successfully requested'), type: 'success' } ])
+        } else {
+          if (response.data.alerts && response.data.alerts.length > 0) {
+            this.$store.commit('setAlerts', response.data.alerts)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        this.$store.commit('setAlerts', [{ type: 'danger', msg: error }])
+      } finally {
+        this.doiRequestLoading = false
       }
     },
     resetData: function (self) {

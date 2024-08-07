@@ -1,8 +1,9 @@
-import config from './config/phaidra-ui'
 const path = require('path')
 
 export default {
-  render: { csp: true },
+  // render: {
+  //   csp: true
+  // },
   // Global page headers: https://go.nuxtjs.dev/config-head
   // head: {
   //   title: 'phaidra-ui-nuxt',
@@ -62,13 +63,28 @@ export default {
     '@nuxtjs/sentry',
     'nuxt-helmet'
   ],
+
   axios: {
-    baseURL: 'http://localhost:8899/api',
-    browserBaseURL: 'http://localhost:8899/api'
+    baseURL: 'http://localhost:8899/api', // Used as fallback if no runtime config is provided
   },
-  sentry: {
-    dsn: config?.global?.monitor?.sentry?.dsn
+  publicRuntimeConfig: {
+    primaryColor: '#994040',
+    baseURL: 'http://localhost:8899',
+    apiBaseURL: 'http://localhost:8899/api',
+    axios: {
+      browserBaseURL: 'http://localhost:8899/api'
+    }
   },
+  vuetify: {
+    customVariables: ['~/assets/variables.scss'],
+    optionsPath: './vuetify.options.js'
+  },
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: 'http://localhost:8899/api'
+    }
+  },
+  
   i18n: {
     langDir: 'locales/',
     locales: [
@@ -95,22 +111,7 @@ export default {
     detectBrowserLanguage: false
   },
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      themes: {
-        light: {
-          primary: config.instances[config.defaultinstance].primary,
-          error: '#dd4814'
-        },
-        dark: {
-          primary: config.instances[config.defaultinstance].primary,
-          error: '#dd4814'
-        }
-      }
-    }
-  },
+  
 
   alias: {
     vue: path.resolve(path.join(__dirname, 'node_modules', 'vue')),
@@ -123,6 +124,7 @@ export default {
       config.node = {
         fs: 'empty'
       }
+      config.resolve.alias.vue = "vue/dist/vue.esm.js"
     },
     transpile: ['phaidra-vue-components', 'vuetify/lib']
   }

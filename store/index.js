@@ -23,13 +23,36 @@ export const state = () => ({
 export const mutations = {
   setInstanceConfig(state, instanceconfig) {
     let configurable = [
-      'title', 'institution', 'institutionurl', 'address', 'phone', 'email', 'languages', 'owneremailoverride', 'enabledelete', 'markmandatoryfnc', 'validationfnc'
+      'title', 
+      'institution', 
+      'institutionurl', 
+      'address', 
+      'phone', 
+      'email', 
+      'languages', 
+      'owneremailoverride', 
+      'enabledelete',
+      'markmandatoryfnc',
+      'requestdoiemail', 
+      'validationfnc',
+      'cms_header',
+      'cms_footer',
+      'cms_homepage',
+      'cms_impressum',
+      'cms_submit',
+      'cms_css'
     ] 
     for (const p of configurable) {
       if (instanceconfig.hasOwnProperty(p)) {
         state.instanceconfig[p] = instanceconfig[p]
       }
     }
+  },
+  setInstanceConfigBaseUrl(state, baseurl) {
+    Vue.set(state.instanceconfig, 'baseurl', baseurl)
+  },
+  setInstanceConfigApiBaseUrl(state, api) {
+    Vue.set(state.instanceconfig, 'api', api)
   },
   updateBreadcrumbs(state, transition) {
     state.breadcrumbs = [
