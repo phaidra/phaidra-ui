@@ -61,8 +61,20 @@ export default {
     '@nuxt/http',
     ['cookie-universal-nuxt', { alias: 'cookies' }],
     '@nuxtjs/sentry',
-    'nuxt-helmet'
+    'nuxt-helmet',
+    '@nuxtjs/markdownit'
   ],
+
+  markdownit: {
+    preset: 'default',
+    linkify: true,
+    breaks: true,
+    use: [
+      'markdown-it-div',
+      'markdown-it-attrs'
+    ],
+    runtime: true
+  },
 
   axios: {
     baseURL: 'http://localhost:8899/api', // Used as fallback if no runtime config is provided
@@ -125,6 +137,13 @@ export default {
         fs: 'empty'
       }
       config.resolve.alias.vue = "vue/dist/vue.esm.js"
+      config.module.rules.push(
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto"
+        }
+      )
     },
     transpile: ['phaidra-vue-components', 'vuetify/lib']
   }

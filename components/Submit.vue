@@ -25,21 +25,23 @@
           </span>
         </div>
       </v-row>
+      <v-divider class="my-2"></v-divider>
       <v-row class="my-6" justify="start">
         <div class="d-flex flex-row ml-6">
           <v-btn
             large
+            color="#94c154"
             class="primary"
-            @click="$router.push(localePath('/submit/upload_oer'))"
+            @click="$router.push(localePath('/submit/oer'))"
           >
-            <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Create new OER object") }}
+            <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Open Educational Resources (OER) upload") }}
           </v-btn>
           </div>
         <div class="d-flex flex-row pt-3 ml-6">
           <span>
           {{
             $t(
-              "Upload Picture, Audio, Video, Document, Data or create an empty Collection."
+              "Publish your openly licensed teaching/learning materials here - videos, scripts, audios, quizzes, images, slide sets, Moodle elements, etc."
             )
           }}
           </span>

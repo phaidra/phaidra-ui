@@ -512,7 +512,9 @@
                   frameborder="0"
                   >Content</iframe
                 >
-                <a
+                <v-btn
+                raised
+                color="primary"
                   class="mt-2 float-right"
                   :href="
                     instanceconfig.api +
@@ -521,7 +523,7 @@
                     '/preview'
                   "
                   target="_blank"
-                  >{{ $t("Open in new window") }}</a
+                  >{{ $t("Open in new window") }}</v-btn
                 >
               </v-col>
             </template>
@@ -1210,7 +1212,7 @@
                             <v-icon>mdi-eye-outline</v-icon
                             ><span class="ml-2">{{ stats.detail }}</span>
                           </v-col>
-                          <v-col v-if="objectInfo.cmodel !== 'Resource'">
+                          <v-col v-if="downloadable">
                             <v-icon>mdi-download</v-icon
                             ><span class="ml-2">{{ stats.download }}</span>
                           </v-col>
@@ -2303,6 +2305,16 @@ export default {
       }
       return "";
     },
+    license: function () {
+      if (this.objectInfo["dc_rights"]) {
+        for (let f of this.objectInfo["dc_rights"]) {
+          if (f.includes("http")) {
+            return f;
+          }
+        }
+      }
+      return "";
+    },
   },
   data() {
     return {
@@ -2322,6 +2334,7 @@ export default {
         detail: "-",
       },
       checksums: [],
+      fullJsonLd: "",
       membersPage: 1,
       membersPageSize: 10,
       detailsMetaInfo: null,
@@ -2403,7 +2416,79 @@ export default {
           }
         });
       }
+
+      // signposting
+      metaInfo.link = []
+      metaInfo.link.push({
+        rel: 'cite-as',
+        href: this.instanceconfig.baseurl + "/" + this.objectInfo.pid
+      });
+      if (this.objectInfo.isinadminset && this.objectInfo.edm_hastype_id) {
+        if ((this.objectInfo.isinadminset.includes('phaidra:ir.univie.ac.at')) && (this.objectInfo.edm_hastype_id.includes('https://pid.phaidra.org/vocabulary/VKA6-9XTY'))) {
+          metaInfo.link.push({
+            rel: 'type',
+            href: 'https://schema.org/ScholarlyArticle'
+          });
+        }
+      }
+      metaInfo.link.push({
+        rel: 'type',
+        href: 'https://schema.org/CreativeWork'
+      });
+      metaInfo.link.push({
+        rel: 'type',
+        href: 'https://schema.org/AboutPage'
+      });
+      metaInfo.link.push({
+        rel: 'license',
+        href: this.license
+      });
+      metaInfo.link.push({
+        rel: 'describedby',
+        type: 'application/xml',
+        href: this.instanceconfig.api + '/object/' + this.objectInfo.pid + '/index/dc'
+      });
+      metaInfo.link.push({
+        rel: 'describedby',
+        type: 'application/vnd.datacite.datacite+xml',
+        href: this.instanceconfig.api + '/object/' + this.objectInfo.pid + '/datacite?format=xml'
+      });
+      if (this.objectInfo.dshash['JSON-LD']) {
+        metaInfo.link.push({
+          rel: 'describedby',
+          type: 'application/ld+json',
+          href: this.instanceconfig.api + '/object/' + this.objectInfo.pid + '/json-ld'
+        });
+      }
+      if (this.downloadable) {
+        metaInfo.link.push({
+          rel: 'item',
+          type: this.mimetype,
+          href: this.instanceconfig.api + '/object/' + this.objectInfo.pid + '/download'
+        });
+      }
+      if (this.objectInfo.id_bib_roles_pers_aut) {
+        for (let aid of this.objectInfo.id_bib_roles_pers_aut) {
+          if (aid.startsWith('orcid:')) {
+            metaInfo.link.push({
+              rel: 'author',
+              href: 'https://orcid.org/' + aid.replace('orcid:', '')
+            });
+          }
+        }
+      }
     }
+
+    if (this.objectInfo.dshash['JSON-LD']) {
+      metaInfo.script = []
+      metaInfo.script.push(
+        { 
+          type: 'application/ld+json', 
+          content: JSON.stringify(this.fullJsonLd) 
+        }
+      )
+    }
+
     this.detailsMetaInfo = metaInfo
   },
   methods: {
@@ -2425,6 +2510,17 @@ export default {
           "fetchCollectionMembers",
           { pid: pid, page: self.collMembersCurrentPage, pagesize: self.collMembersPagesize, onlylatestversion: self.collOnlyLatestVersions }
         );
+      }
+
+      if (self.objectInfo.dshash['JSON-LD']) {
+        try {
+          let response = await self.$axios.get("/object/" + pid + "/json-ld");
+          if (response.data) {
+            self.fullJsonLd = response.data;
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
     async refreshCollectionMembers () {

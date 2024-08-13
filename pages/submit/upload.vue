@@ -290,6 +290,16 @@ export default {
               id: 6,
               fields: [],
             },
+            {
+              title: "Accessibility",
+              mode: "expansion",
+              addbutton: false,
+              disablemenu: true,
+              collapsed: true,
+              outlined: true,
+              id: 7,
+              fields: [],
+            }
           ],
         };
 
@@ -372,6 +382,23 @@ export default {
         self.form.sections[5].fields.push(fields.getField("series"));
         let publ = fields.getField("bf-publication")
         self.form.sections[5].fields.push(publ);
+
+        let ac1 = fields.getField("accessibility-control")
+        ac1.multiplicable = true
+        ac1.showValueDefinition = true;
+        self.form.sections[6].fields.push(ac1);
+        let ac2 = fields.getField("access-mode")
+        ac2.multiplicable = true
+        ac2.showValueDefinition = true;
+        self.form.sections[6].fields.push(ac2);
+        let ac3 = fields.getField("accessibility-hazard")
+        ac3.multiplicable = true
+        ac3.showValueDefinition = true;
+        self.form.sections[6].fields.push(ac3);
+        let ac4 = fields.getField("accessibility-feature")
+        ac4.multiplicable = true
+        ac4.showValueDefinition = true;
+        self.form.sections[6].fields.push(ac4);
       }
 
       for (let s of self.form.sections) {
