@@ -37,7 +37,7 @@ export const mutations = {
       'validationfnc',
       'cms_header',
       'cms_footer',
-      'cms_homepage',
+      'cms_home',
       'cms_impressum',
       'cms_submit',
       'cms_css'
