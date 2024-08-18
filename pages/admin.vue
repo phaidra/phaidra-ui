@@ -11,6 +11,9 @@
       <v-tab :active-class="'primary'">
         <span>{{ $t('Functionality') }}</span>
       </v-tab>
+      <v-tab :active-class="'primary'">
+        <span>{{ $t('CMS') }}</span>
+      </v-tab>
 
       <v-tab-item class="pa-8">
         <v-container>
@@ -30,7 +33,7 @@
                 v-model="parsedConfigData.institution"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-6">{{ $t('Used in breadcrumbs') }}</v-col>
+            <v-col cols="6" class="mt-6">{{ $t('Used eg. in breadcrumbs.') }}</v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -39,7 +42,7 @@
                 v-model="parsedConfigData.institutionurl"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-6">{{ $t('Used in breadcrumbs') }}</v-col>
+            <v-col cols="6" class="mt-6">{{ $t('Used eg. in breadcrumbs.') }}</v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -48,7 +51,7 @@
                 v-model="parsedConfigData.address"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-6">{{ $t('Used in footer') }}</v-col>
+            <v-col cols="6" class="mt-6">{{ $t('Used eg. in footer.') }}</v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -57,7 +60,7 @@
                 v-model="parsedConfigData.phone"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-6">{{ $t('Used in footer') }}</v-col>
+            <v-col cols="6" class="mt-6">{{ $t('Used eg. in footer.') }}</v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -66,7 +69,7 @@
                 v-model="parsedConfigData.email"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-6">{{ $t('Used in footer and as a contact address throughout the site') }}</v-col>
+            <v-col cols="6" class="mt-6">{{ $t('Used eg. in footer and as a contact address throughout the site.') }}</v-col>
           </v-row>
         </v-container>
       </v-tab-item>
@@ -130,7 +133,7 @@
                 v-model="parsedConfigData.languages"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-4">{{ $t("Comma separated list of languages the language switcher should show") }}</v-col>
+            <v-col cols="6" class="mt-4">{{ $t("Comma separated list of languages the language switcher should show.") }}</v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -139,7 +142,7 @@
                 v-model="parsedConfigData.validationfnc"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-4">{{ $t("Which method shold be used to validate metadata forms") }}</v-col>
+            <v-col cols="6" class="mt-4">{{ $t("Which method shold be used to validate metadata forms.") }}</v-col>
           </v-row>
           <v-row>
             <v-col>
@@ -148,7 +151,75 @@
                 v-model="parsedConfigData.markmandatoryfnc"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" class="mt-4">{{ $t("Which method shold be used to makr fields as mandatory in submit form") }}</v-col>
+            <v-col cols="6" class="mt-4">{{ $t("Which method shold be used to makr fields as mandatory in submit form.") }}</v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                label="Request DOI email"
+                v-model="parsedConfigData.requestdoiemail"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6" class="mt-4">{{ $t("Leave empty to disable the 'Request DOI' button.") }}</v-col>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+
+      <v-tab-item class="pa-8">
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Header"
+                v-model="parsedConfigData.cms_header"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" class="mt-4">{{ $t("Header component. Enclose template in a div.") }}</v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Footer"
+                v-model="parsedConfigData.cms_footer"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" class="mt-4">{{ $t("Footer component. Enclose template in a div.") }}</v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Homepage"
+                v-model="parsedConfigData.cms_home"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" class="mt-4">{{ $t("Homepage component. Enclose template in a div.") }}</v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Impressum"
+                v-model="parsedConfigData.cms_impressum"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" class="mt-4">{{ $t("Impressum component. Enclose template in a div.") }}</v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="Submit langing page"
+                v-model="parsedConfigData.cms_submit"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" class="mt-4">{{ $t("Submit langing page component. Enclose template in a div.") }}</v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-textarea
+                label="CSS"
+                v-model="parsedConfigData.cms_css"
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" class="mt-4">{{ $t("Custom CSS to add to header") }}</v-col>
           </v-row>
         </v-container>
       </v-tab-item>

@@ -1,8 +1,9 @@
-import config from './config/phaidra-ui'
 const path = require('path')
 
 export default {
-  render: { csp: true },
+  // render: {
+  //   csp: true
+  // },
   // Global page headers: https://go.nuxtjs.dev/config-head
   // head: {
   //   title: 'phaidra-ui-nuxt',
@@ -38,10 +39,10 @@ export default {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: {
-    global: true,
-    dirs: ['~/custom-components', '~/components'],
-  },
+  components: [
+    { path: '~/custom-components', level: 0 },
+    { path: '~/components', level: 1 },
+  ],
 
   middleware: ['auth'],
 
@@ -60,15 +61,38 @@ export default {
     '@nuxt/http',
     ['cookie-universal-nuxt', { alias: 'cookies' }],
     '@nuxtjs/sentry',
-    'nuxt-helmet'
+    'nuxt-helmet',
+    '@nuxtjs/markdownit'
   ],
+
+  markdownit: {
+    preset: 'default',
+    linkify: true,
+    breaks: true,
+    runtime: true
+  },
+
   axios: {
-    baseURL: 'http://localhost:8899/api',
-    browserBaseURL: 'http://localhost:8899/api'
+    baseURL: 'http://localhost:8899/api', // Used as fallback if no runtime config is provided
   },
-  sentry: {
-    dsn: config?.global?.monitor?.sentry?.dsn
+  publicRuntimeConfig: {
+    primaryColor: '#994040',
+    baseURL: 'http://localhost:8899',
+    apiBaseURL: 'http://localhost:8899/api',
+    axios: {
+      browserBaseURL: 'http://localhost:8899/api'
+    }
   },
+  vuetify: {
+    customVariables: ['~/assets/variables.scss'],
+    optionsPath: './vuetify.options.js'
+  },
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: 'http://localhost:8899/api'
+    }
+  },
+  
   i18n: {
     langDir: 'locales/',
     locales: [
@@ -95,22 +119,7 @@ export default {
     detectBrowserLanguage: false
   },
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      themes: {
-        light: {
-          primary: config.instances[config.defaultinstance].primary,
-          error: '#dd4814'
-        },
-        dark: {
-          primary: config.instances[config.defaultinstance].primary,
-          error: '#dd4814'
-        }
-      }
-    }
-  },
+  
 
   alias: {
     vue: path.resolve(path.join(__dirname, 'node_modules', 'vue')),
@@ -123,6 +132,14 @@ export default {
       config.node = {
         fs: 'empty'
       }
+      config.resolve.alias.vue = "vue/dist/vue.esm.js"
+      config.module.rules.push(
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto"
+        }
+      )
     },
     transpile: ['phaidra-vue-components', 'vuetify/lib']
   }

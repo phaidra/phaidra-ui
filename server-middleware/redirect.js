@@ -4,12 +4,15 @@ import config from '../config/phaidra-ui'
 
 export default async (req, res, next) => {
   if (/^\/o:\d+$/.test(req.url)) {
+    console.log('PID redirect')    
+    let baseURL = process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT + '/api'
+    console.log(baseURL)
     let pid = req.url.replace('/', '')
     let params = { q: '*:*', defType: 'edismax', wt: 'json', start: 0, rows: 1, fq: 'pid:"' + pid + '"' }
     try {
       let response = await axios.request({
         method: 'POST',
-        url: config.instances[config.defaultinstance].api + '/search/select',
+        url: baseURL + '/api/search/select',
         data: qs.stringify(params, { arrayFormat: 'repeat' }),
         headers: {
           'content-type': 'application/x-www-form-urlencoded'
@@ -21,12 +24,14 @@ export default async (req, res, next) => {
         let doc = docs[0]
         if (doc['cmodel']) {
           if (doc['cmodel'] === 'Book') {
-            if (doc.datastreams.includes("UWMETADATA")) {
-              redirect(res, config.instances[config.defaultinstance].fedora + '/objects/' + pid + '/methods/bdef:Book/view')
-              return
-            } else {
-              redirect(res, config.instances[config.defaultinstance].api + '/object/' + pid + '/preview')
-              return
+            if (!doc.datastreams.includes("POLICY") && !doc.isrestricted) {
+              if (doc.datastreams.includes("UWMETADATA")) {
+                redirect(res, config.instances[config.defaultinstance].fedora + '/objects/' + pid + '/methods/bdef:Book/view')
+                return
+              } else {
+                redirect(res, baseURL + '/api/object/' + pid + '/preview')
+                return
+              }
             }
           }
         }
@@ -39,7 +44,7 @@ export default async (req, res, next) => {
           }
         }
       }
-      redirect(res, 'https://' + config.instances[config.defaultinstance].baseurl + '/detail/' + pid)
+      redirect(res, baseURL + '/detail/' + pid)
       return
     } catch (error) {
       console.log(error)
