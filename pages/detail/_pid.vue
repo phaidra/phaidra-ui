@@ -1702,7 +1702,7 @@
                       >{{ $t("Metadata") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <v-row
+                      <!-- <v-row
                         no-gutters
                         class="pt-2"
                         v-if="objectInfo.dshash['JSON-LD']"
@@ -1711,7 +1711,7 @@
                           :to="localePath(`/metadata/${objectInfo.pid}`)"
                           >{{ $t("Metadata JSON") }}</nuxt-link
                         >
-                      </v-row>
+                      </v-row> -->
                       <v-row
                         no-gutters
                         class="pt-2"
@@ -1760,6 +1760,18 @@
                           >{{ $t("Metadata XML") }}</a
                         >
                       </v-row>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row class="my-6">
+                <v-col class="pt-0">
+                  <v-card tile>
+                    <v-card-title
+                      class="ph-box title font-weight-light grey white--text"
+                      >{{ $t("Export formats") }}</v-card-title
+                    >
+                    <v-card-text class="mt-4">
                       <v-row no-gutters class="pt-2">
                         <a
                           :href="
@@ -1786,6 +1798,54 @@
                           "
                           target="_blank"
                           >{{ $t("Data Cite") }}</a
+                        >
+                      </v-row>
+                      <v-row
+                        no-gutters
+                        class="pt-2"
+                      >
+                        <a
+                          class="mb-1"
+                          :href="
+                            instanceconfig.api +
+                            '/object/' +
+                            objectInfo.pid +
+                            '/lom'
+                          "
+                          target="_blank"
+                          >{{ $t("LOM") }}</a
+                        >
+                      </v-row>
+                      <v-row
+                        no-gutters
+                        class="pt-2"
+                      >
+                        <a
+                          class="mb-1"
+                          :href="
+                            instanceconfig.api +
+                            '/object/' +
+                            objectInfo.pid +
+                            '/edm'
+                          "
+                          target="_blank"
+                          >{{ $t("EDM") }}</a
+                        >
+                      </v-row>
+                      <v-row
+                        no-gutters
+                        class="pt-2"
+                      >
+                        <a
+                          class="mb-1"
+                          :href="
+                            instanceconfig.api +
+                            '/object/' +
+                            objectInfo.pid +
+                            '/openaire'
+                          "
+                          target="_blank"
+                          >{{ $t("OpenAIRE") }}</a
                         >
                       </v-row>
                     </v-card-text>

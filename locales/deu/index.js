@@ -1223,5 +1223,6 @@ export default {
   'Access mode': 'Barrierefreiheit: Betriebsart',
   'Accessibility control': 'Barrierefreiheit: Steuerung',
   'Accessibility hazard': 'Barrierefreiheit: Störung',
-  'Accessibility feature': 'Barrierefreiheit: Merkmal'
+  'Accessibility feature': 'Barrierefreiheit: Merkmal',
+  'Export formats': 'Exportformate'
 }
