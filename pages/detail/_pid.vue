@@ -891,7 +891,7 @@
                                 color="grey"
                                 :loading="doiRequestLoading"
                                 @click="doiRequestDialog = false"
-                                >{{ $t("Close") }}</v-btn
+                                >{{ $t("Cancel") }}</v-btn
                               >
                               <v-spacer></v-spacer>
                               <v-btn
