@@ -207,7 +207,7 @@ export default {
       self.mandatoryFieldsFound = {};
       self.mandatoryFieldsFilled = {};
 
-      let settres = await self.$axios.get("/app_settings");
+      let settres = await self.$axios.get("/config/public");
       if (settres?.data?.settings?.defaultTemplateId) {
         try {
           let tmpres = await self.$axios.request({
