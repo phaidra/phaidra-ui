@@ -68,6 +68,7 @@
         :feedback-context="'Related object submit'" 
         :mouseoverfielddef="true"
         v-on:load-form="form = $event" 
+        v-on:load-rights="rights = $event"
         v-on:object-created="objectCreated($event)"
         v-on:form-input-resource-type="handleInputResourceType($event)" 
         v-on:input-rights="rights = $event"
@@ -368,7 +369,7 @@ export default {
             "/metadata",
         });
         if (response.data.metadata.hasOwnProperty("JSON-LD")) {
-          self.form = jsonLd.json2form(response.data.metadata["JSON-LD"]);
+          self.form = jsonLd.json2form(response.data.metadata["JSON-LD"], null, this.vocabularies);
           for (let s of self.form.sections) {
             let isFileSection = false;
             for (let f of s.fields) {
