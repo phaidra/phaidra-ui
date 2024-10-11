@@ -110,6 +110,10 @@ export default {
           if (settingResponse?.data?.public_config?.data_i18n) {
             this.i18n_override = settingResponse?.data?.public_config?.data_i18n
           }
+          if (settingResponse?.data?.public_config?.data_facetqueries) {
+            console.log('commiting public config')
+            this.$store.commit("search/setFacetQueries", settingResponse?.data?.public_config?.data_facetqueries)
+          }
         }
         this.$store.commit("setInstanceConfigBaseUrl", this.$config.baseURL);
         this.$store.commit("setInstanceConfigApiBaseUrl", this.$config.apiBaseURL);
@@ -126,6 +130,13 @@ export default {
         this.$i18n.mergeLocaleMessage(lang, messages)
       }
     )
+    if (!this.signedin && (this.$config.baseURL === 'http://localhost:8899')) {
+      let token = window.localStorage.getItem("XSRF-TOKEN")
+      if (token) {
+        this.$store.commit('setToken', token)
+        this.$store.dispatch('getLoginData')
+      }
+    }
   },
   async fetch() {
     await this.loadInstanceConfigToStore()
@@ -177,12 +188,6 @@ export default {
     Vue.filter("unixtime", function (value) {
       if (value) {
         return moment.unix(String(value)).format("DD.MM.YYYY hh:mm:ss");
-      }
-    });
-
-    Vue.filter("datetime", function (value) {
-      if (value) {
-        return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
       }
     });
 

@@ -855,7 +855,7 @@
                           </p>
                         </v-col>
                       </v-row>
-                      <v-row no-gutters justify="end" v-if="!doi">
+                      <v-row no-gutters justify="end" v-if="!doi && instanceconfig.requestdoiemail && (instanceconfig.requestdoiemail !== '')">
                         <v-dialog
                           class="pb-4"
                           v-model="doiRequestDialog"
@@ -935,9 +935,8 @@
                               {{ $t(id.label) }}
                             </span>
                             <br />
-                            <span>
-                              <a :href="id.value">{{ id.value }}</a>
-                            </span>
+                            <a v-if="id.value.startsWith('http')" :href="id.value">{{ id.value }}</a>
+                            <span v-else>{{ id.value }}</span>
                           </p>
                         </v-col>
                       </v-row>

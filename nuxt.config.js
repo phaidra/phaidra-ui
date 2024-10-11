@@ -76,7 +76,7 @@ export default {
     baseURL: 'http://localhost:8899/api', // Used as fallback if no runtime config is provided
   },
   publicRuntimeConfig: {
-    primaryColor: '#994040',
+    primaryColor: '#AF2144',
     baseURL: 'http://localhost:8899',
     apiBaseURL: 'http://localhost:8899/api',
     axios: {
