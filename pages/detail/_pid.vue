@@ -1092,7 +1092,7 @@
                           >u:scholar</a
                         >
                         <a
-                          v-if="adminset === 'phaidra:utheses.univie.ac.at'"
+                          v-else-if="adminset === 'phaidra:utheses.univie.ac.at'"
                           :href="utheseslink"
                           target="_blank"
                           >u:theses</a
