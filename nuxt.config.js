@@ -73,14 +73,14 @@ export default {
   },
 
   axios: {
-    baseURL: 'http://localhost:8899/api', // Used as fallback if no runtime config is provided
+    baseURL: process.env.PHAIDRA_API_BASE_URL, // Used as fallback if no runtime config is provided
   },
   publicRuntimeConfig: {
-    primaryColor: '#AF2144',
-    baseURL: 'http://localhost:8899',
-    apiBaseURL: 'http://localhost:8899/api',
+    primaryColor: process.env.PHAIDRA_PRIMARY_COLOR,
+    baseURL: process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT,
+    apiBaseURL: process.env.PHAIDRA_API_BASE_URL,
     axios: {
-      browserBaseURL: 'http://localhost:8899/api'
+      browserBaseURL: process.env.PHAIDRA_API_BASE_URL
     }
   },
   vuetify: {
@@ -89,7 +89,7 @@ export default {
   },
   privateRuntimeConfig: {
     axios: {
-      baseURL: 'http://localhost:8899/api'
+      baseURL: process.env.PHAIDRA_API_BASE_URL
     }
   },
   
