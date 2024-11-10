@@ -92,7 +92,7 @@ export default {
       baseURL: process.env.PHAIDRA_API_BASE_URL
     }
   },
-  
+
   i18n: {
     langDir: 'locales/',
     locales: [

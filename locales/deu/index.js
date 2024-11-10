@@ -240,6 +240,7 @@ export default {
   'dcterms:dateCopyrighted': 'Copyright Datum',
   'dcterms:dateSubmitted': 'Datum der Einreichung',
   'phaidra:dateAccessioned': 'Eingangsdatum',
+  'phaidra:dateApprobation': 'Approbationsdatum',
   'dce:rights': 'Rechte',
   'oaire:version': 'Versionstyp',
   'dcterms:accessRights': 'Zugriffsrechte',
@@ -1229,5 +1230,6 @@ export default {
   'After the request, please wait for the DOI support to contact you via email.': 'Bitte warten Sie nach der Anfrage, bis der DOI-Support Sie per E-Mail kontaktiert.',
   'Request DOI': 'DOI anfordern',
   'Do you want to request a DOI for this object?': 'Möchten Sie einen DOI für dieses Objekt anfordern?',
-  'Open in new window': 'In neuem Fenster öffnen'
+  'Open in new window': 'In neuem Fenster öffnen',
+  'Learning object': 'Lernobjekt'
 }
