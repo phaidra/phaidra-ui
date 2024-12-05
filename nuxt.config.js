@@ -35,7 +35,8 @@ export default {
     { src: '~/plugins/vue-meta.js' },
     { src: '~/plugins/lodash.js' },
     { src: '~/plugins/vuetify.js', mode: 'client' },
-    { src: '~/plugins/phaidra-vue-components' }
+    { src: '~/plugins/phaidra-vue-components' },
+    { src: '~/plugins/bulk-upload-persistence.js', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
