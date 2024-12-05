@@ -10,14 +10,31 @@
 <script>
 export default {
   name: 'LikeButton',
+  props: {
+    id: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       likes: 0
     }
   },
+  created() {
+    if (process.client) {
+      const savedLikes = localStorage.getItem(`likeCount_${this.id}`)
+      if (savedLikes) {
+        this.likes = parseInt(savedLikes)
+      }
+    }
+  },
   methods: {
     incrementLikes() {
       this.likes++
+      if (process.client) {
+        localStorage.setItem(`likeCount_${this.id}`, this.likes.toString())
+      }
     }
   }
 }
