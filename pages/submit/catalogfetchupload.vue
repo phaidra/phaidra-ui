@@ -1,16 +1,16 @@
 <template>
   <v-container fluid>
     <v-row class="mt-8">
-      <v-col cols="4">
+      <v-col cols="3">
         <p-i-file
           v-bind.sync="filefield"
           v-on:input-file="setFilename(filefield, $event)"
         ></p-i-file>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="3">
         <v-autocomplete
           :value = "getTerm('alllicenses', 'http://rightsstatements.org/vocab/InC/1.0/')"
-          v-on:input="license = $event"
+          v-on:input="setLicense($event)"
           :items="this.vocabularies['alllicenses'].terms"
           :item-value="'@id'"
           :filter="autocompleteFilter"
@@ -20,6 +20,7 @@
           :label="$t('License')"
           return-object
           clearable
+          :disabled="licenseDisabled"
         >
           <!-- the attr binds the 'disabled' property of the vocabulary term (if defined) to the item component -->
           <template slot="item" slot-scope="{ attr, item }">
@@ -35,12 +36,16 @@
           </template>
       </v-autocomplete>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="3">
         <v-text-field
           v-model="acnumber"
           :filled="true"
           :label="$t('AC number')"
         ></v-text-field>
+      </v-col>
+      <v-col cols="3">
+        <v-btn dark color="green" @click="fetchMetadata()">{{  $t('Fetch metadata') }}</v-btn>
+        <v-btn class="primary mr-4" @click="upload()" :disabled="!uploadEnabled">{{  'Upload ' + (createmethod === 'unknown' ? 'data' : createmethod) }}</v-btn>
       </v-col>
     </v-row>
      <!--<v-row>{{ mods }}</v-row>
@@ -58,8 +63,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn dark color="green" @click="fetchMetadata()">{{  $t('Fetch metadata') }}</v-btn>
-            <v-btn class="primary" @click="upload()" :disabled="!uploadEnabled">{{  'Upload ' + (createmethod === 'unknown' ? 'data' : createmethod) }}</v-btn>
+            
           </v-card-actions>
         </v-card>
       </v-col>
@@ -97,6 +101,7 @@ export default {
       createmethod: 'unknown',
       uploadBtnLabel: 'Upload data',
       uploadProgress: 0,
+      licenseDisabled: true,
       filefield: {
         id: 'file',
         fieldname: 'File',
@@ -127,6 +132,10 @@ export default {
     };
   },
   methods: {
+    setLicense: async function ($event) {
+      this.license = $event
+      this.fetchMetadata()
+    },
     fetchMetadata: async function () {
       
       this.$store.commit('clearAlerts')
@@ -169,7 +178,10 @@ export default {
           ri.before(ac)
 
           let existingLic = doc.querySelector("mods accessCondition[type='use and reproduction']")
-          if (!existingLic) {
+          if (existingLic) {
+            this.licenseDisabled = true
+          } else {
+            this.licenseDisabled = false
             let lic = doc.createElementNS('http://www.loc.gov/mods/v3','accessCondition')
             lic.setAttribute('type', 'use and reproduction')
             lic.innerHTML = this.license['@id']
