@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       steps: [
-        { label: 'Upload CSV', route: '/bulk-upload/csv-config' },
+        { label: 'Load CSV', route: '/bulk-upload/csv-config' },
         { label: 'Select Mapping', route: '/bulk-upload/meta-data-config' },
         { label: 'Preview', route: '/bulk-upload/preview' },
         { label: 'Upload', route: '/bulk-upload/upload' }

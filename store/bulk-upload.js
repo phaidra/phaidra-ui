@@ -6,7 +6,10 @@ export const state = () => ({
     2: { route: '/bulk-upload/meta-data-config', completed: false },
     3: { route: '/bulk-upload/preview', completed: false },
     4: { route: '/bulk-upload/upload', completed: false }
-  }
+  },
+  csvContent: null,
+  columns: [],
+  fileName: ''
 })
 
 export const mutations = {
@@ -23,6 +26,15 @@ export const mutations = {
     if (state.steps[step]) {
       state.steps[step].completed = true
     }
+  },
+  setCsvContent(state, content) {
+    state.csvContent = content
+  },
+  setColumns(state, columns) {
+    state.columns = columns
+  },
+  setFileName(state, fileName) {
+    state.fileName = fileName
   }
 }
 
