@@ -10,16 +10,57 @@
     <!-- File Upload Section -->
     <v-row class="mt-4">
       <v-col cols="12" md="6">
+        <template v-if="savedFileName">
+          <v-card outlined class="pa-4">
+            <div class="d-flex align-center">
+              <v-icon left color="primary">mdi-file-document-outline</v-icon>
+              <span class="text-body-1">{{ savedFileName }}</span>
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                color="primary"
+                @click="showFileInput = true"
+              >
+                Change File
+              </v-btn>
+            </div>
+          </v-card>
+          <v-expand-transition>
+            <div v-show="showFileInput">
+              <div class="d-flex align-center">
+                <v-file-input
+                  v-model="csvFile"
+                  accept=".csv"
+                  label="Select New CSV File"
+                  outlined
+                  class="mt-4 flex-grow-1"
+                  @change="handleFileUpload"
+                  :error-messages="errorMessage"
+                  persistent-hint
+                  :clearable="false"
+                ></v-file-input>
+                <v-btn
+                  text
+                  color="grey"
+                  class="mt-4 ml-2"
+                  @click="showFileInput = false"
+                >
+                  Cancel
+                </v-btn>
+              </div>
+            </div>
+          </v-expand-transition>
+        </template>
         <v-file-input
+          v-else
           v-model="csvFile"
           accept=".csv"
           label="Select CSV File"
           outlined
           @change="handleFileUpload"
           :error-messages="errorMessage"
-          :placeholder="savedFileName || 'Select a CSV file'"
-          :hint="savedFileName ? 'Previously uploaded file' : ''"
           persistent-hint
+          :clearable="false"
         ></v-file-input>
       </v-col>
     </v-row>
@@ -29,11 +70,9 @@
       <v-col cols="12">
         <v-card outlined class="pa-4">
           <div class="d-flex align-center mb-4">
-            <h3 class="text-h6 mb-0 mr-4">CSV Columns</h3>
-            <v-chip small color="primary" class="mr-2">
-              <v-icon left small>mdi-file-document-outline</v-icon>
-              {{ savedFileName }}
-            </v-chip>
+            <h3 class="text-h6 mb-0 mr-4">
+              CSV Columns of "{{ savedFileName }}"
+            </h3>
           </div>
           <v-chip
             v-for="column in $store.state['bulk-upload'].columns"
@@ -77,6 +116,7 @@ export default {
   data() {
     return {
       errorMessage: '',
+      showFileInput: false,
     }
   },
 
