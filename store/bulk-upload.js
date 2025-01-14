@@ -9,7 +9,9 @@ export const state = () => ({
   },
   csvContent: null,
   columns: [],
-  fileName: ''
+  fileName: '',
+  requiredFields: ['author', 'date', 'description', 'university', 'title'],
+  fieldMappings: {} // Will store mappings like { author: 'CSV_COLUMN_NAME' }
 })
 
 export const mutations = {
@@ -35,6 +37,12 @@ export const mutations = {
   },
   setFileName(state, fileName) {
     state.fileName = fileName
+  },
+  setFieldMapping(state, { requiredField, csvColumn }) {
+    state.fieldMappings[requiredField] = csvColumn
+  },
+  clearFieldMappings(state) {
+    state.fieldMappings = {}
   }
 }
 
@@ -50,5 +58,14 @@ export const getters = {
       }
     }
     return 1
+  },
+  getUnmappedFields: (state) => {
+    return state.requiredFields.filter(field => !state.fieldMappings[field])
+  },
+  getMappedFields: (state) => {
+    return state.requiredFields.filter(field => state.fieldMappings[field])
+  },
+  getFieldMapping: (state) => (field) => {
+    return state.fieldMappings[field]
   }
 } 

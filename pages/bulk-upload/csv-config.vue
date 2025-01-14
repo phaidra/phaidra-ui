@@ -71,7 +71,7 @@
         <v-card outlined class="pa-4">
           <div class="d-flex align-center mb-4">
             <h3 class="text-h6 mb-0 mr-4">
-              CSV Columns of "{{ savedFileName }}"
+              CSV Columns of your file:
             </h3>
           </div>
           <v-chip
