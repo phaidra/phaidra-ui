@@ -96,8 +96,10 @@ export default {
           .filter(([field]) => field !== currentField)
           .map(([_, value]) => value)
         
-        // Return only columns that aren't selected in other fields
-        return this.columns.filter(col => !selectedValues.includes(col))
+        // Return only columns that aren't selected in other fields, sorted alphabetically
+        return this.columns
+          .filter(col => !selectedValues.includes(col))
+          .sort((a, b) => a.localeCompare(b))
       }
     }
   },
