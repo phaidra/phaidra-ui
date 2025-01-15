@@ -30,7 +30,7 @@
               <v-col cols="12" sm="8">
                 <v-select
                   v-model="fieldMappings[field]"
-                  :items="columns"
+                  :items="getAvailableColumns(field)"
                   outlined
                   dense
                   clearable
@@ -86,6 +86,19 @@ export default {
 
     allFieldsMapped() {
       return this.requiredFields.every(field => this.fieldMappings[field])
+    },
+
+    // Get available columns for a specific field
+    getAvailableColumns() {
+      return (currentField) => {
+        // Get all currently selected values except for the current field
+        const selectedValues = Object.entries(this.fieldMappings)
+          .filter(([field]) => field !== currentField)
+          .map(([_, value]) => value)
+        
+        // Return only columns that aren't selected in other fields
+        return this.columns.filter(col => !selectedValues.includes(col))
+      }
     }
   },
 
