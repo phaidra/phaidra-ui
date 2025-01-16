@@ -24,6 +24,7 @@
                 <div class="caption text-grey">a column of your file</div>
               </v-col>
               <v-col cols="1" class="text-center">
+                OR
               </v-col>
               <v-col cols="6">
                 <h4>Source a Default Value from Phaidra</h4>
@@ -275,7 +276,7 @@ export default {
   },
 
   created() {
-    // Initialize mappings from store
+    // Initialize mappings from store and try automatic matching
     this.requiredFields.forEach(field => {
       const mapping = this.getFieldMapping(field)
       if (mapping) {
@@ -289,15 +290,15 @@ export default {
           // Handle CSV mapping
           this.mappingType[field] = 'csv'
           this.fieldMappings[field] = mapping
-          
-          // Try to find automatic match
-          const matchingColumn = this.columns.find(
-            col => col.toLowerCase() === field.toLowerCase()
-          )
-          if (matchingColumn) {
-            this.updateMapping(field, matchingColumn)
-            this.fieldMappings[field] = matchingColumn
-          }
+        }
+      } else {
+        // Try to find automatic match if no mapping exists
+        const matchingColumn = this.columns.find(
+          col => col.toLowerCase() === field.toLowerCase()
+        )
+        if (matchingColumn) {
+          this.fieldMappings[field] = matchingColumn
+          this.setFieldMapping({ requiredField: field, csvColumn: matchingColumn })
         }
       }
     })
