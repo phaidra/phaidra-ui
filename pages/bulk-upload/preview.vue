@@ -9,7 +9,7 @@
 
     <v-row>
       <v-col>
-        <v-card>
+        <v-card outlined>
           <v-card-title>Data Preview</v-card-title>
           <v-card-text>
             <v-simple-table>
