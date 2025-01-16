@@ -104,6 +104,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 
 export default {
@@ -121,11 +122,12 @@ export default {
   },
 
   computed: {
+    ...mapState('bulk-upload', ['columns', 'fileName']),
     isValid() {
-      return this.$store.state['bulk-upload'].columns.length > 0
+      return this.columns.length > 0
     },
     savedFileName() {
-      return this.$store.state['bulk-upload'].fileName
+      return this.fileName
     },
     csvFile: {
       get() {
@@ -133,15 +135,22 @@ export default {
       },
       set(value) {
         if (!value) {
-          this.$store.commit('bulk-upload/setCsvContent', null)
-          this.$store.commit('bulk-upload/setColumns', [])
-          this.$store.commit('bulk-upload/setFileName', '')
+          this.setCsvContent(null)
+          this.setColumns([])
+          this.setFileName('')
         }
       }
     }
   },
 
   methods: {
+    ...mapMutations('bulk-upload', [
+      'setCsvContent',
+      'setColumns',
+      'setFileName',
+      'completeStep'
+    ]),
+
     async handleFileUpload(file) {
       if (!file) {
         this.errorMessage = ''
@@ -153,8 +162,8 @@ export default {
         const firstLine = text.split('\n')[0]
         const columns = firstLine
           .split(';')
-          .map(col => col.trim().replace(/["']/g, '')) // Remove quotes and trim whitespace
-          .filter(col => col !== '') // Remove empty columns
+          .map(col => col.trim().replace(/["']/g, ''))
+          .filter(col => col !== '')
         
         if (columns.length === 0) {
           throw new Error('No valid columns found in the CSV file')
@@ -162,11 +171,11 @@ export default {
 
         this.currentFileName = file.name
         
-        // Store the CSV content and filename in Vuex
-        this.$store.commit('bulk-upload/setCsvContent', text)
-        this.$store.commit('bulk-upload/setColumns', columns)
-        this.$store.commit('bulk-upload/setFileName', file.name)
-        this.$store.commit('bulk-upload/completeStep', 1)
+        // Store the CSV content and filename in Vuex using mutations
+        this.setCsvContent(text)
+        this.setColumns(columns)
+        this.setFileName(file.name)
+        this.completeStep(1)
         this.errorMessage = ''
       } catch (error) {
         this.errorMessage = 'Error reading CSV file. Please make sure it\'s a valid CSV file.'

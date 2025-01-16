@@ -45,8 +45,8 @@
     </v-row>
 
     <!-- Navigation Buttons -->
-    <v-row class="mt-6">
-      <v-col class="d-flex">
+    <v-row justify="space-between" class="mt-4">
+      <v-col cols="auto">
         <v-btn
           text
           :to="steps[1].route"
@@ -54,13 +54,14 @@
           <v-icon left>mdi-arrow-left</v-icon>
           Back
         </v-btn>
-        <v-spacer></v-spacer>
+      </v-col>
+      <v-col cols="auto">
         <v-btn
           color="primary"
-          :disabled="!allFieldsMapped"
           @click="proceed"
+          :to="steps[3].route"
         >
-          Continue
+          Next
           <v-icon right>mdi-arrow-right</v-icon>
         </v-btn>
       </v-col>
@@ -70,9 +71,14 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
+import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 
 export default {
   name: 'MetaDataConfig',
+
+  components: {
+    BulkUploadSteps
+  },
 
   data() {
     return {

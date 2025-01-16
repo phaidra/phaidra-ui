@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 
 export default {
@@ -79,10 +79,11 @@ export default {
   },
 
   computed: {
-    ...mapState('bulk-upload', ['steps']),
+    ...mapState('bulk-upload', ['steps', 'csvContent']),
+    ...mapGetters('bulk-upload', ['getMappedFields', 'getFieldMapping']),
 
     mappedFields() {
-      return this.$store.getters['bulk-upload/getMappedFields']
+      return this.getMappedFields
     },
     isValid() {
       return this.previewData.length > 0
@@ -97,10 +98,9 @@ export default {
     ...mapMutations('bulk-upload', ['completeStep', 'setCurrentStep']),
 
     processPreviewData() {
-      const csvContent = this.$store.state['bulk-upload'].csvContent
-      if (!csvContent) return
+      if (!this.csvContent) return
 
-      const rows = csvContent.split('\n')
+      const rows = this.csvContent.split('\n')
       const headers = rows[0].split(';').map(h => h.trim().replace(/["']/g, ''))
       
       // Process only first 5 rows for preview
@@ -110,7 +110,7 @@ export default {
         
         // Map only the fields that were selected in step 2
         this.mappedFields.forEach(field => {
-          const csvColumn = this.$store.getters['bulk-upload/getFieldMapping'](field)
+          const csvColumn = this.getFieldMapping(field)
           const columnIndex = headers.indexOf(csvColumn)
           rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
         })
@@ -122,14 +122,14 @@ export default {
     },
 
     getSourceColumn(field) {
-      return this.$store.getters['bulk-upload/getFieldMapping'](field)
-    }
-  },
+      return this.getFieldMapping(field)
+    },
 
-  proceed() {
-    this.completeStep(3)
-    this.setCurrentStep(4)
-    this.$router.push(this.steps[4].route)
+    proceed() {
+      this.completeStep(3)
+      this.setCurrentStep(4)
+      this.$router.push(this.steps[4].route)
+    }
   }
 }
 </script>
