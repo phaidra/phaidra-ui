@@ -108,11 +108,18 @@ export default {
         const values = row.split(';').map(v => v.trim().replace(/["']/g, ''))
         const rowData = {}
         
-        // Map only the fields that were selected in step 2
+        // Map fields based on whether they come from CSV or are Phaidra values
         this.mappedFields.forEach(field => {
-          const csvColumn = this.getFieldMapping(field)
-          const columnIndex = headers.indexOf(csvColumn)
-          rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
+          const mapping = this.getFieldMapping(field)
+          if (mapping?.startsWith('phaidra:')) {
+            // For Phaidra values, extract the actual value from the mapping
+            const [_, element, value] = mapping.split(':')
+            rowData[field] = value
+          } else {
+            // For CSV mappings, get the value from the corresponding column
+            const columnIndex = headers.indexOf(mapping)
+            rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
+          }
         })
         
         return rowData
@@ -122,7 +129,12 @@ export default {
     },
 
     getSourceColumn(field) {
-      return this.getFieldMapping(field)
+      const mapping = this.getFieldMapping(field)
+      if (mapping?.startsWith('phaidra:')) {
+        const [_, element, value] = mapping.split(':')
+        return `Phaidra: ${element}`
+      }
+      return mapping
     },
 
     proceed() {

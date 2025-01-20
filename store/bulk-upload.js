@@ -10,7 +10,7 @@ export const state = () => ({
   csvContent: null,
   columns: [],
   fileName: '',
-  requiredFields: ['author', 'date', 'description', 'university', 'title'],
+  requiredFields: ['Title', 'Role', 'Firstname', 'Lastname', 'Description', 'Keywords', 'Type', 'Persistent identifier', 'License'],
   fieldMappings: {} // Will store mappings like { author: 'CSV_COLUMN_NAME' }
 })
 

@@ -21,14 +21,14 @@
               </v-col>
               <v-col cols="2">
                 <h4>Source from your CSV</h4>
-                <div class="caption text-grey">a column of your file</div>
+                <div class="caption text-grey">every entry gets its value from your csv file</div>
               </v-col>
               <v-col cols="1" class="text-center">
                 OR
               </v-col>
               <v-col cols="6">
                 <h4>Source a Default Value from Phaidra</h4>
-                <div class="caption text-grey">Select a default value for ALL your rows</div>
+                <div class="caption text-grey">ALL rows get the selected default value</div>
               </v-col>
             </v-row>
 
@@ -68,10 +68,11 @@
               </v-col>
 
               <!-- Phaidra Elements -->
-              <v-col cols="3">
+              <v-col cols="2">
                 <v-select
+                  v-if="fieldPhaidraElements[field]"
                   v-model="selectedPhaidraElement[field]"
-                  :items="phaidraElements"
+                  :items="fieldPhaidraElements[field]"
                   outlined
                   dense
                   clearable
@@ -82,18 +83,24 @@
                   :class="{ 'grey-input': !!fieldMappings[field] }"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="4">
                 <div class="d-flex align-center">
-                  <component
+                  <p-i-form
                     v-if="selectedPhaidraElement[field]"
-                    :is="getPhaidraComponent(selectedPhaidraElement[field])"
-                    v-model="phaidraValues[field]"
-                    @input="updatePhaidraMapping(field, $event)"
-                    dense
-                    hide-details
-                    :disabled="!!fieldMappings[field]"
+                    :form="getPhaidraForm(field)"
+                    :enablerights="false"
+                    :enablerelationships="false"
+                    :enablepreview="false"
+                    :templating="false"
+                    :importing="false"
+                    :addbutton="false"
+                    :mouseoverfielddef="true"
+                    :help="false"
+                    :debug="false"
+                    :feedback="false"
+                    v-on:form-input="updatePhaidraMapping(field, $event)"
                     :class="{ 'grey-input': !!fieldMappings[field], 'flex-grow-1': true }"
-                  ></component>
+                  ></p-i-form>
                   <v-select
                     v-else
                     disabled
@@ -136,6 +143,7 @@
         <v-btn
           color="primary"
           @click="proceed"
+          :disabled="!allFieldsMapped"
           :to="steps[3].route"
         >
           Next
@@ -164,6 +172,8 @@ export default {
     BulkUploadSteps,
   },
 
+  mixins: [context, config, vocabulary],
+
   data() {
     return {
       fieldMappings: {},
@@ -174,10 +184,77 @@ export default {
         { text: 'CSV Column', value: 'csv' },
         { text: 'Phaidra UI Element', value: 'phaidra' }
       ],
-      phaidraElements: [
-        { text: 'Object Type', value: 'object-type', component: 'p-i-select' },
-        { text: 'Association', value: 'association', component: 'p-i-association' }
-      ]
+      // Define available Phaidra elements for each field
+      fieldPhaidraElements: {
+        'Title': [
+          { text: 'Title', value: 'title', field: () => {
+            const field = fieldslib.getField("title")
+            field.multilingual = false
+            return field
+          }}
+        ],
+        'Role': [
+          { text: 'Author', value: 'role:aut', field: () => {
+            const field = fieldslib.getField("role")
+            field.ordergroup = "role"
+            field.roleVocabulary = "submitrolepredicate"
+            field.identifierType = "ids:orcid"
+            field.showDefinitions = true
+            field.showIdentifier = true
+            field.multilingual = false
+            return field
+          }},
+          { text: 'Uploader', value: 'role:uploader', field: () => {
+            const field = fieldslib.getField("role")
+            field.ordergroup = "role"
+            field.roleVocabulary = "submitrolepredicate"
+            field.identifierType = "ids:orcid"
+            field.showDefinitions = true
+            field.showIdentifier = true
+            field.multilingual = false
+            return field
+          }}
+        ],
+        'Description': [
+          { text: 'Description', value: 'description', field: () => {
+            const field = fieldslib.getField("description")
+            field.multilingual = false
+            return field
+          }}
+        ],
+        'Keywords': [
+          { text: 'Keywords', value: 'keyword', field: () => {
+            const field = fieldslib.getField("keyword")
+            field.disableSuggest = true
+            field.multilingual = false
+            return field
+          }}
+        ],
+        'Type': [
+          { text: 'Object Type', value: 'object-type', field: () => {
+            const field = fieldslib.getField("object-type-checkboxes")
+            field.showLabel = true
+            field.multilingual = false
+            return field
+          }}
+        ],
+        'Persistent identifier': [
+          { text: 'Identifier', value: 'identifier', field: () => {
+            const field = fieldslib.getField("alternate-identifier")
+            field.multilingual = false
+            return field
+          }}
+        ],
+        'License': [
+          { text: 'License', value: 'license', field: () => {
+            const field = fieldslib.getField("license")
+            field.showValueDefinition = true
+            field.vocabulary = "alllicenses"
+            field.multilingual = false
+            return field
+          }}
+        ]
+      }
     }
   },
 
@@ -215,6 +292,21 @@ export default {
   methods: {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
+    getPhaidraForm(field) {
+      const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
+      if (elementConfig && elementConfig.field) {
+        const fieldConfig = elementConfig.field()
+        return {
+          sections: [
+            {
+              fields: [fieldConfig]
+            }
+          ]
+        }
+      }
+      return { sections: [] }
+    },
+
     updateMapping(field, value) {
       if (value === null) {
         // When cleared, delete the mapping from both local state and store
@@ -247,20 +339,19 @@ export default {
     updatePhaidraMapping(field, value) {
       if (value) {
         this.phaidraValues[field] = value
-        // Store the mapping with a special prefix to identify it as a Phaidra value
+        // Get the field configuration
+        const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
+        const fieldConfig = elementConfig.field()
+        
+        // Store the mapping with field-specific configuration
         this.setFieldMapping({ 
           requiredField: field, 
-          csvColumn: `phaidra:${this.selectedPhaidraElement[field]}:${value['@id'] || value}` 
+          csvColumn: `phaidra:${fieldConfig.predicate || this.selectedPhaidraElement[field]}:${value}` 
         })
       } else {
         this.$delete(this.phaidraValues, field)
         this.setFieldMapping({ requiredField: field, csvColumn: null })
       }
-    },
-
-    getPhaidraComponent(element) {
-      const elementConfig = this.phaidraElements.find(e => e.value === element)
-      return elementConfig ? elementConfig.component : null
     },
 
     proceed() {
