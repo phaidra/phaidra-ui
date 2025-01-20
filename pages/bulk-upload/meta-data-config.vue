@@ -153,6 +153,12 @@ import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 import jsonld from "phaidra-vue-components/src/utils/json-ld"
 import SelectLanguage from 'phaidra-vue-components/src/components/select/SelectLanguage'
+import PITitle from 'phaidra-vue-components/src/components/input/PITitle'
+import PIKeyword from 'phaidra-vue-components/src/components/input/PIKeyword'
+import PISelect from 'phaidra-vue-components/src/components/input/PISelect'
+import PIObjectType from 'phaidra-vue-components/src/components/input/PIObjectType'
+import PIEntity from 'phaidra-vue-components/src/components/input/PIEntity'
+import PIAlternateIdentifier from 'phaidra-vue-components/src/components/input/PIAlternateIdentifier'
 
 export default {
   name: 'MetaDataConfig',
@@ -160,6 +166,12 @@ export default {
   components: {
     SelectLanguage,
     BulkUploadSteps,
+    PITitle,
+    PIKeyword,
+    PISelect,
+    PIObjectType,
+    PIEntity,
+    PIAlternateIdentifier
   },
 
   mixins: [context, config, vocabulary],
@@ -188,10 +200,14 @@ export default {
             const field = fieldslib.getField("role")
             field.ordergroup = "role"
             field.roleVocabulary = "submitrolepredicate"
-            field.identifierType = "ids:orcid"
             field.showDefinitions = true
-            field.showIdentifier = true
             field.multilingual = false
+            field.component = 'entity'
+            field.label = 'Author'
+            field.roleLabel = 'Role'
+            field.showname = false
+            field.type = 'schema:Person'
+            field.inputStyle = 'outlined'
             return field
           }}
         ],
@@ -199,6 +215,7 @@ export default {
           { text: 'Description', value: 'description', field: () => {
             const field = fieldslib.getField("description")
             field.multilingual = false
+            field.component = 'text-field'
             return field
           }}
         ],
@@ -215,6 +232,9 @@ export default {
             const field = fieldslib.getField("object-type-checkboxes")
             field.showLabel = true
             field.multilingual = false
+            field.vocabulary = 'objecttype'
+            field.component = 'select'
+            field.label = 'Object Type'
             return field
           }}
         ],
@@ -280,13 +300,14 @@ export default {
       // Map field types to their corresponding Phaidra input components
       const componentMap = {
         'title': 'PITitle',
-        'role': 'PIRole',
-        'description': 'PIDescription',
+        'entity': 'PIEntity',
+        'description': 'PITextField',
         'keyword': 'PIKeyword',
-        'object-type-checkboxes': 'PIObjectType',
-        'language': 'PILanguage',
+        'select': 'PISelect',
+        'language': 'PISelect',
         'license': 'PISelect',
-        'alternate-identifier': 'PIIdentifier'
+        'alternate-identifier': 'PIAlternateIdentifier',
+        'text-field': 'PITextField'
       }
       
       return componentMap[fieldConfig.component] || componentMap[elementConfig.value] || 'v-text-field'
@@ -310,13 +331,18 @@ export default {
 
       // Add specific props based on field type
       switch (elementConfig.value) {
-        case 'role':
+        case 'role:aut':
           return {
             ...props,
             roleVocabulary: fieldConfig.roleVocabulary,
-            identifierType: fieldConfig.identifierType,
-            showIdentifier: fieldConfig.showIdentifier,
-            showDefinitions: fieldConfig.showDefinitions
+            showDefinitions: fieldConfig.showDefinitions,
+            roleLabel: fieldConfig.roleLabel,
+            showname: fieldConfig.showname,
+            type: fieldConfig.type,
+            inputStyle: fieldConfig.inputStyle,
+            'input-role': (val) => this.handleRoleInput(field, val),
+            'input-firstname': (val) => this.handleFirstnameInput(field, val),
+            'input-lastname': (val) => this.handleLastnameInput(field, val)
           }
         case 'license':
           return {
@@ -336,11 +362,11 @@ export default {
             ...props,
             disableSuggest: fieldConfig.disableSuggest
           }
-        case 'object-type-checkboxes':
+        case 'object-type':
           return {
             ...props,
-            resourceType: fieldConfig.resourceType,
-            showLabel: fieldConfig.showLabel
+            vocabulary: fieldConfig.vocabulary,
+            showValueDefinition: true
           }
         default:
           return props
@@ -376,12 +402,75 @@ export default {
       }
     },
 
+    handleRoleInput(field, value) {
+      const currentValue = this.phaidraValues[field] || {}
+      this.updatePhaidraMapping(field, { ...currentValue, role: value })
+    },
+
+    handleFirstnameInput(field, value) {
+      const currentValue = this.phaidraValues[field] || {}
+      this.updatePhaidraMapping(field, { ...currentValue, firstname: value })
+    },
+
+    handleLastnameInput(field, value) {
+      const currentValue = this.phaidraValues[field] || {}
+      this.updatePhaidraMapping(field, { ...currentValue, lastname: value })
+    },
+
+    handleTypeChange(field, value) {
+      const currentValue = this.phaidraValues[field] || {}
+      this.updatePhaidraMapping(field, { ...currentValue, type: value })
+    },
+
+    handleAddAuthor(field) {
+      // Clone current author
+      const currentValue = this.phaidraValues[field]
+      if (currentValue) {
+        this.updatePhaidraMapping(field, { ...currentValue })
+      }
+    },
+
+    handleAddClearAuthor(field) {
+      // Add new empty author
+      this.updatePhaidraMapping(field, {})
+    },
+
+    handleRemoveAuthor(field) {
+      this.clearPhaidraValue(field)
+    },
+
+    handleMoveAuthorUp(field) {
+      // Implement if needed for multiple authors
+    },
+
+    handleMoveAuthorDown(field) {
+      // Implement if needed for multiple authors
+    },
+
     updatePhaidraMapping(field, value) {
       if (value) {
         this.phaidraValues[field] = value
         // Get the field configuration
         const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
         const fieldConfig = elementConfig.field()
+        
+        // Special handling for object-type
+        if (elementConfig.value === 'object-type') {
+          this.setFieldMapping({ 
+            requiredField: field, 
+            csvColumn: `phaidra:objecttype:${value['@id']}` 
+          })
+          return
+        }
+
+        // Special handling for role/author
+        if (elementConfig.value === 'role:aut') {
+          this.setFieldMapping({ 
+            requiredField: field, 
+            csvColumn: `phaidra:role:${JSON.stringify(value)}` 
+          })
+          return
+        }
         
         // Store the mapping with field-specific configuration
         this.setFieldMapping({ 
