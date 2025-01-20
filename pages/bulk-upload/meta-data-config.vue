@@ -85,22 +85,12 @@
               </v-col>
               <v-col cols="4">
                 <div class="d-flex align-center">
-                  <p-i-form
+                  <component
                     v-if="selectedPhaidraElement[field]"
-                    :form="getPhaidraForm(field)"
-                    :enablerights="false"
-                    :enablerelationships="false"
-                    :enablepreview="false"
-                    :templating="false"
-                    :importing="false"
-                    :addbutton="false"
-                    :mouseoverfielddef="true"
-                    :help="false"
-                    :debug="false"
-                    :feedback="false"
-                    v-on:form-input="updatePhaidraMapping(field, $event)"
+                    :is="getPhaidraComponent(field)"
+                    v-bind="getPhaidraProps(field)"
                     :class="{ 'grey-input': !!fieldMappings[field], 'flex-grow-1': true }"
-                  ></p-i-form>
+                  ></component>
                   <v-select
                     v-else
                     disabled
@@ -203,16 +193,6 @@ export default {
             field.showIdentifier = true
             field.multilingual = false
             return field
-          }},
-          { text: 'Uploader', value: 'role:uploader', field: () => {
-            const field = fieldslib.getField("role")
-            field.ordergroup = "role"
-            field.roleVocabulary = "submitrolepredicate"
-            field.identifierType = "ids:orcid"
-            field.showDefinitions = true
-            field.showIdentifier = true
-            field.multilingual = false
-            return field
           }}
         ],
         'Description': [
@@ -292,19 +272,79 @@ export default {
   methods: {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
-    getPhaidraForm(field) {
+    getPhaidraComponent(field) {
       const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
-      if (elementConfig && elementConfig.field) {
-        const fieldConfig = elementConfig.field()
-        return {
-          sections: [
-            {
-              fields: [fieldConfig]
-            }
-          ]
-        }
+      if (!elementConfig) return null
+      
+      const fieldConfig = elementConfig.field()
+      // Map field types to their corresponding Phaidra input components
+      const componentMap = {
+        'title': 'PITitle',
+        'role': 'PIRole',
+        'description': 'PIDescription',
+        'keyword': 'PIKeyword',
+        'object-type-checkboxes': 'PIObjectType',
+        'language': 'PILanguage',
+        'license': 'PISelect',
+        'alternate-identifier': 'PIIdentifier'
       }
-      return { sections: [] }
+      
+      return componentMap[fieldConfig.component] || componentMap[elementConfig.value] || 'v-text-field'
+    },
+
+    getPhaidraProps(field) {
+      const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
+      if (!elementConfig) return {}
+      
+      const fieldConfig = elementConfig.field()
+      // Common props for all components
+      const props = {
+        value: this.phaidraValues[field],
+        label: fieldConfig.label || field,
+        field: fieldConfig,
+        outlined: true,
+        dense: true,
+        'hide-details': true,
+        input: (val) => this.updatePhaidraMapping(field, val)
+      }
+
+      // Add specific props based on field type
+      switch (elementConfig.value) {
+        case 'role':
+          return {
+            ...props,
+            roleVocabulary: fieldConfig.roleVocabulary,
+            identifierType: fieldConfig.identifierType,
+            showIdentifier: fieldConfig.showIdentifier,
+            showDefinitions: fieldConfig.showDefinitions
+          }
+        case 'license':
+          return {
+            ...props,
+            showValueDefinition: true,
+            vocabulary: 'alllicenses',
+            predicate: 'edm:rights',
+            field: {
+              ...fieldConfig,
+              vocabulary: 'alllicenses',
+              showValueDefinition: true,
+              predicate: 'edm:rights'
+            }
+          }
+        case 'keyword':
+          return {
+            ...props,
+            disableSuggest: fieldConfig.disableSuggest
+          }
+        case 'object-type-checkboxes':
+          return {
+            ...props,
+            resourceType: fieldConfig.resourceType,
+            showLabel: fieldConfig.showLabel
+          }
+        default:
+          return props
+      }
     },
 
     updateMapping(field, value) {
