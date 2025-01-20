@@ -149,10 +149,8 @@ import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 import { context } from "../../mixins/context"
 import { config } from "../../mixins/config"
-import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary";
+import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary"
 import fieldslib from "phaidra-vue-components/src/utils/fields"
-import jsonld from "phaidra-vue-components/src/utils/json-ld"
-import SelectLanguage from 'phaidra-vue-components/src/components/select/SelectLanguage'
 import PITitle from 'phaidra-vue-components/src/components/input/PITitle'
 import PIKeyword from 'phaidra-vue-components/src/components/input/PIKeyword'
 import PISelect from 'phaidra-vue-components/src/components/input/PISelect'
@@ -165,7 +163,6 @@ export default {
   name: 'MetaDataConfig',
 
   components: {
-    SelectLanguage,
     BulkUploadSteps,
     PITitle,
     PIKeyword,
@@ -183,11 +180,6 @@ export default {
       mappingType: {},
       selectedPhaidraElement: {},
       phaidraValues: {},
-      mappingTypes: [
-        { text: 'CSV Column', value: 'csv' },
-        { text: 'Phaidra UI Element', value: 'phaidra' }
-      ],
-      // Use the imported field elements
       fieldPhaidraElements: phaidraFieldMappings
     }
   },
@@ -354,31 +346,6 @@ export default {
     handleTypeChange(field, value) {
       const currentValue = this.phaidraValues[field] || {}
       this.updatePhaidraMapping(field, { ...currentValue, type: value })
-    },
-
-    handleAddAuthor(field) {
-      // Clone current author
-      const currentValue = this.phaidraValues[field]
-      if (currentValue) {
-        this.updatePhaidraMapping(field, { ...currentValue })
-      }
-    },
-
-    handleAddClearAuthor(field) {
-      // Add new empty author
-      this.updatePhaidraMapping(field, {})
-    },
-
-    handleRemoveAuthor(field) {
-      this.clearPhaidraValue(field)
-    },
-
-    handleMoveAuthorUp(field) {
-      // Implement if needed for multiple authors
-    },
-
-    handleMoveAuthorDown(field) {
-      // Implement if needed for multiple authors
     },
 
     updatePhaidraMapping(field, value) {
