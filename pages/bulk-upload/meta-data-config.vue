@@ -222,21 +222,7 @@ export default {
       const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
       if (!elementConfig) return null
       
-      const fieldConfig = elementConfig.field()
-      // Map field types to their corresponding Phaidra input components
-      const componentMap = {
-        'title': 'PITitle',
-        'entity': 'PIEntity',
-        'description': 'PITextField',
-        'keyword': 'PIKeyword',
-        'select': 'PISelect',
-        'language': 'PISelect',
-        'license': 'PISelect',
-        'alternate-identifier': 'PIAlternateIdentifier',
-        'text-field': 'PITextField'
-      }
-      
-      return componentMap[fieldConfig.component] || componentMap[elementConfig.value] || 'v-text-field'
+      return elementConfig.component || 'v-text-field'
     },
 
     getPhaidraProps(field) {
