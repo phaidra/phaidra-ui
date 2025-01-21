@@ -229,60 +229,15 @@ export default {
       const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
       if (!elementConfig) return {}
       
-      const fieldConfig = elementConfig.field()
-      // Common props for all components
-      const props = {
-        value: this.phaidraValues[field],
-        label: fieldConfig.label || field,
-        field: fieldConfig,
-        outlined: true,
-        dense: true,
-        'hide-details': true,
-        input: (val) => this.updatePhaidraMapping(field, val)
-      }
-
-      // Add specific props based on field type
-      switch (elementConfig.value) {
-        case 'role:aut':
-          return {
-            ...props,
-            roleVocabulary: fieldConfig.roleVocabulary,
-            showDefinitions: fieldConfig.showDefinitions,
-            roleLabel: fieldConfig.roleLabel,
-            showname: fieldConfig.showname,
-            type: fieldConfig.type,
-            inputStyle: fieldConfig.inputStyle,
-            'input-role': (val) => this.handleRoleInput(field, val),
-            'input-firstname': (val) => this.handleFirstnameInput(field, val),
-            'input-lastname': (val) => this.handleLastnameInput(field, val)
-          }
-        case 'license':
-          return {
-            ...props,
-            showValueDefinition: true,
-            vocabulary: 'alllicenses',
-            predicate: 'edm:rights',
-            field: {
-              ...fieldConfig,
-              vocabulary: 'alllicenses',
-              showValueDefinition: true,
-              predicate: 'edm:rights'
-            }
-          }
-        case 'keyword':
-          return {
-            ...props,
-            disableSuggest: fieldConfig.disableSuggest
-          }
-        case 'object-type':
-          return {
-            ...props,
-            vocabulary: fieldConfig.vocabulary,
-            showValueDefinition: true
-          }
-        default:
-          return props
-      }
+      return elementConfig.getProps(
+        this.phaidraValues[field],
+        (val) => this.updatePhaidraMapping(field, val),
+        {
+          handleRoleInput: (val) => this.handleRoleInput(field, val),
+          handleFirstnameInput: (val) => this.handleFirstnameInput(field, val),
+          handleLastnameInput: (val) => this.handleLastnameInput(field, val)
+        }
+      )
     },
 
     updateMapping(field, value) {

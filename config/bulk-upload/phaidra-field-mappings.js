@@ -1,5 +1,15 @@
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 
+const getSharedProps = (fieldConfig, value, updateMapping) => ({
+  value,
+  label: fieldConfig.label || fieldConfig.text,
+  field: fieldConfig,
+  outlined: true,
+  dense: true,
+  'hide-details': true,
+  input: updateMapping
+})
+
 export const phaidraFieldMappings = {
   'Title': [
     {
@@ -10,6 +20,9 @@ export const phaidraFieldMappings = {
         const field = fieldslib.getField("title")
         field.multilingual = false
         return field
+      },
+      getProps: function(value, updateMapping) {
+        return getSharedProps(this.field(), value, updateMapping)
       }
     }
   ],
@@ -31,6 +44,21 @@ export const phaidraFieldMappings = {
         field.type = 'schema:Person'
         field.inputStyle = 'outlined'
         return field
+      },
+      getProps: function(value, updateMapping, { handleRoleInput, handleFirstnameInput, handleLastnameInput }) {
+        const fieldConfig = this.field()
+        return {
+          ...getSharedProps(fieldConfig, value, updateMapping),
+          roleVocabulary: fieldConfig.roleVocabulary,
+          showDefinitions: fieldConfig.showDefinitions,
+          roleLabel: fieldConfig.roleLabel,
+          showname: fieldConfig.showname,
+          type: fieldConfig.type,
+          inputStyle: fieldConfig.inputStyle,
+          'input-role': handleRoleInput,
+          'input-firstname': handleFirstnameInput,
+          'input-lastname': handleLastnameInput
+        }
       }
     }
   ],
@@ -44,6 +72,9 @@ export const phaidraFieldMappings = {
         field.multilingual = false
         field.component = 'text-field'
         return field
+      },
+      getProps: function(value, updateMapping) {
+        return getSharedProps(this.field(), value, updateMapping)
       }
     }
   ],
@@ -57,6 +88,13 @@ export const phaidraFieldMappings = {
         field.disableSuggest = true
         field.multilingual = false
         return field
+      },
+      getProps: function(value, updateMapping) {
+        const fieldConfig = this.field()
+        return {
+          ...getSharedProps(fieldConfig, value, updateMapping),
+          disableSuggest: fieldConfig.disableSuggest
+        }
       }
     }
   ],
@@ -73,6 +111,14 @@ export const phaidraFieldMappings = {
         field.component = 'select'
         field.label = 'Object Type'
         return field
+      },
+      getProps: function(value, updateMapping) {
+        const fieldConfig = this.field()
+        return {
+          ...getSharedProps(fieldConfig, value, updateMapping),
+          vocabulary: fieldConfig.vocabulary,
+          showValueDefinition: true
+        }
       }
     }
   ],
@@ -85,6 +131,9 @@ export const phaidraFieldMappings = {
         const field = fieldslib.getField("alternate-identifier")
         field.multilingual = false
         return field
+      },
+      getProps: function(value, updateMapping) {
+        return getSharedProps(this.field(), value, updateMapping)
       }
     }
   ],
@@ -99,6 +148,15 @@ export const phaidraFieldMappings = {
         field.vocabulary = "alllicenses"
         field.multilingual = false
         return field
+      },
+      getProps: function(value, updateMapping) {
+        const fieldConfig = this.field()
+        return {
+          ...getSharedProps(fieldConfig, value, updateMapping),
+          showValueDefinition: true,
+          vocabulary: 'alllicenses',
+          predicate: 'edm:rights'
+        }
       }
     }
   ]
