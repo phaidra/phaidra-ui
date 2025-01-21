@@ -10,8 +10,14 @@ export const state = () => ({
   csvContent: null,
   columns: [],
   fileName: '',
-  requiredFields: ['Title', 'Role', 'Firstname', 'Lastname', 'Description', 'Keywords', 'Type', 'License'],
-  fieldMappings: {} // Will store mappings like { author: 'CSV_COLUMN_NAME' }
+  requiredFields: ['Title', 'Role', 'Firstname', 'Lastname', 'Description', 'Keywords', 'Type', 'License', 'Filename'],
+  fieldMappings: {}, // Will store mappings like { author: 'CSV_COLUMN_NAME' }
+  uploadState: {}, // Will store upload state for each row { rowIndex: { status: 'pending|uploading|completed|error', pid: null, error: null } }
+  uploadProgress: {
+    total: 0,
+    completed: 0,
+    failed: 0
+  }
 })
 
 export const mutations = {
@@ -43,6 +49,23 @@ export const mutations = {
   },
   clearFieldMappings(state) {
     state.fieldMappings = {}
+  },
+  setUploadState(state, { rowIndex, status, pid, error }) {
+    state.uploadState = {
+      ...state.uploadState,
+      [rowIndex]: { status, pid, error }
+    }
+  },
+  setUploadProgress(state, { total, completed, failed }) {
+    state.uploadProgress = { total, completed, failed }
+  },
+  clearUploadState(state) {
+    state.uploadState = {}
+    state.uploadProgress = {
+      total: 0,
+      completed: 0,
+      failed: 0
+    }
   }
 }
 
@@ -67,5 +90,14 @@ export const getters = {
   },
   getFieldMapping: (state) => (field) => {
     return state.fieldMappings[field]
+  },
+  getUploadState: (state) => (rowIndex) => {
+    return state.uploadState[rowIndex] || { status: 'pending', pid: null, error: null }
+  },
+  getUploadProgress: (state) => {
+    return state.uploadProgress
+  },
+  isUploadComplete: (state) => {
+    return state.uploadProgress.completed + state.uploadProgress.failed === state.uploadProgress.total
   }
 } 
