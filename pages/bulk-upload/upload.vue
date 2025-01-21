@@ -15,6 +15,28 @@
       <v-col cols="12">
         <v-card outlined>
           <v-card-text>
+            <!-- File Selection -->
+            <div class="d-flex align-center justify-space-between mb-4">
+              <div>
+                <span class="text-h6">Files</span>
+              </div>
+              <div class="d-flex align-center">
+                <v-file-input
+                  v-model="selectedFiles"
+                  multiple
+                  chips
+                  show-size
+                  counter
+                  label="Select Files"
+                  outlined
+                  dense
+                  class="max-w-500"
+                  :error-messages="fileError"
+                  @change="handleFileSelection"
+                ></v-file-input>
+              </div>
+            </div>
+
             <div class="d-flex align-center justify-space-between mb-2">
               <div>
                 <span class="text-h6">Upload Progress</span>
@@ -185,10 +207,13 @@ export default {
       headers: [
         { text: 'Row', value: 'index' },
         { text: 'Title', value: 'title' },
+        { text: 'Filename', value: 'filename' },
         { text: 'Status', value: 'status' },
         { text: 'Actions', value: 'actions', sortable: false }
       ],
       isUploading: false,
+      selectedFiles: [],
+      fileError: '',
       errorDialog: {
         show: false,
         row: null,
@@ -217,26 +242,33 @@ export default {
       if (!this.csvContent) return []
 
       const rows = this.csvContent.split('\n')
-      const headers = rows[0].split(';').map(h => h.trim().replace(/["']/g, ''))
+      const headers = rows[0].split(';').map(h => h.trim()).filter(Boolean)
       
-      return rows.slice(1).map((row, index) => {
-        const values = row.split(';').map(v => v.trim().replace(/["']/g, ''))
-        const uploadState = this.getUploadState(index)
-        
-        // Get title from CSV mapping
-        const titleColumn = this.fieldMappings['Title']
-        const title = titleColumn?.startsWith('phaidra:') 
-          ? titleColumn.split(':')[2]
-          : values[headers.indexOf(titleColumn)] || 'No title'
+      return rows.slice(1)
+        .filter(row => row && row.trim()) // Skip empty rows
+        .map((row, index) => {
+          const values = row.split(';').map(v => v.trim())
+          const uploadState = this.getUploadState(index)
+          
+          // Get title and filename from CSV mapping
+          const titleColumn = this.fieldMappings['Title']
+          const filenameColumn = this.fieldMappings['Filename']
+          const title = titleColumn?.startsWith('phaidra:') 
+            ? titleColumn.split(':')[2]
+            : values[headers.indexOf(titleColumn)] || 'No title'
+          const filename = filenameColumn?.startsWith('phaidra:')
+            ? filenameColumn.split(':')[2]
+            : values[headers.indexOf(filenameColumn)]
 
-        return {
-          index: index + 1,
-          title,
-          status: uploadState.status,
-          pid: uploadState.pid,
-          error: uploadState.error
-        }
-      })
+          return {
+            index: index + 1,
+            title,
+            filename,
+            status: uploadState.status,
+            pid: uploadState.pid,
+            error: uploadState.error
+          }
+        })
     }
   },
 
@@ -273,19 +305,22 @@ export default {
       if (this.isUploading) return
 
       this.isUploading = true
-      const rows = this.csvContent.split('\n')
-      const headers = rows[0].split(';').map(h => h.trim().replace(/["']/g, ''))
+      const rows = this.csvContent?.split('\n') || []
+      const headers = rows[0].split(';').map(h => h.trim()).filter(Boolean)
+      
+      // Filter out empty rows
+      const validRows = rows.slice(1).filter(row => row && row.trim())
 
       // Initialize progress
       this.setUploadProgress({
-        total: rows.length - 1,
+        total: validRows.length,
         completed: this.uploadProgress.completed,
         failed: this.uploadProgress.failed
       })
 
       // Process each row
-      for (let i = 1; i < rows.length; i++) {
-        const rowIndex = i - 1
+      for (let i = 0; i < validRows.length; i++) {
+        const rowIndex = i
         const uploadState = this.getUploadState(rowIndex)
 
         // Skip if already completed
@@ -293,7 +328,7 @@ export default {
 
         try {
           this.setUploadState({ rowIndex, status: 'uploading', pid: null, error: null })
-          const values = rows[i].split(';').map(v => v.trim().replace(/["']/g, ''))
+          const values = validRows[i].split(';').map(v => v.trim())
           
           // Create form data for upload
           const formData = await this.createFormData(headers, values)
@@ -361,6 +396,43 @@ export default {
       await this.startUpload()
     },
 
+    handleFileSelection(files) {
+      this.fileError = ''
+      if (!files || files.length === 0) return
+
+      // Get all required filenames from CSV
+      const rows = this.csvContent?.split('\n') || []
+      const headers = rows[0].split(';').map(h => h.trim()).filter(Boolean)
+      const filenameColumn = this.fieldMappings['Filename']
+      const filenameIndex = headers.indexOf(filenameColumn)
+      
+      if (filenameIndex === -1) {
+        this.fileError = 'No filename column mapped in CSV configuration'
+        this.selectedFiles = []
+        return
+      }
+
+      const requiredFiles = new Set(
+        rows.slice(1)
+          .filter(row => row && row.trim()) // Skip empty rows
+          .map(row => row.split(';')[filenameIndex].trim())
+          .filter(Boolean)
+      )
+
+      // Check if all required files are present
+      const selectedFileNames = new Set(files.map(f => f.name).filter(Boolean))
+      const missingFiles = [...requiredFiles].filter(f => !selectedFileNames.has(f))
+      const extraFiles = [...selectedFileNames].filter(f => !requiredFiles.has(f))
+
+      if (missingFiles.length > 0) {
+        this.fileError = `Missing required files: ${missingFiles.join(', ')}`
+        this.selectedFiles = []
+      } else if (extraFiles.length > 0) {
+        this.fileError = `Extra files not in CSV: ${extraFiles.join(', ')}`
+        this.selectedFiles = []
+      }
+    },
+
     async createFormData(headers, values) {
       console.log('Creating form data with mappings:', this.fieldMappings)
       
@@ -374,18 +446,19 @@ export default {
       }
 
       // Map fields based on fieldMappings
-      for (const [field, mapping] of Object.entries(this.fieldMappings)) {
+      for (const [field, mapping] of Object.entries(this.fieldMappings || {})) {
+        if (!mapping) continue
         console.log(`Processing field: ${field} with mapping: ${mapping}`)
         
         let f = null
         try {
-          if (mapping?.startsWith('phaidra:')) {
+          if (mapping.startsWith('phaidra:')) {
             const [_, element, value] = mapping.split(':')
             console.log(`Processing Phaidra field: ${element} with value:`, value)
             
             if (element === 'object-type') {
               f = fieldslib.getField('object-type-checkboxes')
-              const parsedValue = JSON.parse(value)
+              const parsedValue = JSON.parse(value || '{}')
               f.value = parsedValue['@id']
               f.showLabel = true
               if (parsedValue['@type']) {
@@ -397,7 +470,7 @@ export default {
               f.roleVocabulary = "submitrolepredicate"
               f.showDefinitions = true
               f.role = element
-              const parsedValue = JSON.parse(value)
+              const parsedValue = JSON.parse(value || '{}')
               f.name = `${parsedValue.firstname} ${parsedValue.lastname}`
             } else if (element === 'license') {
               f = fieldslib.getField('license')
@@ -428,7 +501,7 @@ export default {
                 break
               case 'keywords':
                 f = fieldslib.getField('keyword')
-                f.value = value ? value.split(';').map(k => k.trim()) : []
+                f.value = value ? value.split(';').map(k => k.trim()).filter(Boolean) : []
                 f.language = this.$i18n.locale
                 f.disableSuggest = true
                 break
@@ -479,15 +552,19 @@ export default {
       formData.append('metadata', JSON.stringify(metadata))
       
       // Add file data if present
-      const fileColumnIndex = headers.indexOf('File')
-      if (fileColumnIndex >= 0) {
-        const fileData = values[fileColumnIndex]
-        const fileName = values[headers.indexOf('Filename')] || 'file.dat'
-        const mimeType = values[headers.indexOf('Mimetype')] || 'application/octet-stream'
-        
-        const file = new File([fileData], fileName, { type: mimeType })
-        formData.append('file', file)
-        formData.append('mimetype', mimeType)
+      const filenameColumn = this.fieldMappings['Filename']
+      if (filenameColumn) {
+        const filenameIndex = headers.indexOf(filenameColumn)
+        const filename = values[filenameIndex]
+        if (filename) {
+          const file = this.selectedFiles.find(f => f.name === filename)
+          if (file) {
+            formData.append('file', file)
+            formData.append('mimetype', file.type || 'application/octet-stream')
+          } else {
+            throw new Error(`File not found: ${filename}`)
+          }
+        }
       }
 
       return formData
@@ -497,8 +574,10 @@ export default {
   created() {
     // Initialize upload progress if not already set
     if (this.uploadProgress.total === 0) {
+      const rows = this.csvContent?.split('\n') || []
+      const validRows = rows.slice(1).filter(row => row && row.trim())
       this.setUploadProgress({
-        total: this.csvContent ? this.csvContent.split('\n').length - 1 : 0,
+        total: validRows.length,
         completed: 0,
         failed: 0
       })
