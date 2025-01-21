@@ -150,26 +150,13 @@ import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 import { context } from "../../mixins/context"
 import { config } from "../../mixins/config"
 import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary"
-import fieldslib from "phaidra-vue-components/src/utils/fields"
-import PITitle from 'phaidra-vue-components/src/components/input/PITitle'
-import PIKeyword from 'phaidra-vue-components/src/components/input/PIKeyword'
-import PISelect from 'phaidra-vue-components/src/components/input/PISelect'
-import PIObjectType from 'phaidra-vue-components/src/components/input/PIObjectType'
-import PIEntity from 'phaidra-vue-components/src/components/input/PIEntity'
-import PIAlternateIdentifier from 'phaidra-vue-components/src/components/input/PIAlternateIdentifier'
 import { phaidraFieldMappings } from '~/config/bulk-upload/phaidra-field-mappings'
 
 export default {
   name: 'MetaDataConfig',
 
   components: {
-    BulkUploadSteps,
-    PITitle,
-    PIKeyword,
-    PISelect,
-    PIObjectType,
-    PIEntity,
-    PIAlternateIdentifier
+    BulkUploadSteps
   },
 
   mixins: [context, config, vocabulary],
