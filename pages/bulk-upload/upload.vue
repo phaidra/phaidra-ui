@@ -501,7 +501,7 @@ export default {
                 break
               case 'keywords':
                 f = fieldslib.getField('keyword')
-                f.value = value ? value.split(';').map(k => k.trim()).filter(Boolean) : []
+                f.value = value ? value.split(',').map(k => k.trim()).filter(Boolean) : []
                 f.language = this.$i18n.locale
                 f.disableSuggest = true
                 break
