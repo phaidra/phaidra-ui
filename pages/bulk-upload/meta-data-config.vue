@@ -51,7 +51,7 @@
               <v-col cols="2">
                 <v-select
                   v-model="fieldMappings[field]"
-                  :items="getAvailableColumns(field)"
+                  :items="getAvailableCSVColumns(field)"
                   outlined
                   dense
                   clearable
@@ -186,8 +186,8 @@ export default {
       })
     },
 
-    // Get available columns for a specific field
-    getAvailableColumns() {
+    // Get available CSV columns, excluding the already selected ones to prevent duplicates
+    getAvailableCSVColumns() {
       return (currentField) => {
         // Get all currently selected values except for the current field
         const selectedValues = Object.entries(this.fieldMappings)
