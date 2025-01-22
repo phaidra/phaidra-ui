@@ -9,13 +9,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 
 export default {
   name: 'BulkUploadIndex',
-  layout: 'default',
+
   components: {
     BulkUploadSteps
+  },
+
+  computed: {
+    ...mapState('bulk-upload', ['currentStep', 'steps'])
   },
 
   mounted() {
@@ -26,45 +31,22 @@ export default {
 
   methods: {
     handleRedirect() {
+      // we set a timeout for better user experience
       setTimeout(() => {
-        if (!this.storeState) {
-          return this.$router.push('/bulk-upload/csv-config')
+        if (!this.currentStep) {
+          return this.steps[1].route
         }
 
-        let redirectStep = this.storeState.currentStep || 1
-        
-        try {
-          const savedState = localStorage.getItem('bulkUploadState')
-          if (savedState) {
-            const state = JSON.parse(savedState)
-            if (state.currentStep && state.currentStep > 0) {
-              redirectStep = state.currentStep
-            }
-          }
-        } catch (e) {
-          // If localStorage fails, fall back to store state
-          console.error('localStorage error:', e)
-        }
+        let redirectStep = this.currentStep || 1
 
-        if (this.storeState?.steps) {
-          const steps = this.storeState.steps
-          if (steps[redirectStep]) {
-            this.$router.push(steps[redirectStep].route)
-          } else {
-            this.$router.push('/bulk-upload/csv-config')
-          }
+        if (this.steps) {
+          this.$router.push(this.steps[redirectStep].route)
         } else {
           this.$router.push('/bulk-upload/csv-config')
         }
       }, 1200)
     }
   },
-
-  computed: {
-    storeState() {
-      return this.$store?.state['bulk-upload'] || null
-    }
-  }
 }
 </script>
 
