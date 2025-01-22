@@ -49,18 +49,18 @@
                   {{ uploadProgress.failed }} Failed
                 </v-chip>
                 <v-chip color="primary" outlined>
-                  {{ uploadProgress.total - (uploadProgress.completed + uploadProgress.failed) }} Remaining
+                  {{ uploadProgress.total - (uploadProgress.completed) }} Remaining
                 </v-chip>
               </div>
             </div>
             <v-progress-linear
-              :value="(uploadProgress.completed + uploadProgress.failed) / Math.max(1, uploadProgress.total) * 100"
+              :value="(uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100"
               height="20"
               color="primary"
               striped
             >
               <template v-slot:default>
-                {{ Math.round((uploadProgress.completed + uploadProgress.failed) / Math.max(1, uploadProgress.total) * 100) }}%
+                {{ Math.round((uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100) }}%
               </template>
             </v-progress-linear>
           </v-card-text>

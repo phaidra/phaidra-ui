@@ -105,6 +105,6 @@ export const getters = {
     return state.uploadProgress
   },
   isUploadComplete: (state) => {
-    return state.uploadProgress.completed + state.uploadProgress.failed === state.uploadProgress.total
+    return state.uploadProgress.completed === state.uploadProgress.total
   }
 } 
