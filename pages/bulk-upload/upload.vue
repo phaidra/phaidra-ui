@@ -250,15 +250,21 @@ export default {
           const values = row.split(';').map(v => v.trim())
           const uploadState = this.getUploadState(index)
           
-          // Get title and filename from CSV mapping
-          const titleColumn = this.fieldMappings['Title']
-          const filenameColumn = this.fieldMappings['Filename']
-          const title = titleColumn?.startsWith('phaidra:') 
-            ? titleColumn.split(':')[2]
-            : values[headers.indexOf(titleColumn)] || 'No title'
-          const filename = filenameColumn?.startsWith('phaidra:')
-            ? filenameColumn.split(':')[2]
-            : values[headers.indexOf(filenameColumn)]
+          // Get title and filename from mapping
+          const titleMapping = this.fieldMappings['Title']
+          const filenameMapping = this.fieldMappings['Filename']
+          
+          const title = titleMapping?.source === 'phaidra-field' 
+            ? titleMapping.value
+            : titleMapping?.source === 'csv-column'
+              ? values[headers.indexOf(titleMapping.value)] || 'No title'
+              : 'No title'
+              
+          const filename = filenameMapping?.source === 'phaidra-field'
+            ? filenameMapping.value
+            : filenameMapping?.source === 'csv-column'
+              ? values[headers.indexOf(filenameMapping.value)]
+              : null
 
           return {
             index: index + 1,
@@ -403,11 +409,17 @@ export default {
       // Get all required filenames from CSV
       const rows = this.csvContent?.split('\n') || []
       const headers = rows[0].split(';').map(h => h.trim()).filter(Boolean)
-      const filenameColumn = this.fieldMappings['Filename']
-      const filenameIndex = headers.indexOf(filenameColumn)
+      const filenameMapping = this.fieldMappings['Filename']
       
-      if (filenameIndex === -1) {
+      if (!filenameMapping || filenameMapping.source !== 'csv-column') {
         this.fileError = 'No filename column mapped in CSV configuration'
+        this.selectedFiles = []
+        return
+      }
+
+      const filenameIndex = headers.indexOf(filenameMapping.value)
+      if (filenameIndex === -1) {
+        this.fileError = 'Mapped filename column not found in CSV'
         this.selectedFiles = []
         return
       }
@@ -448,15 +460,15 @@ export default {
       // Map fields based on fieldMappings
       for (const [field, mapping] of Object.entries(this.fieldMappings || {})) {
         if (!mapping) continue
-        console.log(`Processing field: ${field} with mapping: ${mapping}`)
+        console.log(`Processing field: ${field} with mapping:`, mapping)
         
         let f = null
         try {
-          if (mapping.startsWith('phaidra:')) {
-            const [_, element, value] = mapping.split(':')
-            console.log(`Processing Phaidra field: ${element} with value:`, value)
+          if (mapping.source === 'phaidra-field') {
+            const value = mapping.value
+            console.log(`Processing Phaidra field: ${field} with value:`, value)
             
-            if (element === 'object-type') {
+            if (field === 'Type') {
               f = fieldslib.getField('object-type-checkboxes')
               const parsedValue = JSON.parse(value || '{}')
               f.value = parsedValue['@id']
@@ -464,27 +476,27 @@ export default {
               if (parsedValue['@type']) {
                 f.type = parsedValue['@type']
               }
-            } else if (element === 'role:aut') {
+            } else if (field === 'Role') {
               f = fieldslib.getField('role')
               f.ordergroup = "role"
               f.roleVocabulary = "submitrolepredicate"
               f.showDefinitions = true
-              f.role = element
+              f.role = 'role:aut'
               const parsedValue = JSON.parse(value || '{}')
               f.name = `${parsedValue.firstname} ${parsedValue.lastname}`
-            } else if (element === 'license') {
+            } else if (field === 'License') {
               f = fieldslib.getField('license')
               f.showValueDefinition = true
               f.vocabulary = "alllicenses"
               f.value = value
             } else {
-              f = fieldslib.getField(element)
+              f = fieldslib.getField(field.toLowerCase())
               if (f) {
                 f.value = value
               }
             }
-          } else {
-            const columnIndex = headers.indexOf(mapping)
+          } else if (mapping.source === 'csv-column') {
+            const columnIndex = headers.indexOf(mapping.value)
             const value = values[columnIndex]
             console.log(`Processing CSV field: ${field} with value:`, value)
             
@@ -552,9 +564,9 @@ export default {
       formData.append('metadata', JSON.stringify(metadata))
       
       // Add file data if present
-      const filenameColumn = this.fieldMappings['Filename']
-      if (filenameColumn) {
-        const filenameIndex = headers.indexOf(filenameColumn)
+      const filenameMapping = this.fieldMappings['Filename']
+      if (filenameMapping?.source === 'csv-column') {
+        const filenameIndex = headers.indexOf(filenameMapping.value)
         const filename = values[filenameIndex]
         if (filename) {
           const file = this.selectedFiles.find(f => f.name === filename)

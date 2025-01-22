@@ -11,7 +11,7 @@ export const state = () => ({
   columns: [],
   fileName: '',
   requiredFields: ['Title', 'Role', 'Firstname', 'Lastname', 'Description', 'Keywords', 'Type', 'License', 'Filename'],
-  fieldMappings: {}, // Will store mappings like { author: 'CSV_COLUMN_NAME' }
+  fieldMappings: {}, // Will store mappings like { field: { source: 'csv-column|phaidra-field', value: string } }
   uploadState: {}, // Will store upload state for each row { rowIndex: { status: 'pending|uploading|completed|error', pid: null, error: null } }
   uploadProgress: {
     total: 0,
@@ -44,8 +44,12 @@ export const mutations = {
   setFileName(state, fileName) {
     state.fileName = fileName
   },
-  setFieldMapping(state, { requiredField, csvColumn }) {
-    state.fieldMappings[requiredField] = csvColumn
+  setFieldMapping(state, { requiredField, source, value }) {
+    if (value === null) {
+      state.fieldMappings[requiredField] = null
+    } else {
+      state.fieldMappings[requiredField] = { source, value }
+    }
   },
   clearFieldMappings(state) {
     state.fieldMappings = {}
@@ -90,6 +94,9 @@ export const getters = {
   },
   getFieldMapping: (state) => (field) => {
     return state.fieldMappings[field]
+  },
+  getAllFieldMappings: (state) => {
+    return state.fieldMappings
   },
   getUploadState: (state) => (rowIndex) => {
     return state.uploadState[rowIndex] || { status: 'pending', pid: null, error: null }

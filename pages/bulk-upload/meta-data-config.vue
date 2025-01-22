@@ -173,16 +173,12 @@ export default {
 
   computed: {
     ...mapState('bulk-upload', ['columns', 'steps', 'requiredFields']),
-    ...mapGetters('bulk-upload', ['getFieldMapping']),
+    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings']),
 
     allFieldsMapped() {
       return this.requiredFields.every(field => {
-        if (this.mappingType[field] === 'csv') {
-          return this.fieldMappings[field]
-        } else if (this.mappingType[field] === 'phaidra') {
-          return this.phaidraValues[field]
-        }
-        return false
+        const mapping = this.getFieldMapping(field)
+        return mapping !== null
       })
     },
 
@@ -190,9 +186,11 @@ export default {
     getAvailableCSVColumns() {
       return (currentField) => {
         // Get all currently selected values except for the current field
-        const selectedValues = Object.entries(this.fieldMappings)
+        const allMappings = this.getAllFieldMappings
+        const selectedValues = Object.entries(allMappings)
           .filter(([field]) => field !== currentField)
-          .map(([_, value]) => value)
+          .filter(([_, mapping]) => mapping?.source === 'csv-column')
+          .map(([_, mapping]) => mapping.value)
         
         // Return only columns that aren't selected in other fields, sorted alphabetically
         return this.columns
@@ -229,26 +227,24 @@ export default {
 
     updateMapping(field, value) {
       if (value === null) {
-        // When cleared, delete the mapping from both local state and store
-        this.$delete(this.fieldMappings, field)
-        this.setFieldMapping({ requiredField: field, csvColumn: null })
+        // When cleared, delete the mapping
+        this.setFieldMapping({ requiredField: field, source: null, value: null })
       } else {
-        this.setFieldMapping({ requiredField: field, csvColumn: value })
+        this.setFieldMapping({ requiredField: field, source: 'csv-column', value })
       }
     },
 
     handleMappingTypeChange(field) {
       // Clear existing mappings when switching types
-      this.$delete(this.fieldMappings, field)
-      this.$delete(this.phaidraValues, field)
       this.$delete(this.selectedPhaidraElement, field)
-      this.setFieldMapping({ requiredField: field, csvColumn: null })
+      this.$delete(this.phaidraValues, field)
+      this.setFieldMapping({ requiredField: field, source: null, value: null })
     },
 
     handlePhaidraElementChange(field, value) {
       // Clear existing value when changing Phaidra element
       this.$delete(this.phaidraValues, field)
-      this.setFieldMapping({ requiredField: field, csvColumn: null })
+      this.setFieldMapping({ requiredField: field, source: null, value: null })
       
       // If the element selection was cleared (value is null), clear the element selection too
       if (!value) {
@@ -287,7 +283,8 @@ export default {
         if (elementConfig.value === 'object-type') {
           this.setFieldMapping({ 
             requiredField: field, 
-            csvColumn: `phaidra:objecttype:${value['@id']}` 
+            source: 'phaidra-field',
+            value: JSON.stringify(value)
           })
           return
         }
@@ -296,7 +293,8 @@ export default {
         if (elementConfig.value === 'role:aut') {
           this.setFieldMapping({ 
             requiredField: field, 
-            csvColumn: `phaidra:role:${JSON.stringify(value)}` 
+            source: 'phaidra-field',
+            value: JSON.stringify(value)
           })
           return
         }
@@ -304,11 +302,12 @@ export default {
         // Store the mapping with field-specific configuration
         this.setFieldMapping({ 
           requiredField: field, 
-          csvColumn: `phaidra:${fieldConfig.predicate || this.selectedPhaidraElement[field]}:${value}` 
+          source: 'phaidra-field',
+          value: value.toString()
         })
       } else {
         this.$delete(this.phaidraValues, field)
-        this.setFieldMapping({ requiredField: field, csvColumn: null })
+        this.setFieldMapping({ requiredField: field, source: null, value: null })
       }
     },
 
@@ -320,25 +319,29 @@ export default {
 
     clearPhaidraValue(field) {
       this.$delete(this.phaidraValues, field)
-      this.setFieldMapping({ requiredField: field, csvColumn: null })
+      this.setFieldMapping({ requiredField: field, source: null, value: null })
     }
   },
 
   created() {
     // Initialize mappings from store and try automatic matching
     this.requiredFields.forEach(field => {
-      const mapping = this.getFieldMapping(field)
-      if (mapping) {
-        if (mapping.startsWith('phaidra:')) {
+      const mapping = this.getAllFieldMappings
+      if (mapping[field]) {
+        if (mapping[field].source === 'phaidra-field') {
           // Handle Phaidra mapping
-          const [_, element, value] = mapping.split(':')
-          this.mappingType[field] = 'phaidra'
-          this.selectedPhaidraElement[field] = element
-          this.phaidraValues[field] = value
-        } else {
+          const elementConfig = this.fieldPhaidraElements[field]?.find(e => e.value === this.selectedPhaidraElement[field])
+          if (elementConfig) {
+            this.selectedPhaidraElement[field] = elementConfig.value
+            this.phaidraValues[field] = mapping[field].value
+          }
+        } else if (mapping[field].source === 'csv-column') {
           // Handle CSV mapping
-          this.mappingType[field] = 'csv'
-          this.fieldMappings[field] = mapping
+          const columnExists = this.columns.includes(mapping[field].value)
+          if (columnExists) {
+            this.fieldMappings[field] = mapping[field].value
+            this.setFieldMapping({ requiredField: field, source: 'csv-column', value: mapping[field].value })
+          }
         }
       } else {
         // Try to find automatic match if no mapping exists
@@ -347,7 +350,11 @@ export default {
         )
         if (matchingColumn) {
           this.fieldMappings[field] = matchingColumn
-          this.setFieldMapping({ requiredField: field, csvColumn: matchingColumn })
+          this.setFieldMapping({ 
+            requiredField: field, 
+            source: 'csv-column', 
+            value: matchingColumn 
+          })
         }
       }
     })

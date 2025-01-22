@@ -80,7 +80,7 @@ export default {
 
   computed: {
     ...mapState('bulk-upload', ['steps', 'csvContent']),
-    ...mapGetters('bulk-upload', ['getMappedFields', 'getFieldMapping']),
+    ...mapGetters('bulk-upload', ['getMappedFields', 'getAllFieldMappings']),
 
     mappedFields() {
       return this.getMappedFields
@@ -110,14 +110,15 @@ export default {
         
         // Map fields based on whether they come from CSV or are Phaidra values
         this.mappedFields.forEach(field => {
-          const mapping = this.getFieldMapping(field)
-          if (mapping?.startsWith('phaidra:')) {
-            // For Phaidra values, extract the actual value from the mapping
-            const [_, element, value] = mapping.split(':')
-            rowData[field] = value
-          } else {
+          const mapping = this.getAllFieldMappings[field]
+          if (!mapping) {
+            rowData[field] = ''
+          } else if (mapping.source === 'phaidra-field') {
+            // For Phaidra values, use the value directly
+            rowData[field] = mapping.value
+          } else if (mapping.source === 'csv-column') {
             // For CSV mappings, get the value from the corresponding column
-            const columnIndex = headers.indexOf(mapping)
+            const columnIndex = headers.indexOf(mapping.value)
             rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
           }
         })
@@ -129,12 +130,13 @@ export default {
     },
 
     getSourceColumn(field) {
-      const mapping = this.getFieldMapping(field)
-      if (mapping?.startsWith('phaidra:')) {
-        const [_, element, value] = mapping.split(':')
-        return `Phaidra: ${element}`
+      const mapping = this.getAllFieldMappings
+      if (mapping[field]?.source === 'phaidra-field') {
+        return `Phaidra: ${mapping[field].value}`
       }
-      return mapping
+      else if (mapping[field]?.source === 'csv-column') {
+        return mapping[field].value
+      }
     },
 
     proceed() {
