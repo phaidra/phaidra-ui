@@ -214,8 +214,12 @@ export default {
       const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
       if (!elementConfig) return {}
       
+      const value = this.phaidraValues[field]
+      // Convert object values to strings for the component props
+      const displayValue = value ? (typeof value === 'object' ? value.value || '' : value) : ''
+      
       return elementConfig.getProps(
-        this.phaidraValues[field],
+        displayValue,
         (val) => this.updatePhaidraMapping(field, val),
         {
           handleRoleInput: (val) => this.handleRoleInput(field, val),
@@ -244,11 +248,24 @@ export default {
     handlePhaidraElementChange(field, value) {
       // Clear existing value when changing Phaidra element
       this.$delete(this.phaidraValues, field)
-      this.setFieldMapping({ requiredField: field, source: null, value: null })
       
-      // If the element selection was cleared (value is null), clear the element selection too
       if (!value) {
+        // If the element selection was cleared, clear everything
         this.$delete(this.selectedPhaidraElement, field)
+        this.setFieldMapping({ requiredField: field, source: null, value: null })
+      } else {
+        // Get the selected element configuration
+        const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === value)
+        if (elementConfig) {
+          // Store the full field object
+          const fieldObject = elementConfig.field()
+          this.phaidraValues[field] = fieldObject
+          this.setFieldMapping({ 
+            requiredField: field, 
+            source: 'phaidra-field',
+            value: fieldObject
+          })
+        }
       }
     },
 
@@ -275,35 +292,10 @@ export default {
     updatePhaidraMapping(field, value) {
       if (value) {
         this.phaidraValues[field] = value
-        // Get the field configuration
-        const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
-        const fieldConfig = elementConfig.field()
-        
-        // Special handling for object-type
-        if (elementConfig.value === 'object-type') {
-          this.setFieldMapping({ 
-            requiredField: field, 
-            source: 'phaidra-field',
-            value: JSON.stringify(value)
-          })
-          return
-        }
-
-        // Special handling for role/author
-        if (elementConfig.value === 'role:aut') {
-          this.setFieldMapping({ 
-            requiredField: field, 
-            source: 'phaidra-field',
-            value: JSON.stringify(value)
-          })
-          return
-        }
-        
-        // Store the mapping with field-specific configuration
         this.setFieldMapping({ 
           requiredField: field, 
           source: 'phaidra-field',
-          value: value.toString()
+          value: value
         })
       } else {
         this.$delete(this.phaidraValues, field)
