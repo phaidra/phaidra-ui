@@ -180,27 +180,24 @@ export default {
         return
       }
 
-      // Only show confirmation if we're beyond step 1
+      // Show confirmation dialog if user is beyond step 1 and hence has data & progress
       if (this.maxStepReached > 1) {
         this.pendingFile = file
         this.showConfirmDialog = true
         return
       }
 
-      await this.resetAndProcessFile(file)
+      await this.uploadCsvFile(file)
     },
 
     cancelNewFile() {
       this.showConfirmDialog = false
       this.pendingFile = null
-      this.safelyClearFileInput()
-    },
 
-    safelyClearFileInput() {
       if (this.$refs.fileInput) {
         // temporarily remove the change listener, since with the listener, setting file to null (see below)
         // would completely remove the initial file and its data too
-        const originalChange = this.$refs.fileInput.$listeners.change
+        const originalChangeListener = this.$refs.fileInput.$listeners.change
         this.$refs.fileInput.$off('change')
         
         // reset the file input using the native input element, this way a user can re-select the same file and get prompted again
@@ -214,52 +211,60 @@ export default {
         
         // restore the change listener
         this.$nextTick(() => {
-          this.$refs.fileInput.$on('change', originalChange)
+          this.$refs.fileInput.$on('change', originalChangeListener)
         })
       }
     },
 
     async confirmNewFile() {
       this.showConfirmDialog = false
-      this.showFileInput = false
+
       const file = this.pendingFile
       this.pendingFile = null
-      await this.resetAndProcessFile(file)
+
+      await this.uploadCsvFile(file)
     },
 
-    // Reset all state and process the new file
-    async resetAndProcessFile(file) {
-      // Clear all existing data
-      this.setCsvContent(null)
-      this.setColumns([])
-      this.setFileName('')
-      this.clearFieldMappings()
-      this.clearUploadState()
-      this.resetSteps()
-      
+    // technically, this is not really an upload but more a processing the files and saving data to local storage
+    // from a user perspective it feels like an upload so thought naming would fit well on the technical side too
+    async uploadCsvFile(file) {
       try {
-        const text = await this.readFileContent(file)
-        const firstLine = text.split('\n')[0]
-        const columns = firstLine
-          .split(';')
-          .map(col => col.trim().replace(/["']/g, ''))
-          .filter(col => col !== '')
+        this.resetExistingData()
+
+        const text = await this.readFile(file)
+
+        await this.storeFileData(text, file.name)
         
-        if (columns.length === 0) {
-          throw new Error('No valid columns found in the CSV file')
-        }
-        
-        // Store the CSV content and filename in Vuex using mutations
-        this.setCsvContent(text)
-        this.setColumns(columns)
-        this.setFileName(file.name)
-        this.completeStep(1)
         this.showFileInput = false
         this.errorMessage = ''
       } catch (error) {
         this.errorMessage = 'Error reading CSV file. Please make sure it\'s a valid CSV file.'
         console.error('Error reading CSV:', error)
       }
+    },
+
+    resetExistingData() {
+      this.setCsvContent(null)
+      this.setColumns([])
+      this.setFileName('')
+      this.clearFieldMappings()
+      this.clearUploadState()
+      this.resetSteps()
+    },
+
+    async readFile(file) {
+      const text = await this.readFileContent(file)
+      const firstLine = text.split('\n')[0]
+      const columns = firstLine
+        .split(';')
+        .map(col => col.trim().replace(/["']/g, ''))
+        .filter(col => col !== '')
+      
+      if (columns.length === 0) {
+        throw new Error('No valid columns found in the CSV file')
+      }
+      
+      return text
     },
 
     readFileContent(file) {
@@ -269,6 +274,19 @@ export default {
         reader.onerror = (error) => reject(error)
         reader.readAsText(file)
       })
+    },
+
+    async storeFileData(text, fileName) {
+      const firstLine = text.split('\n')[0]
+      const columns = firstLine
+        .split(';')
+        .map(col => col.trim().replace(/["']/g, ''))
+        .filter(col => col !== '')
+      
+      this.setCsvContent(text)
+      this.setColumns(columns)
+      this.setFileName(fileName)
+      this.completeStep(1)
     }
   }
 }
