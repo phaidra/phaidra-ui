@@ -29,6 +29,8 @@
             <div v-show="showFileInput">
               <div class="d-flex align-center">
                 <v-file-input
+                  :key="fileInputKey"
+                  ref="fileInput"
                   v-model="csvFile"
                   accept=".csv"
                   label="Select New CSV File"
@@ -87,6 +89,21 @@
       </v-col>
     </v-row>
 
+    <!-- Add confirmation dialog if beyond step 1 -->
+    <v-dialog v-model="showConfirmDialog" max-width="500">
+      <v-card>
+        <v-card-title>Confirm New File Upload</v-card-title>
+        <v-card-text>
+          Loading a new file will clear all your existing progress. Are you sure you want to continue?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="cancelNewFile">Cancel</v-btn>
+          <v-btn color="error" @click="confirmNewFile">Confirm Progress Deletion</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- Navigation -->
     <v-row justify="end" class="mt-4">
       <v-col cols="auto">
@@ -118,11 +135,14 @@ export default {
     return {
       errorMessage: '',
       showFileInput: false,
+      showConfirmDialog: false,
+      pendingFile: null
     }
   },
 
   computed: {
-    ...mapState('bulk-upload', ['columns', 'fileName']),
+    ...mapState('bulk-upload', ['columns', 'fileName', 'maxStepReached']),
+
     isValid() {
       return this.columns.length > 0
     },
@@ -148,7 +168,10 @@ export default {
       'setCsvContent',
       'setColumns',
       'setFileName',
-      'completeStep'
+      'completeStep',
+      'clearFieldMappings',
+      'clearUploadState',
+      'resetSteps'
     ]),
 
     async handleFileUpload(file) {
@@ -157,6 +180,63 @@ export default {
         return
       }
 
+      // Only show confirmation if we're beyond step 1
+      if (this.maxStepReached > 1) {
+        this.pendingFile = file
+        this.showConfirmDialog = true
+        return
+      }
+
+      await this.resetAndProcessFile(file)
+    },
+
+    cancelNewFile() {
+      this.showConfirmDialog = false
+      this.pendingFile = null
+      this.safelyClearFileInput()
+    },
+
+    safelyClearFileInput() {
+      if (this.$refs.fileInput) {
+        // temporarily remove the change listener, since with the listener, setting file to null (see below)
+        // would completely remove the initial file and its data too
+        const originalChange = this.$refs.fileInput.$listeners.change
+        this.$refs.fileInput.$off('change')
+        
+        // reset the file input using the native input element, this way a user can re-select the same file and get prompted again
+        const nativeInput = this.$refs.fileInput.$el.querySelector('input[type="file"]')
+        if (nativeInput) {
+          nativeInput.value = ''
+        }
+
+        // set file selection to null
+        this.$refs.fileInput.internalValue = null
+        
+        // restore the change listener
+        this.$nextTick(() => {
+          this.$refs.fileInput.$on('change', originalChange)
+        })
+      }
+    },
+
+    async confirmNewFile() {
+      this.showConfirmDialog = false
+      this.showFileInput = false
+      const file = this.pendingFile
+      this.pendingFile = null
+      await this.resetAndProcessFile(file)
+    },
+
+    // Reset all state and process the new file
+    async resetAndProcessFile(file) {
+      // Clear all existing data
+      this.setCsvContent(null)
+      this.setColumns([])
+      this.setFileName('')
+      this.clearFieldMappings()
+      this.clearUploadState()
+      this.resetSteps()
+      
       try {
         const text = await this.readFileContent(file)
         const firstLine = text.split('\n')[0]
@@ -168,14 +248,13 @@ export default {
         if (columns.length === 0) {
           throw new Error('No valid columns found in the CSV file')
         }
-
-        this.currentFileName = file.name
         
         // Store the CSV content and filename in Vuex using mutations
         this.setCsvContent(text)
         this.setColumns(columns)
         this.setFileName(file.name)
         this.completeStep(1)
+        this.showFileInput = false
         this.errorMessage = ''
       } catch (error) {
         this.errorMessage = 'Error reading CSV file. Please make sure it\'s a valid CSV file.'

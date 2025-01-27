@@ -70,6 +70,13 @@ export const mutations = {
       completed: 0,
       failed: 0
     }
+  },
+  resetSteps(state) {
+    for (const step in state.steps) {
+      state.steps[step].completed = false
+    }
+    state.maxStepReached = 1
+    state.currentStep = 1
   }
 }
 
