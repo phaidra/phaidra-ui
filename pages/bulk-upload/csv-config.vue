@@ -97,8 +97,8 @@
           Loading a new file will clear all your existing progress. Are you sure you want to continue?
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn text @click="cancelNewFile">Cancel</v-btn>
+          <v-spacer></v-spacer>
           <v-btn color="error" @click="confirmNewFile">Confirm Progress Deletion</v-btn>
         </v-card-actions>
       </v-card>
