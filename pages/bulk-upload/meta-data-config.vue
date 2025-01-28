@@ -66,7 +66,7 @@
               </v-col>
 
               <!-- Radio Buttons -->
-              <v-col cols="2">
+              <v-col cols="2" :class="{ 'highlight-column': !selectedRadioButton[field] }">
                 <v-radio-group
                   v-model="selectedRadioButton[field]"
                   hide-details
@@ -340,5 +340,11 @@ export default {
 
 .source-select :deep(.v-input--radio-group__input) {
   margin: 0;
+}
+
+.highlight-column {
+  background-color: #fff5e6;
+  border-radius: 4px;
+  position: relative;
 }
 </style>
