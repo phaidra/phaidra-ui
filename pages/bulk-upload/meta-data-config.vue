@@ -19,14 +19,14 @@
             <v-row class="border-bottom">
               <v-col cols="2">
               </v-col>
-              <v-col cols="2">
+              <v-col cols="4">
                 <h4>Source from your CSV</h4>
-                <div class="caption text-grey">every entry gets its value from your csv file</div>
+                <div class="caption text-grey">every entry gets its value from its corresponding CSV row</div>
               </v-col>
-              <v-col cols="1" class="text-center">
-                OR
+              <v-col cols="2" class="text-center">
+                <p>OR</p>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="4">
                 <h4>Source a Default Value from Phaidra</h4>
                 <div class="caption text-grey">ALL rows get the selected default value</div>
               </v-col>
@@ -47,8 +47,8 @@
                 </v-icon>
               </v-col>
 
-              <!-- CSV Source -->
-              <v-col cols="2">
+              <!-- CSV Select -->
+              <v-col cols="4">
                 <v-select
                   v-model="fieldMappings[field]"
                   :items="getAvailableCSVColumns(field)"
@@ -58,58 +58,46 @@
                   :label="'Select CSV column'"
                   @change="updateMapping(field, $event)"
                   hide-details
-                  :disabled="!!selectedPhaidraElement[field]"
-                  :class="{ 'grey-input': !!selectedPhaidraElement[field] }"
+                  class="flex-grow-0 mr-8"
+                  style="width: 200px"
+                  :disabled="mappingType[field] !== 'csv'"
+                  :class="{ 'grey-input': mappingType[field] !== 'csv' }"
                 ></v-select>
               </v-col>
 
-              <v-col cols="1" class="text-center">
-                OR
-              </v-col>
-
-              <!-- Phaidra Elements -->
+              <!-- Radio Buttons -->
               <v-col cols="2">
-                <v-select
-                  v-if="fieldPhaidraElements[field]"
-                  v-model="selectedPhaidraElement[field]"
-                  :items="fieldPhaidraElements[field]"
-                  outlined
-                  dense
-                  clearable
-                  :label="'Select Phaidra element'"
-                  @change="handlePhaidraElementChange(field, $event)"
+                <v-radio-group
+                  v-model="mappingType[field]"
                   hide-details
-                  :disabled="!!fieldMappings[field]"
-                  :class="{ 'grey-input': !!fieldMappings[field] }"
-                ></v-select>
+                  dense
+                  class="mt-0 source-select"
+                  @change="handleSourceChange(field, $event)"
+                >
+                  <v-radio
+                    value="csv"
+                    class="mt-0"
+                    label="CSV"
+                    dense
+                  ></v-radio>
+                  <v-radio
+                    value="phaidra"
+                    label="Phaidra"
+                    dense
+                  ></v-radio>
+                </v-radio-group>
               </v-col>
+
+              <!-- Phaidra Component -->
               <v-col cols="4">
                 <div class="d-flex align-center">
                   <component
-                    v-if="selectedPhaidraElement[field]"
                     :is="getPhaidraComponent(field)"
                     v-bind="getPhaidraProps(field)"
-                    :class="{ 'grey-input': !!fieldMappings[field], 'flex-grow-1': true }"
+                    class="flex-grow-1"
+                    :disabled="mappingType[field] !== 'phaidra'"
+                    :class="{ 'grey-input': mappingType[field] !== 'phaidra' }"
                   ></component>
-                  <v-select
-                    v-else
-                    disabled
-                    outlined
-                    dense
-                    :label="'Select value'"
-                    hide-details
-                    :class="{ 'grey-input': true, 'flex-grow-1': true }"
-                  ></v-select>
-                  <v-btn
-                    v-if="selectedPhaidraElement[field] && phaidraValues[field]"
-                    icon
-                    small
-                    class="ml-2"
-                    @click="clearPhaidraValue(field)"
-                    :disabled="!!fieldMappings[field]"
-                  >
-                    <v-icon small>mdi-close</v-icon>
-                  </v-btn>
                 </div>
               </v-col>
             </v-row>
@@ -167,7 +155,7 @@ export default {
       mappingType: {},
       selectedPhaidraElement: {},
       phaidraValues: {},
-      fieldPhaidraElements: phaidraFieldMappings
+      phaidraFieldMappings: phaidraFieldMappings
     }
   },
 
@@ -178,7 +166,8 @@ export default {
     allFieldsMapped() {
       return this.requiredFields.every(field => {
         const mapping = this.getFieldMapping(field)
-        return mapping !== null
+        // First check if mapping exists before trying to access its properties
+        return mapping && mapping.source && mapping.value
       })
     },
 
@@ -204,14 +193,16 @@ export default {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
     getPhaidraComponent(field) {
-      const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
-      if (!elementConfig) return null
+      // Get the first (and only) Phaidra element configuration for this field
+      const elementConfig = this.phaidraFieldMappings[field]?.[0]
+      if (!elementConfig) return 'v-text-field'
       
       return elementConfig.component || 'v-text-field'
     },
 
     getPhaidraProps(field) {
-      const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === this.selectedPhaidraElement[field])
+      // Get the first (and only) Phaidra element configuration for this field
+      const elementConfig = this.phaidraFieldMappings[field]?.[0]
       if (!elementConfig) return {}
       
       const value = this.phaidraValues[field]
@@ -238,27 +229,19 @@ export default {
       }
     },
 
-    handleMappingTypeChange(field) {
-      // Clear existing mappings when switching types
+    handleSourceChange(field, source) {
+      // Clear existing mappings
+      this.$delete(this.fieldMappings, field)
       this.$delete(this.selectedPhaidraElement, field)
       this.$delete(this.phaidraValues, field)
       this.setFieldMapping({ requiredField: field, source: null, value: null })
-    },
 
-    handlePhaidraElementChange(field, value) {
-      // Clear existing value when changing Phaidra element
-      this.$delete(this.phaidraValues, field)
-      
-      if (!value) {
-        // If the element selection was cleared, clear everything
-        this.$delete(this.selectedPhaidraElement, field)
-        this.setFieldMapping({ requiredField: field, source: null, value: null })
-      } else {
-        // Get the selected element configuration
-        const elementConfig = this.fieldPhaidraElements[field].find(e => e.value === value)
-        if (elementConfig) {
-          // Store the full field object
-          const fieldObject = elementConfig.field()
+      if (source === 'phaidra') {
+        // Set up Phaidra mapping
+        const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
+        if (phaidraConfig) {
+          this.selectedPhaidraElement[field] = phaidraConfig.value
+          const fieldObject = phaidraConfig.field()
           this.phaidraValues[field] = fieldObject
           this.setFieldMapping({ 
             requiredField: field, 
@@ -318,21 +301,28 @@ export default {
   created() {
     // Initialize mappings from store and try automatic matching
     this.requiredFields.forEach(field => {
-      const mapping = this.getAllFieldMappings
-      if (mapping[field]) {
-        if (mapping[field].source === 'phaidra-field') {
+      const mapping = this.getFieldMapping(field)
+      
+      // Initialize mapping type to null if not set
+      if (!this.mappingType[field]) {
+        this.$set(this.mappingType, field, null)
+      }
+
+      if (mapping) {
+        if (mapping.source === 'phaidra-field') {
           // Handle Phaidra mapping
-          const elementConfig = this.fieldPhaidraElements[field]?.find(e => e.value === this.selectedPhaidraElement[field])
-          if (elementConfig) {
-            this.selectedPhaidraElement[field] = elementConfig.value
-            this.phaidraValues[field] = mapping[field].value
+          this.$set(this.mappingType, field, 'phaidra')
+          const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
+          if (phaidraConfig) {
+            this.selectedPhaidraElement[field] = phaidraConfig.value
+            this.phaidraValues[field] = mapping.value
           }
-        } else if (mapping[field].source === 'csv-column') {
+        } else if (mapping.source === 'csv-column') {
           // Handle CSV mapping
-          const columnExists = this.columns.includes(mapping[field].value)
+          this.$set(this.mappingType, field, 'csv')
+          const columnExists = this.columns.includes(mapping.value)
           if (columnExists) {
-            this.fieldMappings[field] = mapping[field].value
-            this.setFieldMapping({ requiredField: field, source: 'csv-column', value: mapping[field].value })
+            this.fieldMappings[field] = mapping.value
           }
         }
       } else {
@@ -341,6 +331,7 @@ export default {
           col => col.toLowerCase() === field.toLowerCase()
         )
         if (matchingColumn) {
+          this.$set(this.mappingType, field, 'csv')
           this.fieldMappings[field] = matchingColumn
           this.setFieldMapping({ 
             requiredField: field, 
@@ -366,5 +357,9 @@ export default {
 
 .grey-input :deep(.v-input__slot) {
   background-color: #f5f5f5 !important;
+}
+
+.source-select :deep(.v-input--radio-group__input) {
+  margin: 0;
 }
 </style>
