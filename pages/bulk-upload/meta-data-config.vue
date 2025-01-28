@@ -56,32 +56,32 @@
                   dense
                   clearable
                   :label="'Select CSV column'"
-                  @change="updateMapping(field, $event)"
+                  @change="updateMapping(field, 'csv-column', $event)"
                   hide-details
                   class="flex-grow-0 mr-8"
                   style="width: 200px"
-                  :disabled="mappingType[field] !== 'csv'"
-                  :class="{ 'grey-input': mappingType[field] !== 'csv' }"
+                  :disabled="selectedRadioButton[field] !== 'csv-column'"
+                  :class="{ 'grey-input': selectedRadioButton[field] !== 'csv-column' }"
                 ></v-select>
               </v-col>
 
               <!-- Radio Buttons -->
               <v-col cols="2">
                 <v-radio-group
-                  v-model="mappingType[field]"
+                  v-model="selectedRadioButton[field]"
                   hide-details
                   dense
                   class="mt-0 source-select"
                   @change="handleSourceChange(field, $event)"
                 >
                   <v-radio
-                    value="csv"
+                    value="csv-column"
                     class="mt-0"
                     label="CSV"
                     dense
                   ></v-radio>
                   <v-radio
-                    value="phaidra"
+                    value="phaidra-field"
                     label="Phaidra"
                     dense
                   ></v-radio>
@@ -95,8 +95,8 @@
                     :is="getPhaidraComponent(field)"
                     v-bind="getPhaidraProps(field)"
                     class="flex-grow-1"
-                    :disabled="mappingType[field] !== 'phaidra'"
-                    :class="{ 'grey-input': mappingType[field] !== 'phaidra' }"
+                    :disabled="selectedRadioButton[field] !== 'phaidra-field'"
+                    :class="{ 'grey-input': selectedRadioButton[field] !== 'phaidra-field' }"
                   ></component>
                 </div>
               </v-col>
@@ -135,9 +135,6 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
-import { context } from "../../mixins/context"
-import { config } from "../../mixins/config"
-import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary"
 import { phaidraFieldMappings } from '~/config/bulk-upload/phaidra-field-mappings'
 
 export default {
@@ -147,12 +144,10 @@ export default {
     BulkUploadSteps
   },
 
-  mixins: [context, config, vocabulary],
-
   data() {
     return {
       fieldMappings: {},
-      mappingType: {},
+      selectedRadioButton: {},
       selectedPhaidraElement: {},
       phaidraValues: {},
       phaidraFieldMappings: phaidraFieldMappings
@@ -166,7 +161,6 @@ export default {
     allFieldsMapped() {
       return this.requiredFields.every(field => {
         const mapping = this.getFieldMapping(field)
-        // First check if mapping exists before trying to access its properties
         return mapping && mapping.source && mapping.value
       })
     },
@@ -220,35 +214,28 @@ export default {
       )
     },
 
-    updateMapping(field, value) {
+    updateMapping(field, source, value) {
       if (value === null) {
         // When cleared, delete the mapping
         this.setFieldMapping({ requiredField: field, source: null, value: null })
       } else {
-        this.setFieldMapping({ requiredField: field, source: 'csv-column', value })
+        this.setFieldMapping({ requiredField: field, source: source, value })
       }
     },
 
+    // aka radio button change
     handleSourceChange(field, source) {
-      // Clear existing mappings
-      this.$delete(this.fieldMappings, field)
-      this.$delete(this.selectedPhaidraElement, field)
-      this.$delete(this.phaidraValues, field)
-      this.setFieldMapping({ requiredField: field, source: null, value: null })
-
-      if (source === 'phaidra') {
+      if (source === 'phaidra-field') {
         // Set up Phaidra mapping
         const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
         if (phaidraConfig) {
           this.selectedPhaidraElement[field] = phaidraConfig.value
           const fieldObject = phaidraConfig.field()
           this.phaidraValues[field] = fieldObject
-          this.setFieldMapping({ 
-            requiredField: field, 
-            source: 'phaidra-field',
-            value: fieldObject
-          })
+          this.updateMapping(field, source, fieldObject)
         }
+      } else if (source === 'csv-column') {
+        this.updateMapping(field, source, this.fieldMappings[field])
       }
     },
 
@@ -275,14 +262,10 @@ export default {
     updatePhaidraMapping(field, value) {
       if (value) {
         this.phaidraValues[field] = value
-        this.setFieldMapping({ 
-          requiredField: field, 
-          source: 'phaidra-field',
-          value: value
-        })
+        this.updateMapping(field, 'phaidra-field', value)
       } else {
         this.$delete(this.phaidraValues, field)
-        this.setFieldMapping({ requiredField: field, source: null, value: null })
+        this.updateMapping(field, null, null)
       }
     },
 
@@ -294,7 +277,7 @@ export default {
 
     clearPhaidraValue(field) {
       this.$delete(this.phaidraValues, field)
-      this.setFieldMapping({ requiredField: field, source: null, value: null })
+      this.updateMapping(field, null, null)
     }
   },
 
@@ -304,22 +287,22 @@ export default {
       const mapping = this.getFieldMapping(field)
       
       // Initialize mapping type to null if not set
-      if (!this.mappingType[field]) {
-        this.$set(this.mappingType, field, null)
+      if (!this.selectedRadioButton[field]) {
+        this.$set(this.selectedRadioButton, field, null)
       }
 
       if (mapping) {
         if (mapping.source === 'phaidra-field') {
-          // Handle Phaidra mapping
-          this.$set(this.mappingType, field, 'phaidra')
+          // Handle existing Phaidra mapping
+          this.$set(this.selectedRadioButton, field, 'phaidra-field')
           const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
           if (phaidraConfig) {
             this.selectedPhaidraElement[field] = phaidraConfig.value
             this.phaidraValues[field] = mapping.value
           }
         } else if (mapping.source === 'csv-column') {
-          // Handle CSV mapping
-          this.$set(this.mappingType, field, 'csv')
+          // Handle existing CSV mapping
+          this.$set(this.selectedRadioButton, field, 'csv-column')
           const columnExists = this.columns.includes(mapping.value)
           if (columnExists) {
             this.fieldMappings[field] = mapping.value
@@ -331,13 +314,9 @@ export default {
           col => col.toLowerCase() === field.toLowerCase()
         )
         if (matchingColumn) {
-          this.$set(this.mappingType, field, 'csv')
+          this.$set(this.selectedRadioButton, field, 'csv-column')
           this.fieldMappings[field] = matchingColumn
-          this.setFieldMapping({ 
-            requiredField: field, 
-            source: 'csv-column', 
-            value: matchingColumn 
-          })
+          this.updateMapping(field, 'csv-column', matchingColumn)
         }
       }
     })
