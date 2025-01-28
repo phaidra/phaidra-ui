@@ -14,7 +14,6 @@ export const phaidraFieldMappings = {
   'Title': [
     {
       text: 'Title',
-      value: 'title',
       component: 'PITitle',
       field: () => {
         const field = fieldslib.getField("title")
@@ -29,7 +28,6 @@ export const phaidraFieldMappings = {
   'Role': [
     {
       text: 'Author',
-      value: 'role:aut',
       component: 'PIEntity',
       field: () => {
         const field = fieldslib.getField("role")
@@ -65,7 +63,6 @@ export const phaidraFieldMappings = {
   'Description': [
     {
       text: 'Description',
-      value: 'description',
       component: 'PITextField',
       field: () => {
         const field = fieldslib.getField("description")
@@ -81,7 +78,6 @@ export const phaidraFieldMappings = {
   'Keywords': [
     {
       text: 'Keywords',
-      value: 'keyword',
       component: 'PIKeyword',
       field: () => {
         const field = fieldslib.getField("keyword")
@@ -101,7 +97,6 @@ export const phaidraFieldMappings = {
   'Type': [
     {
       text: 'Object Type',
-      value: 'object-type',
       component: 'PISelect',
       field: () => {
         const field = fieldslib.getField("object-type-checkboxes")
@@ -125,7 +120,6 @@ export const phaidraFieldMappings = {
   'Persistent identifier': [
     {
       text: 'Identifier',
-      value: 'identifier',
       component: 'PIAlternateIdentifier',
       field: () => {
         const field = fieldslib.getField("alternate-identifier")
@@ -140,7 +134,6 @@ export const phaidraFieldMappings = {
   'License': [
     {
       text: 'License',
-      value: 'license',
       component: 'PISelect',
       field: () => {
         const field = fieldslib.getField("license")
