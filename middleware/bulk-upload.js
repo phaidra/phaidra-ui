@@ -1,4 +1,9 @@
-export default function ({ store, redirect, route }) {
+export default async function ({ store, redirect, route }) {
+  // Wait for store initialization on client side
+  if (process.client && store.$initBulkUpload) {
+    await store.$initBulkUpload()
+  }
+
   const currentStep = store.getters['bulk-upload/getCurrentStepFromRoute'](route.path)
   if (!store.getters['bulk-upload/canAccessStep'](currentStep)) {
     // If user can't access this step, redirect to the last allowed step

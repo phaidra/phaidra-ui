@@ -1,134 +1,138 @@
 <template>
   <v-container class="meta-data-config">
     <BulkUploadSteps />
-    <v-row>
-      <v-col>
-        <h1 class="text-h4">Step 2: Map CSV Fields</h1>
-        <p class="text-subtitle-1 mt-2">
-          Map your CSV columns to the required fields. Fields with matching names are automatically mapped.
-        </p>
-      </v-col>
-    </v-row>
+    
+    <!-- Only render content when initialized -->
+    <template v-if="isInitialized">
+      <v-row>
+        <v-col>
+          <h1 class="text-h4">Step 2: Map CSV Fields</h1>
+          <p class="text-subtitle-1 mt-2">
+            Map your CSV columns to the required fields. Fields with matching names are automatically mapped.
+          </p>
+        </v-col>
+      </v-row>
 
-    <!-- Mapping Section -->
-    <v-row class="mt-4">
-      <v-col cols="12">
-        <v-card outlined>
-          <v-card-text>
-            <!-- Header Row -->
-            <v-row class="border-bottom">
-              <v-col cols="2">
-              </v-col>
-              <v-col cols="4">
-                <h4>Source from your CSV</h4>
-                <div class="caption text-grey">every entry gets its value from its corresponding CSV row</div>
-              </v-col>
-              <v-col cols="2" class="text-center">
-                <p>OR</p>
-              </v-col>
-              <v-col cols="4">
-                <h4>Source a Default Value from Phaidra</h4>
-                <div class="caption text-grey">ALL rows get the selected default value</div>
-              </v-col>
-            </v-row>
+      <!-- Mapping Section -->
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <v-card outlined>
+            <v-card-text>
+              <!-- Header Row -->
+              <v-row class="border-bottom">
+                <v-col cols="2">
+                </v-col>
+                <v-col cols="4">
+                  <h4>Source from your CSV</h4>
+                  <div class="caption text-grey">every entry gets its value from its corresponding CSV row</div>
+                </v-col>
+                <v-col cols="2" class="text-center">
+                  <p>OR</p>
+                </v-col>
+                <v-col cols="4">
+                  <h4>Source a Default Value from Phaidra</h4>
+                  <div class="caption text-grey">ALL rows get the selected default value</div>
+                </v-col>
+              </v-row>
 
-            <!-- Mapping Rows -->
-            <v-row v-for="field in requiredFields" :key="field" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1] }">
-              <!-- Field Name -->
-              <v-col cols="2" class="d-flex align-center">
-                <span class="text-capitalize text-subtitle-1">{{ field }}</span>
-                <v-icon
-                  v-if="fieldIsMapped(field)"
-                  color="success"
-                  small
-                  class="ml-2"
-                >
-                  mdi-check-circle
-                </v-icon>
-              </v-col>
+              <!-- Mapping Rows -->
+              <v-row v-for="field in requiredFields" :key="field" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1] }">
+                <!-- Field Name -->
+                <v-col cols="2" class="d-flex align-center">
+                  <span class="text-capitalize text-subtitle-1">{{ field }}</span>
+                  <v-icon
+                    v-if="fieldIsMapped(field)"
+                    color="success"
+                    small
+                    class="ml-2"
+                  >
+                    mdi-check-circle
+                  </v-icon>
+                </v-col>
 
-              <!-- CSV Select -->
-              <v-col cols="4">
-                <v-select
-                  v-model="fieldMappings[field]"
-                  :items="getAvailableCSVColumns(field)"
-                  outlined
-                  dense
-                  clearable
-                  :label="'Select CSV column'"
-                  @change="updateMapping(field, 'csv-column', $event)"
-                  hide-details
-                  class="flex-grow-0 mr-8"
-                  style="width: 200px"
-                  :disabled="selectedRadioButton[field] !== 'csv-column'"
-                  :class="{ 'grey-input': selectedRadioButton[field] !== 'csv-column' }"
-                ></v-select>
-              </v-col>
-
-              <!-- Radio Buttons -->
-              <v-col cols="2" :class="{ 'highlight-column': !selectedRadioButton[field] }">
-                <v-radio-group
-                  v-model="selectedRadioButton[field]"
-                  hide-details
-                  dense
-                  class="mt-0 source-select"
-                  @change="handleSourceChange(field, $event)"
-                >
-                  <v-radio
-                    value="csv-column"
-                    class="mt-0"
-                    label="CSV"
+                <!-- CSV Select -->
+                <v-col cols="4">
+                  <v-select
+                    v-model="fieldMappings[field]"
+                    :items="getAvailableCSVColumns(field)"
+                    outlined
                     dense
-                  ></v-radio>
-                  <v-radio
-                    value="phaidra-field"
-                    label="Phaidra"
+                    clearable
+                    :label="'Select CSV column'"
+                    @change="updateMapping(field, 'csv-column', $event)"
+                    hide-details
+                    class="flex-grow-0 mr-8"
+                    style="width: 200px"
+                    :disabled="selectedRadioButton[field] !== 'csv-column'"
+                    :class="{ 'grey-input': selectedRadioButton[field] !== 'csv-column' }"
+                  ></v-select>
+                </v-col>
+
+                <!-- Radio Buttons -->
+                <v-col cols="2" :class="{ 'highlight-column': !selectedRadioButton[field] }">
+                  <v-radio-group
+                    v-model="selectedRadioButton[field]"
+                    hide-details
                     dense
-                  ></v-radio>
-                </v-radio-group>
-              </v-col>
+                    class="mt-0 source-select"
+                    @change="handleSourceChange(field, $event)"
+                  >
+                    <v-radio
+                      value="csv-column"
+                      class="mt-0"
+                      label="CSV"
+                      dense
+                    ></v-radio>
+                    <v-radio
+                      value="phaidra-field"
+                      label="Phaidra"
+                      dense
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
 
-              <!-- Phaidra Component -->
-              <v-col cols="4">
-                <div class="d-flex align-center">
-                  <component
-                    :is="getPhaidraComponent(field)"
-                    v-bind="getPhaidraProps(field)"
-                    class="flex-grow-1"
-                    :disabled="selectedRadioButton[field] !== 'phaidra-field'"
-                    :class="{ 'grey-input': selectedRadioButton[field] !== 'phaidra-field' }"
-                  ></component>
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+                <!-- Phaidra Component -->
+                <v-col cols="4">
+                  <div class="d-flex align-center">
+                    <component
+                      :is="getPhaidraComponent(field)"
+                      v-bind="getPhaidraProps(field)"
+                      class="flex-grow-1"
+                      :disabled="selectedRadioButton[field] !== 'phaidra-field'"
+                      :class="{ 'grey-input': selectedRadioButton[field] !== 'phaidra-field' }"
+                    ></component>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
 
-    <!-- Navigation Buttons -->
-    <v-row justify="space-between" class="mt-4">
-      <v-col cols="auto">
-        <v-btn
-          text
-          :to="steps[1].route"
-        >
-          <v-icon left>mdi-arrow-left</v-icon>
-          Back
-        </v-btn>
-      </v-col>
-      <v-col cols="auto">
-        <v-btn
-          color="primary"
-          @click="proceed"
-          :disabled="!allFieldsMapped"
-          :to="steps[3].route"
-        >
-          Next
-          <v-icon right>mdi-arrow-right</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+      <!-- Navigation Buttons -->
+      <v-row justify="space-between" class="mt-4">
+        <v-col cols="auto">
+          <v-btn
+            text
+            :to="steps[1].route"
+          >
+            <v-icon left>mdi-arrow-left</v-icon>
+            Back
+          </v-btn>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn
+            color="primary"
+            @click="proceed"
+            :disabled="!allFieldsMapped"
+            :to="steps[3].route"
+          >
+            Next
+            <v-icon right>mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -150,7 +154,8 @@ export default {
       selectedRadioButton: {},
       selectedPhaidraElement: {},
       phaidraValues: {},
-      phaidraFieldMappings: phaidraFieldMappings
+      phaidraFieldMappings: phaidraFieldMappings,
+      isInitialized: false
     }
   },
 
@@ -289,7 +294,12 @@ export default {
     }
   },
 
-  created() {
+  async created() {
+    // Wait for store initialization on client side
+    if (process.client && this.$store.$initBulkUpload) {
+      await this.$store.$initBulkUpload()
+    }
+
     // Initialize mappings from store and try automatic matching
     this.requiredFields.forEach(field => {
       const mapping = this.getFieldMapping(field)
@@ -328,6 +338,9 @@ export default {
         }
       }
     })
+
+    // Mark as initialized after all setup is complete
+    this.isInitialized = true
   }
 }
 </script>
