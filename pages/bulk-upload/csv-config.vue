@@ -89,7 +89,7 @@
       </v-col>
     </v-row>
 
-    <!-- Add confirmation dialog if beyond step 1 -->
+    <!-- Add confirmation dialog when resetting csv file and user already was beyond step 1 -->
     <v-dialog v-model="showConfirmDialog" max-width="500">
       <v-card>
         <v-card-title>Confirm New File Upload</v-card-title>

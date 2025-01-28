@@ -38,7 +38,7 @@
               <v-col cols="2" class="d-flex align-center">
                 <span class="text-capitalize text-subtitle-1">{{ field }}</span>
                 <v-icon
-                  v-if="getFieldMapping(field)"
+                  v-if="fieldIsMapped(field)"
                   color="success"
                   small
                   class="ml-2"
@@ -180,6 +180,12 @@ export default {
           .filter(col => !selectedValues.includes(col))
           .sort((a, b) => a.localeCompare(b))
       }
+    },
+
+    fieldIsMapped() {
+      return (field) => {
+        return this.getFieldMapping(field) && this.getFieldMapping(field).source && this.getFieldMapping(field).value
+      }
     }
   },
 
@@ -225,8 +231,10 @@ export default {
 
     // aka radio button change
     handleSourceChange(field, source) {
+      // First reset the current mapping
+      this.updateMapping(field, null, null)
+      
       if (source === 'phaidra-field') {
-        // Set up Phaidra mapping
         const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
         if (phaidraConfig) {
           this.selectedPhaidraElement[field] = phaidraConfig.value
