@@ -64,13 +64,13 @@
                     hide-details
                     class="flex-grow-0 mr-8"
                     style="width: 200px"
-                    :disabled="selectedRadioButton[field] !== 'csv-column'"
-                    :class="{ 'grey-input': selectedRadioButton[field] !== 'csv-column' }"
+                    :disabled="selectedRadioButton[field] === 'phaidra-field'"
+                    :class="{ 'grey-input': selectedRadioButton[field] === 'phaidra-field' }"
                   ></v-select>
                 </v-col>
 
                 <!-- Radio Buttons -->
-                <v-col cols="2" :class="{ 'highlight-column': !selectedRadioButton[field] }">
+                <v-col cols="2" :class="{ 'highlight-column': (getAllowedSources(field).length > 1 && !selectedRadioButton[field]) }">
                   <v-radio-group
                     v-if="shouldShowRadioButtons(field)"
                     v-model="selectedRadioButton[field]"
@@ -103,8 +103,8 @@
                       :is="getPhaidraComponent(field)"
                       v-bind="getPhaidraProps(field)"
                       class="flex-grow-1"
-                      :disabled="selectedRadioButton[field] !== 'phaidra-field'"
-                      :class="{ 'grey-input': selectedRadioButton[field] !== 'phaidra-field' }"
+                      :disabled="selectedRadioButton[field] === 'csv-column'"
+                      :class="{ 'grey-input': selectedRadioButton[field] === 'csv-column' }"
                     ></component>
                   </div>
                 </v-col>
@@ -144,7 +144,7 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
-import { phaidraFieldMappings, mappingConfig } from '~/config/bulk-upload/phaidra-field-mappings'
+import { fieldSettings } from '~/config/bulk-upload/field-settings'
 
 export default {
   name: 'MetaDataConfig',
@@ -159,7 +159,6 @@ export default {
       selectedRadioButton: {},
       selectedPhaidraElement: {},
       phaidraValues: {},
-      phaidraFieldMappings: phaidraFieldMappings,
       isInitialized: false
     }
   },
@@ -200,7 +199,7 @@ export default {
 
     getAllowedSources() {
       return (field) => {
-        return mappingConfig[field]?.allowedSources || ['csv-column', 'phaidra-field']
+        return fieldSettings[field]?.allowedSources || ['csv-column', 'phaidra-field']
       }
     },
 
@@ -229,7 +228,7 @@ export default {
 
     getPhaidraComponent(field) {
       // Get the Phaidra element configuration for this field
-      const elementConfig = this.phaidraFieldMappings[field]?.[0]
+      const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
       if (!elementConfig) return 'v-text-field'
       
       return elementConfig.component || 'v-text-field'
@@ -237,7 +236,7 @@ export default {
 
     getPhaidraProps(field) {
       // Get the Phaidra element configuration for this field
-      const elementConfig = this.phaidraFieldMappings[field]?.[0]
+      const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
       if (!elementConfig) return {}
       
       const value = this.phaidraValues[field]
@@ -270,7 +269,7 @@ export default {
       this.updateMapping(field, null, null)
       
       if (source === 'phaidra-field') {
-        const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
+        const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
         if (phaidraConfig) {
           this.selectedPhaidraElement[field] = phaidraConfig.value
           const fieldObject = phaidraConfig.field()
@@ -344,7 +343,7 @@ export default {
         if (mapping.source === 'phaidra-field') {
           // Handle existing Phaidra mapping
           this.$set(this.selectedRadioButton, field, 'phaidra-field')
-          const phaidraConfig = this.phaidraFieldMappings[field]?.[0]
+          const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
           if (phaidraConfig) {
             this.selectedPhaidraElement[field] = phaidraConfig.value
             this.phaidraValues[field] = mapping.value
