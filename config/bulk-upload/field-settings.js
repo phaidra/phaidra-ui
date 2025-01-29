@@ -6,8 +6,7 @@ const getSharedProps = (fieldConfig, value, updateMapping) => ({
   field: fieldConfig,
   outlined: true,
   dense: true,
-  'hide-details': true,
-  input: updateMapping
+  'hide-details': true
 })
 
 export const fieldSettings = {
@@ -48,7 +47,7 @@ export const fieldSettings = {
           field.inputStyle = 'outlined'
           return field
         },
-        getProps: function(value, updateMapping, { handleRoleInput, handleFirstnameInput, handleLastnameInput }) {
+        getProps: function(value, updateMapping) {
           const fieldConfig = this.field()
           return {
             ...getSharedProps(fieldConfig, value, updateMapping),
@@ -57,10 +56,7 @@ export const fieldSettings = {
             roleLabel: fieldConfig.roleLabel,
             showname: fieldConfig.showname,
             type: fieldConfig.type,
-            inputStyle: fieldConfig.inputStyle,
-            'input-role': handleRoleInput,
-            'input-firstname': handleFirstnameInput,
-            'input-lastname': handleLastnameInput
+            inputStyle: fieldConfig.inputStyle
           }
         }
       }

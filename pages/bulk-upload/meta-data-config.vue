@@ -103,6 +103,8 @@
                       :is="getPhaidraComponent(field)"
                       v-bind="getPhaidraProps(field)"
                       class="flex-grow-1"
+                      @input="val => updateMapping(field, 'phaidra-field', { ...getPhaidraProps(field), value: val })"
+                      @change="val => updateMapping(field, 'phaidra-field', { ...getPhaidraProps(field), value: val })"
                       :disabled="selectedRadioButton[field] === 'csv-column'"
                       :class="{ 'grey-input': selectedRadioButton[field] === 'csv-column' }"
                     ></component>
@@ -240,12 +242,13 @@ export default {
       if (!elementConfig) return {}
       
       const value = this.phaidraValues[field]
-      // Convert object values to strings for the component props
+      // Convert object values to strings for the components props
       const displayValue = value ? (typeof value === 'object' ? value.value || '' : value) : ''
       
+      // Get props with all event handlers configured in field-settings
       return elementConfig.getProps(
         displayValue,
-        (val) => this.updatePhaidraMapping(field, val),
+        (val) => this.updateMapping(field, 'phaidra-field', val),
         {
           handleRoleInput: (val) => this.handleRoleInput(field, val),
           handleFirstnameInput: (val) => this.handleFirstnameInput(field, val),
@@ -283,22 +286,22 @@ export default {
 
     handleRoleInput(field, value) {
       const currentValue = this.phaidraValues[field] || {}
-      this.updatePhaidraMapping(field, { ...currentValue, role: value })
+      this.updateMapping(field, 'phaidra-field', { ...currentValue, role: value })
     },
 
     handleFirstnameInput(field, value) {
       const currentValue = this.phaidraValues[field] || {}
-      this.updatePhaidraMapping(field, { ...currentValue, firstname: value })
+      this.updateMapping(field, 'phaidra-field', { ...currentValue, firstname: value })
     },
 
     handleLastnameInput(field, value) {
       const currentValue = this.phaidraValues[field] || {}
-      this.updatePhaidraMapping(field, { ...currentValue, lastname: value })
+      this.updateMapping(field, 'phaidra-field', { ...currentValue, lastname: value })
     },
 
     handleTypeChange(field, value) {
       const currentValue = this.phaidraValues[field] || {}
-      this.updatePhaidraMapping(field, { ...currentValue, type: value })
+      this.updateMapping(field, 'phaidra-field', { ...currentValue, type: value })
     },
 
     updatePhaidraMapping(field, value) {
