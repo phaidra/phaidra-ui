@@ -36,7 +36,7 @@
               </v-row>
 
               <!-- Mapping Rows -->
-              <v-row v-for="field in requiredFields" :key="field" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1] }">
+              <v-row v-for="field in requiredFields" :key="field" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1], 'flash-blue': field === flashingField }">
                 <!-- Field Name -->
                 <v-col cols="2" class="d-flex align-center">
                   <span class="text-capitalize text-subtitle-1">{{ field }}</span>
@@ -161,7 +161,8 @@ export default {
       selectedRadioButton: {},
       selectedPhaidraElement: {},
       phaidraValues: {},
-      isInitialized: false
+      isInitialized: false,
+      flashingField: null
     }
   },
 
@@ -258,8 +259,13 @@ export default {
     },
 
     updateMapping(field, source, value) {
+      // Add flash animation to specific row
+      this.flashingField = field;
+      setTimeout(() => {
+        this.flashingField = null;
+      }, 250);
+
       if (value === null) {
-        // When cleared, delete the mapping
         this.setFieldMapping({ requiredField: field, source: null, value: null })
       } else {
         this.setFieldMapping({ requiredField: field, source: source, value })
@@ -402,5 +408,9 @@ export default {
   background-color: #fff5e6;
   border-radius: 4px;
   position: relative;
+}
+
+.flash-blue {
+  background-color: #e6f7ff;
 }
 </style>
