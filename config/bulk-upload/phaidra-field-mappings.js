@@ -10,6 +10,33 @@ const getSharedProps = (fieldConfig, value, updateMapping) => ({
   input: updateMapping
 })
 
+export const mappingConfig = {
+  'Title': {
+    allowedSources: ['csv-column']
+  },
+  'Role': {
+    allowedSources: ['csv-column', 'phaidra-field']
+  },
+  'Description': {
+    allowedSources: ['csv-column', 'phaidra-field']
+  },
+  'Keywords': {
+    allowedSources: ['csv-column', 'phaidra-field']
+  },
+  'Type': {
+    allowedSources: ['csv-column', 'phaidra-field']
+  },
+  'Persistent identifier': {
+    allowedSources: ['csv-column', 'phaidra-field']
+  },
+  'License': {
+    allowedSources: ['phaidra-field']
+  },
+  'Filename': {
+    allowedSources: ['csv-column']
+  }
+}
+
 export const phaidraFieldMappings = {
   'Title': [
     {

@@ -53,6 +53,7 @@
                 <!-- CSV Select -->
                 <v-col cols="4">
                   <v-select
+                    v-if="getAllowedSources(field).includes('csv-column')"
                     v-model="fieldMappings[field]"
                     :items="getAvailableCSVColumns(field)"
                     outlined
@@ -71,6 +72,7 @@
                 <!-- Radio Buttons -->
                 <v-col cols="2" :class="{ 'highlight-column': !selectedRadioButton[field] }">
                   <v-radio-group
+                    v-if="shouldShowRadioButtons(field)"
                     v-model="selectedRadioButton[field]"
                     hide-details
                     dense
@@ -89,11 +91,14 @@
                       dense
                     ></v-radio>
                   </v-radio-group>
+                  <div v-else class="text-caption">
+                    {{ getRestrictionMessage(field) }}
+                  </div>
                 </v-col>
 
                 <!-- Phaidra Component -->
                 <v-col cols="4">
-                  <div class="d-flex align-center">
+                  <div v-if="getAllowedSources(field).includes('phaidra-field')" class="d-flex align-center">
                     <component
                       :is="getPhaidraComponent(field)"
                       v-bind="getPhaidraProps(field)"
@@ -139,7 +144,7 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
-import { phaidraFieldMappings } from '~/config/bulk-upload/phaidra-field-mappings'
+import { phaidraFieldMappings, mappingConfig } from '~/config/bulk-upload/phaidra-field-mappings'
 
 export default {
   name: 'MetaDataConfig',
@@ -191,6 +196,31 @@ export default {
       return (field) => {
         return this.getFieldMapping(field) && this.getFieldMapping(field).source && this.getFieldMapping(field).value
       }
+    },
+
+    getAllowedSources() {
+      return (field) => {
+        return mappingConfig[field]?.allowedSources || ['csv-column', 'phaidra-field']
+      }
+    },
+
+    shouldShowRadioButtons() {
+      return (field) => {
+        const allowedSources = this.getAllowedSources(field)
+        return allowedSources.length > 1
+      }
+    },
+
+    getRestrictionMessage() {
+      return (field) => {
+        const allowedSources = this.getAllowedSources(field)  
+
+        if (allowedSources[0] === 'csv-column') {
+          return `${field} must be sourced from a CSV column`
+        } else if (allowedSources[0] === 'phaidra-field') {
+          return `${field} must be sourced from a default Phaidra value`
+        }
+      }
     }
   },
 
@@ -198,7 +228,7 @@ export default {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
     getPhaidraComponent(field) {
-      // Get the first (and only) Phaidra element configuration for this field
+      // Get the Phaidra element configuration for this field
       const elementConfig = this.phaidraFieldMappings[field]?.[0]
       if (!elementConfig) return 'v-text-field'
       
@@ -206,7 +236,7 @@ export default {
     },
 
     getPhaidraProps(field) {
-      // Get the first (and only) Phaidra element configuration for this field
+      // Get the Phaidra element configuration for this field
       const elementConfig = this.phaidraFieldMappings[field]?.[0]
       if (!elementConfig) return {}
       
@@ -303,6 +333,7 @@ export default {
     // Initialize mappings from store and try automatic matching
     this.requiredFields.forEach(field => {
       const mapping = this.getFieldMapping(field)
+      const allowedSources = this.getAllowedSources(field)
       
       // Initialize mapping type to null if not set
       if (!this.selectedRadioButton[field]) {
@@ -327,14 +358,16 @@ export default {
           }
         }
       } else {
-        // Try to find automatic match if no mapping exists
-        const matchingColumn = this.columns.find(
-          col => col.toLowerCase() === field.toLowerCase()
-        )
-        if (matchingColumn) {
-          this.$set(this.selectedRadioButton, field, 'csv-column')
-          this.fieldMappings[field] = matchingColumn
-          this.updateMapping(field, 'csv-column', matchingColumn)
+        // Try to find automatic match if no mapping exists and CSV is allowed
+        if (allowedSources.includes('csv-column')) {
+          const matchingColumn = this.columns.find(
+            col => col.toLowerCase() === field.toLowerCase()
+          )
+          if (matchingColumn) {
+            this.$set(this.selectedRadioButton, field, 'csv-column')
+            this.fieldMappings[field] = matchingColumn
+            this.updateMapping(field, 'csv-column', matchingColumn)
+          }
         }
       }
     })
