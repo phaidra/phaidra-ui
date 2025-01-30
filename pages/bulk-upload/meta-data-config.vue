@@ -103,8 +103,8 @@
                       :is="getPhaidraComponent(field)"
                       v-bind="getPhaidraProps(field)"
                       class="flex-grow-1"
-                      @input="val => updateMapping(field, 'phaidra-field', { ...getPhaidraProps(field), value: val })"
-                      @change="val => updateMapping(field, 'phaidra-field', { ...getPhaidraProps(field), value: val })"
+                      @input="val => updateMapping(field, 'phaidra-field', val)"
+                      @change="val => updateMapping(field, 'phaidra-field', val)"
                       :disabled="selectedRadioButton[field] === 'csv-column'"
                       :class="{ 'grey-input': selectedRadioButton[field] === 'csv-column' }"
                     ></component>
