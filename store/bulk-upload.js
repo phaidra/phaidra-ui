@@ -45,10 +45,9 @@ export const mutations = {
     state.fileName = fileName
   },
   setFieldMapping(state, { requiredField, source, value }) {
-    if (value === null) {
-      state.fieldMappings[requiredField] = null
-    } else {
-      state.fieldMappings[requiredField] = { source, value }
+    state.fieldMappings = {
+      ...state.fieldMappings,
+      [requiredField]: value === null ? null : { source, value }
     }
   },
   clearFieldMappings(state) {
