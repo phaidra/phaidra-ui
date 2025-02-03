@@ -114,15 +114,11 @@ export default {
           if (!mapping) {
             rowData[field] = ''
           } else if (mapping.source === 'phaidra-field') {
-            // For Phaidra values, use the value directly
-            if (field === 'Keywords') {
-              rowData[field] = mapping.value.join(', ')
-            } else if (field === 'License') {
-              rowData[field] = mapping.value['@id']
-            }
+            // For Phaidra values, use the phaidraValue
+            rowData[field] = mapping.phaidraValue
           } else if (mapping.source === 'csv-column') {
             // For CSV mappings, get the value from the corresponding column
-            const columnIndex = headers.indexOf(mapping.value)
+            const columnIndex = headers.indexOf(mapping.csvValue)
             rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
           }
         })
@@ -136,11 +132,12 @@ export default {
     getSourceColumn(field) {
       const mapping = this.getAllFieldMappings
       if (mapping[field]?.source === 'phaidra-field') {
-        return 'Phaidra: ' + mapping[field].value
+        return 'Phaidra: ' + mapping[field].phaidraValue
       }
       else if (mapping[field]?.source === 'csv-column') {
-        return 'CSV: ' + mapping[field].value
+        return 'CSV: ' + mapping[field].csvValue
       }
+      return ''
     },
 
     proceed() {
