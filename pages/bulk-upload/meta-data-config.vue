@@ -50,65 +50,35 @@
                   </v-icon>
                 </v-col>
 
-                <!-- CSV Select -->
                 <v-col cols="4">
-                  <v-select
+                  <CSVColumnSelector
                     v-if="getAllowedSources(field).includes('csv-column')"
-                    v-model="fieldMappings[field]"
-                    :items="getAvailableCSVColumns(field)"
-                    outlined
-                    dense
-                    clearable
-                    :label="'Select CSV column'"
-                    @change="updateMapping(field, 'csv-column', $event)"
-                    hide-details
-                    class="flex-grow-0 mr-8"
-                    style="width: 200px"
-                    :disabled="selectedRadioButton[field] === 'phaidra-field'"
-                    :class="{ 'grey-input': selectedRadioButton[field] === 'phaidra-field' }"
-                  ></v-select>
+                    :field="field"
+                    :columns="columns"
+                    :value="fieldMappings[field]"
+                    :disabled="selectedRadioButton[field] !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
+                    :all-mappings="getAllFieldMappings"
+                    @input="val => updateMapping(field, 'csv-column', val)"
+                  />
                 </v-col>
 
-                <!-- Radio Buttons -->
-                <v-col cols="2" :class="{ 'highlight-column': (getAllowedSources(field).length > 1 && !selectedRadioButton[field]) }">
-                  <v-radio-group
-                    v-if="shouldShowRadioButtons(field)"
-                    v-model="selectedRadioButton[field]"
-                    hide-details
-                    dense
-                    class="mt-0 source-select"
-                    @change="handleSourceChange(field, $event)"
-                  >
-                    <v-radio
-                      value="csv-column"
-                      class="mt-0"
-                      label="CSV"
-                      dense
-                    ></v-radio>
-                    <v-radio
-                      value="phaidra-field"
-                      label="Phaidra"
-                      dense
-                    ></v-radio>
-                  </v-radio-group>
-                  <div v-else class="text-caption">
-                    {{ getRestrictionMessage(field) }}
-                  </div>
+                <v-col cols="2">
+                  <SourceSelector
+                    :field="field"
+                    :allowed-sources="getAllowedSources(field)"
+                    :value="selectedRadioButton[field]"
+                    @input="val => handleSourceChange(field, val)"
+                  />
                 </v-col>
 
-                <!-- Phaidra Component -->
                 <v-col cols="4">
-                  <div v-if="getAllowedSources(field).includes('phaidra-field')" class="d-flex align-center">
-                    <component
-                      :is="getPhaidraComponent(field)"
-                      v-bind="getPhaidraProps(field)"
-                      class="flex-grow-1"
-                      @input="val => updateMapping(field, 'phaidra-field', val)"
-                      @change="val => updateMapping(field, 'phaidra-field', val)"
-                      :disabled="selectedRadioButton[field] === 'csv-column'"
-                      :class="{ 'grey-input': selectedRadioButton[field] === 'csv-column' }"
-                    ></component>
-                  </div>
+                  <PhaidraFieldSelector
+                    v-if="getAllowedSources(field).includes('phaidra-field')"
+                    :field="field"
+                    :value="phaidraDisplayValues[field]"
+                    :disabled="selectedRadioButton[field] !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
+                    @input="val => updateMapping(field, 'phaidra-field', val)"
+                  />
                 </v-col>
               </v-row>
             </v-card-text>
@@ -146,13 +116,19 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import CSVColumnSelector from '~/components/bulk-upload/CSVColumnSelector.vue'
+import SourceSelector from '~/components/bulk-upload/SourceSelector.vue'
+import PhaidraFieldSelector from '~/components/bulk-upload/PhaidraFieldSelector.vue'
 import { fieldSettings } from '~/config/bulk-upload/field-settings'
 
 export default {
   name: 'MetaDataConfig',
 
   components: {
-    BulkUploadSteps
+    BulkUploadSteps,
+    CSVColumnSelector,
+    SourceSelector,
+    PhaidraFieldSelector
   },
 
   data() {
@@ -177,23 +153,6 @@ export default {
       })
     },
 
-    // Get available CSV columns, excluding the already selected ones to prevent duplicates
-    getAvailableCSVColumns() {
-      return (currentField) => {
-        // Get all currently selected values except for the current field
-        const allMappings = this.getAllFieldMappings
-        const selectedValues = Object.entries(allMappings)
-          .filter(([field]) => field !== currentField)
-          .filter(([_, mapping]) => mapping?.source === 'csv-column')
-          .map(([_, mapping]) => mapping.csvValue)
-        
-        // Return only columns that aren't selected in other fields, sorted alphabetically
-        return this.columns
-          .filter(col => !selectedValues.includes(col))
-          .sort((a, b) => a.localeCompare(b))
-      }
-    },
-
     fieldIsMapped() {
       const valueKeys = {
         'csv-column': 'csvValue',
@@ -202,7 +161,6 @@ export default {
 
       return (field) => {
         const mapping = this.getFieldMapping(field)
-        // fieldMapping must exist and have a source and applicable value (csvValue or phaidraValue)
         return mapping && mapping.source && mapping[valueKeys[mapping.source]]
       }
     },
@@ -211,92 +169,11 @@ export default {
       return (field) => {
         return fieldSettings[field]?.allowedSources || ['csv-column', 'phaidra-field']
       }
-    },
-
-    shouldShowRadioButtons() {
-      return (field) => {
-        const allowedSources = this.getAllowedSources(field)
-        return allowedSources.length > 1
-      }
-    },
-
-    getRestrictionMessage() {
-      return (field) => {
-        const allowedSources = this.getAllowedSources(field)  
-
-        if (allowedSources[0] === 'csv-column') {
-          return `${field} must be sourced from a CSV column`
-        } else if (allowedSources[0] === 'phaidra-field') {
-          return `${field} must be sourced from a default Phaidra value`
-        }
-      }
     }
   },
 
   methods: {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
-
-    collectAllPhaidraValues() {
-      this.requiredFields.forEach(field => {
-        const mapping = this.getFieldMapping(field)
-        if (mapping?.source === 'phaidra-field') {
-          const value = mapping.value
-          let displayValue = null
-
-          // Convert object values to strings for the components props
-          if (value) {
-            if (typeof value === 'object') {
-              const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
-              if (elementConfig?.component === 'PISelect') {
-                // For PISelect, we need the @id string
-                displayValue = value['@id'] || value.uri || ''
-              } else if (elementConfig?.component === 'PIKeyword') {
-                // For PIKeyword, ensure we have an array
-                displayValue = value
-              } else {
-                // For other components
-                displayValue = value.uri || value.value || value
-              }
-            } else {
-              displayValue = value
-            }
-          }
-
-          this.phaidraDisplayValues[field] = displayValue
-        }
-      })
-    },
-
-    getPhaidraComponent(field) {
-      // Get the Phaidra element configuration for this field
-      const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
-      if (!elementConfig) return 'v-text-field'
-      
-      return elementConfig.component || 'v-text-field'
-    },
-
-    getPhaidraProps(field) {
-      // Get the Phaidra element configuration for this field
-      const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
-      if (!elementConfig) return {}
-
-      const mapping = this.getFieldMapping(field)
-      let displayValue = null
-
-      if (mapping?.source === 'phaidra-field') {
-        displayValue = this.phaidraDisplayValues[field]
-      }
-      
-      return elementConfig.getProps(
-        displayValue,
-        (val) => this.updateMapping(field, 'phaidra-field', val),
-        {
-          handleRoleInput: (val) => this.handleRoleInput(field, val),
-          handleFirstnameInput: (val) => this.handleFirstnameInput(field, val),
-          handleLastnameInput: (val) => this.handleLastnameInput(field, val)
-        }
-      )
-    },
 
     updateMapping(field, source, value) {
       // Add flash animation to specific row
@@ -326,8 +203,8 @@ export default {
     },
 
     handleSourceChange(field, source) {
-      // First reset the current mapping
-      this.updateMapping(field, null)
+      // Update the selectedRadioButton state
+      this.$set(this.selectedRadioButton, field, source)
       
       if (source === 'phaidra-field') {
         const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
@@ -344,30 +221,10 @@ export default {
       }
     },
 
-    handleRoleInput(field, value) {
-      const currentValue = this.phaidraDisplayValues[field] || {}
-      this.updateMapping(field, 'phaidra-field', { ...currentValue, role: value })
-    },
-
-    handleFirstnameInput(field, value) {
-      const currentValue = this.phaidraDisplayValues[field] || {}
-      this.updateMapping(field, 'phaidra-field', { ...currentValue, firstname: value })
-    },
-
-    handleLastnameInput(field, value) {
-      const currentValue = this.phaidraDisplayValues[field] || {}
-      this.updateMapping(field, 'phaidra-field', { ...currentValue, lastname: value })
-    },
-
     proceed() {
       this.completeStep(2)
       this.setCurrentStep(3)
       this.$router.push(this.steps[3].route)
-    },
-
-    clearPhaidraValue(field) {
-      this.$delete(this.phaidraDisplayValues, field)
-      this.updateMapping(field, null)
     }
   },
 
@@ -419,9 +276,6 @@ export default {
       }
     })
 
-    // Initialize Phaidra display values
-    this.collectAllPhaidraValues()
-
     // Mark as initialized after all setup is complete
     this.isInitialized = true
   }
@@ -432,24 +286,6 @@ export default {
 .meta-data-config {
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.grey-input {
-  opacity: 0.6;
-}
-
-.grey-input :deep(.v-input__slot) {
-  background-color: #f5f5f5 !important;
-}
-
-.source-select :deep(.v-input--radio-group__input) {
-  margin: 0;
-}
-
-.highlight-column {
-  background-color: #fff5e6;
-  border-radius: 4px;
-  position: relative;
 }
 
 .flash-blue {
