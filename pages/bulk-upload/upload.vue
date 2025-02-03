@@ -255,15 +255,15 @@ export default {
           const filenameMapping = this.fieldMappings['Filename']
           
           const title = titleMapping?.source === 'phaidra-field' 
-            ? titleMapping.value
+            ? titleMapping.phaidraValue
             : titleMapping?.source === 'csv-column'
-              ? values[headers.indexOf(titleMapping.value)] || 'No title'
+              ? values[headers.indexOf(titleMapping.csvValue)] || 'No title'
               : 'No title'
               
           const filename = filenameMapping?.source === 'phaidra-field'
-            ? filenameMapping.value
+            ? filenameMapping.phaidraValue
             : filenameMapping?.source === 'csv-column'
-              ? values[headers.indexOf(filenameMapping.value)]
+              ? values[headers.indexOf(filenameMapping.csvValue)]
               : null
 
           return {
@@ -417,7 +417,7 @@ export default {
         return
       }
 
-      const filenameIndex = headers.indexOf(filenameMapping.value)
+      const filenameIndex = headers.indexOf(filenameMapping.csvValue)
       if (filenameIndex === -1) {
         this.fileError = 'Mapped filename column not found in CSV'
         this.selectedFiles = []
@@ -465,12 +465,12 @@ export default {
         let f = null
         try {
           if (mapping.source === 'phaidra-field') {
-            const value = mapping.value
+            const value = mapping.phaidraValue
             console.log(`Processing Phaidra field: ${field} with value:`, value)
             
             if (field === 'Type') {
               f = fieldslib.getField('object-type-checkboxes')
-              const parsedValue = JSON.parse(value || '{}')
+              const parsedValue = mapping.phaidraField || {}
               f.value = parsedValue['@id']
               f.showLabel = true
               if (parsedValue['@type']) {
@@ -482,7 +482,7 @@ export default {
               f.roleVocabulary = "submitrolepredicate"
               f.showDefinitions = true
               f.role = 'role:aut'
-              const parsedValue = JSON.parse(value || '{}')
+              const parsedValue = mapping.phaidraField || {}
               f.name = `${parsedValue.firstname} ${parsedValue.lastname}`
             } else if (field === 'License') {
               f = fieldslib.getField('license')
@@ -496,7 +496,7 @@ export default {
               }
             }
           } else if (mapping.source === 'csv-column') {
-            const columnIndex = headers.indexOf(mapping.value)
+            const columnIndex = headers.indexOf(mapping.csvValue)
             const value = values[columnIndex]
             console.log(`Processing CSV field: ${field} with value:`, value)
             
@@ -566,7 +566,7 @@ export default {
       // Add file data if present
       const filenameMapping = this.fieldMappings['Filename']
       if (filenameMapping?.source === 'csv-column') {
-        const filenameIndex = headers.indexOf(filenameMapping.value)
+        const filenameIndex = headers.indexOf(filenameMapping.csvValue)
         const filename = values[filenameIndex]
         if (filename) {
           const file = this.selectedFiles.find(f => f.name === filename)
