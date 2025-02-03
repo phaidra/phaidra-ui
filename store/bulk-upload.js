@@ -51,13 +51,14 @@ export const mutations = {
         [requiredField]: null
       }
     } else {
+      const existingMapping = state.fieldMappings[requiredField] || {}
       state.fieldMappings = {
         ...state.fieldMappings,
         [requiredField]: {
           source,
-          csvValue: csvValue || null,
-          phaidraValue: phaidraValue || null,
-          phaidraField: phaidraField || null
+          csvValue: csvValue !== undefined ? csvValue : existingMapping.csvValue || null,
+          phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.phaidraValue || null,
+          phaidraField: phaidraField !== undefined ? phaidraField : existingMapping.phaidraField || null
         }
       }
     }
