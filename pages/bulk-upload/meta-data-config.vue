@@ -160,7 +160,7 @@ export default {
       fieldMappings: {},
       selectedRadioButton: {},
       selectedPhaidraElement: {},
-      phaidraValues: {},
+      phaidraDisplayValues: {},
       isInitialized: false,
       flashingField: null
     }
@@ -229,6 +229,37 @@ export default {
   methods: {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
+    collectAllPhaidraValues() {
+      this.requiredFields.forEach(field => {
+        const mapping = this.getFieldMapping(field)
+        if (mapping?.source === 'phaidra-field') {
+          const value = mapping.value
+          let displayValue = null
+
+          // Convert object values to strings for the components props
+          if (value) {
+            if (typeof value === 'object') {
+              const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
+              if (elementConfig?.component === 'PISelect') {
+                // For PISelect, we need the @id string
+                displayValue = value['@id'] || value.uri || ''
+              } else if (elementConfig?.component === 'PIKeyword') {
+                // For PIKeyword, ensure we have an array
+                displayValue = value
+              } else {
+                // For other components
+                displayValue = value.uri || value.value || value
+              }
+            } else {
+              displayValue = value
+            }
+          }
+
+          this.phaidraDisplayValues[field] = displayValue
+        }
+      })
+    },
+
     getPhaidraComponent(field) {
       // Get the Phaidra element configuration for this field
       const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
@@ -241,12 +272,14 @@ export default {
       // Get the Phaidra element configuration for this field
       const elementConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
       if (!elementConfig) return {}
+
+      const mapping = this.getFieldMapping(field)
+      let displayValue = null
+
+      if (mapping?.source === 'phaidra-field') {
+        displayValue = this.phaidraDisplayValues[field]
+      }
       
-      const value = this.phaidraValues[field]
-      // Convert object values to strings for the components props
-      const displayValue = value ? (typeof value === 'object' ? value.value || '' : value) : ''
-      
-      // Get props with all event handlers configured in field-settings
       return elementConfig.getProps(
         displayValue,
         (val) => this.updateMapping(field, 'phaidra-field', val),
@@ -282,7 +315,6 @@ export default {
         if (phaidraConfig) {
           this.selectedPhaidraElement[field] = phaidraConfig.value
           const fieldObject = phaidraConfig.field()
-          this.phaidraValues[field] = fieldObject
           this.updateMapping(field, source, fieldObject)
         }
       } else if (source === 'csv-column') {
@@ -291,33 +323,18 @@ export default {
     },
 
     handleRoleInput(field, value) {
-      const currentValue = this.phaidraValues[field] || {}
+      const currentValue = this.phaidraDisplayValues[field] || {}
       this.updateMapping(field, 'phaidra-field', { ...currentValue, role: value })
     },
 
     handleFirstnameInput(field, value) {
-      const currentValue = this.phaidraValues[field] || {}
+      const currentValue = this.phaidraDisplayValues[field] || {}
       this.updateMapping(field, 'phaidra-field', { ...currentValue, firstname: value })
     },
 
     handleLastnameInput(field, value) {
-      const currentValue = this.phaidraValues[field] || {}
+      const currentValue = this.phaidraDisplayValues[field] || {}
       this.updateMapping(field, 'phaidra-field', { ...currentValue, lastname: value })
-    },
-
-    handleTypeChange(field, value) {
-      const currentValue = this.phaidraValues[field] || {}
-      this.updateMapping(field, 'phaidra-field', { ...currentValue, type: value })
-    },
-
-    updatePhaidraMapping(field, value) {
-      if (value) {
-        this.phaidraValues[field] = value
-        this.updateMapping(field, 'phaidra-field', value)
-      } else {
-        this.$delete(this.phaidraValues, field)
-        this.updateMapping(field, null, null)
-      }
     },
 
     proceed() {
@@ -327,7 +344,7 @@ export default {
     },
 
     clearPhaidraValue(field) {
-      this.$delete(this.phaidraValues, field)
+      this.$delete(this.phaidraDisplayValues, field)
       this.updateMapping(field, null, null)
     }
   },
@@ -355,7 +372,7 @@ export default {
           const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
           if (phaidraConfig) {
             this.selectedPhaidraElement[field] = phaidraConfig.value
-            this.phaidraValues[field] = mapping.value
+            this.phaidraDisplayValues[field] = mapping.value
           }
         } else if (mapping.source === 'csv-column') {
           // Handle existing CSV mapping
@@ -379,6 +396,9 @@ export default {
         }
       }
     })
+
+    // Initialize Phaidra display values
+    this.collectAllPhaidraValues()
 
     // Mark as initialized after all setup is complete
     this.isInitialized = true

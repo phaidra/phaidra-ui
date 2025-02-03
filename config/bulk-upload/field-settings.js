@@ -1,7 +1,7 @@
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 
 const getSharedProps = (fieldConfig, value, updateMapping) => ({
-  value,
+  value: value,
   label: fieldConfig.label || fieldConfig.text,
   field: fieldConfig,
   outlined: true,
@@ -63,7 +63,7 @@ export const fieldSettings = {
     ]
   },
   'Description': {
-    allowedSources: ['csv-column', 'phaidra-field'],
+    allowedSources: ['csv-column'],
     phaidraComponentMapping: [
       {
         text: 'Description',
@@ -122,7 +122,7 @@ export const fieldSettings = {
           return {
             ...getSharedProps(fieldConfig, value, updateMapping),
             vocabulary: fieldConfig.vocabulary,
-            showValueDefinition: true
+            showValueDefinition: false
           }
         }
       }
@@ -153,7 +153,6 @@ export const fieldSettings = {
         component: 'PISelect',
         field: () => {
           const field = fieldslib.getField("license")
-          field.showValueDefinition = true
           field.vocabulary = "alllicenses"
           field.multilingual = false
           return field
@@ -162,9 +161,8 @@ export const fieldSettings = {
           const fieldConfig = this.field()
           return {
             ...getSharedProps(fieldConfig, value, updateMapping),
-            showValueDefinition: true,
-            vocabulary: 'alllicenses',
-            predicate: 'edm:rights'
+            showDisclaimer: false,
+            vocabulary: 'alllicenses'
           }
         }
       }

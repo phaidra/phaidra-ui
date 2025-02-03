@@ -17,7 +17,7 @@
                 <thead>
                   <tr>
                     <th v-for="field in mappedFields" :key="field" class="text-left">
-                      {{ field }} (CSV: {{ getSourceColumn(field) }})
+                      {{ field }} ({{ getSourceColumn(field) }})
                     </th>
                   </tr>
                 </thead>
@@ -115,7 +115,11 @@ export default {
             rowData[field] = ''
           } else if (mapping.source === 'phaidra-field') {
             // For Phaidra values, use the value directly
-            rowData[field] = mapping.value
+            if (field === 'Keywords') {
+              rowData[field] = mapping.value.join(', ')
+            } else if (field === 'License') {
+              rowData[field] = mapping.value['@id']
+            }
           } else if (mapping.source === 'csv-column') {
             // For CSV mappings, get the value from the corresponding column
             const columnIndex = headers.indexOf(mapping.value)
@@ -132,10 +136,10 @@ export default {
     getSourceColumn(field) {
       const mapping = this.getAllFieldMappings
       if (mapping[field]?.source === 'phaidra-field') {
-        return `Phaidra: ${mapping[field].value}`
+        return 'Phaidra: ' + mapping[field].value
       }
       else if (mapping[field]?.source === 'csv-column') {
-        return mapping[field].value
+        return 'CSV: ' + mapping[field].value
       }
     },
 
