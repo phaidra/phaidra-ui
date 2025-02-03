@@ -185,7 +185,7 @@ export default {
         const selectedValues = Object.entries(allMappings)
           .filter(([field]) => field !== currentField)
           .filter(([_, mapping]) => mapping?.source === 'csv-column')
-          .map(([_, mapping]) => mapping.value)
+          .map(([_, mapping]) => mapping.csvValue)
         
         // Return only columns that aren't selected in other fields, sorted alphabetically
         return this.columns
@@ -195,8 +195,15 @@ export default {
     },
 
     fieldIsMapped() {
+      const valueKeys = {
+        'csv-column': 'csvValue',
+        'phaidra-field': 'phaidraValue'
+      }
+
       return (field) => {
-        return this.getFieldMapping(field) && this.getFieldMapping(field).source && this.getFieldMapping(field).value
+        const mapping = this.getFieldMapping(field)
+        // fieldMapping must exist and have a source and applicable value (csvValue or phaidraValue)
+        return mapping && mapping.source && mapping[valueKeys[mapping.source]]
       }
     },
 
@@ -298,17 +305,29 @@ export default {
         this.flashingField = null;
       }, 250);
 
-      if (value === null) {
-        this.setFieldMapping({ requiredField: field, source: null, value: null })
+      if (!source) {
+        this.setFieldMapping({ requiredField: field, source: null })
       } else {
-        this.setFieldMapping({ requiredField: field, source: source, value })
+        const mapping = {
+          requiredField: field,
+          source
+        }
+
+        // Store additional data based on source type
+        if (source === 'csv-column') {
+          mapping.csvValue = value
+        } else if (source === 'phaidra-field') {
+          mapping.phaidraValue = value.value
+          mapping.phaidraField = value
+        }
+
+        this.setFieldMapping(mapping)
       }
     },
 
-    // aka radio button change
     handleSourceChange(field, source) {
       // First reset the current mapping
-      this.updateMapping(field, null, null)
+      this.updateMapping(field, null)
       
       if (source === 'phaidra-field') {
         const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
@@ -318,7 +337,10 @@ export default {
           this.updateMapping(field, source, fieldObject)
         }
       } else if (source === 'csv-column') {
-        this.updateMapping(field, source, this.fieldMappings[field])
+        // Restore previous CSV value if it exists
+        const previousMapping = this.getFieldMapping(field)
+        const csvValue = previousMapping?.csvValue || this.fieldMappings[field]
+        this.updateMapping(field, source, csvValue)
       }
     },
 
@@ -345,7 +367,7 @@ export default {
 
     clearPhaidraValue(field) {
       this.$delete(this.phaidraDisplayValues, field)
-      this.updateMapping(field, null, null)
+      this.updateMapping(field, null)
     }
   },
 
@@ -377,9 +399,9 @@ export default {
         } else if (mapping.source === 'csv-column') {
           // Handle existing CSV mapping
           this.$set(this.selectedRadioButton, field, 'csv-column')
-          const columnExists = this.columns.includes(mapping.value)
+          const columnExists = this.columns.includes(mapping.csvValue)
           if (columnExists) {
-            this.fieldMappings[field] = mapping.value
+            this.fieldMappings[field] = mapping.csvValue
           }
         }
       } else {
