@@ -190,7 +190,6 @@ export default {
 
         // Store additional data based on source type
         if (source === 'csv-column') {
-          this.clearDuplicateCsvMappings(field, value)
           mapping.csvValue = value
         } else if (source === 'phaidra-field') {
           mapping.phaidraValue = "test"
@@ -199,25 +198,6 @@ export default {
 
         this.setFieldMapping(mapping)
       }
-    },
-
-    // Clear any duplicate CSV mappings from other fields
-    // duplications are possible when:
-    //   1. you select a csv column "Lizenz" for the required field License
-    //   2. you change the source of License to phaidra -> Phaidra License (csvValue stays "Lizenz", but now is disabled)
-    //   3. now another csv field can select "Lizenz", and by doing so we would have duplicates, which is not what we want
-    //   4. to prevent that, this methods removes the old mapping from step 1.
-    clearDuplicateCsvMappings(currentField, csvValue) {
-      this.requiredFields.forEach(field => {
-        if (field !== currentField) {
-          const mapping = this.getFieldMapping(field)
-          if (mapping?.source === 'csv-column' && mapping.csvValue === csvValue) {
-            this.setFieldMapping({ requiredField: field, source: null })
-            this.$set(this.selectedRadioButton, field, null)
-            this.$set(this.fieldMappings, field, null)
-          }
-        }
-      })
     },
 
     handleSourceChange(field, source) {
@@ -232,10 +212,11 @@ export default {
           this.updateMapping(field, source, fieldObject)
         }
       } else if (source === 'csv-column') {
-        // Restore previous CSV value if it exists
         const previousMapping = this.getFieldMapping(field)
         const csvValue = previousMapping?.csvValue || this.fieldMappings[field]
-        this.updateMapping(field, source, csvValue)
+        if (csvValue) {
+          this.updateMapping(field, source, csvValue)
+        }
       }
     },
 

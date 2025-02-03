@@ -57,8 +57,8 @@ export default {
       // Get all currently selected values except for the current field
       const selectedValues = Object.entries(this.allMappings)
         .filter(([field]) => field !== this.field)
-        .filter(([_, mapping]) => mapping?.source === 'csv-column')
-        .map(([_, mapping]) => mapping.csvValue)
+        .map(([_, mapping]) => mapping?.csvValue)
+        .filter(Boolean)
       
       // Return only columns that aren't selected in other fields, sorted alphabetically
       return this.columns
