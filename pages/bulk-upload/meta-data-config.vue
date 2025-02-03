@@ -147,10 +147,7 @@ export default {
     ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings']),
 
     allFieldsMapped() {
-      return this.requiredFields.every(field => {
-        const mapping = this.getFieldMapping(field)
-        return mapping && mapping.source && mapping.value
-      })
+      return this.requiredFields.every(field => this.fieldIsMapped(field))
     },
 
     fieldIsMapped() {
@@ -194,7 +191,7 @@ export default {
         if (source === 'csv-column') {
           mapping.csvValue = value
         } else if (source === 'phaidra-field') {
-          mapping.phaidraValue = value.value
+          mapping.phaidraValue = "test"
           mapping.phaidraField = value
         }
 
