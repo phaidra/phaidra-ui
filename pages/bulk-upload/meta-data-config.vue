@@ -198,7 +198,6 @@ export default {
         mapping.csvValue = value
       } else if (source === 'phaidra-field') {
         mapping.phaidraValue = value
-        mapping.phaidraField = value
       }
 
       this.setFieldMapping(mapping)

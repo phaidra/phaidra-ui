@@ -11,7 +11,7 @@ export const state = () => ({
   columns: [],
   fileName: '',
   requiredFields: ['Title', 'Role', 'Firstname', 'Lastname', 'Description', 'Keywords', 'Type', 'License', 'Filename'],
-  fieldMappings: {}, // Will store mappings like { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: string, phaidraField: object } }
+  fieldMappings: {}, // Will store mappings like { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: object } }
   uploadState: {}, // Will store upload state for each row { rowIndex: { status: 'pending|uploading|completed|error', pid: null, error: null } }
   uploadProgress: {
     total: 0,
@@ -44,7 +44,7 @@ export const mutations = {
   setFileName(state, fileName) {
     state.fileName = fileName
   },
-  setFieldMapping(state, { requiredField, source, csvValue, phaidraValue, phaidraField }) {
+  setFieldMapping(state, { requiredField, source, csvValue, phaidraValue }) {
     if (!source) {
       state.fieldMappings = {
         ...state.fieldMappings,
@@ -57,8 +57,7 @@ export const mutations = {
         [requiredField]: {
           source,
           csvValue: csvValue !== undefined ? csvValue : existingMapping.csvValue || null,
-          phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.phaidraValue || null,
-          phaidraField: phaidraField !== undefined ? phaidraField : existingMapping.phaidraField || null
+          phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.phaidraValue || null
         }
       }
     }
