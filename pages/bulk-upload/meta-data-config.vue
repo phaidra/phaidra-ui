@@ -161,7 +161,7 @@ export default {
 
     getAllowedSources() {
       return (field) => {
-        return fieldSettings[field]?.allowedSources || ['csv-column', 'phaidra-field']
+        return fieldSettings[field]?.allowedSources || []
       }
     }
   },
