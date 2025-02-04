@@ -2,7 +2,6 @@
   <v-container class="meta-data-config">
     <BulkUploadSteps />
     
-    <!-- Only render content when initialized -->
     <template v-if="isInitialized">
       <v-row>
         <v-col>
@@ -13,7 +12,6 @@
         </v-col>
       </v-row>
 
-      <!-- Mapping Section -->
       <v-row class="mt-4">
         <v-col cols="12">
           <v-card outlined>
@@ -55,7 +53,7 @@
                     v-if="getAllowedSources(field).includes('csv-column')"
                     :field="field"
                     :columns="columns"
-                    :value="fieldMappings[field]"
+                    :value="getFieldMapping(field)?.csvValue"
                     :disabled="selectedRadioButton[field] !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
                     :all-mappings="getAllFieldMappings"
                     @input="val => updateMapping(field, 'csv-column', val)"
@@ -134,7 +132,6 @@ export default {
 
   data() {
     return {
-      fieldMappings: {},
       selectedRadioButton: {},
       selectedPhaidraElement: {},
       phaidraDisplayValues: {},
@@ -174,7 +171,7 @@ export default {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
     updateMapping(field, source, value) {
-      // Add flash animation to specific row
+      // Add flash animation to specific row for dev purposes
       this.flashingField = field;
       setTimeout(() => {
         this.flashingField = null;
@@ -213,9 +210,8 @@ export default {
         }
       } else if (source === 'csv-column') {
         const previousMapping = this.getFieldMapping(field)
-        const csvValue = previousMapping?.csvValue || this.fieldMappings[field]
-        if (csvValue) {
-          this.updateMapping(field, source, csvValue)
+        if (previousMapping?.csvValue) {
+          this.updateMapping(field, source, previousMapping.csvValue)
         }
       }
     },
@@ -244,21 +240,26 @@ export default {
       }
 
       if (mapping) {
-        if (mapping.source === 'phaidra-field') {
-          // Handle existing Phaidra mapping
-          this.$set(this.selectedRadioButton, field, 'phaidra-field')
+        // Load all values regardless of source
+        if (mapping.csvValue) {
+          const columnExists = this.columns.includes(mapping.csvValue)
+          if (columnExists) {
+            this.updateMapping(field, 'csv-column', mapping.csvValue)
+          }
+        }
+        if (mapping.phaidraValue) {
           const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
           if (phaidraConfig) {
             this.selectedPhaidraElement[field] = phaidraConfig.value
-            this.phaidraDisplayValues[field] = mapping.value
+            this.phaidraDisplayValues[field] = mapping.phaidraValue
           }
+        }
+
+        // Set the active source
+        if (mapping.source === 'phaidra-field') {
+          this.$set(this.selectedRadioButton, field, 'phaidra-field')
         } else if (mapping.source === 'csv-column') {
-          // Handle existing CSV mapping
           this.$set(this.selectedRadioButton, field, 'csv-column')
-          const columnExists = this.columns.includes(mapping.csvValue)
-          if (columnExists) {
-            this.fieldMappings[field] = mapping.csvValue
-          }
         }
       } else {
         // Try to find automatic match if no mapping exists and CSV is allowed
@@ -268,7 +269,6 @@ export default {
           )
           if (matchingColumn) {
             this.$set(this.selectedRadioButton, field, 'csv-column')
-            this.fieldMappings[field] = matchingColumn
             this.updateMapping(field, 'csv-column', matchingColumn)
           }
         }
