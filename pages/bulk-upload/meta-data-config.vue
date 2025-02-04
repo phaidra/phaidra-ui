@@ -54,7 +54,7 @@
                     :field="field"
                     :columns="columns"
                     :value="getFieldMapping(field)?.csvValue"
-                    :disabled="selectedRadioButton[field] !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
+                    :disabled="getFieldMapping(field)?.source !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
                     :all-mappings="getAllFieldMappings"
                     @input="val => updateMapping(field, 'csv-column', val)"
                   />
@@ -64,8 +64,8 @@
                   <SourceSelector
                     :field="field"
                     :allowed-sources="getAllowedSources(field)"
-                    :value="selectedRadioButton[field]"
-                    @input="val => handleSourceChange(field, val)"
+                    :value="getFieldMapping(field)?.source"
+                    @input="val => updateSource(field, val)"
                   />
                 </v-col>
 
@@ -74,7 +74,7 @@
                     v-if="getAllowedSources(field).includes('phaidra-field')"
                     :field="field"
                     :value="phaidraDisplayValues[field]"
-                    :disabled="selectedRadioButton[field] !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
+                    :disabled="getFieldMapping(field)?.source !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
                     @input="val => updateMapping(field, 'phaidra-field', val)"
                   />
                 </v-col>
@@ -132,7 +132,6 @@ export default {
 
   data() {
     return {
-      selectedRadioButton: {},
       selectedPhaidraElement: {},
       phaidraDisplayValues: {},
       isInitialized: false,
@@ -200,7 +199,7 @@ export default {
       if (source === 'csv-column') {
         mapping.csvValue = value
       } else if (source === 'phaidra-field') {
-        mapping.phaidraValue = "test"
+        mapping.phaidraValue = value
         mapping.phaidraField = value
       }
 
@@ -213,17 +212,6 @@ export default {
       } else {
         this.updateSource(field, source)
         this.updateValue(field, source, value)
-      }
-    },
-
-    handleSourceChange(field, source) {
-      // Update the selectedRadioButton state
-      this.$set(this.selectedRadioButton, field, source)
-      
-      if (source === 'phaidra-field') {
-        this.updateSource(field, source)
-      } else if (source === 'csv-column') {
-        this.updateSource(field, source)
       }
     },
 
@@ -245,17 +233,13 @@ export default {
       const mapping = this.getFieldMapping(field)
       const allowedSources = this.getAllowedSources(field)
       
-      if (mapping) {
-        // Set radio button based on existing mapping
-        this.$set(this.selectedRadioButton, field, mapping.source)
-      } else {
-        // Try automatic matching for CSV columns
+      // Try automatic matching for CSV columns if no mapping exists
+      if (!mapping) {
         if (allowedSources.includes('csv-column')) {
           const matchingColumn = this.columns.find(
             col => col.toLowerCase() === field.toLowerCase()
           )
           if (matchingColumn) {
-            this.$set(this.selectedRadioButton, field, 'csv-column')
             this.updateMapping(field, 'csv-column', matchingColumn)
           }
         }
