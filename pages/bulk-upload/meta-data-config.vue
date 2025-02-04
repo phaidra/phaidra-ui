@@ -170,6 +170,31 @@ export default {
   methods: {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
+    updateSource(field, source) {
+      const mapping = {
+        requiredField: field,
+        source
+      }
+      mapping.source = source
+      this.setFieldMapping(mapping)
+    },
+
+    updateValue(field, source, value) {
+      const mapping = {
+        requiredField: field,
+        source
+      }
+
+      if (source === 'csv-column') {
+        mapping.csvValue = value
+      } else if (source === 'phaidra-field') {
+        mapping.phaidraValue = "test"
+        mapping.phaidraField = value
+      }
+
+      this.setFieldMapping(mapping)
+    },
+
     updateMapping(field, source, value) {
       // Add flash animation to specific row for dev purposes
       this.flashingField = field;
@@ -178,22 +203,10 @@ export default {
       }, 250);
 
       if (!source) {
-        this.setFieldMapping({ requiredField: field, source: null })
+        this.updateSource(field, null)
       } else {
-        const mapping = {
-          requiredField: field,
-          source
-        }
-
-        // Store additional data based on source type
-        if (source === 'csv-column') {
-          mapping.csvValue = value
-        } else if (source === 'phaidra-field') {
-          mapping.phaidraValue = "test"
-          mapping.phaidraField = value
-        }
-
-        this.setFieldMapping(mapping)
+        this.updateSource(field, source)
+        this.updateValue(field, source, value)
       }
     },
 
@@ -210,7 +223,7 @@ export default {
         }
       } else if (source === 'csv-column') {
         const previousMapping = this.getFieldMapping(field)
-        if (previousMapping?.csvValue) {
+        if (previousMapping) {
           this.updateMapping(field, source, previousMapping.csvValue)
         }
       }
