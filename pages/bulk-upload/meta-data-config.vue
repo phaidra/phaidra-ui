@@ -171,6 +171,12 @@ export default {
     ...mapMutations('bulk-upload', ['setFieldMapping', 'setCurrentStep', 'completeStep']),
 
     updateSource(field, source) {
+      // Add flash animation to specific row for dev purposes
+      this.flashingField = field;
+      setTimeout(() => {
+        this.flashingField = null;
+      }, 250);
+
       const mapping = {
         requiredField: field,
         source
@@ -180,6 +186,12 @@ export default {
     },
 
     updateValue(field, source, value) {
+      // Add flash animation to specific row for dev purposes
+      this.flashingField = field;
+      setTimeout(() => {
+        this.flashingField = null;
+      }, 250);
+
       const mapping = {
         requiredField: field,
         source
@@ -196,12 +208,6 @@ export default {
     },
 
     updateMapping(field, source, value) {
-      // Add flash animation to specific row for dev purposes
-      this.flashingField = field;
-      setTimeout(() => {
-        this.flashingField = null;
-      }, 250);
-
       if (!source) {
         this.updateSource(field, null)
       } else {
@@ -215,17 +221,9 @@ export default {
       this.$set(this.selectedRadioButton, field, source)
       
       if (source === 'phaidra-field') {
-        const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
-        if (phaidraConfig) {
-          this.selectedPhaidraElement[field] = phaidraConfig.value
-          const fieldObject = phaidraConfig.field()
-          this.updateMapping(field, source, fieldObject)
-        }
+        this.updateSource(field, source)
       } else if (source === 'csv-column') {
-        const previousMapping = this.getFieldMapping(field)
-        if (previousMapping) {
-          this.updateMapping(field, source, previousMapping.csvValue)
-        }
+        this.updateSource(field, source)
       }
     },
 
@@ -242,40 +240,16 @@ export default {
       await this.$store.$initBulkUpload()
     }
 
-    // Initialize mappings from store and try automatic matching
+    // Initialize radio button selections
     this.requiredFields.forEach(field => {
       const mapping = this.getFieldMapping(field)
       const allowedSources = this.getAllowedSources(field)
       
-      // Initialize mapping type to null if not set
-      if (!this.selectedRadioButton[field]) {
-        this.$set(this.selectedRadioButton, field, null)
-      }
-
       if (mapping) {
-        // Load all values regardless of source
-        if (mapping.csvValue) {
-          const columnExists = this.columns.includes(mapping.csvValue)
-          if (columnExists) {
-            this.updateMapping(field, 'csv-column', mapping.csvValue)
-          }
-        }
-        if (mapping.phaidraValue) {
-          const phaidraConfig = fieldSettings[field]?.phaidraComponentMapping?.[0]
-          if (phaidraConfig) {
-            this.selectedPhaidraElement[field] = phaidraConfig.value
-            this.phaidraDisplayValues[field] = mapping.phaidraValue
-          }
-        }
-
-        // Set the active source
-        if (mapping.source === 'phaidra-field') {
-          this.$set(this.selectedRadioButton, field, 'phaidra-field')
-        } else if (mapping.source === 'csv-column') {
-          this.$set(this.selectedRadioButton, field, 'csv-column')
-        }
+        // Set radio button based on existing mapping
+        this.$set(this.selectedRadioButton, field, mapping.source)
       } else {
-        // Try to find automatic match if no mapping exists and CSV is allowed
+        // Try automatic matching for CSV columns
         if (allowedSources.includes('csv-column')) {
           const matchingColumn = this.columns.find(
             col => col.toLowerCase() === field.toLowerCase()
