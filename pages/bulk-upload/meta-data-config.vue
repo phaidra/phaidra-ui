@@ -73,7 +73,7 @@
                   <PhaidraFieldSelector
                     v-if="getAllowedSources(field).includes('phaidra-field')"
                     :field="field"
-                    :value="phaidraDisplayValues[field]"
+                    :value="getFieldMapping(field)?.phaidraValue"
                     :disabled="getFieldMapping(field)?.source !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
                     @input="val => updateMapping(field, 'phaidra-field', val)"
                   />
@@ -132,8 +132,6 @@ export default {
 
   data() {
     return {
-      selectedPhaidraElement: {},
-      phaidraDisplayValues: {},
       isInitialized: false,
       flashingField: null
     }
