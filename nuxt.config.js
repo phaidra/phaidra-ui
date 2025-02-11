@@ -119,8 +119,6 @@ export default {
     detectBrowserLanguage: false
   },
 
-  
-
   alias: {
     vue: path.resolve(path.join(__dirname, 'node_modules', 'vue')),
     vuetify: path.resolve(path.join(__dirname, 'node_modules', 'vuetify'))

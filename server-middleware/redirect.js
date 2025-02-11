@@ -1,6 +1,6 @@
 import qs from 'qs'
 import axios from 'axios'
-import config from '../config/phaidra-ui' 
+import config from '../config/phaidra-ui'
 
 export default async (req, res, next) => {
   if (/^\/o:\d+$/.test(req.url)) { 
