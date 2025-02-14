@@ -107,6 +107,12 @@ export default {
         code: 'deu',
         iso: 'de',
         file: 'deu'
+      },
+      {
+        name: 'Italiano',
+        code: 'ita',
+        iso: 'it',
+        file: 'ita'
       }
     ],
     strategy: 'no_prefix',

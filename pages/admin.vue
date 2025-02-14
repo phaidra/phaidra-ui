@@ -106,7 +106,7 @@
                   <v-col>
                     <v-dialog class="pb-4" v-model="templateDialog" width="700px">
                       <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" large dark color="grey">
+                        <v-btn v-on="on" large color="primary">
                           <v-icon dark class="mr-4">mdi-script</v-icon>
                           {{ $t("Select submit template") }}
                         </v-btn>
@@ -118,7 +118,7 @@
                             :selectedTemplateId="selectedTemplateId" v-on:load-template="onTemplateSelect($event)"></p-templates>
                         </v-card-text>
                         <v-card-actions>
-                          <v-spacer></v-spacer><v-btn @click="templateDialog = false">{{ $t("Cancel") }}</v-btn>
+                          <v-spacer></v-spacer><v-btn dark color="grey" @click="templateDialog = false">{{ $t("Cancel") }}</v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -184,7 +184,7 @@
                       v-model="parsedPublicConfigData.validationfnc"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="6" class="mt-4">{{ $t("Which method shold be used to validate metadata forms.") }}</v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Which method should be used to validate metadata forms.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -193,7 +193,7 @@
                       v-model="parsedPublicConfigData.markmandatoryfnc"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="6" class="mt-4">{{ $t("Which method shold be used to makr fields as mandatory in submit form.") }}</v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Which method should be used to mark fields as mandatory in submit form.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -211,7 +211,7 @@
                       v-model="parsedPublicConfigData.groups"
                     ></v-checkbox>
                   </v-col>
-                  <v-col cols="6" class="mt-4">{{ $t("Enable link to 'Groups' in navigation") }}</v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Enable link to 'Groups' in navigation.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -302,11 +302,11 @@
                 <v-row>
                   <v-col>
                     <v-textarea
-                      label="Submit langing page"
+                      label="Submit landing page"
                       v-model="parsedPublicConfigData.cms_submit"
                     ></v-textarea>
                   </v-col>
-                  <v-col cols="3" class="mt-4">{{ $t("Submit langing page component. Enclose template in a div.") }}</v-col>
+                  <v-col cols="3" class="mt-4">{{ $t("Submit landing page component. Enclose template in a div.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -416,7 +416,7 @@
                       v-model="parsedPrivateConfigData.enabledelete"
                     ></v-checkbox>
                   </v-col>
-                  <v-col cols="6" class="mt-6">{{ $t("Allows delete of owned objects for normal users. Admin can always delete any object. (This setting only applies in Authorizatio/authorize which is currently only use on Fedora 6.x instances.)") }}</v-col>
+                  <v-col cols="6" class="mt-6">{{ $t("Allows delete of owned objects for normal users. Admin can always delete any object. (This setting only applies in Authorization/authorize which is currently only use on Fedora 6.x instances.)") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>

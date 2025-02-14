@@ -572,6 +572,7 @@
                 :key="'member_' + member.pid"
               >
                 <iframe
+                  v-if="!member.isrestricted"
                   :src="
                     instanceconfig.api + '/object/' + member.pid + '/preview'
                   "
@@ -584,6 +585,11 @@
                   frameborder="0"
                   >Content</iframe
                 >
+                <v-row v-else>
+                <v-col class="text-right mr-3">
+                  <v-chip label dark color="red lighten-1 font-weight-regular"><v-icon small left>mdi-lock</v-icon>{{ $t('Restricted access') }}</v-chip>
+                </v-col>
+              </v-row>
                 <v-card-text class="ma-2">
                   <p-d-jsonld
                     :jsonld="member.metadata['JSON-LD']"
@@ -691,25 +697,27 @@
               <v-row class="my-4">
                 <v-col cols="1" >
                   <div class="preview-maxwidth">
-                    <p-img
-                      :src="
-                        instanceconfig.api + '/object/' + collMember.pid + '/thumbnail'
-                      "
-                      class="elevation-1 mt-2"
-                    >
-                      <template v-slot:placeholder>
-                        <div
-                          class="fill-height ma-0"
-                          align="center"
-                          justify="center"
-                        >
-                          <v-progress-circular
-                            indeterminate
-                            color="grey lighten-5"
-                          ></v-progress-circular>
-                        </div>
-                      </template>
-                    </p-img>
+                  <router-link :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }">
+                      <p-img
+                        :src="
+                          instanceconfig.api + '/object/' + collMember.pid + '/thumbnail'
+                        "
+                        class="elevation-1 mt-2"
+                      >
+                        <template v-slot:placeholder>
+                          <div
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                          >
+                            <v-progress-circular
+                              indeterminate
+                              color="grey lighten-5"
+                            ></v-progress-circular>
+                          </div>
+                        </template>
+                      </p-img>
+                    </router-link>
                   </div>
                 </v-col>
                 <v-col cols="10">
@@ -748,8 +756,8 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="red" class="white--text" :loading="$store.state.loading" :disabled="$store.state.loading" @click="removeFromCollection()">{{ $t('Remove') }}</v-btn>
-                  <v-btn :disabled="$store.state.loading" @click="collMemberToRemove = null; confirmColMemDeleteDlg = false">{{ $t('Cancel') }}</v-btn>
+                  <v-btn dark color="grey" :disabled="$store.state.loading" @click="collMemberToRemove = null; confirmColMemDeleteDlg = false">{{ $t('Cancel') }}</v-btn>
+                  <v-btn color="red" class="white--text" :loading="$store.state.loading" :disabled="$store.state.loading" @click="removeFromCollection()">{{ $t('Remove') }}</v-btn>                  
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -1796,7 +1804,7 @@
                             '/datacite?format=xml'
                           "
                           target="_blank"
-                          >{{ $t("Data Cite") }}</a
+                          >{{ $t("DataCite") }}</a
                         >
                       </v-row>
                       <v-row
@@ -1922,8 +1930,7 @@
                             <v-card-actions>
                               <v-spacer></v-spacer>
                               <v-btn
-                                color="primary"
-                                text
+                                color="primary"                                
                                 @click="collectionHelpDialog = false"
                               >
                                 OK
@@ -2095,7 +2102,7 @@
                             </v-card-text>
                             <v-card-actions>
                               <v-spacer></v-spacer>
-                              <v-btn @click="relationDialog = false">{{
+                              <v-btn dark color="grey" @click="relationDialog = false">{{
                                 $t("Cancel")
                               }}</v-btn>
                               <v-btn
@@ -2186,8 +2193,8 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click.stop="datareplaceDialog=false">Close</v-btn>
-          <v-btn color="primary" @click="datareplaceUpload()">Upload</v-btn>
+          <v-btn dark color="grey" @click.stop="datareplaceDialog=false">{{ $t("Cancel") }}</v-btn>
+          <v-btn color="primary" @click="datareplaceUpload()">{{ $t("Upload File") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
