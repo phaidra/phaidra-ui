@@ -2290,7 +2290,7 @@ export default {
                 ids.persistent.push({ label: "DOI", value: doi });
                 break;
               case "urn":
-                ids.persistent.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
+                ids.persistent.push({ label: "URN", value: idvalue.includes('nbn:at:') ? 'https://resolver.obvsg.at/' + idvalue : 'https://nbn-resolving.org/' + idvalue });
                 break;
               case "issn":
                 ids.persistent.push({ label: "ISSN", value: 'http://issn.org/resource/ISSN/' + idvalue });
