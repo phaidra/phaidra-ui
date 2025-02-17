@@ -114,8 +114,16 @@ export default {
           if (!mapping) {
             rowData[field] = ''
           } else if (mapping.source === 'phaidra-field') {
-            // For Phaidra values, use the phaidraValue
-            rowData[field] = mapping.phaidraValue
+            if (field == "License") {
+              rowData[field] = mapping.phaidraValue["@id"]
+            }
+            else if (field == "Type") {
+              rowData[field] = mapping.phaidraValue["skos:prefLabel"]["eng"]
+            }
+            else {
+              // For Phaidra values, use the phaidraValue
+              rowData[field] = mapping.phaidraValue
+            }
           } else if (mapping.source === 'csv-column') {
             // For CSV mappings, get the value from the corresponding column
             const columnIndex = headers.indexOf(mapping.csvValue)
