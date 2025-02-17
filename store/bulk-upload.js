@@ -10,7 +10,7 @@ export const state = () => ({
   csvContent: null,
   columns: [],
   fileName: '',
-  requiredFields: ['Title', 'Role', 'Firstname', 'Lastname', 'Description', 'Keywords', 'Type', 'License', 'Filename'],
+  requiredFields: ['Title', 'Role', 'Description', 'Keywords', 'Type', 'License', 'Filename'],
   fieldMappings: {}, // Will store mappings like { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: object } }
   uploadState: {}, // Will store upload state for each row { rowIndex: { status: 'pending|uploading|completed|error', pid: null, error: null } }
   uploadProgress: {
