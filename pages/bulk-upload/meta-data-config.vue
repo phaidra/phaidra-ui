@@ -34,51 +34,100 @@
               </v-row>
 
               <!-- Mapping Rows -->
-              <v-row v-for="field in requiredFields" :key="field" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1], 'flash-blue': field === flashingField }">
-                <!-- Field Name -->
-                <v-col cols="2" class="d-flex align-center">
-                  <span class="text-capitalize text-subtitle-1">{{ field }}</span>
-                  <v-icon
-                    v-if="fieldIsMapped(field)"
-                    color="success"
-                    small
-                    class="ml-2"
-                  >
-                    mdi-check-circle
-                  </v-icon>
-                </v-col>
+              <template v-for="field in requiredFields">
+                <!-- Single Field Layout -->
+                <v-row v-if="fieldSettings[field]?.fieldType === 'single-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
+                  <!-- Field Name -->
+                  <v-col cols="2" class="d-flex align-center">
+                    <span class="text-capitalize text-subtitle-1">{{ field }}</span>
+                    <v-icon
+                      v-if="fieldIsMapped(field)"
+                      color="success"
+                      small
+                      class="ml-2"
+                    >
+                      mdi-check-circle
+                    </v-icon>
+                  </v-col>
 
-                <v-col cols="4">
-                  <CSVColumnSelector
-                    v-if="getAllowedSources(field).includes('csv-column')"
-                    :field="field"
-                    :columns="columns"
-                    :value="getFieldMapping(field)?.csvValue"
-                    :disabled="getFieldMapping(field)?.source !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
-                    :all-mappings="getAllFieldMappings"
-                    @input="val => updateMapping(field, 'csv-column', val)"
-                  />
-                </v-col>
+                  <v-col cols="4">
+                    <CSVColumnSelector
+                      v-if="getAllowedSources(field).includes('csv-column')"
+                      :field="field"
+                      :columns="columns"
+                      :value="getFieldMapping(field)?.csvValue"
+                      :disabled="getFieldMapping(field)?.source !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
+                      :all-mappings="getAllFieldMappings"
+                      @input="val => updateMapping(field, 'csv-column', val)"
+                    />
+                  </v-col>
 
-                <v-col cols="2">
-                  <SourceSelector
-                    :field="field"
-                    :allowed-sources="getAllowedSources(field)"
-                    :value="getFieldMapping(field)?.source"
-                    @input="val => updateSource(field, val)"
-                  />
-                </v-col>
+                  <v-col cols="2">
+                    <SourceSelector
+                      :field="field"
+                      :allowed-sources="getAllowedSources(field)"
+                      :value="getFieldMapping(field)?.source"
+                      @input="val => updateSource(field, val)"
+                    />
+                  </v-col>
 
-                <v-col cols="4">
-                  <PhaidraFieldSelector
-                    v-if="getAllowedSources(field).includes('phaidra-field')"
-                    :field="field"
-                    :value="getFieldMapping(field)?.phaidraValue"
-                    :disabled="getFieldMapping(field)?.source !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
-                    @input="val => updateMapping(field, 'phaidra-field', val)"
-                  />
-                </v-col>
-              </v-row>
+                  <v-col cols="4">
+                    <PhaidraFieldSelector
+                      v-if="getAllowedSources(field).includes('phaidra-field')"
+                      :field="field"
+                      :value="getFieldMapping(field)?.phaidraValue"
+                      :disabled="getFieldMapping(field)?.source !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
+                      @input="val => updateMapping(field, 'phaidra-field', val)"
+                    />
+                  </v-col>
+                </v-row>
+                <!-- Multi Field Layout -->
+                <template v-else-if="fieldSettings[field]?.fieldType === 'multi-field'">
+                  <v-row v-if="fieldSettings[field]?.fieldType === 'multi-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
+                    <v-col cols="2" class="d-flex align-center">
+                      <span class="text-capitalize text-subtitle-1">{{ field }}</span>
+                      <v-icon
+                        v-if="fieldIsMapped(field)"
+                        color="success"
+                        small
+                        class="ml-2"
+                      >
+                        mdi-check-circle
+                      </v-icon>
+                    </v-col>
+                    <v-col cols="2">
+                      <SourceSelector
+                        :field="field"
+                        :allowed-sources="getAllowedSources(field)"
+                        :value="getFieldMapping(field)?.source"
+                        @input="val => updateSource(field, val)"
+                    />
+                    </v-col>
+                    <v-col v-if="getAllowedSources(field).includes('phaidra-field') && getFieldMapping(field)?.source === 'phaidra-field'" cols="8">
+                      <PhaidraFieldSelector
+                        v-if="getAllowedSources(field).includes('phaidra-field')"
+                        :field="field"
+                        :value="getFieldMapping(field)?.phaidraValue"
+                        :disabled="getFieldMapping(field)?.source !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
+                        @input="val => updateMapping(field, 'phaidra-field', val)"
+                      />
+                    </v-col>
+                    <v-col v-if="getAllowedSources(field).includes('csv-column') && getFieldMapping(field)?.source === 'csv-column'" cols="8">
+                      <div class="d-flex flex-wrap justify-center" style="row-gap: 1em;">
+                        <div v-for="subField in fieldSettings[field].multiFieldConfig.fields" :key="subField">
+                          <label><b>{{ subField }}</b> <small>Source</small></label>
+                          <CSVColumnSelector
+                            :field="subField"
+                            :columns="columns"
+                            :all-mappings="getAllFieldMappings"
+                            :value="test"
+                          />
+                        </div>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </template>
+              </template>
             </v-card-text>
           </v-card>
         </v-col>
@@ -133,7 +182,8 @@ export default {
   data() {
     return {
       isInitialized: false,
-      flashingField: null
+      flashingField: null,
+      fieldSettings
     }
   },
 

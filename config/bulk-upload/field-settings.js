@@ -12,6 +12,7 @@ const getSharedProps = (fieldConfig, value, updateMapping) => ({
 export const fieldSettings = {
   'Title': {
     required: true,
+    fieldType: 'single-field',
     allowedSources: ['csv-column'],
     phaidraComponentMapping: [
       {
@@ -30,6 +31,11 @@ export const fieldSettings = {
   },
   'Role': {
     required: true,
+    fieldType: 'multi-field',
+    multiFieldConfig: {
+      label: 'Role',
+      fields: ['Role', 'First name', 'Last name']
+    },
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -66,6 +72,7 @@ export const fieldSettings = {
   },
   'Description': {
     required: true,
+    fieldType: 'single-field',
     allowedSources: ['csv-column'],
     phaidraComponentMapping: [
       {
@@ -85,6 +92,7 @@ export const fieldSettings = {
   },
   'Keywords': {
     required: true,
+    fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -108,6 +116,7 @@ export const fieldSettings = {
   },
   'Type': {
     required: true,
+    fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -135,6 +144,7 @@ export const fieldSettings = {
   },
   'Persistent identifier': {
     required: false,
+    fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -153,6 +163,7 @@ export const fieldSettings = {
   },
   'License': {
     required: true,
+    fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -177,6 +188,7 @@ export const fieldSettings = {
   },
   'Filename': {
     required: true,
+    fieldType: 'single-field',
     allowedSources: ['csv-column'],
     phaidraComponentMapping: []
   }
