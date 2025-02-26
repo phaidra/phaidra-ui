@@ -1,3 +1,5 @@
+import { fieldSettings } from '~/config/bulk-upload/field-settings'
+
 export const state = () => ({
   currentStep: 1,
   maxStepReached: 1,
@@ -10,7 +12,6 @@ export const state = () => ({
   csvContent: null,
   columns: [],
   fileName: '',
-  requiredFields: ['Title', 'Role', 'Description', 'Keywords', 'Type', 'License', 'Filename'],
   fieldMappings: {}, // Will store mappings like { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: object } }
   uploadState: {}, // Will store upload state for each row { rowIndex: { status: 'pending|uploading|completed|error', pid: null, error: null } }
   uploadProgress: {
@@ -92,6 +93,9 @@ export const mutations = {
 }
 
 export const getters = {
+  requiredFields: () => {
+    return Object.keys(fieldSettings).filter(field => fieldSettings[field].required)
+  },
   canAccessStep: (state) => (step) => {
     // TODO: define logic for each step later
     return true
@@ -104,11 +108,11 @@ export const getters = {
     }
     return 1
   },
-  getUnmappedFields: (state) => {
-    return state.requiredFields.filter(field => !state.fieldMappings[field])
+  getUnmappedFields: (state, getters) => {
+    return getters.requiredFields.filter(field => !state.fieldMappings[field])
   },
-  getMappedFields: (state) => {
-    return state.requiredFields.filter(field => state.fieldMappings[field])
+  getMappedFields: (state, getters) => {
+    return getters.requiredFields.filter(field => state.fieldMappings[field])
   },
   getFieldMapping: (state) => (field) => {
     return state.fieldMappings[field]

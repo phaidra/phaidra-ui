@@ -11,6 +11,7 @@ const getSharedProps = (fieldConfig, value, updateMapping) => ({
 
 export const fieldSettings = {
   'Title': {
+    required: true,
     allowedSources: ['csv-column'],
     phaidraComponentMapping: [
       {
@@ -28,6 +29,7 @@ export const fieldSettings = {
     ]
   },
   'Role': {
+    required: true,
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -63,6 +65,7 @@ export const fieldSettings = {
     ]
   },
   'Description': {
+    required: true,
     allowedSources: ['csv-column'],
     phaidraComponentMapping: [
       {
@@ -81,6 +84,7 @@ export const fieldSettings = {
     ]
   },
   'Keywords': {
+    required: true,
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -103,6 +107,7 @@ export const fieldSettings = {
     ]
   },
   'Type': {
+    required: true,
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -129,6 +134,7 @@ export const fieldSettings = {
     ]
   },
   'Persistent identifier': {
+    required: false,
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -146,6 +152,7 @@ export const fieldSettings = {
     ]
   },
   'License': {
+    required: true,
     allowedSources: ['phaidra-field'],
     phaidraComponentMapping: [
       {
@@ -169,6 +176,7 @@ export const fieldSettings = {
     ]
   },
   'Filename': {
+    required: true,
     allowedSources: ['csv-column'],
     phaidraComponentMapping: []
   }

@@ -138,8 +138,8 @@ export default {
   },
 
   computed: {
-    ...mapState('bulk-upload', ['columns', 'steps', 'requiredFields']),
-    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings']),
+    ...mapState('bulk-upload', ['columns', 'steps']),
+    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields']),
 
     allFieldsMapped() {
       return this.requiredFields.every(field => this.fieldIsMapped(field))
