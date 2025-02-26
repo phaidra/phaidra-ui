@@ -54,15 +54,31 @@ export default {
     },
 
     availableColumns() {
-      // Get all currently selected values except for the current field
-      const selectedValues = Object.entries(this.allMappings)
-        .filter(([field]) => field !== this.field)
-        .map(([_, mapping]) => mapping?.csvValue)
-        .filter(Boolean)
+      const selectedValues = new Set()
       
-      // Return only columns that aren't selected in other fields, sorted alphabetically
+      // Collect all used CSV column values except the current one
+      Object.values(this.allMappings).forEach(mapping => {
+        if (mapping.subFields) {
+          // For multi-field mappings, collect all subfield values
+          Object.values(mapping.subFields).forEach(subMapping => {
+            if (subMapping?.csvValue) {
+              selectedValues.add(subMapping.csvValue)
+            }
+          })
+        } else if (mapping.csvValue) {
+          // For single-field mappings, collect the value
+          selectedValues.add(mapping.csvValue)
+        }
+      })
+
+      // Always make the current value available
+      if (this.value) {
+        selectedValues.delete(this.value)
+      }
+      
+      // Return available columns sorted alphabetically
       return this.columns
-        .filter(col => !selectedValues.includes(col))
+        .filter(col => !selectedValues.has(col))
         .sort((a, b) => a.localeCompare(b))
     }
   }

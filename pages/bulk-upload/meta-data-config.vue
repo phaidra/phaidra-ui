@@ -114,13 +114,14 @@
                     </v-col>
                     <v-col v-if="getAllowedSources(field).includes('csv-column') && getFieldMapping(field)?.source === 'csv-column'" cols="8">
                       <div class="d-flex flex-wrap justify-center" style="row-gap: 1em;">
-                        <div v-for="subField in fieldSettings[field].multiFieldConfig.fields" :key="subField">
-                          <label><b>{{ subField }}</b> <small>Source</small></label>
+                        <div v-for="subField in fieldSettings[field].multiFieldConfig.fields" :key="subField" class="mx-2">
+                          <label class="d-block mb-1"><b>{{ subField }}</b></label>
                           <CSVColumnSelector
                             :field="subField"
                             :columns="columns"
                             :all-mappings="getAllFieldMappings"
-                            :value="test"
+                            :value="getFieldMapping(field)?.subFields?.[subField]?.csvValue"
+                            @input="val => updateMapping(field, 'csv-column', val, subField)"
                           />
                         </div>
                       </div>
@@ -203,7 +204,18 @@ export default {
 
       return (field) => {
         const mapping = this.getFieldMapping(field)
-        return mapping && mapping.source && mapping[valueKeys[mapping.source]]
+        if (!mapping || !mapping.source) return false
+
+        if (this.fieldSettings[field]?.fieldType === 'multi-field') {
+          // For multi-fields, check if all subfields are mapped
+          const subFields = this.fieldSettings[field].multiFieldConfig.fields
+          return subFields.every(subField => 
+            mapping.subFields?.[subField]?.[valueKeys[mapping.source]]
+          )
+        }
+
+        // For single fields, simply check if the value is set
+        return mapping[valueKeys[mapping.source]] !== null && mapping[valueKeys[mapping.source]] !== undefined
       }
     },
 
@@ -232,7 +244,7 @@ export default {
       this.setFieldMapping(mapping)
     },
 
-    updateValue(field, source, value) {
+    updateValue(field, source, value, subField = null) {
       // Add flash animation to specific row for dev purposes
       this.flashingField = field;
       setTimeout(() => {
@@ -241,7 +253,8 @@ export default {
 
       const mapping = {
         field: field,
-        source
+        source,
+        subField
       }
 
       if (source === 'csv-column') {
@@ -253,12 +266,12 @@ export default {
       this.setFieldMapping(mapping)
     },
 
-    updateMapping(field, source, value) {
+    updateMapping(field, source, value, subField = null) {
       if (!source) {
         this.updateSource(field, null)
       } else {
         this.updateSource(field, source)
-        this.updateValue(field, source, value)
+        this.updateValue(field, source, value, subField)
       }
     },
 

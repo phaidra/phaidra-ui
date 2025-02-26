@@ -45,7 +45,7 @@ export const mutations = {
   setFileName(state, fileName) {
     state.fileName = fileName
   },
-  setFieldMapping(state, { field, source, csvValue, phaidraValue }) {
+  setFieldMapping(state, { field, source, csvValue, phaidraValue, subField }) {
     if (!source) {
       state.fieldMappings = {
         ...state.fieldMappings,
@@ -53,12 +53,32 @@ export const mutations = {
       }
     } else {
       const existingMapping = state.fieldMappings[field] || {}
-      state.fieldMappings = {
-        ...state.fieldMappings,
-        [field]: {
-          source,
-          csvValue: csvValue !== undefined ? csvValue : existingMapping.csvValue || null,
-          phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.phaidraValue || null
+      const isMultiField = fieldSettings[field]?.fieldType === 'multi-field'
+
+      if (isMultiField) {
+        // Handle multi-field mapping
+        state.fieldMappings = {
+          ...state.fieldMappings,
+          [field]: {
+            source,
+            subFields: {
+              ...(existingMapping.subFields || {}),
+              [subField]: {
+                csvValue: csvValue !== undefined ? csvValue : existingMapping.subFields?.[subField]?.csvValue || null,
+                phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.subFields?.[subField]?.phaidraValue || null
+              }
+            }
+          }
+        }
+      } else {
+        // Handle single-field mapping
+        state.fieldMappings = {
+          ...state.fieldMappings,
+          [field]: {
+            source,
+            csvValue: csvValue !== undefined ? csvValue : existingMapping.csvValue || null,
+            phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.phaidraValue || null
+          }
         }
       }
     }
