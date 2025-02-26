@@ -175,7 +175,7 @@ export default {
       }, 250);
 
       const mapping = {
-        requiredField: field,
+        field: field,
         source
       }
       mapping.source = source
@@ -190,7 +190,7 @@ export default {
       }, 250);
 
       const mapping = {
-        requiredField: field,
+        field: field,
         source
       }
 

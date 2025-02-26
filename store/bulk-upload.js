@@ -45,17 +45,17 @@ export const mutations = {
   setFileName(state, fileName) {
     state.fileName = fileName
   },
-  setFieldMapping(state, { requiredField, source, csvValue, phaidraValue }) {
+  setFieldMapping(state, { field, source, csvValue, phaidraValue }) {
     if (!source) {
       state.fieldMappings = {
         ...state.fieldMappings,
-        [requiredField]: null
+        [field]: null
       }
     } else {
-      const existingMapping = state.fieldMappings[requiredField] || {}
+      const existingMapping = state.fieldMappings[field] || {}
       state.fieldMappings = {
         ...state.fieldMappings,
-        [requiredField]: {
+        [field]: {
           source,
           csvValue: csvValue !== undefined ? csvValue : existingMapping.csvValue || null,
           phaidraValue: phaidraValue !== undefined ? phaidraValue : existingMapping.phaidraValue || null
