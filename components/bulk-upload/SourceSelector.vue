@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'highlight-field': (allowedSources.length > 1 && !selectedSource) }">
+  <div :class="{ 'highlight-field': (allowedSources.length > 1 && !selectedSource && fieldSettings[field]?.required) }">
     <v-radio-group
       v-if="shouldShowRadioButtons"
       v-model="selectedSource"
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { fieldSettings } from '~/config/bulk-upload/field-settings'
+
 export default {
   name: 'SourceSelector',
 
@@ -41,6 +43,12 @@ export default {
     value: {
       type: String,
       default: null
+    }
+  },
+
+  data() {
+    return {
+      fieldSettings
     }
   },
 
