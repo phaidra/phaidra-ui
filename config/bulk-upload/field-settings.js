@@ -24,51 +24,6 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column']
   },
-  'Role': {
-    required: true,
-    fieldType: 'multi-field',
-    multiFieldConfig: {
-      label: 'Role',
-      fields: {
-        'Role': { required: true },
-        'First name': { required: false },
-        'Last name': { required: false }
-      }
-    },
-    allowedSources: ['csv-column', 'phaidra-field'],
-    phaidraComponentMapping: [
-      {
-        text: 'Author',
-        component: 'PIEntity',
-        field: () => {
-          const field = fieldslib.getField("role")
-          field.ordergroup = "role"
-          field.roleVocabulary = "submitrolepredicate"
-          field.showDefinitions = true
-          field.multilingual = false
-          field.component = 'entity'
-          field.label = 'Author'
-          field.roleLabel = 'Role'
-          field.showname = false
-          field.type = 'schema:Person'
-          field.inputStyle = 'outlined'
-          return field
-        },
-        getProps: function(value, updateMapping) {
-          const fieldConfig = this.field()
-          return {
-            ...getSharedProps(fieldConfig, value, updateMapping),
-            roleVocabulary: fieldConfig.roleVocabulary,
-            showDefinitions: fieldConfig.showDefinitions,
-            roleLabel: fieldConfig.roleLabel,
-            showname: fieldConfig.showname,
-            type: fieldConfig.type,
-            inputStyle: fieldConfig.inputStyle
-          }
-        }
-      }
-    ]
-  },
   'Description': {
     required: true,
     fieldType: 'single-field',
@@ -156,6 +111,51 @@ export const fieldSettings = {
         },
         getProps: function(value, updateMapping) {
           return getSharedProps(this.field(), value, updateMapping)
+        }
+      }
+    ]
+  },
+  'Role': {
+    required: true,
+    fieldType: 'multi-field',
+    multiFieldConfig: {
+      label: 'Role',
+      fields: {
+        'Role': { required: true },
+        'First name': { required: false },
+        'Last name': { required: false }
+      }
+    },
+    allowedSources: ['csv-column', 'phaidra-field'],
+    phaidraComponentMapping: [
+      {
+        text: 'Author',
+        component: 'PIEntity',
+        field: () => {
+          const field = fieldslib.getField("role")
+          field.ordergroup = "role"
+          field.roleVocabulary = "submitrolepredicate"
+          field.showDefinitions = true
+          field.multilingual = false
+          field.component = 'entity'
+          field.label = 'Author'
+          field.roleLabel = 'Role'
+          field.showname = false
+          field.type = 'schema:Person'
+          field.inputStyle = 'outlined'
+          return field
+        },
+        getProps: function(value, updateMapping) {
+          const fieldConfig = this.field()
+          return {
+            ...getSharedProps(fieldConfig, value, updateMapping),
+            roleVocabulary: fieldConfig.roleVocabulary,
+            showDefinitions: fieldConfig.showDefinitions,
+            roleLabel: fieldConfig.roleLabel,
+            showname: fieldConfig.showname,
+            type: fieldConfig.type,
+            inputStyle: fieldConfig.inputStyle
+          }
         }
       }
     ]
