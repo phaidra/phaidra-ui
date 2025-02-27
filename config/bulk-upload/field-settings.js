@@ -17,21 +17,12 @@ export const fieldSettings = {
     //   -> resulting in multiple fields for the csv source, which has a more complex logic
     //   -> view 'Role' as an example of how this is set up
     fieldType: 'single-field',
-    allowedSources: ['csv-column'],
-    phaidraComponentMapping: [
-      {
-        text: 'Title',
-        component: 'PITitle',
-        field: () => {
-          const field = fieldslib.getField("title")
-          field.multilingual = false
-          return field
-        },
-        getProps: function(value, updateMapping) {
-          return getSharedProps(this.field(), value, updateMapping)
-        }
-      }
-    ]
+    allowedSources: ['csv-column']
+  },
+  'Subtitle': {
+    required: false,
+    fieldType: 'single-field',
+    allowedSources: ['csv-column']
   },
   'Role': {
     required: true,
