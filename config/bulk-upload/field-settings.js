@@ -38,7 +38,11 @@ export const fieldSettings = {
     fieldType: 'multi-field',
     multiFieldConfig: {
       label: 'Role',
-      fields: ['Role', 'First name', 'Last name']
+      fields: {
+        'Role': { required: true },
+        'First name': { required: false },
+        'Last name': { required: false }
+      }
     },
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraComponentMapping: [

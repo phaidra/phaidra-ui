@@ -114,7 +114,7 @@
                     </v-col>
                     <v-col v-if="getAllowedSources(field).includes('csv-column') && getFieldMapping(field)?.source === 'csv-column'" cols="8">
                       <div class="d-flex flex-wrap justify-center" style="row-gap: 1em;">
-                        <div v-for="subField in fieldSettings[field].multiFieldConfig.fields" :key="subField" class="mx-2">
+                        <div v-for="(fieldConfig, subField) in fieldSettings[field].multiFieldConfig.fields" :key="subField" class="mx-2">
                           <label class="d-block mb-1"><b>{{ subField }}</b></label>
                           <CSVColumnSelector
                             :field="subField"
@@ -207,8 +207,10 @@ export default {
         if (!mapping || !mapping.source) return false
 
         if (this.fieldSettings[field]?.fieldType === 'multi-field') {
-          // For multi-fields, check if all subfields are mapped
-          const subFields = this.fieldSettings[field].multiFieldConfig.fields
+          // For multi-fields, check if all required subfields are mapped
+          const subFields = Object.entries(this.fieldSettings[field].multiFieldConfig.fields)
+            .filter(([_, config]) => config.required)
+            .map(([name]) => name)
           return subFields.every(subField => 
             mapping.subFields?.[subField]?.[valueKeys[mapping.source]]
           )
@@ -306,7 +308,8 @@ export default {
     })
 
     this.multiFields.forEach(field => {
-      this.fieldSettings[field].multiFieldConfig.fields.forEach(subField => {
+      const fieldConfig = this.fieldSettings[field].multiFieldConfig
+      Object.keys(fieldConfig.fields).forEach(subField => {
         const mapping = this.getFieldMapping(field, subField)
         const allowedSources = this.getAllowedSources(field)
 
