@@ -34,9 +34,9 @@
               </v-row>
 
               <!-- Mapping Rows -->
-              <template v-for="field in requiredFields">
+              <template v-for="field in allFields">
                 <!-- Single Field Layout -->
-                <v-row v-if="fieldSettings[field]?.fieldType === 'single-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
+                <v-row v-if="fieldSettings[field]?.fieldType === 'single-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== allFields[allFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
                   <!-- Field Name -->
                   <v-col cols="2" class="d-flex align-center">
                     <span class="text-capitalize text-subtitle-1">{{ field }}</span>
@@ -83,7 +83,7 @@
                 </v-row>
                 <!-- Multi Field Layout -->
                 <template v-else-if="fieldSettings[field]?.fieldType === 'multi-field'">
-                  <v-row v-if="fieldSettings[field]?.fieldType === 'multi-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== requiredFields[requiredFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
+                  <v-row v-if="fieldSettings[field]?.fieldType === 'multi-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== allFields[allFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
                     <v-col cols="2" class="d-flex align-center">
                       <span class="text-capitalize text-subtitle-1">{{ field }}</span>
                       <v-icon
@@ -190,7 +190,7 @@ export default {
 
   computed: {
     ...mapState('bulk-upload', ['columns', 'steps']),
-    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields', 'singleFields', 'multiFields']),
+    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields', 'singleFields', 'multiFields', 'allFields']),
 
     allFieldsMapped() {
       return this.requiredFields.every(field => this.fieldIsMapped(field))
