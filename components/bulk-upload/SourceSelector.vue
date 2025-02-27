@@ -60,9 +60,9 @@ export default {
 
     restrictionMessage() {
       if (this.allowedSources[0] === 'csv-column') {
-        return `${this.field} must be sourced from a CSV column`
+        return `${this.field} can only be sourced from a CSV column`
       } else if (this.allowedSources[0] === 'phaidra-field') {
-        return `${this.field} must be sourced from a default Phaidra value`
+        return `${this.field} can only be sourced from a default Phaidra value`
       }
       return ''
     }

@@ -18,7 +18,8 @@
             <v-card-text>
               <!-- Header Row -->
               <v-row class="border-bottom">
-                <v-col cols="2">
+                <v-col cols="2" class="d-flex align-center">
+                  <h4>* required</h4>
                 </v-col>
                 <v-col cols="4">
                   <h4>Source from your CSV</h4>
@@ -39,7 +40,7 @@
                 <v-row v-if="fieldSettings[field]?.fieldType === 'single-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== allFields[allFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
                   <!-- Field Name -->
                   <v-col cols="2" class="d-flex align-center">
-                    <span class="text-capitalize text-subtitle-1">{{ field }}</span>
+                    <span class="text-capitalize text-subtitle-1">{{ field }}{{ fieldSettings[field]?.required ? ' *' : '' }}</span>
                     <v-icon
                       v-if="fieldIsMapped(field)"
                       color="success"
@@ -85,7 +86,7 @@
                 <template v-else-if="fieldSettings[field]?.fieldType === 'multi-field'">
                   <v-row v-if="fieldSettings[field]?.fieldType === 'multi-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== allFields[allFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
                     <v-col cols="2" class="d-flex align-center">
-                      <span class="text-capitalize text-subtitle-1">{{ field }}</span>
+                      <span class="text-capitalize text-subtitle-1">{{ field }}{{ fieldSettings[field]?.required ? ' *' : '' }}</span>
                       <v-icon
                         v-if="fieldIsMapped(field)"
                         color="success"
@@ -115,7 +116,7 @@
                     <v-col v-if="getAllowedSources(field).includes('csv-column') && getFieldMapping(field)?.source === 'csv-column'" cols="8">
                       <div class="d-flex flex-wrap justify-center" style="row-gap: 1em;">
                         <div v-for="(fieldConfig, subField) in fieldSettings[field].multiFieldConfig.fields" :key="subField" class="mx-2">
-                          <label class="d-block mb-1"><b>{{ subField }}</b></label>
+                          <label class="d-block mb-1"><b>{{ subField }}{{ fieldConfig.required ? ' *' : '' }}</b></label>
                           <CSVColumnSelector
                             :field="subField"
                             :columns="columns"
