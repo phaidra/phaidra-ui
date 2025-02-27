@@ -190,7 +190,7 @@ export default {
 
   computed: {
     ...mapState('bulk-upload', ['columns', 'steps']),
-    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields']),
+    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields', 'singleFields', 'multiFields']),
 
     allFieldsMapped() {
       return this.requiredFields.every(field => this.fieldIsMapped(field))
@@ -288,8 +288,7 @@ export default {
       await this.$store.$initBulkUpload()
     }
 
-    // Initialize radio button selections
-    this.requiredFields.forEach(field => {
+    this.singleFields.forEach(field => {
       const mapping = this.getFieldMapping(field)
       const allowedSources = this.getAllowedSources(field)
       
@@ -304,6 +303,24 @@ export default {
           }
         }
       }
+    })
+
+    this.multiFields.forEach(field => {
+      this.fieldSettings[field].multiFieldConfig.fields.forEach(subField => {
+        const mapping = this.getFieldMapping(field, subField)
+        const allowedSources = this.getAllowedSources(field)
+
+        if (!mapping) {
+          if (allowedSources.includes('csv-column')) {
+            const matchingColumn = this.columns.find(
+              col => col.toLowerCase() === subField.toLowerCase()
+            )
+            if (matchingColumn) {
+              this.updateMapping(field, 'csv-column', matchingColumn, subField)
+            }
+          }
+        }
+      })
     })
 
     // Mark as initialized after all setup is complete

@@ -113,6 +113,15 @@ export const mutations = {
 }
 
 export const getters = {
+  singleFields: () => {
+    return Object.keys(fieldSettings).filter(field => fieldSettings[field].fieldType === 'single-field')
+  },
+  multiFields: () => {
+    return Object.keys(fieldSettings).filter(field => fieldSettings[field].fieldType === 'multi-field')
+  },
+  allFields: () => {
+    return Object.keys(fieldSettings)
+  },
   requiredFields: () => {
     return Object.keys(fieldSettings).filter(field => fieldSettings[field].required)
   },
@@ -134,8 +143,12 @@ export const getters = {
   getMappedFields: (state, getters) => {
     return getters.requiredFields.filter(field => state.fieldMappings[field])
   },
-  getFieldMapping: (state) => (field) => {
-    return state.fieldMappings[field]
+  getFieldMapping: (state) => (field, subField) => {
+    if (subField) {
+      return state.fieldMappings[field]?.subFields?.[subField]
+    } else {
+      return state.fieldMappings[field]
+    }
   },
   getAllFieldMappings: (state) => {
     return state.fieldMappings

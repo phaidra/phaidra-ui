@@ -12,6 +12,10 @@ const getSharedProps = (fieldConfig, value, updateMapping) => ({
 export const fieldSettings = {
   'Title': {
     required: true,
+    // single-field means the phaidra component has only one field
+    // multi-field means the phaidra component has multiple fields
+    //   -> resulting in multiple fields for the csv source, which has a more complex logic
+    //   -> view 'Role' as an example of how this is set up
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     phaidraComponentMapping: [
