@@ -40,15 +40,15 @@
                 <v-row v-if="fieldSettings[field]?.fieldType === 'single-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== allFields[allFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
                   <!-- Field Name -->
                   <v-col cols="2" class="d-flex align-center">
-                    <span class="text-capitalize text-subtitle-1">{{ field }}{{ fieldSettings[field]?.required ? ' *' : '' }}</span>
                     <v-icon
                       v-if="fieldIsMapped(field)"
                       color="success"
                       small
-                      class="ml-2"
+                      class="mr-2"
                     >
                       mdi-check-circle
                     </v-icon>
+                    <span class="text-capitalize text-subtitle-1">{{ field }}{{ fieldSettings[field]?.required ? ' *' : '' }}</span>
                   </v-col>
 
                   <v-col cols="4">
@@ -86,15 +86,15 @@
                 <template v-else-if="fieldSettings[field]?.fieldType === 'multi-field'">
                   <v-row v-if="fieldSettings[field]?.fieldType === 'multi-field'" class="py-4 align-center" :class="{ 'border-bottom': field !== allFields[allFields.length - 1], 'flash-blue': field === flashingField }" :key="field">
                     <v-col cols="2" class="d-flex align-center">
-                      <span class="text-capitalize text-subtitle-1">{{ field }}{{ fieldSettings[field]?.required ? ' *' : '' }}</span>
                       <v-icon
                         v-if="fieldIsMapped(field)"
                         color="success"
                         small
-                        class="ml-2"
+                        class="mr-2"
                       >
                         mdi-check-circle
                       </v-icon>
+                      <span class="text-capitalize text-subtitle-1">{{ field }}{{ fieldSettings[field]?.required ? ' *' : '' }}</span>
                     </v-col>
                     <v-col cols="2">
                       <SourceSelector
