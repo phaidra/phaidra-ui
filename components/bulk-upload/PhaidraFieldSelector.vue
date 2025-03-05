@@ -59,6 +59,19 @@ export default {
             displayValue = this.value['@id'] || this.value.uri || ''
           } else if (elementConfig?.component === 'PIKeyword') {
             displayValue = this.value
+          } else if (this.value.subFields) {
+            if (elementConfig?.component === 'PIEntity') {
+              const props = elementConfig.getProps(null, this.handleInput)
+              const roleValue = this.value.subFields?.Role?.phaidraValue
+
+              return {
+                ...props,
+                role: roleValue?.['@id'] || roleValue,
+                firstname: this.value.subFields?.['First name']?.phaidraValue || '',
+                lastname: this.value.subFields?.['Last name']?.phaidraValue || '',
+                identifierText: this.value.subFields?.ORCID?.phaidraValue || ''
+              }
+            }
           } else {
             displayValue = this.value.uri || this.value.value || this.value
           }

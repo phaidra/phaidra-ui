@@ -108,7 +108,7 @@
                       <PhaidraFieldSelector
                         v-if="getAllowedSources(field).includes('phaidra-field')"
                         :field="field"
-                        :value="getFieldMapping(field)?.phaidraValue"
+                        :value="getFieldMapping(field)"
                         :disabled="getFieldMapping(field)?.source !== 'phaidra-field' && getAllowedSources(field).includes('csv-column')"
                         @input="val => updateMapping(field, 'phaidra-field', val)"
                       />
@@ -263,7 +263,8 @@ export default {
       if (source === 'csv-column') {
         mapping.csvValue = value
       } else if (source === 'phaidra-field') {
-        mapping.phaidraValue = value?.value || value
+        // If value is null or value.value is null, set phaidraValue to null
+        mapping.phaidraValue = value?.value === null ? null : (value?.value || value)
       }
 
       this.setFieldMapping(mapping)
