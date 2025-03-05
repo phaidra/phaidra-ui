@@ -149,6 +149,58 @@ export const fieldSettings = {
       }
     ]
   },
+  'OEFOS': {
+    required: true,
+    fieldType: 'single-field',
+    allowedSources: ['phaidra-field'],
+    phaidraComponentMapping: [
+      {
+        text: 'Subject (ÖFOS)',
+        component: 'PISubjectOefos',
+        field: () => {
+          const field = fieldslib.getField("oefos-subject")
+
+          // needed to prevent a "duplicate/order dropdown" from appearing
+          field.multiplicable = false
+          field.ordered = false
+          return field
+        },
+        getProps: function(value, updateMapping) {
+          const fieldConfig = this.field()
+          return {
+            ...fieldConfig,
+            ...getSharedProps(fieldConfig, value, updateMapping)
+          }
+        }
+      }
+    ]
+  },
+  'ORG Unit / Association': {
+    required: false,
+    fieldType: 'single-field',
+    allowedSources: ['phaidra-field'],
+    phaidraComponentMapping: [
+      {
+        text: 'ORG Unit / Association',
+        component: 'PIAssociation',
+        field: () => {
+          const field = fieldslib.getField("association")
+
+          // needed to prevent a "duplicate/order dropdown" from appearing
+          field.multiplicable = false
+          field.ordered = false
+          return field
+        },
+        getProps: function(value, updateMapping) {
+          const fieldConfig = this.field()
+          return {
+            ...fieldConfig,
+            ...getSharedProps(fieldConfig, value, updateMapping)
+          }
+        }
+      }
+    ]
+  },
   'Filename': {
     required: true,
     fieldType: 'single-field',
