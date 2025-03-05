@@ -91,7 +91,8 @@ export const fieldSettings = {
       fields: {
         'Role': { required: true },
         'First name': { required: false },
-        'Last name': { required: false }
+        'Last name': { required: false },
+        'ORCID': { required: false }
       }
     },
     allowedSources: ['csv-column', 'phaidra-field'],
@@ -153,4 +154,4 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column']
   }
-} 
+}
