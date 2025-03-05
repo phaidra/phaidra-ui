@@ -257,13 +257,13 @@ export default {
       const mapping = {
         field: field,
         source,
-        subField
+        subField: value?.subField || subField
       }
 
       if (source === 'csv-column') {
         mapping.csvValue = value
       } else if (source === 'phaidra-field') {
-        mapping.phaidraValue = value
+        mapping.phaidraValue = value?.value || value
       }
 
       this.setFieldMapping(mapping)

@@ -6,6 +6,10 @@
       class="flex-grow-1"
       @input="handleInput"
       @change="handleInput"
+      @input-role="value => handleInput(value, 'Role')"
+      @input-firstname="value => handleInput(value, 'First name')"
+      @input-lastname="value => handleInput(value, 'Last name')"
+      @input-orcid="value => handleInput(value, 'ORCID')"
       :disabled="disabled"
       :class="{ 'grey-input': disabled }"
     ></component>
@@ -65,34 +69,17 @@ export default {
 
       return elementConfig.getProps(
         displayValue,
-        this.handleInput,
-        {
-          handleRoleInput: this.handleRoleInput,
-          handleFirstnameInput: this.handleFirstnameInput,
-          handleLastnameInput: this.handleLastnameInput
-        }
+        this.handleInput
       )
     }
   },
 
   methods: {
-    handleInput(value) {
-      this.$emit('input', value)
-    },
-
-    handleRoleInput(value) {
-      const currentValue = this.value || {}
-      this.$emit('input', { ...currentValue, role: value })
-    },
-
-    handleFirstnameInput(value) {
-      const currentValue = this.value || {}
-      this.$emit('input', { ...currentValue, firstname: value })
-    },
-
-    handleLastnameInput(value) {
-      const currentValue = this.value || {}
-      this.$emit('input', { ...currentValue, lastname: value })
+    handleInput(value, subField = null) {
+      this.$emit('input', {
+        value,
+        subField
+      })
     }
   }
 }

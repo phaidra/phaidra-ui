@@ -1,7 +1,7 @@
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 
 const getSharedProps = (fieldConfig, value, updateMapping) => ({
-  value: value,
+  value: value || fieldConfig.value,
   label: fieldConfig.label || fieldConfig.text,
   field: fieldConfig,
   multilingual: false,
