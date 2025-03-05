@@ -83,30 +83,6 @@ export const fieldSettings = {
       }
     ]
   },
-  'Persistent identifier': {
-    required: false,
-    fieldType: 'single-field',
-    allowedSources: ['csv-column', 'phaidra-field'],
-    phaidraComponentMapping: [
-      {
-        text: 'Identifier',
-        component: 'PIAlternateIdentifier',
-        field: () => {
-          const field = fieldslib.getField("alternate-identifier")
-          return field
-        },
-        getProps: function(value, updateMapping) {
-          const fieldConfig = this.field()
-          return {
-            // always spread fieldConfig first
-            // then override with shared props to ensure value is remembered
-            ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
-          }
-        }
-      }
-    ]
-  },
   'Role': {
     required: true,
     fieldType: 'multi-field',
