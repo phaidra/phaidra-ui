@@ -125,7 +125,7 @@ export default {
       jsonld: {},
       jsonldOrig: {},
       rights: {},
-      acnumber: 'AC17428740',
+      acnumber: '',
       createmethod: 'unknown',
       uploadBtnLabel: 'Upload data',
       uploadProgress: 0,
