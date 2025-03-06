@@ -25,7 +25,7 @@
                             :field="field"
                             :sub-field="subField"
                             :is-required="subFieldConfig.required"
-                            :is-mapped="!!getSubFieldMapping(field, subField)"
+                            :is-mapped="!!getSubFieldValue(field, subField)"
                             :source-info="getSourceInfo(field, subField)"
                           />
                         </template>
@@ -50,7 +50,7 @@
                             :field="field"
                             :sub-field="subField"
                             :row-data="row"
-                            :is-mapped="!!getSubFieldMapping(field, subField)"
+                            :is-mapped="!!getSubFieldValue(field, subField)"
                           />
                         </template>
                         <PreviewTableCell
@@ -148,7 +148,7 @@ export default {
       return fieldSettings[field]?.multiFieldConfig?.fields || {}
     },
 
-    getSubFieldMapping(field, subField) {
+    getSubFieldValue(field, subField) {
       const mapping = this.getAllFieldMappings[field]
       if (!mapping) return null
 
@@ -228,23 +228,36 @@ export default {
     },
 
     getSourceInfo(field, subField = null) {
-      const mapping = this.getAllFieldMappings[field]
-      if (!mapping) return null
-      
-      if (mapping.source === 'phaidra-field') {
+      const fieldMapping = this.getAllFieldMappings[field]
+      const valueKeys = {
+        'csv-column': 'csvValue',
+        'phaidra-field': 'phaidraValue'
+      }
+      var csvColumn = null
+
+      if (!fieldMapping) return null
+
+      if (this.isMultiField(field) && subField) {
+        const subFieldValue = this.getSubFieldValue(field, subField)
+        if (!subFieldValue) return null
+        if (fieldMapping.source === 'csv-column') {
+          csvColumn = subFieldValue
+        }
+      }
+      else {
+        if (!fieldMapping[valueKeys[fieldMapping.source]]) return null
+
+        if (fieldMapping.source === 'csv-column') {
+          csvColumn = fieldMapping[valueKeys[fieldMapping.source]]
+        }
+      }
+
+      if (fieldMapping.source === 'phaidra-field') {
         return 'Default value sourced from Phaidra'
       }
-      else if (mapping.source === 'csv-column') {
-        if (this.isMultiField(field) && subField) {
-          if (!mapping.subFields) return null
-          const subMapping = mapping.subFields[subField]
-          return subMapping?.csvValue ? `Sourced from CSV column: ${subMapping.csvValue}` : null
-        }
-        else {
-          return mapping.csvValue ? `Sourced from CSV column: ${mapping.csvValue}` : null
-        }
+      else {
+        return `Sourced from CSV column "${csvColumn}"`
       }
-      return null
     },
 
     proceed() {
