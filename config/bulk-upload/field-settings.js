@@ -40,6 +40,7 @@ export const fieldSettings = {
         component: 'PIKeyword',
         field: () => {
           const field = fieldslib.getField("keyword")
+          field.suggester = 'keywordsuggester'
           field.disableSuggest = true
           return field
         },
@@ -48,7 +49,7 @@ export const fieldSettings = {
           return {
             // always spread fieldConfig first
             // then override with shared props to ensure value is remembered
-            disableSuggest: fieldConfig.disableSuggest,
+            ...fieldConfig,
             ...getSharedProps(fieldConfig, value, updateMapping)
           }
         }
