@@ -3,7 +3,7 @@
     <BulkUploadSteps />
     <v-row>
       <v-col>
-        <h1 class="text-h4">Step 3: Data Validation</h1>
+        <h1 class="text-h4">Step 3: Data Preview</h1>
       </v-col>
     </v-row>
 
@@ -11,9 +11,9 @@
       <v-row>
         <v-col>
           <v-card outlined>
-            <v-card-title>Data Preview</v-card-title>
-            <v-card-text>
-              <v-simple-table>
+            <v-card-title>Preview (scroll right to view all columns)</v-card-title>
+            <v-card-text class="table-container">
+              <v-simple-table fixed-header>
                 <template v-slot:default>
                   <thead>
                     <tr>
@@ -289,5 +289,10 @@ export default {
 .preview {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.table-container {
+  max-height: 452px;
+  overflow-y: auto;
 }
 </style>
