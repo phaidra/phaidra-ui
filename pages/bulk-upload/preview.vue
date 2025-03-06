@@ -166,6 +166,14 @@ export default {
   methods: {
     ...mapMutations('bulk-upload', ['completeStep', 'setCurrentStep']),
 
+    isMultiField(field) {
+      return fieldSettings[field]?.fieldType === 'multi-field'
+    },
+
+    getSubFields(field) {
+      return fieldSettings[field]?.multiFieldConfig?.fields || {}
+    },
+
     getSubFieldMapping(field, subField) {
       const mapping = this.getAllFieldMappings[field]
       if (!mapping) return null
@@ -189,7 +197,6 @@ export default {
         const values = row.split(';').map(v => v.trim().replace(/["']/g, ''))
         const rowData = {}
         
-        // Process all fields from fieldSettings
         this.allFields.forEach(field => {
           const mapping = this.getAllFieldMappings[field]
           if (!mapping) {
@@ -201,9 +208,9 @@ export default {
             else if (field === "Type") {
               rowData[field] = mapping.phaidraValue?.["skos:prefLabel"]?.["eng"] || ''
             }
-            else if (fieldSettings[field]?.fieldType === 'multi-field') {
+            else if (this.isMultiField(field)) {
               rowData[field] = {}
-              Object.keys(fieldSettings[field].multiFieldConfig.fields).forEach(subField => {
+              Object.keys(this.getSubFields(field)).forEach(subField => {
                 if (!mapping.subFields) {
                   rowData[field][subField] = ''
                 } else if (subField === "Role") {
@@ -218,9 +225,9 @@ export default {
               rowData[field] = mapping.phaidraValue || ''
             }
           } else if (mapping.source === 'csv-column') {
-            if (fieldSettings[field]?.fieldType === 'multi-field') {
+            if (this.isMultiField(field)) {
               rowData[field] = {}
-              Object.keys(fieldSettings[field].multiFieldConfig.fields).forEach(subField => {
+              Object.keys(this.getSubFields(field)).forEach(subField => {
                 if (!mapping.subFields) {
                   rowData[field][subField] = ''
                 } else {
@@ -254,7 +261,7 @@ export default {
         return 'Default value sourced from Phaidra'
       }
       else if (mapping.source === 'csv-column') {
-        if (fieldSettings[field]?.fieldType === 'multi-field' && subField) {
+        if (this.isMultiField(field) && subField) {
           if (!mapping.subFields) return null
           const subMapping = mapping.subFields[subField]
           return subMapping?.csvValue ? `Sourced from CSV column: ${subMapping.csvValue}` : null
