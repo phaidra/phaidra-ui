@@ -193,7 +193,7 @@ export default {
       const rows = this.csvContent.split('\n')
       const headers = rows[0].split(';').map(h => h.trim().replace(/["']/g, ''))
 
-      const previewRows = rows.map(row => {
+      const previewRows = rows.slice(1).map(row => {
         const values = row.split(';').map(v => v.trim().replace(/["']/g, ''))
         const rowData = {}
         
