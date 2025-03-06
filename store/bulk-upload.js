@@ -12,7 +12,34 @@ export const state = () => ({
   csvContent: null,
   columns: [],
   fileName: '',
-  fieldMappings: {}, // Will store mappings like { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: object } }
+  // Will store mappings like 
+  // single-field: { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: object } }
+  // multi-field: { field: { source: 'csv-column|phaidra-field', subFields: { subField: { csvValue: string, phaidraValue: object } } } }
+  //
+  // Examples:
+  //
+  // single-field:
+  //   "Description": {
+  //     "source": "csv-column",
+  //     "csvValue": "Description",
+  //     "phaidraValue": null
+  //   },
+  //
+  // multi-field:
+  //   "Role": {
+  //     "source": "csv-column",
+  //     "subFields": {
+  //       "Role": {
+  //         "csvValue": "Role",
+  //         "phaidraValue": null
+  //       },
+  //       "First name": {
+  //         "csvValue": "First name",
+  //         "phaidraValue": null
+  //       }
+  //     }
+  //   }
+  fieldMappings: {}, 
   uploadState: {}, // Will store upload state for each row { rowIndex: { status: 'pending|uploading|completed|error', pid: null, error: null } }
   uploadProgress: {
     total: 0,
