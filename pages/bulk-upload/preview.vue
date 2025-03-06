@@ -175,18 +175,8 @@ export default {
         'phaidra-field': 'phaidraValue'
       }
       
-      // For single fields
-      if (!subField) {
-        return mapping[valueKeys[mapping.source]] || null
-      }
-      
-      // For multi-fields
-      if (fieldSettings[field]?.fieldType === 'multi-field') {
-        if (!mapping.subFields) return null
-        return mapping.subFields[subField]?.[valueKeys[mapping.source]] || null
-      }
-      
-      return null
+      if (!mapping.subFields) return null
+      return mapping.subFields[subField]?.[valueKeys[mapping.source]] || null
     },
 
     async processPreviewData() {
