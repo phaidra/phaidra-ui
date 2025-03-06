@@ -18,80 +18,48 @@
                   <thead>
                     <tr>
                       <template v-for="field in allFields">
-                        <!-- Handle multi-fields -->
-                        <template v-if="fieldSettings[field].fieldType === 'multi-field'">
-                          <th 
-                            v-for="(subFieldConfig, subField) in fieldSettings[field].multiFieldConfig.fields"
+                        <template v-if="isMultiField(field)">
+                          <PreviewTableHeader
+                            v-for="(subFieldConfig, subField) in getSubFields(field)"
                             :key="field + '-' + subField"
-                            class="text-left"
-                          >
-                            <div class="d-flex align-center">
-                              {{ field }}: {{ subField }}{{ subFieldConfig.required ? '*' : '' }}
-                              <v-tooltip bottom dark>
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-icon 
-                                    x-small 
-                                    class="ml-1"
-                                    :class="{ 'grey--text': !getSubFieldMapping(field, subField) }"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                  >
-                                    mdi-information
-                                  </v-icon>
-                                </template>
-                                {{ getSourceInfo(field, subField) || 'Not sourced (optional)' }}
-                              </v-tooltip>
-                            </div>
-                          </th>
+                            :field="field"
+                            :sub-field="subField"
+                            :is-required="subFieldConfig.required"
+                            :is-mapped="!!getSubFieldMapping(field, subField)"
+                            :source-info="getSourceInfo(field, subField)"
+                          />
                         </template>
-                        <!-- Handle single fields -->
-                        <th 
+                        <PreviewTableHeader
                           v-else
                           :key="field"
-                          class="text-left"
-                        >
-                          <div class="d-flex align-center">
-                            {{ field }}{{ fieldSettings[field].required ? '*' : '' }}
-                            <v-tooltip bottom dark>
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-icon 
-                                  x-small 
-                                  class="ml-1"
-                                  :class="{ 'grey--text': !getAllFieldMappings[field] }"
-                                  v-bind="attrs"
-                                  v-on="on"
-                                >
-                                  mdi-information
-                                </v-icon>
-                              </template>
-                              {{ getSourceInfo(field) || 'Not sourced (optional)' }}
-                            </v-tooltip>
-                          </div>
-                        </th>
+                          :field="field"
+                          :is-required="fieldSettings[field].required"
+                          :is-mapped="!!getAllFieldMappings[field]"
+                          :source-info="getSourceInfo(field)"
+                        />
                       </template>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(row, index) in previewData" :key="index">
                       <template v-for="field in allFields">
-                        <!-- Handle multi-fields -->
-                        <template v-if="fieldSettings[field].fieldType === 'multi-field'">
-                          <td 
-                            v-for="(subFieldConfig, subField) in fieldSettings[field].multiFieldConfig.fields"
+                        <template v-if="isMultiField(field)">
+                          <PreviewTableCell
+                            v-for="(subFieldConfig, subField) in getSubFields(field)"
                             :key="field + '-' + subField"
-                            :class="{ 'grey--text': !getSubFieldMapping(field, subField) }"
-                          >
-                            {{ row[field]?.[subField] || '-' }}
-                          </td>
+                            :field="field"
+                            :sub-field="subField"
+                            :row-data="row"
+                            :is-mapped="!!getSubFieldMapping(field, subField)"
+                          />
                         </template>
-                        <!-- Handle single fields -->
-                        <td 
+                        <PreviewTableCell
                           v-else
                           :key="field"
-                          :class="{ 'grey--text': !getAllFieldMappings[field] }"
-                        >
-                          {{ row[field] || '-' }}
-                        </td>
+                          :field="field"
+                          :row-data="row"
+                          :is-mapped="!!getAllFieldMappings[field]"
+                        />
                       </template>
                     </tr>
                   </tbody>
@@ -131,13 +99,19 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import PreviewTableHeader from '~/components/bulk-upload/PreviewTableHeader.vue'
+import PreviewTableCell from '~/components/bulk-upload/PreviewTableCell.vue'
 import { fieldSettings } from '~/config/bulk-upload/field-settings'
 
 export default {
   name: 'Preview',
+  
   components: {
-    BulkUploadSteps
+    BulkUploadSteps,
+    PreviewTableHeader,
+    PreviewTableCell
   },
+
   middleware: 'bulk-upload',
 
   data() {
