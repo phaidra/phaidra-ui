@@ -164,12 +164,6 @@ export const getters = {
     }
     return 1
   },
-  getUnmappedFields: (state, getters) => {
-    return getters.requiredFields.filter(field => !state.fieldMappings[field])
-  },
-  getMappedFields: (state, getters) => {
-    return getters.requiredFields.filter(field => state.fieldMappings[field])
-  },
   getFieldMapping: (state) => (field, subField) => {
     if (subField) {
       return state.fieldMappings[field]?.subFields?.[subField]

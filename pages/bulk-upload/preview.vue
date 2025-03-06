@@ -16,15 +16,35 @@
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th v-for="field in mappedFields" :key="field" class="text-left">
-                      {{ field }} ({{ getSourceColumn(field) }})
+                    <th v-for="field in allFields" :key="field" class="text-left">
+                      <div class="d-flex align-center">
+                        {{ field }}{{ fieldSettings[field].required ? '*' : '' }}
+                        <v-tooltip bottom dark>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-icon 
+                              x-small 
+                              class="ml-1"
+                              :class="{ 'grey--text': !getAllFieldMappings[field] }"
+                              v-bind="attrs"
+                              v-on="on"
+                            >
+                              mdi-information
+                            </v-icon>
+                          </template>
+                          {{ getSourceInfo(field) || 'Not sourced (optional)' }}
+                        </v-tooltip>
+                      </div>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(row, index) in previewData" :key="index">
-                    <td v-for="field in mappedFields" :key="field">
-                      {{ row[field] }}
+                    <td 
+                      v-for="field in allFields" 
+                      :key="field"
+                      :class="{ 'grey--text': !getAllFieldMappings[field] }"
+                    >
+                      {{ row[field] || '-' }}
                     </td>
                   </tr>
                 </tbody>
@@ -63,6 +83,7 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import { fieldSettings } from '~/config/bulk-upload/field-settings'
 
 export default {
   name: 'Preview',
@@ -73,21 +94,14 @@ export default {
 
   data() {
     return {
-      fieldMappings: {},
+      fieldSettings,
       previewData: []
     }
   },
 
   computed: {
     ...mapState('bulk-upload', ['steps', 'csvContent']),
-    ...mapGetters('bulk-upload', ['getMappedFields', 'getAllFieldMappings']),
-
-    mappedFields() {
-      return this.getMappedFields
-    },
-    isValid() {
-      return this.previewData.length > 0
-    }
+    ...mapGetters('bulk-upload', ['getAllFieldMappings', 'allFields'])
   },
 
   created() {
@@ -108,24 +122,22 @@ export default {
         const values = row.split(';').map(v => v.trim().replace(/["']/g, ''))
         const rowData = {}
         
-        // Map fields based on whether they come from CSV or are Phaidra values
-        this.mappedFields.forEach(field => {
+        // Process all fields from fieldSettings
+        this.allFields.forEach(field => {
           const mapping = this.getAllFieldMappings[field]
           if (!mapping) {
             rowData[field] = ''
           } else if (mapping.source === 'phaidra-field') {
-            if (field == "License") {
+            if (field === "License") {
               rowData[field] = mapping.phaidraValue["@id"]
             }
-            else if (field == "Type") {
+            else if (field === "Type") {
               rowData[field] = mapping.phaidraValue["skos:prefLabel"]["eng"]
             }
             else {
-              // For Phaidra values, use the phaidraValue
               rowData[field] = mapping.phaidraValue
             }
           } else if (mapping.source === 'csv-column') {
-            // For CSV mappings, get the value from the corresponding column
             const columnIndex = headers.indexOf(mapping.csvValue)
             rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
           }
@@ -137,15 +149,14 @@ export default {
       this.previewData = previewRows
     },
 
-    getSourceColumn(field) {
-      const mapping = this.getAllFieldMappings
-      if (mapping[field]?.source === 'phaidra-field') {
-        return 'Phaidra: ' + mapping[field].phaidraValue
+    getSourceInfo(field) {
+      const mapping = this.getAllFieldMappings[field]
+      if (!mapping) return null
+      
+      if (mapping.source === 'phaidra-field') {
+        return 'Default value sourced from Phaidra'
       }
-      else if (mapping[field]?.source === 'csv-column') {
-        return 'CSV: ' + mapping[field].csvValue
-      }
-      return ''
+      return 'Sourced from CSV column: ' + mapping.csvValue
     },
 
     proceed() {
