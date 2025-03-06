@@ -212,13 +212,17 @@ export default {
           const subFields = Object.entries(this.fieldSettings[field].multiFieldConfig.fields)
             .filter(([_, config]) => config.required)
             .map(([name]) => name)
-          return subFields.every(subField => 
-            mapping.subFields?.[subField]?.[valueKeys[mapping.source]]
-          )
+          return subFields.every(subField => {
+            const value = mapping.subFields?.[subField]?.[valueKeys[mapping.source]]
+            return value !== null && value !== undefined && value !== '' && 
+              (!Array.isArray(value) || value.length > 0)
+          })
         }
 
-        // For single fields, simply check if the value is set
-        return mapping[valueKeys[mapping.source]] !== null && mapping[valueKeys[mapping.source]] !== undefined
+        // For single fields, check if the value is set and not empty
+        const value = mapping[valueKeys[mapping.source]]
+        return value !== null && value !== undefined && value !== '' && 
+          (!Array.isArray(value) || value.length > 0)
       }
     },
 
