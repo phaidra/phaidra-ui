@@ -11,7 +11,6 @@
       <v-row>
         <v-col>
           <v-card outlined>
-            <v-card-title>Preview (scroll right to view all columns)</v-card-title>
             <v-card-text class="table-container">
               <v-simple-table fixed-header>
                 <template v-slot:default>
@@ -229,35 +228,14 @@ export default {
 
     getSourceInfo(field, subField = null) {
       const fieldMapping = this.getAllFieldMappings[field]
-      const valueKeys = {
-        'csv-column': 'csvValue',
-        'phaidra-field': 'phaidraValue'
-      }
-      var csvColumn = null
-
       if (!fieldMapping) return null
 
-      if (this.isMultiField(field) && subField) {
-        const subFieldValue = this.getSubFieldValue(field, subField)
-        if (!subFieldValue) return null
-        if (fieldMapping.source === 'csv-column') {
-          csvColumn = subFieldValue
-        }
-      }
-      else {
-        if (!fieldMapping[valueKeys[fieldMapping.source]]) return null
+      const mapping = subField ? fieldMapping.subFields?.[subField] : fieldMapping
+      if (!mapping) return null
 
-        if (fieldMapping.source === 'csv-column') {
-          csvColumn = fieldMapping[valueKeys[fieldMapping.source]]
-        }
-      }
-
-      if (fieldMapping.source === 'phaidra-field') {
-        return 'Default value sourced from Phaidra'
-      }
-      else {
-        return `Sourced from CSV column "${csvColumn}"`
-      }
+      return fieldMapping.source === 'csv-column'
+        ? mapping.csvValue ? `Sourced from CSV column "${mapping.csvValue}"` : null
+        : mapping.phaidraValue ? 'Default value sourced from Phaidra' : null
     },
 
     proceed() {
