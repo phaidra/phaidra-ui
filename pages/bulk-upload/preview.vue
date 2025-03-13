@@ -164,49 +164,35 @@ export default {
       if (!this.csvContent) return
 
       const rows = this.csvContent.split('\n')
-      const headers = rows[0].split(';').map(h => h.trim().replace(/["']/g, ''))
+      const headers = this.parseCsvRow(rows[0])
 
       const previewRows = rows.slice(1).map(row => {
-        const values = row.split(';').map(v => v.trim().replace(/["']/g, ''))
+        const values = this.parseCsvRow(row)
         const rowData = {}
         
         this.allFields.forEach(field => {
           const mapping = this.getAllFieldMappings[field]
           if (!mapping) {
             rowData[field] = ''
-          } else if (mapping.source === 'phaidra-field') {
-            if (this.isMultiField(field)) {
-              rowData[field] = {}
-              Object.keys(this.getSubFields(field)).forEach(subField => {
-                if (!mapping.subFields) {
-                  rowData[field][subField] = ''
-                } else {
-                  const subFieldConfig = fieldSettings[field].multiFieldConfig.fields[subField]
-                  rowData[field][subField] = subFieldConfig.phaidraDisplayValue(mapping.subFields[subField]?.phaidraValue)
-                }
-              })
-            } else {
+            return
+          }
+
+          if (this.isMultiField(field)) {
+            rowData[field] = {}
+            Object.keys(this.getSubFields(field)).forEach(subField => {
+              if (mapping.source === 'phaidra-field') {
+                const subFieldConfig = fieldSettings[field].multiFieldConfig.fields[subField]
+                rowData[field][subField] = subFieldConfig.phaidraDisplayValue(mapping.subFields[subField]?.phaidraValue)
+              } else if (mapping.source === 'csv-column') {
+                const columnName = mapping.subFields[subField]?.csvValue
+                rowData[field][subField] = columnName ? values[headers.indexOf(columnName)] : ''
+              }
+            })
+          } else {
+            if (mapping.source === 'phaidra-field') {
               rowData[field] = fieldSettings[field].phaidraDisplayValue(mapping.phaidraValue)
-            }
-          } else if (mapping.source === 'csv-column') {
-            if (this.isMultiField(field)) {
-              rowData[field] = {}
-              Object.keys(this.getSubFields(field)).forEach(subField => {
-                if (!mapping.subFields) {
-                  rowData[field][subField] = ''
-                } else {
-                  const subMapping = mapping.subFields[subField]
-                  if (subMapping?.csvValue) {
-                    const columnIndex = headers.indexOf(subMapping.csvValue)
-                    rowData[field][subField] = columnIndex >= 0 ? values[columnIndex] : ''
-                  } else {
-                    rowData[field][subField] = ''
-                  }
-                }
-              })
-            } else {
-              const columnIndex = headers.indexOf(mapping.csvValue)
-              rowData[field] = columnIndex >= 0 ? values[columnIndex] : ''
+            } else if (mapping.source === 'csv-column') {
+              rowData[field] = mapping.csvValue ? values[headers.indexOf(mapping.csvValue)] : ''
             }
           }
         })
@@ -215,6 +201,10 @@ export default {
       })
 
       this.previewData = previewRows
+    },
+
+    parseCsvRow(row) {
+      return row.split(';').map(v => v.trim().replace(/["']/g, ''))
     },
 
     getSourceInfo(field, subField = null) {
