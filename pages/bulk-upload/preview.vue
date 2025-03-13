@@ -175,27 +175,18 @@ export default {
           if (!mapping) {
             rowData[field] = ''
           } else if (mapping.source === 'phaidra-field') {
-            if (field === "License") {
-              rowData[field] = mapping.phaidraValue?.["@id"] || ''
-            }
-            else if (field === "Type") {
-              rowData[field] = mapping.phaidraValue?.["skos:prefLabel"]?.["eng"] || ''
-            }
-            else if (this.isMultiField(field)) {
+            if (this.isMultiField(field)) {
               rowData[field] = {}
               Object.keys(this.getSubFields(field)).forEach(subField => {
                 if (!mapping.subFields) {
                   rowData[field][subField] = ''
-                } else if (subField === "Role") {
-                  rowData[field][subField] = mapping.subFields[subField]?.phaidraValue?.["skos:prefLabel"]?.["eng"] || ''
-                }
-                else {
-                  rowData[field][subField] = mapping.subFields[subField]?.phaidraValue || ''
+                } else {
+                  const subFieldConfig = fieldSettings[field].multiFieldConfig.fields[subField]
+                  rowData[field][subField] = subFieldConfig.phaidraDisplayValue(mapping.subFields[subField]?.phaidraValue)
                 }
               })
-            }
-            else {
-              rowData[field] = mapping.phaidraValue || ''
+            } else {
+              rowData[field] = fieldSettings[field].phaidraDisplayValue(mapping.phaidraValue)
             }
           } else if (mapping.source === 'csv-column') {
             if (this.isMultiField(field)) {

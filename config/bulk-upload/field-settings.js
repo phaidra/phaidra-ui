@@ -18,22 +18,26 @@ export const fieldSettings = {
     //   -> resulting in multiple fields for the csv source, which has a more complex logic
     //   -> view 'Role' as an example of how this is set up
     fieldType: 'single-field',
-    allowedSources: ['csv-column']
+    allowedSources: ['csv-column'],
+    phaidraDisplayValue: (value) => value
   },
   'Subtitle': {
     required: false,
     fieldType: 'single-field',
-    allowedSources: ['csv-column']
+    allowedSources: ['csv-column'],
+    phaidraDisplayValue: (value) => value
   },
   'Description': {
     required: true,
     fieldType: 'single-field',
-    allowedSources: ['csv-column']
+    allowedSources: ['csv-column'],
+    phaidraDisplayValue: (value) => value
   },
   'Keywords': {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
+    phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
         text: 'Keywords',
@@ -60,6 +64,7 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
+    phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
     phaidraComponentMapping: [
       {
         text: 'Object Type',
@@ -90,10 +95,22 @@ export const fieldSettings = {
     multiFieldConfig: {
       label: 'Role',
       fields: {
-        'Role': { required: true },
-        'First name': { required: false },
-        'Last name': { required: false },
-        'ORCID': { required: false }
+        'Role': { 
+          required: true,
+          phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || ''
+        },
+        'First name': { 
+          required: false,
+          phaidraDisplayValue: (value) => value || ''
+        },
+        'Last name': { 
+          required: false,
+          phaidraDisplayValue: (value) => value || ''
+        },
+        'ORCID': { 
+          required: false,
+          phaidraDisplayValue: (value) => value || ''
+        }
       }
     },
     allowedSources: ['csv-column', 'phaidra-field'],
@@ -128,6 +145,7 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
+    phaidraDisplayValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
       {
         text: 'License',
@@ -154,6 +172,7 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
+    phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
         text: 'Subject (ÖFOS)',
@@ -180,6 +199,7 @@ export const fieldSettings = {
     required: false,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
+    phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
         text: 'ORG Unit / Association',
@@ -205,6 +225,7 @@ export const fieldSettings = {
   'Filename': {
     required: true,
     fieldType: 'single-field',
-    allowedSources: ['csv-column']
+    allowedSources: ['csv-column'],
+    phaidraDisplayValue: (value) => value
   }
 }
