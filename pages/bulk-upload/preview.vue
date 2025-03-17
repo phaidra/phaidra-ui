@@ -123,7 +123,7 @@ export default {
 
   computed: {
     ...mapState('bulk-upload', ['steps', 'csvContent']),
-    ...mapGetters('bulk-upload', ['getAllFieldMappings', 'allFields'])
+    ...mapGetters('bulk-upload', ['getAllFieldMappings', 'allFields', 'getColumnHeaders'])
   },
 
   async created() {
@@ -164,7 +164,7 @@ export default {
       if (!this.csvContent) return
 
       const rows = this.csvContent.split('\n')
-      const headers = this.parseCsvRow(rows[0])
+      const headers = this.getColumnHeaders
 
       const previewRows = rows.slice(1).map(row => {
         const values = this.parseCsvRow(row)

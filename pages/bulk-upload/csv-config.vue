@@ -68,7 +68,7 @@
     </v-row>
 
     <!-- Preview Section -->
-    <v-row v-if="$store.state['bulk-upload'].columns.length">
+    <v-row v-if="getColumnHeaders.length">
       <v-col cols="12">
         <v-card outlined class="pa-4">
           <div class="d-flex align-center mb-4">
@@ -77,7 +77,7 @@
             </h3>
           </div>
           <v-chip
-            v-for="column in $store.state['bulk-upload'].columns"
+            v-for="column in getColumnHeaders"
             :key="column"
             class="mr-2 mb-2"
             color="primary"
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 
 export default {
@@ -142,9 +142,10 @@ export default {
 
   computed: {
     ...mapState('bulk-upload', ['columns', 'fileName', 'maxStepReached']),
+    ...mapGetters('bulk-upload', ['getColumnHeaders']),
 
     isValid() {
-      return this.columns.length > 0
+      return this.getColumnHeaders.length > 0
     },
     savedFileName() {
       return this.fileName
@@ -156,7 +157,6 @@ export default {
       set(value) {
         if (!value) {
           this.setCsvContent(null)
-          this.setColumns([])
           this.setFileName('')
         }
       }
@@ -166,7 +166,6 @@ export default {
   methods: {
     ...mapMutations('bulk-upload', [
       'setCsvContent',
-      'setColumns',
       'setFileName',
       'completeStep',
       'hardResetState'
@@ -273,7 +272,6 @@ export default {
         .filter(col => col !== '')
       
       this.setCsvContent(text)
-      this.setColumns(columns)
       this.setFileName(fileName)
       this.completeStep(1)
     }

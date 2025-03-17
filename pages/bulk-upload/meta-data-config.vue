@@ -55,7 +55,7 @@
                     <CSVColumnSelector
                       v-if="getAllowedSources(field).includes('csv-column')"
                       :field="field"
-                      :columns="columns"
+                      :columns="getColumnHeaders"
                       :value="getFieldMapping(field)?.csvValue"
                       :disabled="getFieldMapping(field)?.source !== 'csv-column' && getAllowedSources(field).includes('phaidra-field')"
                       :all-mappings="getAllFieldMappings"
@@ -119,7 +119,7 @@
                           <label class="d-block mb-1"><b>{{ subField }}{{ fieldConfig.required ? ' *' : '' }}</b></label>
                           <CSVColumnSelector
                             :field="subField"
-                            :columns="columns"
+                            :columns="getColumnHeaders"
                             :all-mappings="getAllFieldMappings"
                             :value="getFieldMapping(field)?.subFields?.[subField]?.csvValue"
                             @input="val => updateMapping(field, 'csv-column', val, subField)"
@@ -190,8 +190,8 @@ export default {
   },
 
   computed: {
-    ...mapState('bulk-upload', ['columns', 'steps']),
-    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields', 'singleFields', 'multiFields', 'allFields']),
+    ...mapState('bulk-upload', ['steps']),
+    ...mapGetters('bulk-upload', ['getFieldMapping', 'getAllFieldMappings', 'requiredFields', 'singleFields', 'multiFields', 'allFields', 'getColumnHeaders']),
 
     allFieldsMapped() {
       return this.requiredFields.every(field => this.fieldIsMapped(field))
@@ -303,7 +303,7 @@ export default {
       // Try automatic matching for CSV columns if no mapping exists
       if (!mapping) {
         if (allowedSources.includes('csv-column')) {
-          const matchingColumn = this.columns.find(
+          const matchingColumn = this.getColumnHeaders.find(
             col => col.toLowerCase() === field.toLowerCase()
           )
           if (matchingColumn) {
@@ -321,7 +321,7 @@ export default {
 
         if (!mapping) {
           if (allowedSources.includes('csv-column')) {
-            const matchingColumn = this.columns.find(
+            const matchingColumn = this.getColumnHeaders.find(
               col => col.toLowerCase() === subField.toLowerCase()
             )
             if (matchingColumn) {

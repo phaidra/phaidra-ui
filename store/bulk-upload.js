@@ -10,7 +10,6 @@ export const state = () => ({
     4: { route: '/bulk-upload/upload', completed: false }
   },
   csvContent: null,
-  columns: [],
   fileName: '',
   // Will store mappings like 
   // single-field: { field: { source: 'csv-column|phaidra-field', csvValue: string, phaidraValue: object } }
@@ -65,9 +64,6 @@ export const mutations = {
   },
   setCsvContent(state, content) {
     state.csvContent = content
-  },
-  setColumns(state, columns) {
-    state.columns = columns
   },
   setFileName(state, fileName) {
     state.fileName = fileName
@@ -148,7 +144,6 @@ export const mutations = {
       4: { route: '/bulk-upload/upload', completed: false }
     }
     state.csvContent = null
-    state.columns = []
     state.fileName = ''
     state.fieldMappings = {}
     state.uploadState = {}
@@ -176,6 +171,10 @@ export const getters = {
   canAccessStep: (state) => (step) => {
     // TODO: define logic for each step later
     return true
+  },
+  getColumnHeaders: (state) => {
+    if (!state.csvContent) return []
+    return state.csvContent.split('\n')[0].split(';').map(v => v.trim().replace(/["']/g, ''))
   },
   getCurrentStepFromRoute: (state) => (route) => {
     for (const [stepNum, stepData] of Object.entries(state.steps)) {
