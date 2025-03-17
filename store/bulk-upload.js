@@ -136,6 +136,27 @@ export const mutations = {
     }
     state.maxStepReached = 1
     state.currentStep = 1
+  },
+  hardResetState(state) {
+    // Reset to initial state
+    state.currentStep = 1
+    state.maxStepReached = 1
+    state.steps = {
+      1: { route: '/bulk-upload/csv-config', completed: false },
+      2: { route: '/bulk-upload/meta-data-config', completed: false },
+      3: { route: '/bulk-upload/preview', completed: false },
+      4: { route: '/bulk-upload/upload', completed: false }
+    }
+    state.csvContent = null
+    state.columns = []
+    state.fileName = ''
+    state.fieldMappings = {}
+    state.uploadState = {}
+    state.uploadProgress = {
+      total: 0,
+      completed: 0,
+      failed: 0
+    }
   }
 }
 

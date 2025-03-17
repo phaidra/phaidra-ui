@@ -169,9 +169,7 @@ export default {
       'setColumns',
       'setFileName',
       'completeStep',
-      'clearFieldMappings',
-      'clearUploadState',
-      'resetSteps'
+      'hardResetState'
     ]),
 
     async handleFileUpload(file) {
@@ -229,7 +227,7 @@ export default {
     // from a user perspective it feels like an upload so thought naming would fit well on the technical side too
     async uploadCsvFile(file) {
       try {
-        this.resetExistingData()
+        this.hardResetState()
 
         const text = await this.readFile(file)
 
@@ -241,15 +239,6 @@ export default {
         this.errorMessage = 'Error reading CSV file. Please make sure it\'s a valid CSV file.'
         console.error('Error reading CSV:', error)
       }
-    },
-
-    resetExistingData() {
-      this.setCsvContent(null)
-      this.setColumns([])
-      this.setFileName('')
-      this.clearFieldMappings()
-      this.clearUploadState()
-      this.resetSteps()
     },
 
     async readFile(file) {
