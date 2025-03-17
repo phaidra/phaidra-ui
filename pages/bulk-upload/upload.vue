@@ -31,6 +31,23 @@
         </v-card>
       </v-overlay>
 
+      <v-overlay :value="isComplete && uploadProgress.failed === 0" absolute>
+        <v-card class="pa-6 text-center" light>
+          <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
+          <h2 class="text-h5 mb-4">Bulk Upload Complete!</h2>
+          <p class="mb-4">
+            All files have been successfully uploaded to PHAIDRA.
+          </p>
+          <v-btn
+            color="success"
+            large
+            @click="startNewBulkUpload"
+          >
+            Start New Bulk Upload
+          </v-btn>
+        </v-card>
+      </v-overlay>
+
       <!-- Progress Overview -->
       <v-row class="mt-4">
         <v-col cols="12">
@@ -157,6 +174,7 @@
     <v-row justify="space-between" class="mt-4">
       <v-col cols="auto">
         <v-btn
+          :disabled="isUploading || isComplete"
           text
           :to="steps[3].route"
         >
@@ -309,7 +327,8 @@ export default {
       'setUploadState',
       'setUploadProgress',
       'clearUploadState',
-      'completeStep'
+      'completeStep',
+      'hardResetState'
     ]),
 
     getStatusColor(status) {
@@ -606,6 +625,18 @@ export default {
       }
 
       return formData
+    },
+
+    async startNewBulkUpload() {
+      try {
+        // Reset all bulk upload data including localStorage
+        this.hardResetState()
+        
+        // Redirect to the first step
+        this.$router.push(this.steps[1].route)
+      } catch (error) {
+        console.error('Error starting new bulk upload:', error)
+      }
     }
   },
 
