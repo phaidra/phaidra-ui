@@ -10,126 +10,148 @@
       </v-col>
     </v-row>
 
-    <!-- Progress Overview -->
-    <v-row class="mt-4">
-      <v-col cols="12">
-        <v-card outlined>
-          <v-card-text>
-            <!-- File Selection -->
-            <div class="d-flex align-center justify-space-between mb-4">
-              <div>
-                <span class="text-h6">Files</span>
-              </div>
-              <div class="d-flex align-center">
-                <v-file-input
-                  v-model="selectedFiles"
-                  multiple
-                  chips
-                  show-size
-                  counter
-                  label="Select Files"
-                  outlined
-                  dense
-                  class="max-w-500"
-                  :error-messages="fileError"
-                  @change="handleFileSelection"
-                ></v-file-input>
-              </div>
-            </div>
-
-            <div class="d-flex align-center justify-space-between mb-2">
-              <div>
-                <span class="text-h6">Upload Progress</span>
-              </div>
-              <div class="d-flex align-center">
-                <v-chip class="mr-2" color="success" outlined>
-                  {{ uploadProgress.completed }} Completed
-                </v-chip>
-                <v-chip class="mr-2" color="error" outlined>
-                  {{ uploadProgress.failed }} Failed
-                </v-chip>
-                <v-chip color="primary" outlined>
-                  {{ uploadProgress.total - (uploadProgress.completed) }} Remaining
-                </v-chip>
-              </div>
-            </div>
-            <v-progress-linear
-              :value="(uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100"
-              height="20"
-              color="primary"
-              striped
+    <div class="position-relative">
+      <v-overlay :value="!isLoggedIn" absolute>
+        <v-card class="pa-6 text-center" light>
+          <v-icon size="64" color="primary" class="mb-4">mdi-account-lock</v-icon>
+          <h2 class="text-h5 mb-4">Please
+            <v-btn
+            color="primary"
+            to="/login"
+            large
             >
-              <template v-slot:default>
-                {{ Math.round((uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100) }}%
-              </template>
-            </v-progress-linear>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+              Login
+            </v-btn>
+            to Continue
+          </h2>
 
-    <!-- Upload Table -->
-    <v-row class="mt-4">
-      <v-col cols="12">
-        <v-card outlined>
-          <v-card-text>
-            <v-data-table
-              :headers="headers"
-              :items="tableData"
-              :items-per-page="10"
-              class="elevation-1"
-            >
-              <template v-slot:item.status="{ item }">
-                <v-chip
-                  :color="getStatusColor(item.status)"
-                  small
-                >
-                  {{ item.status }}
-                </v-chip>
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <template v-if="item.status === 'error'">
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        icon
-                        small
-                        color="error"
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="showError(item)"
-                      >
-                        <v-icon small>mdi-alert-circle</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>View Error</span>
-                  </v-tooltip>
-                  <v-btn
-                    icon
-                    small
-                    class="ml-2"
-                    @click="retryUpload(item.index)"
-                  >
-                    <v-icon small>mdi-refresh</v-icon>
-                  </v-btn>
-                </template>
-                <template v-else-if="item.status === 'completed'">
-                  <v-btn
-                    icon
-                    small
-                    :href="getObjectUrl(item.pid)"
-                    target="_blank"
-                  >
-                    <v-icon small>mdi-open-in-new</v-icon>
-                  </v-btn>
-                </template>
-              </template>
-            </v-data-table>
-          </v-card-text>
+          <p>
+            You must be logged in to bulk upload to PHAIDRA.
+          </p>
         </v-card>
-      </v-col>
-    </v-row>
+      </v-overlay>
+
+      <!-- Progress Overview -->
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <v-card outlined>
+            <v-card-text>
+              <!-- File Selection -->
+              <div class="d-flex align-center justify-space-between mb-4">
+                <div>
+                  <span class="text-h6">Files</span>
+                </div>
+                <div class="d-flex align-center">
+                  <v-file-input
+                    v-model="selectedFiles"
+                    multiple
+                    chips
+                    show-size
+                    counter
+                    label="Select Files"
+                    outlined
+                    dense
+                    class="max-w-500"
+                    :error-messages="fileError"
+                    @change="handleFileSelection"
+                  ></v-file-input>
+                </div>
+              </div>
+
+              <div class="d-flex align-center justify-space-between mb-2">
+                <div>
+                  <span class="text-h6">Upload Progress</span>
+                </div>
+                <div class="d-flex align-center">
+                  <v-chip class="mr-2" color="success" outlined>
+                    {{ uploadProgress.completed }} Completed
+                  </v-chip>
+                  <v-chip class="mr-2" color="error" outlined>
+                    {{ uploadProgress.failed }} Failed
+                  </v-chip>
+                  <v-chip color="primary" outlined>
+                    {{ uploadProgress.total - (uploadProgress.completed) }} Remaining
+                  </v-chip>
+                </div>
+              </div>
+              <v-progress-linear
+                :value="(uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100"
+                height="20"
+                color="primary"
+                striped
+              >
+                <template v-slot:default>
+                  {{ Math.round((uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100) }}%
+                </template>
+              </v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <!-- Upload Table -->
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <v-card outlined>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="tableData"
+                :items-per-page="10"
+                class="elevation-1"
+              >
+                <template v-slot:item.status="{ item }">
+                  <v-chip
+                    :color="getStatusColor(item.status)"
+                    small
+                  >
+                    {{ item.status }}
+                  </v-chip>
+                </template>
+
+                <template v-slot:item.actions="{ item }">
+                  <template v-if="item.status === 'error'">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          small
+                          color="error"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="showError(item)"
+                        >
+                          <v-icon small>mdi-alert-circle</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>View Error</span>
+                    </v-tooltip>
+                    <v-btn
+                      icon
+                      small
+                      class="ml-2"
+                      @click="retryUpload(item.index)"
+                    >
+                      <v-icon small>mdi-refresh</v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-else-if="item.status === 'completed'">
+                    <v-btn
+                      icon
+                      small
+                      :href="getObjectUrl(item.pid)"
+                      target="_blank"
+                    >
+                      <v-icon small>mdi-open-in-new</v-icon>
+                    </v-btn>
+                  </template>
+                </template>
+              </v-data-table>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
 
     <!-- Navigation -->
     <v-row justify="space-between" class="mt-4">
@@ -146,7 +168,7 @@
         <v-btn
           color="primary"
           :loading="isUploading"
-          :disabled="isUploading || isComplete"
+          :disabled="!isLoggedIn || isUploading || isComplete"
           @click="startUpload"
         >
           <template v-if="hasFailedUploads">
@@ -275,6 +297,10 @@ export default {
             error: uploadState.error
           }
         })
+    },
+
+    isLoggedIn() {
+      return this.user && this.user.username
     }
   },
 
@@ -602,5 +628,9 @@ export default {
 .upload {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.position-relative {
+  position: relative;
 }
 </style>
