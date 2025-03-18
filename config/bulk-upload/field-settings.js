@@ -1,6 +1,6 @@
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 
-const getSharedProps = (fieldConfig, value, updateMapping) => ({
+const getSharedProps = (fieldConfig, value) => ({
   value: value || fieldConfig.value,
   label: fieldConfig.label || fieldConfig.text,
   field: fieldConfig,
@@ -48,13 +48,13 @@ export const fieldSettings = {
           field.disableSuggest = true
           return field
         },
-        getProps: function(value, updateMapping) {
+        getProps: function(value) {
           const fieldConfig = this.field()
           return {
             // always spread fieldConfig first
             // then override with shared props to ensure value is remembered
             ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
+            ...getSharedProps(fieldConfig, value)
           }
         }
       }
@@ -77,13 +77,13 @@ export const fieldSettings = {
           field.label = 'Object Type'
           return field
         },
-        getProps: function(value, updateMapping) {
+        getProps: function(value) {
           const fieldConfig = this.field()
           return {
             // always spread fieldConfig first
             // then override with shared props to ensure value is remembered
             ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
+            ...getSharedProps(fieldConfig, value)
           }
         }
       }
@@ -129,13 +129,13 @@ export const fieldSettings = {
           field.ordered = false
           return field
         },
-        getProps: function(value, updateMapping) {
+        getProps: function(value) {
           const fieldConfig = this.field()
           return {
             // always spread fieldConfig first
             // then override with shared props to ensure value is remembered
             ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
+            ...getSharedProps(fieldConfig, value)
           }
         }
       }
@@ -156,13 +156,13 @@ export const fieldSettings = {
           field.showDisclaimer = false
           return field
         },
-        getProps: function(value, updateMapping) {
+        getProps: function(value) {
           const fieldConfig = this.field()
           return {
             // always spread fieldConfig first
             // then override with shared props to ensure value is remembered
             ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
+            ...getSharedProps(fieldConfig, value)
           }
         }
       }
@@ -185,11 +185,11 @@ export const fieldSettings = {
           field.ordered = false
           return field
         },
-        getProps: function(value, updateMapping) {
+        getProps: function(value) {
           const fieldConfig = this.field()
           return {
             ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
+            ...getSharedProps(fieldConfig, value)
           }
         }
       }
@@ -212,11 +212,11 @@ export const fieldSettings = {
           field.ordered = false
           return field
         },
-        getProps: function(value, updateMapping) {
+        getProps: function(value) {
           const fieldConfig = this.field()
           return {
             ...fieldConfig,
-            ...getSharedProps(fieldConfig, value, updateMapping)
+            ...getSharedProps(fieldConfig, value)
           }
         }
       }
