@@ -11,42 +11,11 @@
     </v-row>
 
     <div class="position-relative">
-      <v-overlay :value="!isLoggedIn" absolute>
-        <v-card class="pa-6 text-center" light>
-          <v-icon size="64" color="primary" class="mb-4">mdi-account-lock</v-icon>
-          <h2 class="text-h5 mb-4">Please
-            <v-btn
-            color="primary"
-            to="/login"
-            large
-            >
-              Login
-            </v-btn>
-            to Continue
-          </h2>
-
-          <p>
-            You must be logged in to bulk upload to PHAIDRA.
-          </p>
-        </v-card>
-      </v-overlay>
-
-      <v-overlay :value="isComplete && uploadProgress.failed === 0" absolute>
-        <v-card class="pa-6 text-center" light>
-          <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
-          <h2 class="text-h5 mb-4">Bulk Upload Complete!</h2>
-          <p class="mb-4">
-            All files have been successfully uploaded to PHAIDRA.
-          </p>
-          <v-btn
-            color="success"
-            large
-            @click="startNewBulkUpload"
-          >
-            Start New Bulk Upload
-          </v-btn>
-        </v-card>
-      </v-overlay>
+      <LoginOverlay :is-logged-in="isLoggedIn" />
+      <CompletionOverlay
+        :is-complete="isComplete"
+        @start-new="startNewBulkUpload"
+      />
 
       <!-- Progress Overview -->
       <v-row class="mt-4">
@@ -229,6 +198,8 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import LoginOverlay from '~/components/bulk-upload/LoginOverlay.vue'
+import CompletionOverlay from '~/components/bulk-upload/CompletionOverlay.vue'
 import { context } from "../../mixins/context"
 import { config } from "../../mixins/config"
 import fieldslib from "phaidra-vue-components/src/utils/fields"
@@ -238,7 +209,9 @@ import { fieldSettings } from '~/config/bulk-upload/field-settings'
 export default {
   name: 'Upload',
   components: {
-    BulkUploadSteps
+    BulkUploadSteps,
+    LoginOverlay,
+    CompletionOverlay
   },
   mixins: [context, config],
   middleware: 'bulk-upload',
