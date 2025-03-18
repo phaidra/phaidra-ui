@@ -233,6 +233,7 @@ import { context } from "../../mixins/context"
 import { config } from "../../mixins/config"
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 import jsonld from "phaidra-vue-components/src/utils/json-ld"
+import { fieldSettings } from '~/config/bulk-upload/field-settings'
 
 export default {
   name: 'Upload',
@@ -244,6 +245,7 @@ export default {
 
   data() {
     return {
+      fieldSettings,
       headers: [
         { text: 'Row', value: 'index' },
         { text: 'Title', value: 'title' },
@@ -512,34 +514,11 @@ export default {
           if (mapping.source === 'phaidra-field') {
             const value = mapping.phaidraValue
             console.log(`Processing Phaidra field: ${field} with value:`, value)
-            
-            if (field === 'Type') {
-              f = fieldslib.getField('object-type-checkboxes')
-              const parsedValue = mapping.phaidraField || {}
-              f.value = parsedValue['@id']
-              f.showLabel = true
-              if (parsedValue['@type']) {
-                f.type = parsedValue['@type']
-              }
-            } else if (field === 'Role') {
-              f = fieldslib.getField('role')
-              f.ordergroup = "role"
-              f.roleVocabulary = "submitrolepredicate"
-              f.showDefinitions = true
-              f.role = 'role:aut'
-              const parsedValue = mapping.phaidraField || {}
-              f.name = `${parsedValue.firstname} ${parsedValue.lastname}`
-            } else if (field === 'License') {
-              f = fieldslib.getField('license')
-              f.showValueDefinition = true
-              f.vocabulary = "alllicenses"
-              f.value = value
-            } else {
-              f = fieldslib.getField(field.toLowerCase())
-              if (f) {
-                f.value = value
-              }
-            }
+
+            const fieldConfig = this.fieldSettings[field]
+            f = fieldConfig.phaidraComponentMapping[0].getProps(value)
+            f.value = fieldConfig.phaidraAPIValue ? fieldConfig.phaidraAPIValue(value) : value
+            console.log(field, ' field:', f)
           } else if (mapping.source === 'csv-column') {
             const columnIndex = headers.indexOf(mapping.csvValue)
             const value = values[columnIndex]
@@ -550,6 +529,13 @@ export default {
                 f = fieldslib.getField('title')
                 f.title = value
                 f.language = this.$i18n.locale
+                break
+              case 'subtitle':
+                // Find the title field and add subtitle to it
+                const titleField = form.sections[0].fields.find(field => field.title !== undefined)
+                if (titleField) {
+                  titleField.subtitle = value
+                }
                 break
               case 'description':
                 f = fieldslib.getField('description')
@@ -610,17 +596,15 @@ export default {
       
       // Add file data if present
       const filenameMapping = this.fieldMappings['Filename']
-      if (filenameMapping?.source === 'csv-column') {
-        const filenameIndex = headers.indexOf(filenameMapping.csvValue)
-        const filename = values[filenameIndex]
-        if (filename) {
-          const file = this.selectedFiles.find(f => f.name === filename)
-          if (file) {
-            formData.append('file', file)
-            formData.append('mimetype', file.type || 'application/octet-stream')
-          } else {
-            throw new Error(`File not found: ${filename}`)
-          }
+      const filenameIndex = headers.indexOf(filenameMapping.csvValue)
+      const filename = values[filenameIndex]
+      if (filename) {
+        const file = this.selectedFiles.find(f => f.name === filename)
+        if (file) {
+          formData.append('file', file)
+          formData.append('mimetype', file.type || 'application/octet-stream')
+        } else {
+          throw new Error(`File not found: ${filename}`)
         }
       }
 

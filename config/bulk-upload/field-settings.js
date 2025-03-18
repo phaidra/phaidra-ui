@@ -65,6 +65,7 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
       {
         text: 'Object Type',
@@ -145,7 +146,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
-    phaidraDisplayValue: (value) => value?.["@id"] || '',
+    phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
       {
         text: 'License',
