@@ -295,6 +295,43 @@ export default {
       'hardResetState'
     ]),
 
+    setConceptProperties: function (f, event) {
+      if (event) {
+        f.value = event['@id']
+        if (event['@type']) {
+          f.type = event['@type']
+        }
+        if (event['skos:prefLabel']) {
+          let preflabels = event['skos:prefLabel']
+          f['skos:prefLabel'] = []
+          Object.entries(preflabels).forEach(([key, value]) => {
+            if (key == "deu") {
+              f['skos:prefLabel'].push({ '@value': value })
+            }
+          })
+        }
+        if (event['rdfs:label']) {
+          let rdfslabels = event['rdfs:label']
+          if (rdfslabels) {
+            f['rdfs:label'] = []
+            Object.entries(rdfslabels).forEach(([key, value]) => {
+              if (key == "deu") {
+                f['rdfs:label'].push({ '@value': value })
+              }
+            })
+          }
+        }
+        if (event['skos:notation']) {
+          f['skos:notation'] = event['skos:notation']
+        }
+      } else {
+        f.value = ''
+        // f['skos:prefLabel'] = []
+        // f['rdfs:label'] = []
+        f['skos:notation'] = []
+      }
+    },
+
     getStatusColor(status) {
       switch (status) {
         case 'completed': return 'success'
@@ -480,6 +517,9 @@ export default {
             const fieldConfig = this.fieldSettings[field]
             f = fieldConfig.phaidraComponentMapping[0].getProps(value)
             f.value = fieldConfig.phaidraAPIValue ? fieldConfig.phaidraAPIValue(value) : value
+            if (field === 'Type' || field === 'OEFOS' || field === 'ORG Unit / Association') {
+              this.setConceptProperties(f, value)
+            }
             console.log(field, ' field:', f)
           } else if (mapping.source === 'csv-column') {
             const columnIndex = headers.indexOf(mapping.csvValue)
