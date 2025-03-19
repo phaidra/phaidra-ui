@@ -1,5 +1,5 @@
 <template>
-  <v-overlay :value="isComplete && uploadProgress.failed === 0" absolute>
+  <v-overlay :value="isUploadComplete" absolute>
     <v-card class="pa-6 text-center" light>
       <v-icon size="64" color="success" class="mb-4">mdi-check-circle</v-icon>
       <h2 class="text-h5 mb-4">Bulk Upload Complete!</h2>
@@ -9,7 +9,7 @@
       <v-btn
         color="success"
         large
-        @click="$emit('start-new')"
+        @click="startNewBulkUpload"
       >
         Start New Bulk Upload
       </v-btn>
@@ -18,20 +18,28 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'CompletionOverlay',
-  props: {
-    isComplete: {
-      type: Boolean,
-      required: true
+  computed: {
+    ...mapGetters('bulk-upload', ['getUploadProgress', 'isUploadComplete']),
+    uploadProgress() {
+      return this.getUploadProgress
     }
   },
-  computed: {
-    ...mapGetters('bulk-upload', ['getUploadProgress']),
-    uploadProgress() {
-      return this.$store.getters['bulk-upload/getUploadProgress']
+  methods: {
+    ...mapMutations('bulk-upload', ['hardResetState']),
+    async startNewBulkUpload() {
+      try {
+        // Reset all bulk upload data including localStorage
+        this.hardResetState()
+        
+        // Redirect to the first step
+        this.$router.push('/bulk-upload/select-files')
+      } catch (error) {
+        console.error('Error starting new bulk upload:', error)
+      }
     }
   }
 }

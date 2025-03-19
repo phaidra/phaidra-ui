@@ -12,10 +12,7 @@
 
     <div class="position-relative">
       <LoginOverlay :is-logged-in="isLoggedIn" />
-      <CompletionOverlay
-        :is-complete="isComplete"
-        @start-new="startNewBulkUpload"
-      />
+      <CompletionOverlay />
 
       <!-- Progress Overview -->
       <v-row class="mt-4">
@@ -582,18 +579,6 @@ export default {
       }
 
       return formData
-    },
-
-    async startNewBulkUpload() {
-      try {
-        // Reset all bulk upload data including localStorage
-        this.hardResetState()
-        
-        // Redirect to the first step
-        this.$router.push(this.steps[1].route)
-      } catch (error) {
-        console.error('Error starting new bulk upload:', error)
-      }
     }
   },
 
