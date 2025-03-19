@@ -324,11 +324,6 @@ export default {
         if (event['skos:notation']) {
           f['skos:notation'] = event['skos:notation']
         }
-      } else {
-        f.value = ''
-        // f['skos:prefLabel'] = []
-        // f['rdfs:label'] = []
-        f['skos:notation'] = []
       }
     },
 
@@ -506,70 +501,33 @@ export default {
       // Map fields based on fieldMappings
       for (const [field, mapping] of Object.entries(this.fieldMappings || {})) {
         if (!mapping) continue
+        // Skip Filename and Subtitle fields as they're handled separately
+        if (field === 'Filename' || field === 'Subtitle') continue
+        
         console.log(`Processing field: ${field} with mapping:`, mapping)
         
         let f = null
         try {
+          let value = null
           if (mapping.source === 'phaidra-field') {
-            const value = mapping.phaidraValue
-            console.log(`Processing Phaidra field: ${field} with value:`, value)
-
-            const fieldConfig = this.fieldSettings[field]
-            f = fieldConfig.phaidraComponentMapping[0].getProps(value)
-            f.value = fieldConfig.phaidraAPIValue ? fieldConfig.phaidraAPIValue(value) : value
-            if (field === 'Type' || field === 'OEFOS' || field === 'ORG Unit / Association') {
-              this.setConceptProperties(f, value)
-            }
-            console.log(field, ' field:', f)
+            value = mapping.phaidraValue
           } else if (mapping.source === 'csv-column') {
             const columnIndex = headers.indexOf(mapping.csvValue)
-            const value = values[columnIndex]
-            console.log(`Processing CSV field: ${field} with value:`, value)
-            
-            switch(field.toLowerCase()) {
-              case 'title':
-                f = fieldslib.getField('title')
-                f.title = value
-                f.language = this.$i18n.locale
-                break
-              case 'subtitle':
-                // Find the title field and add subtitle to it
-                const titleField = form.sections[0].fields.find(field => field.title !== undefined)
-                if (titleField) {
-                  titleField.subtitle = value
-                }
-                break
-              case 'description':
-                f = fieldslib.getField('description')
-                f.value = value
-                f.language = this.$i18n.locale
-                break
-              case 'keywords':
-                f = fieldslib.getField('keyword')
-                f.value = value ? value.split(',').map(k => k.trim()).filter(Boolean) : []
-                f.language = this.$i18n.locale
-                f.disableSuggest = true
-                break
-              case 'license':
-                f = fieldslib.getField('license')
-                f.showValueDefinition = true
-                f.vocabulary = "alllicenses"
-                f.value = value
-                break
-              default:
-                console.log(`Using default field handling for: ${field}`)
-                f = fieldslib.getField(field.toLowerCase())
-                if (f) {
-                  f.value = value
-                  f.language = this.$i18n.locale
-                }
-            }
+            value = values[columnIndex]
+          }
+
+          const fieldConfig = this.fieldSettings[field]
+          f = fieldConfig.phaidraComponentMapping[0].getProps(value)
+          f.value = fieldConfig.phaidraAPIValue && mapping.source === 'phaidra-field' ? fieldConfig.phaidraAPIValue(value) : value
+          if (field === 'Type' || field === 'OEFOS' || field === 'ORG Unit / Association') {
+            this.setConceptProperties(f, value)
+          }
+          if (field === 'Title') {
+            f.title = value
           }
 
           // Set common field properties
           if (f) {
-            f.multilingual = false
-            f.configurable = false
             form.sections[0].fields.push(f)
           } else {
             console.warn(`Could not create field for: ${field}`)
@@ -577,6 +535,18 @@ export default {
         } catch (error) {
           console.error(`Error processing field ${field}:`, error)
           throw new Error(`Failed to process field ${field}: ${error.message}`)
+        }
+      }
+
+      // Process Subtitle separately after all other fields
+      const subtitleMapping = this.fieldMappings['Subtitle']
+      if (subtitleMapping) {
+        const subtitleValue = values[headers.indexOf(subtitleMapping.csvValue)]
+        if (subtitleValue) {
+          const titleField = form.sections[0].fields.find(field => field.title !== undefined)
+          if (titleField) {
+            titleField.subtitle = subtitleValue
+          }
         }
       }
 

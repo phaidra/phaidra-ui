@@ -19,7 +19,25 @@ export const fieldSettings = {
     //   -> view 'Role' as an example of how this is set up
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
-    phaidraDisplayValue: (value) => value
+    phaidraDisplayValue: (value) => value,
+    phaidraComponentMapping: [
+      {
+        text: 'Title',
+        component: 'PITitle',
+        field: () => {
+          const field = fieldslib.getField("title")
+          field.multilingual = false
+          return field
+        },
+        getProps: function(value) {
+          const fieldConfig = this.field()
+          return {
+            ...fieldConfig,
+            ...getSharedProps(fieldConfig, value)
+          }
+        }
+      }
+    ]
   },
   'Subtitle': {
     required: false,
@@ -31,7 +49,21 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
-    phaidraDisplayValue: (value) => value
+    phaidraDisplayValue: (value) => value,
+    phaidraComponentMapping: [
+      {
+        text: 'Description',
+        component: 'PIDescription',
+        field: () => fieldslib.getField("description"),
+        getProps: function(value) {
+          const fieldConfig = this.field()
+          return {
+            ...fieldConfig,
+            ...getSharedProps(fieldConfig, value)
+          }
+        }
+      }
+    ]
   },
   'Keywords': {
     required: true,
@@ -175,6 +207,7 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
     phaidraDisplayValue: (value) => value,
+    phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
       {
         text: 'Subject (ÖFOS)',
