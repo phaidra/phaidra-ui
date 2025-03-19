@@ -47,24 +47,24 @@
                 </div>
                 <div class="d-flex align-center">
                   <v-chip class="mr-2" color="success" outlined>
-                    {{ uploadProgress.completed }} Completed
+                    {{ getUploadProgress.completed }} Completed
                   </v-chip>
                   <v-chip class="mr-2" color="error" outlined>
-                    {{ uploadProgress.failed }} Failed
+                    {{ getUploadProgress.failed }} Failed
                   </v-chip>
                   <v-chip color="primary" outlined>
-                    {{ uploadProgress.total - (uploadProgress.completed) }} Remaining
+                    {{ getUploadProgress.total - (getUploadProgress.completed) }} Remaining
                   </v-chip>
                 </div>
               </div>
               <v-progress-linear
-                :value="(uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100"
+                :value="(getUploadProgress.completed) / Math.max(1, getUploadProgress.total) * 100"
                 height="20"
                 color="primary"
                 striped
               >
                 <template v-slot:default>
-                  {{ Math.round((uploadProgress.completed) / Math.max(1, uploadProgress.total) * 100) }}%
+                  {{ Math.round((getUploadProgress.completed) / Math.max(1, getUploadProgress.total) * 100) }}%
                 </template>
               </v-progress-linear>
             </v-card-text>
@@ -140,7 +140,7 @@
     <v-row justify="space-between" class="mt-4">
       <v-col cols="auto">
         <v-btn
-          :disabled="isUploading || isComplete"
+          :disabled="isUploading || isUploadComplete"
           text
           :to="steps[3].route"
         >
@@ -152,7 +152,7 @@
         <v-btn
           color="primary"
           :loading="isUploading"
-          :disabled="!isLoggedIn || isUploading || isComplete"
+          :disabled="!isLoggedIn || isUploading || isUploadComplete"
           @click="startUpload"
         >
           <template v-if="hasFailedUploads">
@@ -237,14 +237,6 @@ export default {
   computed: {
     ...mapState('bulk-upload', ['steps', 'csvContent', 'fieldMappings']),
     ...mapGetters('bulk-upload', ['getUploadState', 'getUploadProgress', 'isUploadComplete']),
-
-    uploadProgress() {
-      return this.$store.getters['bulk-upload/getUploadProgress']
-    },
-
-    isComplete() {
-      return this.$store.getters['bulk-upload/isUploadComplete']
-    },
 
     hasFailedUploads() {
       return this.uploadProgress.failed > 0
@@ -337,8 +329,8 @@ export default {
       // Initialize progress
       this.setUploadProgress({
         total: validRows.length,
-        completed: this.uploadProgress.completed,
-        failed: this.uploadProgress.failed
+        completed: this.getUploadProgress.completed,
+        failed: this.getUploadProgress.failed
       })
 
       // Process each row
@@ -375,8 +367,8 @@ export default {
               error: null 
             })
             this.setUploadProgress({
-              ...this.uploadProgress,
-              completed: this.uploadProgress.completed + 1
+              ...this.getUploadProgress,
+              completed: this.getUploadProgress.completed + 1
             })
           } else {
             throw new Error('Upload failed: No PID received')
@@ -390,14 +382,14 @@ export default {
             error: error.message || 'Unknown error occurred' 
           })
           this.setUploadProgress({
-            ...this.uploadProgress,
-            failed: this.uploadProgress.failed + 1
+            ...this.getUploadProgress,
+            failed: this.getUploadProgress.failed + 1
           })
         }
       }
 
       this.isUploading = false
-      if (this.isComplete && this.uploadProgress.failed === 0) {
+      if (this.isUploadComplete && this.getUploadProgress.failed === 0) {
         this.completeStep(4)
       }
     },
@@ -411,8 +403,8 @@ export default {
         error: null 
       })
       this.setUploadProgress({
-        ...this.uploadProgress,
-        failed: this.uploadProgress.failed - 1
+        ...this.getUploadProgress,
+        failed: this.getUploadProgress.failed - 1
       })
       
       // Start upload
@@ -584,7 +576,7 @@ export default {
 
   created() {
     // Initialize upload progress if not already set
-    if (this.uploadProgress.total === 0) {
+    if (this.getUploadProgress.total === 0) {
       const rows = this.csvContent?.split('\n') || []
       const validRows = rows.slice(1).filter(row => row && row.trim())
       this.setUploadProgress({
