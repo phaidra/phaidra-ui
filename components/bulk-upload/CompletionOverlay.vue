@@ -23,10 +23,7 @@ import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'CompletionOverlay',
   computed: {
-    ...mapGetters('bulk-upload', ['getUploadProgress', 'isUploadComplete']),
-    uploadProgress() {
-      return this.getUploadProgress
-    }
+    ...mapGetters('bulk-upload', ['isUploadComplete']),
   },
   methods: {
     ...mapMutations('bulk-upload', ['hardResetState']),
