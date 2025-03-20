@@ -17,121 +17,28 @@
       <!-- Progress Overview -->
       <v-row class="mt-4">
         <v-col cols="12">
-          <v-card outlined>
-            <v-card-text>
-              <!-- File Selection -->
-              <div class="d-flex align-center justify-space-between mb-4">
-                <div>
-                  <span class="text-h6">Files</span>
-                </div>
-                <div class="d-flex align-center">
-                  <v-file-input
-                    v-model="selectedFiles"
-                    multiple
-                    chips
-                    show-size
-                    counter
-                    label="Select Files"
-                    outlined
-                    dense
-                    class="max-w-500"
-                    :error-messages="fileError"
-                    @change="handleFileSelection"
-                  ></v-file-input>
-                </div>
-              </div>
+          <FileSelection
+            :csv-content="csvContent"
+            :field-mappings="fieldMappings"
+            v-model="selectedFiles"
+          />
+        </v-col>
+      </v-row>
 
-              <div class="d-flex align-center justify-space-between mb-2">
-                <div>
-                  <span class="text-h6">Upload Progress</span>
-                </div>
-                <div class="d-flex align-center">
-                  <v-chip class="mr-2" color="success" outlined>
-                    {{ getUploadProgress.completed }} Completed
-                  </v-chip>
-                  <v-chip class="mr-2" color="error" outlined>
-                    {{ getUploadProgress.failed }} Failed
-                  </v-chip>
-                  <v-chip color="primary" outlined>
-                    {{ getUploadProgress.total - (getUploadProgress.completed) }} Remaining
-                  </v-chip>
-                </div>
-              </div>
-              <v-progress-linear
-                :value="(getUploadProgress.completed) / Math.max(1, getUploadProgress.total) * 100"
-                height="20"
-                color="primary"
-                striped
-              >
-                <template v-slot:default>
-                  {{ Math.round((getUploadProgress.completed) / Math.max(1, getUploadProgress.total) * 100) }}%
-                </template>
-              </v-progress-linear>
-            </v-card-text>
-          </v-card>
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <UploadProgress :progress="getUploadProgress" />
         </v-col>
       </v-row>
 
       <!-- Upload Table -->
       <v-row class="mt-4">
         <v-col cols="12">
-          <v-card outlined>
-            <v-card-text>
-              <v-data-table
-                :headers="headers"
-                :items="tableData"
-                :items-per-page="10"
-                class="elevation-1"
-              >
-                <template v-slot:item.status="{ item }">
-                  <v-chip
-                    :color="getStatusColor(item.status)"
-                    small
-                  >
-                    {{ item.status }}
-                  </v-chip>
-                </template>
-
-                <template v-slot:item.actions="{ item }">
-                  <template v-if="item.status === 'error'">
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          small
-                          color="error"
-                          v-bind="attrs"
-                          v-on="on"
-                          @click="showError(item)"
-                        >
-                          <v-icon small>mdi-alert-circle</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>View Error</span>
-                    </v-tooltip>
-                    <v-btn
-                      icon
-                      small
-                      class="ml-2"
-                      @click="retryUpload(item.index)"
-                    >
-                      <v-icon small>mdi-refresh</v-icon>
-                    </v-btn>
-                  </template>
-                  <template v-else-if="item.status === 'completed'">
-                    <v-btn
-                      icon
-                      small
-                      :href="getObjectUrl(item.pid)"
-                      target="_blank"
-                    >
-                      <v-icon small>mdi-open-in-new</v-icon>
-                    </v-btn>
-                  </template>
-                </template>
-              </v-data-table>
-            </v-card-text>
-          </v-card>
+          <UploadTable
+            :table-data="tableData"
+            @show-error="showError"
+            @retry-upload="retryUpload"
+          />
         </v-col>
       </v-row>
     </div>
@@ -197,6 +104,9 @@ import { mapState, mapGetters, mapMutations } from 'vuex'
 import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
 import LoginOverlay from '~/components/bulk-upload/LoginOverlay.vue'
 import CompletionOverlay from '~/components/bulk-upload/CompletionOverlay.vue'
+import UploadTable from '~/components/bulk-upload/UploadTable.vue'
+import UploadProgress from '~/components/bulk-upload/UploadProgress.vue'
+import FileSelection from '~/components/bulk-upload/FileSelection.vue'
 import { context } from "../../mixins/context"
 import { config } from "../../mixins/config"
 import fieldslib from "phaidra-vue-components/src/utils/fields"
@@ -208,7 +118,10 @@ export default {
   components: {
     BulkUploadSteps,
     LoginOverlay,
-    CompletionOverlay
+    CompletionOverlay,
+    UploadTable,
+    UploadProgress,
+    FileSelection
   },
   mixins: [context, config],
   middleware: 'bulk-upload',
@@ -216,16 +129,8 @@ export default {
   data() {
     return {
       fieldSettings,
-      headers: [
-        { text: 'Row', value: 'index' },
-        { text: 'Title', value: 'title' },
-        { text: 'Filename', value: 'filename' },
-        { text: 'Status', value: 'status' },
-        { text: 'Actions', value: 'actions', sortable: false }
-      ],
       isUploading: false,
       selectedFiles: [],
-      fileError: '',
       errorDialog: {
         show: false,
         row: null,
@@ -325,19 +230,6 @@ export default {
           f['skos:notation'] = event['skos:notation']
         }
       }
-    },
-
-    getStatusColor(status) {
-      switch (status) {
-        case 'completed': return 'success'
-        case 'error': return 'error'
-        case 'uploading': return 'primary'
-        default: return 'grey'
-      }
-    },
-
-    getObjectUrl(pid) {
-      return pid ? `http://localhost:8899/${pid}` : '#'
     },
 
     showError(item) {
@@ -441,49 +333,6 @@ export default {
       
       // Start upload
       await this.startUpload()
-    },
-
-    handleFileSelection(files) {
-      this.fileError = ''
-      if (!files || files.length === 0) return
-
-      // Get all required filenames from CSV
-      const rows = this.csvContent?.split('\n') || []
-      const headers = rows[0].split(';').map(h => h.trim()).filter(Boolean)
-      const filenameMapping = this.fieldMappings['Filename']
-      
-      if (!filenameMapping || filenameMapping.source !== 'csv-column') {
-        this.fileError = 'No filename column mapped in CSV configuration'
-        this.selectedFiles = []
-        return
-      }
-
-      const filenameIndex = headers.indexOf(filenameMapping.csvValue)
-      if (filenameIndex === -1) {
-        this.fileError = 'Mapped filename column not found in CSV'
-        this.selectedFiles = []
-        return
-      }
-
-      const requiredFiles = new Set(
-        rows.slice(1)
-          .filter(row => row && row.trim()) // Skip empty rows
-          .map(row => row.split(';')[filenameIndex].trim())
-          .filter(Boolean)
-      )
-
-      // Check if all required files are present
-      const selectedFileNames = new Set(files.map(f => f.name).filter(Boolean))
-      const missingFiles = [...requiredFiles].filter(f => !selectedFileNames.has(f))
-      const extraFiles = [...selectedFileNames].filter(f => !requiredFiles.has(f))
-
-      if (missingFiles.length > 0) {
-        this.fileError = `Missing required files: ${missingFiles.join(', ')}`
-        this.selectedFiles = []
-      } else if (extraFiles.length > 0) {
-        this.fileError = `Extra files not in CSV: ${extraFiles.join(', ')}`
-        this.selectedFiles = []
-      }
     },
 
     async createFormData(headers, values) {
