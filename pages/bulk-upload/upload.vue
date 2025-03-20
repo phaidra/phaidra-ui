@@ -11,10 +11,9 @@
     </v-row>
 
     <div class="position-relative">
-      <LoginOverlay :is-logged-in="isLoggedIn" />
+      <LoginOverlay :is-logged-in="!!isLoggedIn" />
       <CompletionOverlay />
 
-      <!-- Progress Overview -->
       <v-row class="mt-4">
         <v-col cols="12">
           <FileSelection
@@ -31,7 +30,6 @@
         </v-col>
       </v-row>
 
-      <!-- Upload Table -->
       <v-row class="mt-4">
         <v-col cols="12">
           <UploadTable

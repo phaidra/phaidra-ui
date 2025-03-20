@@ -3,7 +3,6 @@
     <v-radio-group
       v-if="shouldShowRadioButtons"
       v-model="selectedSource"
-      hide-details
       dense
       class="mt-0 p-2 source-select"
     >
@@ -68,9 +67,9 @@ export default {
 
     restrictionMessage() {
       if (this.allowedSources[0] === 'csv-column') {
-        return `${this.field} can only be sourced from a CSV column`
+        return `can only be sourced from a CSV column`
       } else if (this.allowedSources[0] === 'phaidra-field') {
-        return `${this.field} can only be sourced from a default Phaidra value`
+        return `can only be sourced from a default Phaidra value`
       }
       return ''
     }
