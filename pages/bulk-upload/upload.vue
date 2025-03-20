@@ -198,34 +198,30 @@ export default {
       'hardResetState'
     ]),
 
-    setConceptProperties: function (f, event) {
-      if (event) {
-        f.value = event['@id']
-        if (event['@type']) {
-          f.type = event['@type']
+    setConceptProperties(f, value) {
+      if (value && value['@id']) {
+        f.value = value['@id']
+        if (value['@type']) {
+          f.type = value['@type']
         }
-        if (event['skos:prefLabel']) {
-          let preflabels = event['skos:prefLabel']
+        if (value['skos:prefLabel']) {
           f['skos:prefLabel'] = []
-          Object.entries(preflabels).forEach(([key, value]) => {
-            if (key == "deu") {
-              f['skos:prefLabel'].push({ '@value': value })
+          Object.entries(value['skos:prefLabel']).forEach(([lang, label]) => {
+            if (lang === 'deu') {
+              f['skos:prefLabel'].push({ '@value': label })
             }
           })
         }
-        if (event['rdfs:label']) {
-          let rdfslabels = event['rdfs:label']
-          if (rdfslabels) {
-            f['rdfs:label'] = []
-            Object.entries(rdfslabels).forEach(([key, value]) => {
-              if (key == "deu") {
-                f['rdfs:label'].push({ '@value': value })
-              }
-            })
-          }
+        if (value['rdfs:label']) {
+          f['rdfs:label'] = []
+          Object.entries(value['rdfs:label']).forEach(([key, value]) => {
+            if (key == "deu") {
+              f['rdfs:label'].push({ '@value': value })
+            }
+          })
         }
-        if (event['skos:notation']) {
-          f['skos:notation'] = event['skos:notation']
+        if (value['skos:notation']) {
+          f['skos:notation'] = value['skos:notation']
         }
       }
     },
@@ -353,7 +349,6 @@ export default {
         
         console.log(`Processing field: ${field} with mapping:`, mapping)
         
-        let f = null
         try {
           let value = null
           if (mapping.source === 'phaidra-field') {
@@ -364,13 +359,17 @@ export default {
           }
 
           const fieldConfig = this.fieldSettings[field]
-          f = fieldConfig.phaidraComponentMapping[0].getProps(value)
-          f.value = fieldConfig.phaidraAPIValue && mapping.source === 'phaidra-field' ? fieldConfig.phaidraAPIValue(value) : value
+          const f = fieldConfig.phaidraComponentMapping[0].getProps(value)
+          
+          // Handle concept properties for special fields
           if (field === 'Type' || field === 'OEFOS' || field === 'ORG Unit / Association') {
             this.setConceptProperties(f, value)
-          }
-          if (field === 'Title') {
+          } else if (field === 'Title') {
             f.title = value
+          } else {
+            f.value = fieldConfig.phaidraAPIValue && mapping.source === 'phaidra-field' 
+              ? fieldConfig.phaidraAPIValue(value) 
+              : value
           }
 
           // Set common field properties
