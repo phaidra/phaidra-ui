@@ -180,19 +180,19 @@ export default {
           if (this.isMultiField(field)) {
             rowData[field] = {}
             Object.keys(this.getSubFields(field)).forEach(subField => {
+              const subFieldConfig = fieldSettings[field].multiFieldConfig.fields[subField]
               if (mapping.source === 'phaidra-field') {
-                const subFieldConfig = fieldSettings[field].multiFieldConfig.fields[subField]
                 rowData[field][subField] = subFieldConfig.phaidraDisplayValue(mapping.subFields[subField]?.phaidraValue)
               } else if (mapping.source === 'csv-column') {
                 const columnName = mapping.subFields[subField]?.csvValue
-                rowData[field][subField] = columnName ? values[headers.indexOf(columnName)] : ''
+                rowData[field][subField] = subFieldConfig.csvDisplayValue(values[headers.indexOf(columnName)])
               }
             })
           } else {
             if (mapping.source === 'phaidra-field') {
               rowData[field] = fieldSettings[field].phaidraDisplayValue(mapping.phaidraValue)
             } else if (mapping.source === 'csv-column') {
-              rowData[field] = mapping.csvValue ? values[headers.indexOf(mapping.csvValue)] : ''
+              rowData[field] = fieldSettings[field].csvDisplayValue(values[headers.indexOf(mapping.csvValue)])
             }
           }
         })

@@ -367,9 +367,15 @@ export default {
           } else if (field === 'Title') {
             f.title = value
           } else {
-            f.value = fieldConfig.phaidraAPIValue && mapping.source === 'phaidra-field' 
-              ? fieldConfig.phaidraAPIValue(value) 
-              : value
+            if (mapping.source === 'phaidra-field') {
+              f.value = fieldConfig.phaidraAPIValue
+                ? fieldConfig.phaidraAPIValue(value) 
+                : value
+            } else if (mapping.source === 'csv-column') {
+              f.value = fieldConfig.csvAPIValue 
+                ? fieldConfig.csvAPIValue(value)
+                : value
+            }
           }
 
           // Set common field properties

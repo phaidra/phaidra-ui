@@ -19,6 +19,8 @@ export const fieldSettings = {
     //   -> view 'Role' as an example of how this is set up
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
@@ -43,12 +45,16 @@ export const fieldSettings = {
     required: false,
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value
   },
   'Description': {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
@@ -69,6 +75,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
+    csvDisplayValue: (value) => value.split(','),
+    csvAPIValue: (value) => value.split(','),
     phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
@@ -96,6 +104,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
     phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
@@ -130,18 +140,22 @@ export const fieldSettings = {
       fields: {
         'Role': { 
           required: true,
+          csvDisplayValue: (value) => value,
           phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || ''
         },
         'First name': { 
           required: false,
+          csvDisplayValue: (value) => value,
           phaidraDisplayValue: (value) => value || ''
         },
         'Last name': { 
           required: false,
+          csvDisplayValue: (value) => value,
           phaidraDisplayValue: (value) => value || ''
         },
         'ORCID': { 
           required: false,
+          csvDisplayValue: (value) => value,
           phaidraDisplayValue: (value) => value || ''
         }
       }
@@ -178,6 +192,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
     phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
@@ -206,6 +222,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value,
     phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraComponentMapping: [
@@ -234,6 +252,8 @@ export const fieldSettings = {
     required: false,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value,
     phaidraComponentMapping: [
       {
@@ -261,6 +281,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
+    csvDisplayValue: (value) => value,
+    csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value
   }
 }
