@@ -1,0 +1,105 @@
+<template>
+  <div class="d-flex align-center">
+    <component
+      :is="phaidraComponent"
+      v-bind="phaidraProps"
+      class="flex-grow-1"
+      @input="handleInput"
+      @change="handleInput"
+      @input-role="value => handleInput(value, 'Role')"
+      @input-firstname="value => handleInput(value, 'First name')"
+      @input-lastname="value => handleInput(value, 'Last name')"
+      @input-orcid="value => handleInput(value, 'ORCID')"
+      :disabled="disabled"
+      :class="{ 'grey-input': disabled }"
+    ></component>
+  </div>
+</template>
+
+<script>
+import { fieldSettings } from '~/config/bulk-upload/field-settings'
+
+export default {
+  name: 'PhaidraFieldSelector',
+
+  props: {
+    field: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Object],
+      default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  computed: {
+    getAllowedSources() {
+      return fieldSettings[this.field]?.allowedSources || ['csv-column', 'phaidra-field']
+    },
+
+    phaidraComponent() {
+      const elementConfig = fieldSettings[this.field]?.phaidraComponentMapping?.[0]
+      if (!elementConfig) return 'v-text-field'
+      return elementConfig.component || 'v-text-field'
+    },
+
+    phaidraProps() {
+      const elementConfig = fieldSettings[this.field]?.phaidraComponentMapping?.[0]
+      if (!elementConfig) return {}
+
+      let displayValue = null
+      if (this.value) {
+        if (typeof this.value === 'object') {
+          if (elementConfig?.component === 'PISelect') {
+            displayValue = this.value['@id'] || this.value.uri || ''
+          } else if (elementConfig?.component === 'PIKeyword') {
+            displayValue = this.value
+          } else if (this.value.subFields) {
+            if (elementConfig?.component === 'PIEntity') {
+              const props = elementConfig.getProps(null, this.handleInput)
+              const roleValue = this.value.subFields?.Role?.phaidraValue
+
+              return {
+                ...props,
+                role: roleValue?.['@id'] || roleValue,
+                firstname: this.value.subFields?.['First name']?.phaidraValue || '',
+                lastname: this.value.subFields?.['Last name']?.phaidraValue || '',
+                identifierText: this.value.subFields?.ORCID?.phaidraValue || ''
+              }
+            }
+          } else {
+            displayValue = this.value.uri || this.value.value || this.value
+          }
+        } else {
+          displayValue = this.value
+        }
+      }
+
+      return elementConfig.getProps(
+        displayValue,
+        this.handleInput
+      )
+    }
+  },
+
+  methods: {
+    handleInput(value, subField = null) {
+      this.$emit('input', {
+        value,
+        subField
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.grey-input :deep(.v-input__slot) {
+  background-color: #f5f5f5 !important;
+}
+</style> 
