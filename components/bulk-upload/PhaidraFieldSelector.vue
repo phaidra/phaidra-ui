@@ -52,12 +52,20 @@ export default {
       const elementConfig = fieldSettings[this.field]?.phaidraComponentMapping?.[0]
       if (!elementConfig) return {}
 
-      const fieldValue = fieldSettings[this.field]?.phaidraFieldValue?.(this.value) || this.value
+      const fieldValue = fieldSettings[this.field]?.phaidraFieldValue?.(this.value)
 
-      return elementConfig.getProps(
-        fieldValue,
-        this.handleInput
-      )
+      if (fieldSettings[this.field]?.fieldType === 'multi-field') {
+        const props = elementConfig.getProps(null, this.handleInput)
+        return {
+          ...props,
+          ...fieldValue
+        }
+      } else {
+        return elementConfig.getProps(
+          fieldValue,
+          this.handleInput
+        )
+      }
     }
   },
 
