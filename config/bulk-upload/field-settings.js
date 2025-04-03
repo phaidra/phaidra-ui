@@ -78,6 +78,13 @@ export const fieldSettings = {
     csvDisplayValue: (value) => value.split(','),
     csvAPIValue: (value) => value.split(','),
     phaidraDisplayValue: (value) => value,
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      if (typeof value === 'object') {
+        return value.value || value
+      }
+      return value
+    },
     phaidraComponentMapping: [
       {
         text: 'Keywords',
@@ -108,6 +115,13 @@ export const fieldSettings = {
     csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
     phaidraAPIValue: (value) => value?.["@id"] || '',
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      if (typeof value === 'object') {
+        return value['@id'] || value.uri || ''
+      }
+      return value
+    },
     phaidraComponentMapping: [
       {
         text: 'Object Type',
@@ -161,6 +175,19 @@ export const fieldSettings = {
       }
     },
     allowedSources: ['csv-column', 'phaidra-field'],
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      if (value.subFields) {
+        const roleValue = value.subFields?.Role?.phaidraValue
+        return {
+          role: roleValue?.['@id'] || roleValue,
+          firstname: value.subFields?.['First name']?.phaidraValue || '',
+          lastname: value.subFields?.['Last name']?.phaidraValue || '',
+          identifierText: value.subFields?.ORCID?.phaidraValue || ''
+        }
+      }
+      return value
+    },
     phaidraComponentMapping: [
       {
         component: 'PIEntity',

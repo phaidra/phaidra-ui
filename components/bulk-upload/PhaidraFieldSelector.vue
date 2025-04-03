@@ -52,36 +52,10 @@ export default {
       const elementConfig = fieldSettings[this.field]?.phaidraComponentMapping?.[0]
       if (!elementConfig) return {}
 
-      let displayValue = null
-      if (this.value) {
-        if (typeof this.value === 'object') {
-          if (elementConfig?.component === 'PISelect') {
-            displayValue = this.value['@id'] || this.value.uri || ''
-          } else if (elementConfig?.component === 'PIKeyword') {
-            displayValue = this.value
-          } else if (this.value.subFields) {
-            if (elementConfig?.component === 'PIEntity') {
-              const props = elementConfig.getProps(null, this.handleInput)
-              const roleValue = this.value.subFields?.Role?.phaidraValue
-
-              return {
-                ...props,
-                role: roleValue?.['@id'] || roleValue,
-                firstname: this.value.subFields?.['First name']?.phaidraValue || '',
-                lastname: this.value.subFields?.['Last name']?.phaidraValue || '',
-                identifierText: this.value.subFields?.ORCID?.phaidraValue || ''
-              }
-            }
-          } else {
-            displayValue = this.value.uri || this.value.value || this.value
-          }
-        } else {
-          displayValue = this.value
-        }
-      }
+      const fieldValue = fieldSettings[this.field]?.phaidraFieldValue?.(this.value) || this.value
 
       return elementConfig.getProps(
-        displayValue,
+        fieldValue,
         this.handleInput
       )
     }
