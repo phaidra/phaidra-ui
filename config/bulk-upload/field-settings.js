@@ -45,10 +45,7 @@ export const fieldSettings = {
     phaidraDisplayValue: (value) => value,
     phaidraFieldValue: (value) => {
       if (!value) return null
-      if (typeof value === 'object') {
-        return value.value || value
-      }
-      return value
+      return value.value || value
     },
     phaidraComponentMapping: [
       {
@@ -78,14 +75,14 @@ export const fieldSettings = {
     allowedSources: ['csv-column', 'phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
+    // displayed correctly (preview step 3.)
     phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    // send the correct data to the API (upload step 4.)
     phaidraAPIValue: (value) => value?.["@id"] || '',
+    // correctly retrieve value from storage to the phaidra component (mapping step 2.)
     phaidraFieldValue: (value) => {
       if (!value) return null
-      if (typeof value === 'object') {
-        return value['@id'] || value.uri || ''
-      }
-      return value
+      return value['@id'] || ''
     },
     phaidraComponentMapping: [
       {
@@ -142,16 +139,13 @@ export const fieldSettings = {
     allowedSources: ['csv-column', 'phaidra-field'],
     phaidraFieldValue: (value) => {
       if (!value) return null
-      if (value.subFields) {
-        const roleValue = value.subFields?.Role?.phaidraValue
-        return {
-          role: roleValue?.['@id'] || roleValue,
-          firstname: value.subFields?.['First name']?.phaidraValue || '',
-          lastname: value.subFields?.['Last name']?.phaidraValue || '',
-          identifierText: value.subFields?.ORCID?.phaidraValue || ''
-        }
+      const roleValue = value.subFields?.Role?.phaidraValue
+      return {
+        role: roleValue?.['@id'] || roleValue,
+        firstname: value.subFields?.['First name']?.phaidraValue || '',
+        lastname: value.subFields?.['Last name']?.phaidraValue || '',
+        identifierText: value.subFields?.['ORCID']?.phaidraValue || ''
       }
-      return value
     },
     phaidraComponentMapping: [
       {
@@ -188,6 +182,10 @@ export const fieldSettings = {
     csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
     phaidraAPIValue: (value) => value?.["@id"] || '',
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      return value['@id'] || ''
+    },
     phaidraComponentMapping: [
       {
         text: 'License',
@@ -218,6 +216,10 @@ export const fieldSettings = {
     csvAPIValue: (value) => value,
     phaidraDisplayValue: (value) => value,
     phaidraAPIValue: (value) => value?.["@id"] || '',
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      return value
+    },
     phaidraComponentMapping: [
       {
         text: 'Subject (ÖFOS)',
@@ -246,7 +248,11 @@ export const fieldSettings = {
     allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value,
+    phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      return value['@id'] || ''
+    },
     phaidraComponentMapping: [
       {
         text: 'ORG Unit / Association',
