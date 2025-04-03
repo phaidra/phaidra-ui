@@ -20,56 +20,21 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value,
-    phaidraComponentMapping: [
-      {
-        text: 'Title',
-        component: 'PITitle',
-        field: () => {
-          const field = fieldslib.getField("title")
-          field.multilingual = false
-          return field
-        },
-        getProps: function(value) {
-          const fieldConfig = this.field()
-          return {
-            ...fieldConfig,
-            ...getSharedProps(fieldConfig, value)
-          }
-        }
-      }
-    ]
+    csvAPIValue: (value) => value
   },
   'Subtitle': {
     required: false,
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value
+    csvAPIValue: (value) => value
   },
   'Description': {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value,
-    phaidraComponentMapping: [
-      {
-        text: 'Description',
-        component: 'PIDescription',
-        field: () => fieldslib.getField("description"),
-        getProps: function(value) {
-          const fieldConfig = this.field()
-          return {
-            ...fieldConfig,
-            ...getSharedProps(fieldConfig, value)
-          }
-        }
-      }
-    ]
+    csvAPIValue: (value) => value
   },
   'Keywords': {
     required: true,
@@ -309,7 +274,6 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value
+    csvAPIValue: (value) => value
   }
 }
