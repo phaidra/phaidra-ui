@@ -250,11 +250,10 @@ export const fieldSettings = {
     allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value,
-    phaidraAPIValue: (value) => value?.["@id"] || '',
+    phaidraDisplayValue: (value) => value["skos:prefLabel"]?.["eng"] || '',
     phaidraFieldValue: (value) => {
       if (!value) return null
-      return value
+      return value['@id'] || ''
     },
     phaidraComponentMapping: [
       {

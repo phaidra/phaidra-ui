@@ -6,10 +6,11 @@
       class="flex-grow-1"
       @input="handleInput"
       @change="handleInput"
+      @resolve="handleInput"
       @input-role="value => handleInput(value, 'Role')"
       @input-firstname="value => handleInput(value, 'First name')"
       @input-lastname="value => handleInput(value, 'Last name')"
-      @input-orcid="value => handleInput(value, 'ORCID')"
+      @input-identifier="value => handleInput(value, 'ORCID')"
       :disabled="disabled"
       :class="{ 'grey-input': disabled }"
     ></component>
