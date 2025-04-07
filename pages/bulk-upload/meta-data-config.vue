@@ -267,8 +267,14 @@ export default {
       if (source === 'csv-column') {
         mapping.csvValue = value
       } else if (source === 'phaidra-field') {
-        // If value is null or value.value is null, set phaidraValue to null
-        mapping.phaidraValue = value?.value === null ? null : (value?.value || value)
+        // Handle empty values more gracefully
+        if (value === null || value === undefined || value === '') {
+          mapping.phaidraValue = null
+        } else if (typeof value === 'object' && value.value === '') {
+          mapping.phaidraValue = null
+        } else {
+          mapping.phaidraValue = value?.value || value
+        }
       }
 
       this.setFieldMapping(mapping)
