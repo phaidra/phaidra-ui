@@ -108,7 +108,7 @@ export const fieldSettings = {
   'Type': {
     required: true,
     fieldType: 'single-field',
-    allowedSources: ['csv-column', 'phaidra-field'],
+    allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
     // displayed correctly (preview step 3.)
