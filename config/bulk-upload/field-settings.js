@@ -20,7 +20,27 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value
+    csvAPIValue: (value) => value,
+    phaidraDisplayValue: (value) => value,
+    phaidraComponentMapping: [
+      {
+        text: 'Title',
+        component: 'PITitle',
+        field: () => {
+          const field = fieldslib.getField("title")
+          field.multilingual = false
+          return field
+        },
+        getProps: function(value) {
+          const fieldConfig = this.field()
+          return {
+            ...fieldConfig,
+            ...getSharedProps(fieldConfig, value)
+          }
+        }
+      }
+    ]
+
   },
   'Subtitle': {
     required: false,
@@ -34,7 +54,23 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value
+    csvAPIValue: (value) => value,
+    phaidraDisplayValue: (value) => value,
+    phaidraComponentMapping: [
+      {
+        text: 'Description',
+        component: 'PIDescription',
+        field: () => fieldslib.getField("description"),
+        getProps: function(value) {
+          const fieldConfig = this.field()
+          return {
+            ...fieldConfig,
+            ...getSharedProps(fieldConfig, value)
+          }
+        }
+      }
+    ]
+
   },
   'Keywords': {
     required: true,
