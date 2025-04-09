@@ -142,7 +142,7 @@ export default {
     ...mapGetters('bulk-upload', ['getUploadState', 'getUploadProgress', 'isUploadComplete']),
 
     hasFailedUploads() {
-      return this.uploadProgress.failed > 0
+      return this.getUploadProgress.failed > 0
     },
 
     tableData() {
