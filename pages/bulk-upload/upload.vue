@@ -267,6 +267,13 @@ export default {
           const formData = await this.createFormData(headers, values)
           
           // Upload to PHAIDRA
+          // // Mock 50% chance of failure
+          // const shouldFail = Math.random() < 0.5;
+          
+          // if (shouldFail) {
+          //   throw new Error('Mock upload failure: Random error occurred');
+          // }
+
           const response = await this.$axios.request({
             method: 'POST',
             url: `http://localhost:8899/api/picture/create`,
