@@ -33,7 +33,7 @@ export default {
         this.hardResetState()
         
         // Redirect to the first step
-        this.$router.push('/bulk-upload/select-files')
+        this.$router.push('/bulk-upload/csv-config')
       } catch (error) {
         console.error('Error starting new bulk upload:', error)
       }
