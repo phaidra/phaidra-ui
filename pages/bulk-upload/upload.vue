@@ -207,7 +207,7 @@ export default {
         if (value['skos:prefLabel']) {
           f['skos:prefLabel'] = []
           Object.entries(value['skos:prefLabel']).forEach(([lang, label]) => {
-            if (lang === 'deu') {
+            if (lang === "eng") {
               f['skos:prefLabel'].push({ '@value': label })
             }
           })
@@ -215,7 +215,7 @@ export default {
         if (value['rdfs:label']) {
           f['rdfs:label'] = []
           Object.entries(value['rdfs:label']).forEach(([key, value]) => {
-            if (key == "deu") {
+            if (key == "eng") {
               f['rdfs:label'].push({ '@value': value })
             }
           })
