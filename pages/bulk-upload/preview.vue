@@ -126,6 +126,14 @@ export default {
     ...mapGetters('bulk-upload', ['getAllFieldMappings', 'allFields', 'getColumnHeaders'])
   },
 
+  watch: {
+    '$i18n.locale': {
+      handler: async function() {
+        await this.processPreviewData()
+      }
+    }
+  },
+
   async created() {
     // Wait for store initialization on client side
     if (process.client && this.$store.$initBulkUpload) {

@@ -1,3 +1,4 @@
+import i18n from "phaidra-vue-components/src/i18n/i18n"
 import fieldslib from "phaidra-vue-components/src/utils/fields"
 
 const getSharedProps = (fieldConfig, value) => ({
@@ -112,7 +113,10 @@ export const fieldSettings = {
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
     // displayed correctly (preview step 3.)
-    phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    phaidraDisplayValue: (value) => {
+      const label = value?.["skos:prefLabel"]
+      return (label?.[i18n.locale] || label?.["eng"])
+    },
     // send the correct data to the API (upload step 4.)
     phaidraAPIValue: (value) => value?.["@id"] || '',
     // correctly retrieve value from storage to the phaidra component (mapping step 2.)
@@ -153,7 +157,10 @@ export const fieldSettings = {
         'Role': { 
           required: true,
           csvDisplayValue: (value) => value,
-          phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || ''
+          phaidraDisplayValue: (value) => {
+            const label = value?.["skos:prefLabel"]
+            return (label?.[i18n.locale] || label?.["eng"])
+          }
         },
         'First name': { 
           required: false,
@@ -219,7 +226,10 @@ export const fieldSettings = {
     allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    phaidraDisplayValue: (value) => {
+      const label = value?.["skos:prefLabel"]
+      return (label?.[i18n.locale] || label?.["eng"])
+    },
     phaidraAPIValue: (value) => value?.["@id"] || '',
     phaidraFieldValue: (value) => {
       if (!value) return null
@@ -253,7 +263,10 @@ export const fieldSettings = {
     allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value["skos:prefLabel"]?.["eng"] || '',
+    phaidraDisplayValue: (value) => {
+      const label = value?.["skos:prefLabel"]
+      return (label?.[i18n.locale] || label?.["eng"])
+    },
     phaidraFieldValue: (value) => {
       if (!value) return null
       return value['@id'] || ''
@@ -286,7 +299,10 @@ export const fieldSettings = {
     allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,
     csvAPIValue: (value) => value,
-    phaidraDisplayValue: (value) => value?.["skos:prefLabel"]?.["eng"] || '',
+    phaidraDisplayValue: (value) => {
+      const label = value?.["skos:prefLabel"]
+      return (label?.[i18n.locale] || label?.["eng"])
+    },
     phaidraFieldValue: (value) => {
       if (!value) return null
       return value['@id'] || ''
