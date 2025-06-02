@@ -185,12 +185,15 @@ export const fieldSettings = {
     },
     phaidraComponentMapping: [
       {
-        component: 'PIEntity',
+        component: 'PIEntityExtended',
         field: () => {
           const field = fieldslib.getField("role")
           field.showDefinitions = true
           field.showIdentifier = true
-          field.identifierType = "ids:orcid"
+          field.showIdentifierType = true
+          field.enableTypeSelect = false
+          field.showActions = false
+          field.showAffiliation = false
           field.type = 'schema:Person'
 
           // needed to prevent a "duplicate/order dropdown" from appearing
