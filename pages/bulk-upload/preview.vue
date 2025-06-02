@@ -24,7 +24,7 @@
                             :field="field"
                             :sub-field="subField"
                             :is-required="subFieldConfig.required"
-                            :is-mapped="!!getSubFieldValue(field, subField)"
+                            :is-mapped="!!getSourceInfo(field, subField)"
                             :source-info="getSourceInfo(field, subField)"
                           />
                         </template>
@@ -49,7 +49,7 @@
                             :field="field"
                             :sub-field="subField"
                             :row-data="row"
-                            :is-mapped="!!getSubFieldValue(field, subField)"
+                            :is-mapped="!!getSourceInfo(field, subField)"
                           />
                         </template>
                         <PreviewTableCell
@@ -152,20 +152,10 @@ export default {
     },
 
     getSubFields(field) {
-      return fieldSettings[field]?.multiFieldConfig?.fields || {}
-    },
-
-    getSubFieldValue(field, subField) {
-      const mapping = this.getAllFieldMappings[field]
-      if (!mapping) return null
-
-      const valueKeys = {
-        'csv-column': 'csvValue',
-        'phaidra-field': 'phaidraValue'
-      }
-      
-      if (!mapping.subFields) return null
-      return mapping.subFields[subField]?.[valueKeys[mapping.source]] || null
+      const fields = fieldSettings[field]?.multiFieldConfig?.fields || {}
+      return Object.fromEntries(
+        Object.entries(fields).filter(([_, config]) => !config.hideInPreview)
+      )
     },
 
     async processPreviewData() {
@@ -193,7 +183,8 @@ export default {
                 rowData[field][subField] = subFieldConfig.phaidraDisplayValue(mapping.subFields[subField]?.phaidraValue)
               } else if (mapping.source === 'csv-column') {
                 const columnName = mapping.subFields[subField]?.csvValue
-                rowData[field][subField] = subFieldConfig.csvDisplayValue(values[headers.indexOf(columnName)])
+                const value = values[headers.indexOf(columnName)]
+                rowData[field][subField] = subFieldConfig.csvDisplayValue?.(value, mapping.subFields, values, headers) || value
               }
             })
           } else {
@@ -220,10 +211,43 @@ export default {
       if (!fieldMapping) return null
 
       const mapping = subField ? fieldMapping.subFields?.[subField] : fieldMapping
+
+      // csv source by default is simply the selected column
+      // 
+      // BUT:
+      // for the role#identifier and role#identifierType fields
+      // the source is inferred from either the CSV field ORCID or GND (these can only be selected via CSV)
+      // 
+      // so if the user selects ORDIC/GND and a column from their CSV, we need to infer:
+      // identifierType = ORCID / GND
+      // identifier = column value
+      // 
+      // all other fields simply grab the mapping.csvValue as the csvSource
+
+      let csvSource = null
+      const orcidSubField = fieldMapping.subFields?.['ORCID']
+      const gndSubField = fieldMapping.subFields?.['GND']
+
+      if (subField === 'Identifier') {
+        if (orcidSubField?.csvValue) {
+          csvSource = orcidSubField.csvValue
+        }
+        else if (gndSubField?.csvValue) {
+          csvSource = gndSubField.csvValue
+        }
+      } else if (subField === 'Identifier Type') {
+        csvSource = orcidSubField?.csvValue || gndSubField?.csvValue ? "selection" : null
+      } else {
+        csvSource = mapping.csvValue
+      }
       if (!mapping) return null
 
+      if (csvSource && subField !== 'Identifier Type') {
+        csvSource = `column "${csvSource}"`
+      }
+
       return fieldMapping.source === 'csv-column'
-        ? mapping.csvValue ? `Sourced from CSV column "${mapping.csvValue}"` : null
+        ? csvSource ? `Sourced from CSV ${csvSource}` : null
         : mapping.phaidraValue ? 'Default value sourced from Phaidra' : null
     },
 

@@ -174,7 +174,41 @@ export const fieldSettings = {
         },
         'ORCID': { 
           required: false,
+          hideInPreview: true,
           csvDisplayValue: (value) => value,
+        },
+        'GND': {
+          required: false,
+          hideInPreview: true,
+          csvDisplayValue: (value) => value,
+        },
+        'Identifier Type': {
+          required: false,
+          hideForCSV: true,
+          csvDisplayValue: function(value, allMappings) {
+            // Auto-select identifier type based on CSV selection
+            if (allMappings?.['ORCID']?.csvValue) return 'ORCID'
+            if (allMappings?.['GND']?.csvValue) return 'GND'
+          },
+          phaidraDisplayValue: (value) => {
+            const label = value?.["skos:prefLabel"]
+            return (label?.[i18n.locale] || label?.["eng"])
+          }
+        },
+        'Identifier': {
+          required: false,
+          hideForCSV: true,
+          csvDisplayValue: function(value, allMappings, allValues, headers) {
+            // Get value from either ORCID or GND column
+            if (allMappings?.['ORCID']?.csvValue) {
+              const orcidColumn = allMappings['ORCID'].csvValue
+              return allValues[headers.indexOf(orcidColumn)]
+            }
+            if (allMappings?.['GND']?.csvValue) {
+              const gndColumn = allMappings['GND'].csvValue
+              return allValues[headers.indexOf(gndColumn)]
+            }
+          },
           phaidraDisplayValue: (value) => value || ''
         }
       }
@@ -187,7 +221,8 @@ export const fieldSettings = {
         role: roleValue?.['@id'] || roleValue,
         firstname: value.subFields?.['First name']?.phaidraValue || '',
         lastname: value.subFields?.['Last name']?.phaidraValue || '',
-        identifierText: value.subFields?.['ORCID']?.phaidraValue || ''
+        identifierType: value.subFields?.['Identifier Type']?.phaidraValue?.['@id'] || '',
+        identifierText: value.subFields?.['Identifier']?.phaidraValue || ''
       }
     },
     phaidraComponentMapping: [

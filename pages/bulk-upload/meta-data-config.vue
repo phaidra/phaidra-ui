@@ -116,14 +116,16 @@
                     <v-col v-if="getAllowedSources(field).includes('csv-column') && getFieldMapping(field)?.source === 'csv-column'" cols="8">
                       <div class="d-flex flex-wrap justify-center" style="row-gap: 1em;">
                         <div v-for="(fieldConfig, subField) in fieldSettings[field].multiFieldConfig.fields" :key="subField" class="mx-2">
-                          <label class="d-block mb-1"><b>{{ subField }}{{ fieldConfig.required ? ' *' : '' }}</b></label>
-                          <CSVColumnSelector
-                            :field="subField"
-                            :columns="getColumnHeaders"
-                            :all-mappings="getAllFieldMappings"
-                            :value="getFieldMapping(field)?.subFields?.[subField]?.csvValue"
-                            @input="val => updateMapping(field, 'csv-column', val, subField)"
-                          />
+                          <template v-if="!fieldConfig.hideForCSV">
+                            <label class="d-block mb-1"><b>{{ subField }}{{ fieldConfig.required ? ' *' : '' }}</b></label>
+                            <CSVColumnSelector
+                              :field="subField"
+                              :columns="getColumnHeaders"
+                              :all-mappings="getAllFieldMappings"
+                              :value="getFieldMapping(field)?.subFields?.[subField]?.csvValue"
+                              @input="val => updateMapping(field, 'csv-column', val, subField)"
+                            />
+                          </template>
                         </div>
                       </div>
                     </v-col>

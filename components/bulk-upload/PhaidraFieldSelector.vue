@@ -10,7 +10,8 @@
       @input-role="value => handleInput(value, 'Role')"
       @input-firstname="value => handleInput(value, 'First name')"
       @input-lastname="value => handleInput(value, 'Last name')"
-      @input-identifier="value => handleInput(value, 'ORCID')"
+      @input-identifier="value => handleInput(value, 'Identifier')"
+      @input-identifier-type="value => handleInput(value, 'Identifier Type')"
       :disabled="disabled"
       :class="{ 'grey-input': disabled }"
     ></component>
