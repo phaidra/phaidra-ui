@@ -373,6 +373,8 @@ export default {
             this.setConceptProperties(f, value)
           } else if (field === 'Title') {
             f.title = value
+          } else if (field === 'Role') {
+            this.setRoleProperties(f, mapping, headers, values)
           } else {
             if (mapping.source === 'phaidra-field') {
               f.value = fieldConfig.phaidraAPIValue
@@ -440,6 +442,29 @@ export default {
       }
 
       return formData
+    },
+
+    setRoleProperties(f, mapping, headers, values) {
+      if (mapping.source === 'phaidra-field') {
+        f.role = mapping.subFields['Role']?.phaidraValue?.['@id'] || ''
+        f.name = mapping.subFields['First name']?.phaidraValue || ''
+        f.lastname = mapping.subFields['Last name']?.phaidraValue || ''
+        f.identifierType = mapping.subFields['Identifier Type']?.phaidraValue?.['@id'] || ''
+        f.identifierText = mapping.subFields['Identifier']?.phaidraValue || ''
+        f.value = f.role
+      } else if (mapping.source === 'csv-column') {
+        f.role = `role:${values[headers.indexOf(mapping.subFields['Role']?.csvValue)]}`
+        f.name = values[headers.indexOf(mapping.subFields['First name']?.csvValue)]
+        f.lastname = values[headers.indexOf(mapping.subFields['Last name']?.csvValue)]
+        if (mapping.subFields['ORCID']) {
+          f.identifierType = 'ids:orcid'
+          f.identifierText = values[headers.indexOf(mapping.subFields['ORCID']?.csvValue)]
+        } else if (mapping.subFields['GND']) {
+          f.identifierType = 'ids:gnd'
+          f.identifierText = values[headers.indexOf(mapping.subFields['GND']?.csvValue)]
+        }
+        f.value = f.role
+      }
     }
   },
 

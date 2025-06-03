@@ -260,7 +260,7 @@ export const fieldSettings = {
       {
         component: 'PIEntityExtended',
         field: () => {
-          const field = fieldslib.getField("role")
+          const field = fieldslib.getField("role-extended")
           field.showDefinitions = true
           field.showIdentifier = true
           field.showIdentifierType = true
