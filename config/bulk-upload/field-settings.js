@@ -55,10 +55,15 @@ export const fieldSettings = {
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
     csvDisplayValue: (value) => value,
-    csvAPIValue: (value) => value,
+    csvAPIValue: (value) => value.toLowerCase(),
     phaidraDisplayValue: (value) => {
       const label = value?.["skos:prefLabel"]
       return (label?.[i18n.locale] || label?.["eng"])
+    },
+    phaidraAPIValue: (value) => value?.["@id"] || '',
+    phaidraFieldValue: (value) => {
+      if (!value) return null
+      return value['@id'] || ''
     },
     phaidraComponentMapping: [
       {
@@ -66,7 +71,6 @@ export const fieldSettings = {
         component: 'PISelect',
         field: () => {
           const field = fieldslib.getField("language")
-          field.vocabulary = "lang_vocab"
           // needed to prevent a "duplicate dropdown" from appearing
           field.multiplicable = false
           return field

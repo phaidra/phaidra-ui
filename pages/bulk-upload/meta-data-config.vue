@@ -342,6 +342,10 @@ export default {
 
     // Mark as initialized after all setup is complete
     this.isInitialized = true
+  },
+
+  mounted: function () {
+    this.$store.dispatch('vocabulary/loadLanguages', this.$i18n.locale)
   }
 }
 </script>
