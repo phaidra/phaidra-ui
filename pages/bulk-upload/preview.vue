@@ -240,7 +240,6 @@ export default {
       } else {
         csvSource = mapping.csvValue
       }
-      if (!mapping) return null
 
       if (csvSource && subField !== 'Identifier Type') {
         csvSource = `column "${csvSource}"`
@@ -248,7 +247,7 @@ export default {
 
       return fieldMapping.source === 'csv-column'
         ? csvSource ? `Sourced from CSV ${csvSource}` : null
-        : mapping.phaidraValue ? 'Default value sourced from Phaidra' : null
+        : mapping?.phaidraValue ? 'Default value sourced from Phaidra' : null
     },
 
     proceed() {
