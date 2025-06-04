@@ -198,34 +198,6 @@ export default {
       'hardResetState'
     ]),
 
-    setConceptProperties(f, value) {
-      if (value && value['@id']) {
-        f.value = value['@id']
-        if (value['@type']) {
-          f.type = value['@type']
-        }
-        if (value['skos:prefLabel']) {
-          f['skos:prefLabel'] = []
-          Object.entries(value['skos:prefLabel']).forEach(([lang, label]) => {
-            if (lang === "eng") {
-              f['skos:prefLabel'].push({ '@value': label })
-            }
-          })
-        }
-        if (value['rdfs:label']) {
-          f['rdfs:label'] = []
-          Object.entries(value['rdfs:label']).forEach(([key, value]) => {
-            if (key == "eng") {
-              f['rdfs:label'].push({ '@value': value })
-            }
-          })
-        }
-        if (value['skos:notation']) {
-          f['skos:notation'] = value['skos:notation']
-        }
-      }
-    },
-
     showError(item) {
       this.errorDialog = {
         show: true,
@@ -369,8 +341,14 @@ export default {
           const f = fieldConfig.phaidraComponentMapping[0].getProps(value)
           
           // Handle concept properties for special fields
-          if (field === 'Type' || field === 'OEFOS' || field === 'ORG Unit / Association') {
-            this.setConceptProperties(f, value)
+          if (field === 'Type') {
+            this.setTypeProperties(f, value)
+          }
+          else if (field === 'OEFOS') {
+            this.setOefosProperties(f, value)
+          }
+          else if (field === 'ORG Unit / Association') {
+            this.setOrgUnitProperties(f, value)
           } else if (field === 'Title') {
             f.title = value
           } else if (field === 'Role') {
@@ -442,6 +420,38 @@ export default {
       }
 
       return formData
+    },
+
+    setTypeProperties(f, value) {
+      f.value = value['@id']
+      f['skos:prefLabel'] = []
+      Object.entries(value['skos:prefLabel']).forEach(([key, value]) => {
+        f['skos:prefLabel'].push({ '@value': value, '@language': key })
+      })
+    },
+
+    setOefosProperties(f, value) {
+      f.value = value['@id']
+      f['rdfs:label'] = []
+      Object.entries(value['rdfs:label']).forEach(([key, value]) => {
+        f['rdfs:label'].push({ '@value': value, '@language': key })
+      })
+      f['skos:prefLabel'] = []
+      Object.entries(value['skos:prefLabel']).forEach(([key, value]) => {
+        f['skos:prefLabel'].push({ '@value': value, '@language': key })
+      })
+      f['skos:notation'] = value['skos:notation']
+    },
+
+    setOrgUnitProperties(f, value) {
+      f.value = value['@id']
+      f.type = value['@type']
+      f['skos:prefLabel'] = []
+      Object.entries(value['skos:prefLabel']).forEach(([key, value]) => {
+        f['skos:prefLabel'].push({ '@value': value, '@language': key })
+      })
+      f['skos:notation'] = value['skos:notation']
+      f.parent_id = value['parent_id']
     },
 
     setRoleProperties(f, mapping, headers, values) {
