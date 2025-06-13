@@ -4,18 +4,17 @@
   </div>
   
   <div v-else>
-    <v-container fluid>
       <v-row class="my-6" justify="start">
-        <div class="d-flex flex-row ml-6">
+        <div class="d-flex flex-row ml-3">
           <v-btn
             large
             class="primary"
             @click="$router.push(localePath('/submit/upload'))"
           >
-            <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Create new object") }}
+            <v-icon dark class="mr-2">mdi-plus-circle</v-icon> {{ $t("Create new object") }}
           </v-btn>
           </div>
-        <div class="d-flex flex-row pt-3 ml-6">
+        <div class="d-flex flex-row pt-3 ml-3 ml-md-6">
           <span>
           {{
             $t(
@@ -27,17 +26,17 @@
       </v-row>
       <v-divider class="my-2"></v-divider>
       <v-row class="my-6" justify="start">
-        <div class="d-flex flex-row ml-6">
+        <div class="d-flex flex-row ml-3">
           <v-btn
             large
             color="#94c154"
             class="primary"
             @click="$router.push(localePath('/submit/oer'))"
           >
-            <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Open Educational Resources (OER) upload") }}
+            <v-icon dark class="mr-2">mdi-plus-circle</v-icon> {{ $t("Open Educational Resources (OER) upload") }}
           </v-btn>
           </div>
-        <div class="d-flex flex-row pt-3 ml-6">
+        <div class="d-flex flex-row pt-3 ml-3 ml-md-6">
           <span>
           {{
             $t(
@@ -50,16 +49,16 @@
       <v-divider class="my-2"></v-divider>
       <template v-if="instanceconfig.irbaseurl && (instanceconfig.irbaseurl !== '')">
         <v-row class="my-6" justify="start">
-          <div class="d-flex flex-row ml-6">
+          <div class="d-flex flex-row ml-3">
             <v-btn
               large
               class="primary"
               :href="'https://uscholar.univie.ac.at/login'"
             >
-              <v-icon dark class="mr-4">mdi-school</v-icon> {{ $t("Upload publication (via u:scholar)") }}
+              <v-icon dark class="mr-2">mdi-school</v-icon> {{ $t("Upload publication (via u:scholar)") }}
             </v-btn>
           </div>
-            <div class="d-flex flex-row pt-3 ml-6">
+            <div class="d-flex flex-row pt-3 ml-3 ml-md-6">
             {{
               $t(
                 "Upload journal articles, reports, reviews, working papers, conference papers, monographs, individual chapters from monographs ..."
@@ -72,16 +71,16 @@
       </template>
       <template v-if="user.cataloguploader">
         <v-row class="my-6" justify="start">
-          <div class="d-flex flex-row ml-6">
+          <div class="d-flex flex-row ml-3">
             <v-btn
               large
               class="primary"
               @click="$router.push(localePath('/submit/catalogfetchupload'))"
             >
-              <v-icon dark class="mr-4">mdi-plus-circle</v-icon> {{ $t("Catalog-fetch upload") }}
+              <v-icon dark class="mr-2">mdi-plus-circle</v-icon> {{ $t("Catalog-fetch upload") }}
             </v-btn>
             </div>
-          <div class="d-flex flex-row pt-3 ml-6">
+          <div class="d-flex flex-row pt-3 ml-3 ml-md-6">
             <span>
             {{
               $t(
@@ -124,18 +123,17 @@
         <v-divider class="my-2"></v-divider>
       </template>
       <v-row class="my-6" justify="start">
-        <div class="d-flex flex-row ml-6">
-          <v-dialog class="pb-4" v-model="templateDialog" width="700px">
+        <div class="d-flex flex-row ml-3">
+          <v-dialog class="pb-4" v-model="templateDialog" width="900px">
             <template v-slot:activator="{ on }">
               <v-btn v-on="on" large color="primary">
-                <v-icon dark class="mr-4">mdi-script</v-icon>
+                <v-icon dark class="mr-2">mdi-script</v-icon>
                 {{ $t("Open template") }}
               </v-btn>
             </template>
             <v-card>
-              <v-card-title
-                dark
-                class="title font-weight-light grey white--text"
+              <v-card-title                
+                class="title font-weight-light white--text"
                 >{{ $t("Open template") }}</v-card-title
               >
               <v-card-text>
@@ -149,12 +147,12 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer
-                ><v-btn dark color="grey" @click="templateDialog = false">{{ $t("Cancel") }}</v-btn>
+                ><v-btn outlined @click="templateDialog = false">{{ $t("Cancel") }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </div>
-        <div class="d-flex flex-row pt-3 ml-6">
+        <div class="d-flex flex-row pt-3 ml-3 ml-md-6">
           <span>
               {{
                 $t(
@@ -196,7 +194,6 @@
           </v-col>
         </v-row>
       </template>
-    </v-container>
   </div>
 </template>
 

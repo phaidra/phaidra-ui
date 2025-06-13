@@ -50,7 +50,10 @@ export const mutations = {
       'accessrestrictions_showedupersonaffiliation',
       'accessrestrictions_showorgunits',
       'accessrestrictions_showgroups',
-      'data_affiliations'
+      'data_affiliations',
+      'feedback',
+      'addannotation',
+      'forcePreview',
     ] 
     for (const p of configurable) {
       if (instanceconfig.hasOwnProperty(p)) {
@@ -121,6 +124,15 @@ export const mutations = {
         }
       )
     }
+    if (transition.to.path.includes('/templates')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Templates',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
+    }
     if (transition.to.path.includes('lists')) {
       state.breadcrumbs.push(
         {
@@ -139,6 +151,60 @@ export const mutations = {
           }
         )
       }
+    }
+    if (transition.to.path.includes('/credits')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Credits',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/admin')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Admin',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/termsofuse')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Terms of use',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/login')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Login',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/help')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Help',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/groups')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Groups',
+          to: transition.to.path,
+          disabled: true
+        }
+      )
     }
     if (transition.to.path.includes('detail')) {
       if (transition.from.path.includes('/search')) {

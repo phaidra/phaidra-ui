@@ -1,12 +1,12 @@
 <template>
   <div class="ma-6">
 
-    <h3 class="title font-weight-light primary--text mb-4">{{ $t('PHAIDRA is using following free services') }}:</h3>
+    <h2 class="title font-weight-light mb-4">{{ $t('PHAIDRA uses the following resources') }}:</h2>
 
     <v-container>
       <v-row>
-        <v-col><a href="https://citation.crosscite.org/" target="_blank">Crosscite</a> - The DOI Citation Formatter | <a
-            href="http://crossref.org/" target="_blank">Crossref</a>, <a href="https://www.medra.org/"
+        <v-col><a href="https://citation.doi.org/" target="_blank">DOI Foundation</a> - The DOI Citation Formatter | <a
+          href="http://datacite.org/" target="_blank">DataCite</a>, <a href="http://crossref.org/" target="_blank">Crossref</a>, <a href="https://www.medra.org/"
             target="_blank">mEDRA</a>, <a href="http://www.doi.org.cn/portal/index.htm" target="_blank">ISTIC</a>, <a
             href="https://japanlinkcenter.org/top/english.html" target="_blank">JaLC</a></v-col>
       </v-row>

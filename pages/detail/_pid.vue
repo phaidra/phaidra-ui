@@ -6,8 +6,8 @@
         justify="center"
       >
         <v-col cols="6">
-          <v-row justify="center" class="mt-8">
-            <v-alert type="info" color="primary">
+          <v-row justify="center" class="mt-4">
+            <v-alert type="info" dense outlined color="secondary">
               <div>
                 {{
                   $t("This object has been deleted.")
@@ -15,7 +15,7 @@
               </div>
             </v-alert>
           </v-row>
-          <v-row justify="center" class="mt-5">{{ objectInfo.tombstone }}</v-row>
+          <v-row justify="center" class="my-4">{{ objectInfo.tombstone }}</v-row>
           <template v-if="objectInfo.relationships">
             <v-row
               v-if="objectInfo.relationships.ispartof && objectInfo.relationships.ispartof.length > 0"
@@ -24,7 +24,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object is in collection") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -40,6 +40,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -60,6 +61,7 @@
                         v-if="
                           i + 1 < objectInfo.relationships.ispartof.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -74,7 +76,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object is a back side of") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -91,6 +93,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -111,6 +114,7 @@
                         v-if="
                           i + 1 < objectInfo.relationships.isbacksideof.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -125,7 +129,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object has a back side") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -141,6 +145,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -161,6 +166,7 @@
                         v-if="
                           i + 1 < objectInfo.relationships.hasbackside.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -175,7 +181,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object is thumbnail for") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -192,6 +198,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -213,6 +220,7 @@
                           i + 1 <
                           objectInfo.relationships.isthumbnailfor.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -227,7 +235,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object has thumbnail") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -244,6 +252,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -264,6 +273,7 @@
                         v-if="
                           i + 1 < objectInfo.relationships.hasthumbnail.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -278,7 +288,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object references") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -294,6 +304,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -314,6 +325,7 @@
                         v-if="
                           i + 1 < objectInfo.relationships.references.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -328,7 +340,7 @@
               <v-col class="pt-0">
                 <v-card tile>
                   <v-card-title
-                    class="ph-box title font-weight-light grey white--text"
+                    class="ph-box title font-weight-light white--text"
                     >{{ $t("This object is referenced by") }}</v-card-title
                   >
                   <v-card-text class="mt-4">
@@ -345,6 +357,7 @@
                               '/thumbnail'
                             "
                             class="elevation-1 my-4"
+                            :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                           ></p-img>
                         </v-col>
                         <v-col cols="12" md="7">
@@ -366,6 +379,7 @@
                           i + 1 <
                           objectInfo.relationships.isreferencedby.length
                         "
+                        class="my-4"
                       ></v-divider>
                     </div>
                   </v-card-text>
@@ -420,8 +434,8 @@
           </v-col>
         </template>
       </v-row>
-      <v-row v-else>
-        <v-col cols="12" md="8" class="mt-8">
+      <v-row class="text-break" v-else>
+        <v-col cols="12" md="8">
           <v-row v-if="objectInfo.cmodel === 'Page'" justify="center">
             <v-col cols="6">
               <v-row justify="center" class="mt-5">{{
@@ -439,13 +453,22 @@
             </v-col>
           </v-row>
           <v-row v-if="hasLaterVersion" justify="center">
-            <v-alert type="info" color="primary">
+            <v-alert type="info" dense outlined color="secondary" class="mt-4">
               <div>
                 {{
                   $t("There is a more recent version of this object available")
                 }}
               </div>
             </v-alert>
+          </v-row>
+          <v-row justify="center" v-if="latestVersion" class="my-4">
+            <v-btn
+              raised
+              large
+              color="primary"
+              :to="localePath({ path: `/detail/${latestVersion.pid}` })"
+              >{{ $t("Go to latest version") }}</v-btn
+            >
           </v-row>
           <v-row justify="center" v-if="showPreview">
             <template v-if="(objectInfo.cmodel === 'Book') && (objectInfo.datastreams.includes('UWMETADATA'))">
@@ -472,7 +495,7 @@
                   instanceconfig.api +
                     '/object/' +
                     objectInfo.pid +
-                    '/preview'
+                    '/preview'  + '?lang=' + $i18n.locale.substring(0, 2)
                 "
                 target="_blank"
                 >{{ $t("Open in Bookviewer") }}</v-btn
@@ -482,11 +505,12 @@
               <v-col cols="12">
                 <div class="iframe-container" v-if="objectInfo.cmodel === 'Video'">
                   <iframe
+                    :title="$t('Video preview')"
                     :src="
                       instanceconfig.api +
                       '/object/' +
                       objectInfo.pid +
-                      '/preview'
+                      '/preview' + '?lang=' + $i18n.locale.substring(0, 2)
                     "
                     width="100%"
                     frameborder="0"
@@ -497,11 +521,12 @@
                 </div>
                 <iframe
                 v-else
+                  :title="$t('Preview')"
                   :src="
                     instanceconfig.api +
                     '/object/' +
                     objectInfo.pid +
-                    '/preview'
+                    '/preview' + '?lang=' + $i18n.locale.substring(0, 2) + `${instanceconfig.addannotation ? `&addannotation=${instanceconfig.addannotation}` : ''}`
                   "
                   :style="
                     objectInfo.cmodel === 'Audio'
@@ -520,7 +545,7 @@
                     instanceconfig.api +
                     '/object/' +
                     objectInfo.pid +
-                    '/preview'
+                    '/preview'  + '?lang=' + $i18n.locale.substring(0, 2)
                   "
                   target="_blank"
                   >{{ $t("Open in new window") }}</v-btn
@@ -553,18 +578,24 @@
           </v-row>
 
           <template v-if="(objectInfo.cmodel === 'Container') && !objectInfo.datastreams.includes('CONTAINERINFO')">
-            <v-toolbar class="my-10 grey white--text" elevation="1">
+            <v-toolbar class="my-10 white--text" elevation="1">
               <v-toolbar-title>
                 {{ $t("Members") }} ({{ objectInfo.members.length }})
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-pagination
+              :wrapper-aria-label="$t('pagination')"
+              :page-aria-label="$t('page')"
+              :previous-aria-label="$t('previous')"
+              :next-aria-label="$t('next')"
+              :current-page-aria-label="$t('currentPage')" 
                 v-if="objectInfo.members.length > membersPageSize"
                 v-model="membersPage"
                 :length="Math.ceil(objectInfo.members.length/membersPageSize)"
               ></v-pagination>
             </v-toolbar>
             <v-row v-if="objectMembers">
+            <v-col>
               <v-card
                 class="mb-3 pt-4"
                 width="100%"
@@ -572,9 +603,10 @@
                 :key="'member_' + member.pid"
               >
                 <iframe
+                  :title="$t('Preview')"
                   v-if="!member.isrestricted"
                   :src="
-                    instanceconfig.api + '/object/' + member.pid + '/preview'
+                    instanceconfig.api + '/object/' + member.pid + '/preview'  + '?lang=' + $i18n.locale.substring(0, 2)
                   "
                   :style="
                     member.cmodel === 'Audio'
@@ -587,10 +619,10 @@
                 >
                 <v-row v-else>
                 <v-col class="text-right mr-3">
-                  <v-chip label dark color="red lighten-1 font-weight-regular"><v-icon small left>mdi-lock</v-icon>{{ $t('Restricted access') }}</v-chip>
+                  <v-chip class="pointer-disabled" label dark color="btnred"><v-icon small left>mdi-lock</v-icon>{{ $t('Restricted access') }}</v-chip>
                 </v-col>
               </v-row>
-                <v-card-text class="ma-2">
+                <v-card-text>
                   <p-d-jsonld
                     :jsonld="member.metadata['JSON-LD']"
                     :pid="member.pid"
@@ -608,11 +640,11 @@
                       instanceconfig.api + '/object/' + member.pid + '/download'
                     "
                     color="primary"
-                    >{{ $t("Download") }}</v-btn
+                    ><v-icon class="mr-2" aria-hidden="true">mdi-download</v-icon>{{ $t("Download") }}</v-btn
                   >
                   <v-menu offset-y v-if="objectInfo.writerights === 1">
-                    <template v-slot:activator="{ on }">
-                      <v-btn class="ml-2" raised color="primary" dark v-on="on"
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn class="ml-2" raised color="primary" dark v-on="on" v-bind="attrs"
                         >{{ $t("Edit")
                         }}<v-icon right dark>arrow_drop_down</v-icon></v-btn
                       >
@@ -637,8 +669,6 @@
                           $t("Relationships")
                         }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item>
-                      </v-list-item>
                       <v-list-item v-if="(instanceconfig.showdeletebutton === 1) || (instanceconfig.showdeletebutton === true)" :to="localePath(`/delete/${member.pid}`)">
                         <v-list-item-title>{{
                           $t("Delete")
@@ -648,10 +678,11 @@
                   </v-menu>
                 </v-card-actions>
               </v-card>
+            </v-col>
             </v-row>
           </template>
           <template v-if="objectInfo.readrights && (objectInfo.cmodel === 'Container') && objectInfo.datastreams.includes('CONTAINERINFO')">
-            <v-toolbar class="my-10 grey white--text" elevation="1">
+            <v-toolbar class="my-10 white--text" elevation="1">
               <v-toolbar-title>
                 {{ $t("Members") }} ({{ objectInfo.legacy_container_members.length }})
               </v-toolbar-title>
@@ -672,7 +703,7 @@
                     legacyCMember.ds
                   "
                   color="primary"
-                  >{{ $t("Download") }}</v-btn
+                  ><v-icon class="mr-2" aria-hidden="true">mdi-download</v-icon>{{ $t("Download") }}</v-btn
                 >
               </v-col>
             </v-row>
@@ -680,13 +711,18 @@
           </div>
           </template>
           <template v-if="objectInfo.cmodel === 'Collection' && collMembers.length">
-            <v-toolbar class="my-10 grey white--text" elevation="1">
+            <v-toolbar class="my-10 white--text" elevation="1">
               <v-toolbar-title>
                 {{ $t("Members") }} ({{ $store.state.collectionMembersTotal /* leave it like this, computed property wasn't working on first access */ }})
               </v-toolbar-title>
               <v-switch @click="refreshCollectionMembers()" class="mx-2" dark hide-details :label="$t('Only latest versions')" v-model="collOnlyLatestVersions"></v-switch>
               <v-spacer></v-spacer>
               <v-pagination
+                :wrapper-aria-label="$t('pagination')"
+                :page-aria-label="$t('page')"
+                :previous-aria-label="$t('previous')"
+                :next-aria-label="$t('next')"
+                :current-page-aria-label="$t('currentPage')" 
                 v-if="$store.state.collectionMembersTotal > collMembersPagesize"
                 v-bind:length="collMembersTotalPages"
                 total-visible="10"
@@ -695,14 +731,15 @@
             </v-toolbar>
             <div v-for="(collMember, i) in collMembers" :key="'collMember' + i">
               <v-row class="my-4">
-                <v-col cols="1" >
+                <v-col md="1" class="d-none d-md-inline-block">
                   <div class="preview-maxwidth">
-                  <router-link :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }">
+                  <nuxt-link :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }">
                       <p-img
                         :src="
                           instanceconfig.api + '/object/' + collMember.pid + '/thumbnail'
                         "
                         class="elevation-1 mt-2"
+                        :alt="collMember['dc_title'] ? collMember['dc_title'][0] : collMember.pid"
                       >
                         <template v-slot:placeholder>
                           <div
@@ -717,63 +754,75 @@
                           </div>
                         </template>
                       </p-img>
-                    </router-link>
+                    </nuxt-link>
                   </div>
                 </v-col>
                 <v-col cols="10">
                   <v-row no-gutters class="mb-4">
                     <v-col cols="10">
-                      <h3
+                      <h2
                         class="title font-weight-light primary--text"
                         @click.stop
                         v-if="collMember.dc_title"
                       >
-                        <router-link
+                        <nuxt-link
                           :to="{ path: `${collMember.pid}`, params: { pid: collMember.pid } }"
-                          >{{ collMember.dc_title[0] }}</router-link
+                          >{{ collMember.dc_title[0] }}</nuxt-link
                         >
-                      </h3>
-                      <p class="grey--text">{{ collMember.pid }}</p>
+                      </h2>
+                      <p>{{ collMember.pid }}</p>
                     </v-col>
                     <v-spacer></v-spacer>
-                    <v-col cols="1" class="text-right"
-                      ><span v-if="collMember.created" class="grey--text">{{
+                    <v-col cols="2" class="text-right"
+                      ><span v-if="collMember.created">{{
                         collMember.created | date
-                      }}</span></v-col
-                    >
+                      }}</span>
+                      <v-icon v-if="collMember.cmodel == 'Video'" class="mx-2" color="grey">mdi-video</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Picture'" class="mx-2" color="grey">mdi-image</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Audio'" class="mx-2" color="grey">mdi-volume-high</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'PDFDocument'" class="mx-2" color="grey">mdi-file-document</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Asset'" class="mx-2" color="grey">mdi-file</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Resource'" class="mx-2" color="grey">mdi-link</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Collection'" class="mx-2" color="grey">mdi-folder-open</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Container'" class="mx-2" color="grey">mdi-folder</v-icon>
+                      <v-icon v-else-if="collMember.cmodel == 'Book'" class="mx-2" color="grey">mdi-book-open-variant</v-icon>
+                      </v-col>
                   </v-row>
                 </v-col>
                 <v-col cols="1" v-if="objectInfo.writerights === 1" justify="center">
-                  <v-btn icon class="mt-4" @click="collMemberToRemove = collMember.pid; confirmColMemDeleteDlg = true"><v-icon color="red lighten-1">mdi-delete</v-icon></v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn icon color="btnred" class="mt-4" @click="collMemberToRemove = collMember.pid; confirmColMemDeleteDlg = true" v-on="on" v-bind="attrs" :aria-label="$t('Remove from collection')"><v-icon>mdi-delete</v-icon></v-btn>
+                    </template>
+                    <span>{{ $t('Remove from collection')}}</span>
+                  </v-tooltip>
                 </v-col>
               </v-row>
               <v-divider></v-divider>
             </div>
             <v-dialog v-model="confirmColMemDeleteDlg" width="500" >
               <v-card>
-                <v-card-title class="title font-weight-light grey lighten-2" primary-title >{{ $t('Remove') }}</v-card-title>
+                <v-card-title class="title font-weight-light white--text">{{ $t('Remove') }}</v-card-title>
                 <v-card-text class="my-4">{{ $t('REMOVE_COLLECTION_MEMBER', { oldpid: collMemberToRemove, collection: objectInfo.pid })}}</v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn dark color="grey" :disabled="$store.state.loading" @click="collMemberToRemove = null; confirmColMemDeleteDlg = false">{{ $t('Cancel') }}</v-btn>
-                  <v-btn color="red" class="white--text" :loading="$store.state.loading" :disabled="$store.state.loading" @click="removeFromCollection()">{{ $t('Remove') }}</v-btn>                  
+                  <v-btn outlined :disabled="$store.state.loading" @click="collMemberToRemove = null; confirmColMemDeleteDlg = false">{{ $t('Cancel') }}</v-btn>
+                  <v-btn color="btnred" class="white--text" :loading="$store.state.loading" :disabled="$store.state.loading" @click="removeFromCollection()">{{ $t('Remove') }}</v-btn>                  
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </template>
         </v-col>
 
-        <v-col cols="12" md="4" class="mt-4">
+        <v-col cols="12" md="4">
           <v-row justify="end">
             <v-col cols="12" md="9">
-              <v-row
-                class="mb-6"
-              >
-                <v-col class="pt-0">
+              <ul class="mb-6 pl-0 side-list">
+                <li class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t('Citable links') }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -792,23 +841,23 @@
                               width="800px"
                             >
                               <template v-slot:activator="{ on }">
-                                <v-chip
+                                <v-btn
                                   v-on="on"
+                                  depressed
                                   x-small
-                                  class="mr-2 font-weight-regular"
                                   color="primary"
-                                  >{{ $t("Cite") }}</v-chip
+                                  class="mr-2"
+                                  >{{ $t("Cite") }}</v-btn
                                 >
                               </template>
                               <v-card>
                                 <v-card-title
-                                  dark
-                                  class="title font-weight-light grey white--text"
+                                  class="title font-weight-light white--text"
                                   >{{ $t("Cite") }}</v-card-title
                                 >
                                 <v-card-text>
                                   <v-container>
-                                    <v-row align="center" justify="center">
+                                    <v-row class="mt-4" align="center" justify="center">
                                       <v-btn
                                         color="primary"
                                         class="mx-3"
@@ -844,8 +893,7 @@
                                 <v-card-actions>
                                   <v-spacer></v-spacer>
                                   <v-btn
-                                    dark
-                                    color="grey"
+                                    outlined
                                     :loading="doiCiteLoading"
                                     @click="doiCiteDialog = false"
                                     >{{ $t("Close") }}</v-btn
@@ -857,9 +905,7 @@
                               {{ $t(id.label) }}
                             </span>
                             <br />
-                            <span :class="id.label == 'Persistent identifier' ? 'font-weight-medium primary--text' : ''">
-                              <a :href="id.value">{{ id.value }}</a>
-                            </span>
+                            <a :href="id.value">{{ id.value }}</a>
                           </p>
                         </v-col>
                       </v-row>
@@ -874,8 +920,7 @@
                           </template>
                           <v-card>
                             <v-card-title
-                              dark
-                              class="title font-weight-light grey white--text"
+                              class="title font-weight-light white--text"
                               >{{ $t("Request DOI") }}</v-card-title
                             >
                             <v-card-text>
@@ -894,14 +939,13 @@
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
+                              <v-spacer></v-spacer>
                               <v-btn
-                                dark
-                                color="grey"
+                                outlined
                                 :loading="doiRequestLoading"
                                 @click="doiRequestDialog = false"
                                 >{{ $t("Cancel") }}</v-btn
-                              >
-                              <v-spacer></v-spacer>
+                              >                              
                               <v-btn
                                 color="primary"
                                 :loading="doiRequestLoading"
@@ -915,20 +959,11 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-
-          <v-row justify="end" v-if="identifiers.other.length > 0">
-            <v-col cols="12" md="9">
-              <v-row
-                class="mb-6"
-              >
-                <v-col class="pt-0">
+                </li>
+                <li class="mb-6" v-if="identifiers.other.length > 0">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t('Other links') }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -950,26 +985,16 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-
-          <v-row justify="end" class="mb-8" no-gutters v-if="objectInfo.isrestricted"><v-chip label dark color="red lighten-1 font-weight-regular"><v-icon small left>mdi-lock</v-icon>{{ $t('Restricted access') }}</v-chip></v-row>
-          <v-row justify="end">
-            <v-col cols="12" md="9">
-              <v-row
-                class="mb-6"
-                v-if="
+                </li>
+                <li class="mb-6" v-if="objectInfo.isrestricted"><v-chip label dark color="btnred" class="pointer-disabled"><v-icon small left>mdi-lock</v-icon>{{ $t('Restricted access') }}</v-chip></li>
+                <li class="mb-6" v-if="
                   (downloadable && objectInfo.readrights) ||
                   objectInfo.cmodel === 'Collection' ||
                   objectInfo.cmodel === 'Resource'
-                "
-              >
-                <v-col class="pt-0">
+                ">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Content") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -984,7 +1009,7 @@
                             '/download'
                           "
                           color="primary"
-                          >{{ $t("Download") }}</v-btn
+                          ><v-icon class="mr-2" aria-hidden="true">mdi-download</v-icon>{{ $t("Download") }}</v-btn
                         >
                         <v-btn
                           v-if="objectInfo.cmodel === 'Collection'"
@@ -994,11 +1019,36 @@
                               query: { collection: objectInfo.pid, reset: 1 },
                             })
                           "
+                          :disabled="collMembers.length === 0"
                           color="primary"
                           >{{ $t("Show members") }} ({{
                             objectInfo.haspartsize
                           }})</v-btn
                         >
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                              v-on="on"
+                              v-bind="attrs"
+                              class="ml-2"
+                              v-if="objectInfo.cmodel === 'Collection'"
+                              icon
+                              color="primary"
+                              target="_blank"
+                              :href="
+                                instanceconfig.api +
+                                '/collection/' +
+                                objectInfo.pid +
+                                '/rss'
+                              "
+                              :aria-label="$t('RSS Feed')"
+                            >
+                            <v-icon>mdi-rss</v-icon>
+                          </v-btn>
+                          </template>
+                          <span>{{ $t('RSS Feed') }}</span>
+                        </v-tooltip>
+                        
                         <v-btn
                           v-if="objectInfo.cmodel === 'Resource'"
                           :href="
@@ -1012,7 +1062,7 @@
                         >
                       </v-row>
                       <v-divider
-                        class="mt-4 mb-4"
+                        class="my-4"
                         v-if="
                           (downloadable &&
                             objectInfo.readrights &&
@@ -1075,14 +1125,12 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <v-row class="mb-6" v-if="objectInfo.isinadminset">
-                <v-col class="pt-0">
+                <li class="mb-6" v-if="objectInfo.isinadminset">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Managed by") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -1109,20 +1157,18 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <v-row class="mb-6">
-                <v-col class="pt-0">
+                <li class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Details") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
                       <v-row no-gutters class="pt-2">
                         <v-col
-                          class="caption grey--text text--darken-2"
+                          class="caption"
                           cols="3"
                           >{{ $t("Uploader") }}</v-col
                         >
@@ -1131,27 +1177,27 @@
                           offset="1"
                           v-if="objectInfo.owner.firstname"
                         >
-                          <a :href="'mailto:' + ownerEmail"
-                            >{{ objectInfo.owner.firstname }}
-                            {{ objectInfo.owner.lastname }}</a
-                          >
+                        <a :href="ownerEmail ? 'mailto:' + ownerEmail : null" :class="{ 'no-link': !ownerEmail }">
+                          {{ objectInfo.owner.firstname }} {{ objectInfo.owner.lastname }}
+                        </a>
+
                         </v-col>
                         <v-col v-else-if="objectInfo.owner.displayname" cols="8" offset="1">
                           <v-row>
                               <v-col>
-                                <a :href="'mailto:' + ownerEmail"
+                                <a :href="ownerEmail ? 'mailto:' + ownerEmail : null" :class="{ 'no-link': !ownerEmail }"
                                   >{{ objectInfo.owner.displayname }}</a
                                 >
                               </v-col>
                           </v-row>
                         </v-col>
-                        <v-col v-else cols="8"  offset="1"><a :href="'mailto:' + ownerEmail"
+                        <v-col v-else cols="8"  offset="1"><a :href="ownerEmail ? 'mailto:' + ownerEmail : null" :class="{ 'no-link': !ownerEmail }"
                             >{{ objectInfo.owner.username }}</a
                           ></v-col>
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <v-col
-                          class="caption grey--text text--darken-2"
+                          class="caption"
                           cols="3"
                           >{{ $t("Object type") }}</v-col
                         >
@@ -1165,7 +1211,7 @@
                         class="pt-2"
                       >
                         <v-col
-                          class="caption grey--text text--darken-2"
+                          class="caption"
                           cols="3"
                           >{{ $t("Format") }}</v-col
                         >
@@ -1186,7 +1232,7 @@
                       </v-row>
                       <v-row no-gutters class="pt-2">
                         <v-col
-                          class="caption grey--text text--darken-2"
+                          class="caption"
                           cols="3"
                           >{{ $t("Created") }}</v-col
                         >
@@ -1196,22 +1242,33 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <client-only>
-                <v-row class="my-6">
-                  <v-col class="pt-0">
-                    <v-card tile>
-                      <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                <li class="mb-6">
+                  <v-card tile>
+                    <v-card-title
+                      class="ph-box title font-weight-light white--text"
                       >
+                        {{ $t("Usage statistics") }}
                         <nuxt-link
                           class="white--text"
                           :to="localePath(`/stats/${objectInfo.pid}`)"
+                          :aria-label="$t('Show details')"
+                          v-if="(stats.detail > 0) || (stats.download > 0)"
                         >
-                          {{ $t("Usage statistics") }}</nuxt-link
-                        >
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-icon
+                                  class="white--text ml-2"                
+                                  v-on="on"
+                                  v-bind="attrs"
+                              >
+                                mdi-information-outline
+                              </v-icon>
+                            </template>
+                            <span>{{ $t('Show details') }}</span>
+                          </v-tooltip>
+                        </nuxt-link>
                       </v-card-title>
                       <v-card-text class="mt-4">
                         <v-row>
@@ -1226,16 +1283,13 @@
                           <v-spacer></v-spacer>
                         </v-row>
                       </v-card-text>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </client-only>
+                  </v-card>
+                </li>
 
-              <v-row v-if="objectInfo.versions && objectInfo.versions.length > 0" class="my-6">
-                <v-col class="pt-0">
+                <li v-if="objectInfo.versions && objectInfo.versions.length > 0" class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Versions") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -1260,29 +1314,36 @@
                         <v-divider
                           v-if="i + 1 < objectInfo.versions.length"
                           :key="'versiond' + i"
+                          class="my-4"
                         ></v-divider>
                       </div>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <v-row
-                v-if="objectInfo.alternativeversions && objectInfo.alternativeversions.length > 0"
-                class="my-6"
-              >
-                <v-col class="pt-0">
+                <li v-if="objectInfo.alternativeversions && objectInfo.alternativeversions.length > 0" class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Alternative versions") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
                       <div
-                        v-for="(rel, i) in objectInfo.alternativeversions"  :key="'version' + i"
+                        v-for="(rel, i) in objectInfo.alternativeversions" :key="'version' + i"
                       >
-                        <v-row>
-                          <v-col cols="12" md="12">
+                        <v-row align="center">
+                          <v-col cols="12" md="5" class="preview-maxwidth">
+                              <p-img
+                                :src="instanceconfig.api +
+                                  '/object/' +
+                                  rel.pid +
+                                  '/thumbnail'
+                                "
+                                class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
+                              ></p-img>
+                          </v-col>
+                          <v-col cols="12" md="7">
                             <nuxt-link
                               v-if="rel['dc_title']"
                               :to="localePath(`/detail/${rel.pid}`)"
@@ -1298,21 +1359,17 @@
                         <v-divider
                           v-if="i + 1 < objectInfo.alternativeversions.length"
                           :key="'altversiond' + i"
+                          class="my-4"
                         ></v-divider>
                       </div>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <v-row
-                v-if="objectInfo.alternativeformats && objectInfo.alternativeformats.length > 0"
-                class="my-6"
-              >
-                <v-col class="pt-0">
+                <li v-if="objectInfo.alternativeformats && objectInfo.alternativeformats.length > 0" class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Alternative formats") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -1337,22 +1394,18 @@
                         <v-divider
                           v-if="i + 1 < objectInfo.alternativeformats.length"
                           :key="'altformatsd' + i"
+                          class="my-4"
                         ></v-divider>
                       </div>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <template v-if="objectInfo.relationships">
-                <v-row
-                  v-if="objectInfo.relationships.ispartof && objectInfo.relationships.ispartof.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                <template v-if="objectInfo.relationships">
+                  <li v-if="objectInfo.relationships.ispartof && objectInfo.relationships.ispartof.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object is in collection") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1368,6 +1421,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1388,21 +1442,17 @@
                             v-if="
                               i + 1 < objectInfo.relationships.ispartof.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
+                  </li>
 
-                <v-row
-                  v-if="objectInfo.relationships.isbacksideof && objectInfo.relationships.isbacksideof.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                  <li v-if="objectInfo.relationships.isbacksideof && objectInfo.relationships.isbacksideof.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object is a back side of") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1419,6 +1469,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1439,21 +1490,17 @@
                             v-if="
                               i + 1 < objectInfo.relationships.isbacksideof.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
+                  </li>
 
-                <v-row
-                  v-if="objectInfo.relationships.hasbackside && objectInfo.relationships.hasbackside.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                  <li v-if="objectInfo.relationships.hasbackside && objectInfo.relationships.hasbackside.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object has a back side") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1469,6 +1516,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1489,21 +1537,17 @@
                             v-if="
                               i + 1 < objectInfo.relationships.hasbackside.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
+                  </li>
 
-                <v-row
-                  v-if="objectInfo.relationships.isthumbnailfor && objectInfo.relationships.isthumbnailfor.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                  <li v-if="objectInfo.relationships.isthumbnailfor && objectInfo.relationships.isthumbnailfor.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object is thumbnail for") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1520,6 +1564,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1541,21 +1586,17 @@
                               i + 1 <
                               objectInfo.relationships.isthumbnailfor.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
+                  </li>
 
-                <v-row
-                  v-if="objectInfo.relationships.hasthumbnail && objectInfo.relationships.hasthumbnail.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                  <li v-if="objectInfo.relationships.hasthumbnail && objectInfo.relationships.hasthumbnail.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object has thumbnail") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1572,6 +1613,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1592,21 +1634,17 @@
                             v-if="
                               i + 1 < objectInfo.relationships.hasthumbnail.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
+                  </li>
 
-                <v-row
-                  v-if="objectInfo.relationships.references && objectInfo.relationships.references.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                  <li v-if="objectInfo.relationships.references && objectInfo.relationships.references.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object references") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1622,6 +1660,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1642,21 +1681,17 @@
                             v-if="
                               i + 1 < objectInfo.relationships.references.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
+                  </li>
 
-                <v-row
-                  v-if="objectInfo.relationships.isreferencedby && objectInfo.relationships.isreferencedby.length > 0"
-                  class="my-6"
-                >
-                  <v-col class="pt-0">
+                  <li v-if="objectInfo.relationships.isreferencedby && objectInfo.relationships.isreferencedby.length > 0" class="mb-6">
                     <v-card tile>
                       <v-card-title
-                        class="ph-box title font-weight-light grey white--text"
+                        class="ph-box title font-weight-light white--text"
                         >{{ $t("This object is referenced by") }}</v-card-title
                       >
                       <v-card-text class="mt-4">
@@ -1673,6 +1708,7 @@
                                   '/thumbnail'
                                 "
                                 class="elevation-1 my-4"
+                                :alt="rel['dc_title'] ? rel['dc_title'][0] : rel.pid"
                               ></p-img>
                             </v-col>
                             <v-col cols="12" md="7">
@@ -1694,31 +1730,21 @@
                               i + 1 <
                               objectInfo.relationships.isreferencedby.length
                             "
+                            class="my-4"
                           ></v-divider>
                         </div>
                       </v-card-text>
                     </v-card>
-                  </v-col>
-                </v-row>
-              </template>
-              <v-row class="my-6">
-                <v-col class="pt-0">
+                  </li>
+                </template>
+
+                <li class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Metadata") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
-                      <!-- <v-row
-                        no-gutters
-                        class="pt-2"
-                        v-if="objectInfo.dshash['JSON-LD']"
-                      >
-                        <nuxt-link
-                          :to="localePath(`/metadata/${objectInfo.pid}`)"
-                          >{{ $t("Metadata JSON") }}</nuxt-link
-                        >
-                      </v-row> -->
                       <v-row
                         no-gutters
                         class="pt-2"
@@ -1769,13 +1795,12 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
-              <v-row class="my-6">
-                <v-col class="pt-0">
+                </li>
+
+                <li class="mb-6">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Export formats") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -1857,14 +1882,12 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <v-row class="my-6" v-if="objectInfo.writerights === 1">
-                <v-col class="pt-0">
+                <li class="mb-6" v-if="objectInfo.writerights === 1">
                   <v-card tile>
                     <v-card-title
-                      class="ph-box title font-weight-light grey white--text"
+                      class="ph-box title font-weight-light white--text"
                       >{{ $t("Edit") }}</v-card-title
                     >
                     <v-card-text class="mt-4">
@@ -1917,7 +1940,7 @@
                             >
                           </template>
                           <v-card>
-                            <v-card-title class="text-h5 grey lighten-2">
+                            <v-card-title class="title font-weight-light white--text">
                               {{ $t("Manage members") }}
                             </v-card-title>
 
@@ -1930,10 +1953,10 @@
                             <v-card-actions>
                               <v-spacer></v-spacer>
                               <v-btn
-                                color="primary"                                
+                                outlined
                                 @click="collectionHelpDialog = false"
                               >
-                                OK
+                                {{ $t("Close") }}
                               </v-btn>
                             </v-card-actions>
                           </v-card>
@@ -1944,7 +1967,7 @@
                         class="pt-2"
                         v-if="
                           ((objectInfo.cmodel === 'Container') && (objectInfo.members.length <= 500 )) ||
-                          ((objectInfo.cmodel === 'Collection') && ($store.state.collectionMembersTotal <= 500 ))
+                          ((objectInfo.cmodel === 'Collection') && ($store.state.collectionMembersTotal >= 1 && $store.state.collectionMembersTotal <= 500))
                         "
                       >
                         <nuxt-link
@@ -1958,7 +1981,7 @@
                         class="pt-2"
                         v-if="
                           objectInfo.cmodel === 'Container' ||
-                          objectInfo.cmodel === 'Collection'
+                          ((objectInfo.cmodel === 'Collection') && ($store.state.collectionMembersTotal >= 1))
                         "
                       >
                         <nuxt-link
@@ -1967,25 +1990,6 @@
                           >{{ $t("Sort members (text input)") }}</nuxt-link
                         >
                       </v-row>
-                      <!-- <v-row
-                        no-gutters
-                        class="pt-2"
-                        v-if="
-                          objectInfo.cmodel !== 'Container' &&
-                          objectInfo.cmodel !== 'Collection' &&
-                          objectInfo.cmodel !== 'Resource' &&
-                          objectInfo.cmodel !== 'Book' &&
-                          objectInfo.cmodel !== 'Page'
-                        "
-                      >
-                        <nuxt-link
-                          class="mb-1"
-                          :to="
-                            localePath(`/upload-webversion/${objectInfo.pid}`)
-                          "
-                          >{{ $t("Upload web-optimized version") }}</nuxt-link
-                        >
-                      </v-row> -->
                       <v-row
                         no-gutters
                         class="pt-2"
@@ -2003,8 +2007,7 @@
                           </template>
                           <v-card>
                             <v-card-title
-                              dark
-                              class="title font-weight-light grey white--text"
+                              class="title font-weight-light white--text"
                               >{{ $t("Choose relation") }}</v-card-title
                             >
                             <v-card-text>
@@ -2102,7 +2105,7 @@
                             </v-card-text>
                             <v-card-actions>
                               <v-spacer></v-spacer>
-                              <v-btn dark color="grey" @click="relationDialog = false">{{
+                              <v-btn outlined @click="relationDialog = false">{{
                                 $t("Cancel")
                               }}</v-btn>
                               <v-btn
@@ -2149,7 +2152,7 @@
                           >{{ $t("Delete") }}</nuxt-link
                         >
                       </v-row>
-                      <v-row v-if="user.isadmin" no-gutters class="pt-2">
+                      <v-row v-if="user.isadmin && objectInfo.cmodel !== 'Collection' && objectInfo.cmodel !== 'Container'" no-gutters class="pt-2">
                         <a
                           class="mb-1"
                           @click="datareplaceDialog = true"
@@ -2158,51 +2161,54 @@
                       </v-row>
                     </v-card-text>
                   </v-card>
-                </v-col>
-              </v-row>
+                </li>
 
-              <v-row justify="end" class="mb-2">
-                <v-col cols="12" class="pt-0">
-                  <template v-for="(md5, i) in checksums">
-                    <p
-                      class="text-right"
-                      v-if="md5.path.includes('OCTETS')"
-                      :key="'md5' + i"
-                    >
-                      <span class="caption text--secondary">md5</span
-                      ><br /><span>{{ md5.md5 }}</span>
-                    </p>
-                  </template>
-                </v-col>
-              </v-row>
-              <v-row v-if="objectInfo.oc_mpid" justify="end" class="mb-2">
-                <v-col cols="12" class="pt-0">
-                    <p class="text-right">
-                      <span class="caption text--secondary">{{ $t('Media Package Identifier') }}</span
-                        ><br /><span>id={{ objectInfo.oc_mpid }}
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-btn
-                                v-on="on"
-                                v-bind="attrs" icon @click="copyToClipboard('id='+objectInfo.oc_mpid)"><v-icon>mdi-content-copy</v-icon></v-btn>
-                            </template>
-                            <span>{{ $t('Copy to clipboard') }}</span>
-                        </v-tooltip>
-                      </span>
-                    </p>
-                </v-col>
-              </v-row>
+                <li class="mb-2">
+                  <v-row justify="end">
+                    <v-col cols="12" class="pt-0">
+                      <template v-for="(md5, i) in checksums">
+                        <p
+                          class="text-right"
+                          v-if="md5.path.includes('OCTETS')"
+                          :key="'md5' + i"
+                        >
+                          <span class="caption text--secondary">md5</span
+                          ><br /><span>{{ md5.md5 }}</span>
+                        </p>
+                      </template>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="objectInfo.oc_mpid" justify="end" class="mb-2">
+                    <v-col cols="12" class="pt-0">
+                        <p class="text-right">
+                          <span class="caption text--secondary">{{ $t('Media Package Identifier') }}</span
+                          ><br /><span>id={{ objectInfo.oc_mpid }}
+                          <v-tooltip bottom>
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                  :aria-label="$t('Copy to clipboard')"
+                                  v-on="on"
+                                  v-bind="attrs" icon @click="copyToClipboard('id='+objectInfo.oc_mpid)"><v-icon>mdi-content-copy</v-icon></v-btn>
+                              </template>
+                              <span>{{ $t('Copy to clipboard') }}</span>
+                          </v-tooltip>
+                          </span>
+                        </p>
+                    </v-col>
+                  </v-row>
+                </li>
+              </ul>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
       <v-dialog v-model="datareplaceDialog" max-width="1200px">
       <v-card>
-        <v-card-title>
-          <h3 class="title font-weight-light primary--text">{{ $t('Upload new file to') }} {{objectInfo.pid}} ({{objectInfo.cmodel}})</h3>
+        <v-card-title class="title font-weight-light white--text">
+          {{ $t('Upload new file to') }} {{objectInfo.pid}} ({{objectInfo.cmodel}})
         </v-card-title>
         <v-divider></v-divider>
-        <v-card-text>
+        <v-card-text class="mt-4">
           <v-container @drop.prevent="addDropFile" @dragover.prevent>
             <v-file-input v-model="datareplaceFile" :error-messages="datareplaceUploadErrors"></v-file-input>
           </v-container>
@@ -2210,7 +2216,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn dark color="grey" @click.stop="datareplaceDialog=false">{{ $t("Cancel") }}</v-btn>
+          <v-btn outlined @click.stop="datareplaceDialog=false">{{ $t("Cancel") }}</v-btn>
           <v-btn color="primary" @click="datareplaceUpload()">{{ $t("Upload File") }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -2261,6 +2267,7 @@ export default {
         (this.objectInfo.cmodel !== "Asset" ||
           (this.objectInfo.cmodel === "Asset" &&
             (this.mimetype === "model/nxz" ||
+              this.mimetype === "model/obj" ||
               this.mimetype === "model/ply" ||
               this.mimetype === "application/x-wacz")
               )) &&
@@ -2307,7 +2314,7 @@ export default {
                 ids.persistent.push({ label: "DOI", value: doi });
                 break;
               case "urn":
-                ids.persistent.push({ label: "URN", value: idvalue.includes('nbn:at:') ? 'https://resolver.obvsg.at/urn:' + idvalue : 'https://nbn-resolving.org/urn:' + idvalue });
+                ids.persistent.push({ label: "URN", value: 'https://nbn-resolving.org/' + idvalue });
                 break;
               case "issn":
                 ids.persistent.push({ label: "ISSN", value: 'http://issn.org/resource/ISSN/' + idvalue });
@@ -2332,7 +2339,7 @@ export default {
                 if (idvalue.substr(0, 2) === 'AC') {
                   ids.other.push({ label: "AC", value: 'https://permalink.obvsg.at/' + idvalue });
                 } else {
-                  ids.other.push({ value: idvalue });
+                  ids.other.push({ value: idvalue, label: type });
                 }
                 break;
             }
@@ -2365,19 +2372,7 @@ export default {
       }
     },
     downloadable: function () {
-      switch (this.objectInfo.cmodel) {
-        case "PDFDocument":
-        case "Video":
-        case "Audio":
-        case "Picture":
-        case "Asset":
-        case "Page":
-          return true;
-        case "Book":
-          return this.objectInfo.datastreams.includes("UWMETADATA")
-        default:
-          return false;
-      }
+      return this.objectInfo.datastreams && this.objectInfo.datastreams.includes("OCTETS")
     },
     hasLaterVersion: function () {
       if (this.$store.state.objectInfo.versions) {
@@ -2390,6 +2385,22 @@ export default {
         }
       }
       return false;
+    },
+    latestVersion: function () {
+      let latestVersion = null;
+      let latestDate = this.$store.state.objectInfo.created;
+      if (this.$store.state.objectInfo.versions) {
+        if (Array.isArray(this.$store.state.objectInfo.versions)) {
+          for (let v of this.$store.state.objectInfo.versions) {
+            let currentCreated = v.created;
+            if (currentCreated > latestDate) {
+              latestDate = currentCreated;
+              latestVersion = v;
+            }
+          }
+        }
+      }
+      return latestVersion;
     },
     citationLocale: function () {
       switch (this.$i18n.locale) {
@@ -2943,15 +2954,13 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@require '../../stylus/colors';
-
-h3 {
-  color: $phaidragrey.darken-4;
-}
-</style>
-
 <style scoped>
+.no-link {
+  color: inherit !important; /* Inherit text color from parent */
+  cursor: default; /* Remove pointer cursor */
+  text-decoration: none; /* Remove underline */
+}
+
 .preview-maxwidth {
   max-width: 80px;
 }
@@ -2993,4 +3002,9 @@ h3 {
     height: 100%;
 
 }
+
+.side-list {
+  list-style-type: none;
+}
+
 </style>

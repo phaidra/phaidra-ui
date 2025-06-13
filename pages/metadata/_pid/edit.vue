@@ -1,11 +1,12 @@
 <template>
   <client-only>
     <div>
-      <v-btn class="mt-4" :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+      <v-btn color="primary" class="my-4" :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
         <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
       </v-btn>
       <p-i-form :form="form" :targetpid="pid" :enablerights="false" :enablerelationships="false" :templating="false"
         :importing="false" :addbutton="true" :help="false" :debug="false" :feedback="false"
+        :enableLicenseAdd="false"
         v-on:object-saved="objectSaved($event)" class="mt-4"></p-i-form>
     </div>
   </client-only>
@@ -33,9 +34,7 @@ export default {
   },
   methods: {
     objectSaved: async function (pid) {
-      this.$store.commit("setAlerts", [
-        { type: "success", msg: "Metadata for object " + pid + " saved" },
-      ]);
+      this.$store.commit('setAlerts', [{ type: 'success', key: 'object_metadata_saved_success', params: { o: pid }}])
       // to save unnecessary loadings, fetchObjectInfo is skipped in Detail.vue if we return to the same pid
       // but it must be done after metadata edit, so re-load it here
       await this.$store.dispatch("fetchObjectInfo", pid);
@@ -51,6 +50,16 @@ export default {
             }
           }
           f.removable = true
+          if (f.id.includes("resource-type")) {
+            f.removable = false
+          }
+          if (f.id.includes("license") && f.value !== "http://rightsstatements.org/vocab/InC/1.0/") {
+            f.removable = false
+            f.readonly = true
+          }
+          if (f.id.includes("mime-type")) {
+            f.removable = false
+          }
         }
         s.removable = true
       }

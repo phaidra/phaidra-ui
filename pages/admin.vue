@@ -1,34 +1,40 @@
 <template>
  
   <v-container class="mt-8" fluid>
-
+    <h1 class="d-sr-only">{{$t('Admin')}}</h1>
     <div class="mb-4"><strong>Note:</strong> Config is cached in each worker, don't forget to restart phaidra-api to apply changes.</div>
-    <v-tabs slider-color="primary"  dark background-color="grey" vertical v-model="activetab">
-      <v-tab :active-class="'primary'" >
+    <v-tabs slider-color="primary" background-color="grey darken-2" vertical v-model="activetab">
+      <v-tab class="white--text" :active-class="'primary'" >
         <span>{{ $t('Public') }}</span>
       </v-tab>
-      <v-tab :active-class="'primary'" >
+      <v-tab class="white--text" :active-class="'primary'" >
         <span>{{ $t('Private') }}</span>
       </v-tab>
-      <v-tab :active-class="'primary'" >
+      <v-tab class="white--text" :active-class="'primary'" >
         <span>{{ $t('Import/Export') }}</span>
+      </v-tab>
+      <v-tab class="white--text" :active-class="'primary'" >
+        <span>{{ $t('Manage Phaidra') }}</span>
+      </v-tab>
+      <v-tab class="white--text" :active-class="'primary'" >
+        <span>{{ $t('Statistics') }}</span>
       </v-tab>
 
       <v-tab-item>
         <v-card tile>
           
-          <v-tabs slider-color="primary" dark background-color="grey" vertical v-model="activetab2">
+          <v-tabs slider-color="primary" background-color="grey darken-1" vertical v-model="activetab2">
 
-            <v-tab :active-class="'primary'" >
+            <v-tab class="white--text" :active-class="'primary'" >
               <span>{{ $t('General') }}</span>
             </v-tab>
-            <v-tab :active-class="'primary'">
+            <v-tab class="white--text" :active-class="'primary'">
               <span>{{ $t('Functionality') }}</span>
             </v-tab>
-            <v-tab :active-class="'primary'">
+            <v-tab class="white--text" :active-class="'primary'">
               <span>{{ $t('CMS') }}</span>
             </v-tab>
-            <v-tab :active-class="'primary'">
+            <v-tab class="white--text" :active-class="'primary'">
               <span>{{ $t('Datastructures') }}</span>
             </v-tab>
 
@@ -40,6 +46,15 @@
                       :label="$t('Name of the repository')"
                       v-model="parsedPublicConfigData.title"
                     ></v-text-field>
+                  </v-col>
+                  <v-col cols="6" class="mt-6"></v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-textarea
+                      :label="$t('Favicon SVG (Text)')"
+                      v-model="parsedPublicConfigData.faviconText"
+                    ></v-textarea>
                   </v-col>
                   <v-col cols="6" class="mt-6"></v-col>
                 </v-row>
@@ -112,13 +127,13 @@
                         </v-btn>
                       </template>
                       <v-card>
-                        <v-card-title dark class="title font-weight-light grey white--text">{{ $t("Select submit template") }}</v-card-title>
+                        <v-card-title dark class="title font-weight-light white--text">{{ $t("Select submit template") }}</v-card-title>
                         <v-card-text>
                           <p-templates class="mt-4" ref="templates" :items-per-page="5" :id-only="true" :isDefaultSelect="true"
                             :selectedTemplateId="selectedTemplateId" v-on:load-template="onTemplateSelect($event)"></p-templates>
                         </v-card-text>
                         <v-card-actions>
-                          <v-spacer></v-spacer><v-btn dark color="grey" @click="templateDialog = false">{{ $t("Cancel") }}</v-btn>
+                          <v-spacer></v-spacer><v-btn outlined @click="templateDialog = false">{{ $t("Cancel") }}</v-btn>
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -207,11 +222,38 @@
                 <v-row>
                   <v-col>
                     <v-checkbox
-                      label="Enable groups"
+                      :label="$t('Show Groups link')"
                       v-model="parsedPublicConfigData.groups"
                     ></v-checkbox>
                   </v-col>
-                  <v-col cols="6" class="mt-4">{{ $t("Enable link to 'Groups' in navigation.") }}</v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Show link to 'Groups' in navigation.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
+                      :label="$t('Upload preview')"
+                      v-model="parsedPublicConfigData.forcePreview"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Move upload button to preview tab in submit form.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
+                      :label="$t('Enable feedback')"
+                      v-model="parsedPublicConfigData.feedback"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Enable tab for 'Feedback' in Upload form.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
+                      :label="$t('Enable Add Annotation')"
+                      v-model="parsedPublicConfigData.addannotation"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Enable tab for 'Add Annotation' in Preview.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -378,19 +420,18 @@
               </v-container>
             </v-tab-item>
           </v-tabs>
-          <v-btn fixed bottom right raised color="primary" :loading="loading" @click="save()">{{ $t('Save') }}</v-btn>
         </v-card>
       </v-tab-item>
 
       <v-tab-item>
         <v-card tile>
           
-          <v-tabs slider-color="primary" slider-size="20px" dark background-color="grey" vertical v-model="activetabprivate">
+          <v-tabs slider-color="primary" slider-size="20px" background-color="grey darken-1" vertical v-model="activetabprivate">
 
-            <v-tab :active-class="'primary'" >
+            <v-tab class="white--text" :active-class="'primary'" >
               <span>{{ $t('General') }}</span>
             </v-tab>
-            <v-tab :active-class="'primary'">
+            <v-tab class="white--text" :active-class="'primary'">
               <span>{{ $t('Functionality') }}</span>
             </v-tab>
 
@@ -468,7 +509,6 @@
             </v-tab-item>
 
           </v-tabs>
-          <v-btn fixed bottom right raised color="primary" :loading="loading" @click="save()">{{ $t('Save') }}</v-btn>
         </v-card>
 
       </v-tab-item>
@@ -476,12 +516,12 @@
       <v-tab-item>
         <v-card tile>
           
-          <v-tabs slider-color="primary" slider-size="20px" dark background-color="grey" vertical v-model="activetabimpexp">
+          <v-tabs slider-color="primary" slider-size="20px" background-color="grey darken-1" vertical v-model="activetabimpexp">
 
-            <v-tab :active-class="'primary'">
+            <v-tab class="white--text" :active-class="'primary'">
               <span>{{ $t('Export') }}</span>
             </v-tab>
-            <v-tab :active-class="'primary'">
+            <v-tab class="white--text" :active-class="'primary'">
               <span>{{ $t('Import') }}</span>
             </v-tab>
 
@@ -519,21 +559,66 @@
             </v-tab-item>
 
           </v-tabs>
-          <v-btn fixed bottom right raised color="primary" :loading="loading" @click="save()">{{ $t('Save') }}</v-btn>
         </v-card>
+      </v-tab-item>
+      <v-tab-item>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-row class="pl-2 mb-6 mt-4">
+                <ul>
+                  <li><a href="/lam/">Local LDAP</a></li>
+                  <li><a href="/dbgate/">DbGate</a></li>
+                  <li><a href="/fcrepo/rest/">Fedora</a></li>
+                  <li><a href="/solr/">Solr</a></li>
+                  <li><a href="/grafana/">Grafana</a></li>
+                  <li><a href="/api/openapi">API documentation</a></li>
+                  <li><a href="https://phaidra.org/docs/overview/">Documentation</a></li>
+                </ul>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-tab-item>
+      <v-tab-item>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-row class="pl-2 mb-6 mt-4">
+                <PRepostat></PRepostat>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-tab-item>
 
 
     </v-tabs>
-
+    <v-row class="my-2">
+      <v-col>
+        <v-btn large raised color="primary" class="float-right" :loading="loading" @click="save()">{{ $t('Save') }}</v-btn>
+      </v-col>
+    </v-row>
     
   </v-container>
 
 </template>
 <script>
 
+import FaviconMixin from '../mixins/favicon'
+import PRepostat from '../components/Repostat.vue';
+import { config } from "../mixins/config";
+
 export default {
+  mixins: [FaviconMixin, config],
+  components: {PRepostat},
   middleware: "auth",
+  metaInfo() {
+    let metaInfo = {
+      title: this.$t('Admin') + ' - ' + this.$t(this.instanceconfig.title) + ' - ' + this.$t(this.instanceconfig.institution),
+    };
+    return metaInfo;
+  },
   computed: {
     configAsJSON: {
       get: function () {
@@ -663,6 +748,10 @@ export default {
             },
             data: httpFormData
           })
+        if(instanceConfData.faviconText){
+          const base64Svg = Buffer.from(instanceConfData.faviconText).toString('base64')
+          this.updateFavicon(`data:image/svg+xml;base64,${base64Svg}`)
+        }
 
         if(instanceConfData?.api){
           this.$axios.defaults.baseURL = instanceConfData.api

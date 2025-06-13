@@ -9,6 +9,7 @@
           :enablerelationships="false"
           :enablepreview="true"
           :templating="false"
+          :forcePreview="instanceconfig.forcePreview"
           :importing="false"
           :addbutton="true"
           :mouseoverfielddef="true"
@@ -38,6 +39,12 @@ import { vocabulary } from "phaidra-vue-components/src/mixins/vocabulary"
 export default {
   layout: "main",
   mixins: [context, config, vocabulary],
+  metaInfo() {
+    let metaInfo = {
+      title: this.$t('Upload') + ' - ' + this.$t(this.instanceconfig.title) + ' - ' + this.$t(this.instanceconfig.institution),
+    };
+    return metaInfo;
+  },
   data() {
     return {
       form: { sections: [] },

@@ -78,14 +78,18 @@ export default {
   },
   publicRuntimeConfig: {
     primaryColor: process.env.PHAIDRA_PRIMARY_COLOR,
+    defaultThemeColor: process.env.PHAIDRA_DEFAULT_THEME_COLOR,
+    darkPrimaryColor: process.env.PHAIDRA_DARK_PRIMARY_COLOR,
     baseURL: process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT,
     apiBaseURL: process.env.PHAIDRA_API_BASE_URL,
     axios: {
       browserBaseURL: process.env.PHAIDRA_API_BASE_URL
-    }
+    },
+    defaultLocale: process.env.PHAIDRA_DEFAULT_LANGUAGE
   },
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    treeShake: true,
     optionsPath: './vuetify.options.js'
   },
   privateRuntimeConfig: {
@@ -101,19 +105,19 @@ export default {
         name: 'English',
         code: 'eng',
         iso: 'en', // keep 2-letters, used for browser language detection
-        file: 'eng'
+        file: 'eng.json'
       },
       {
         name: 'Deutsch',
         code: 'deu',
         iso: 'de',
-        file: 'deu'
+        file: 'deu.json'
       },
       {
         name: 'Italiano',
         code: 'ita',
         iso: 'it',
-        file: 'ita'
+        file: 'ita.json'
       }
     ],
     strategy: 'no_prefix',

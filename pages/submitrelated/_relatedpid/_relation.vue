@@ -1,6 +1,6 @@
 <template>
   <v-col>
-    <v-btn class="my-4" :to="{ path: `/detail/${relatedpid}`, params: { pid: relatedpid } }">
+    <v-btn color="primary" class="my-4" :to="{ path: `/detail/${relatedpid}`, params: { pid: relatedpid } }">
       <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
     </v-btn>
     <v-alert v-if="
@@ -22,7 +22,7 @@
       </div>
     </v-alert>
     <v-card>
-      <v-card-title class="title font-weight-light grey white--text">
+      <v-card-title class="title font-weight-light white--text">
         <span class="mr-1">{{ $t("Submit of") }}</span>
         <span v-if="relation === 'references'">{{
             $t("an object referencing")

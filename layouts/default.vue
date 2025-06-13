@@ -1,61 +1,69 @@
 <template>
   <v-app>
     <v-container class="px-4" fluid v-if="!loading">
-      <v-row>
+      <v-row no-gutters>
         <v-col>
-          <ExtHeader></ExtHeader>
-          <v-row>
-            <v-col cols="12" md="10" offset-md="1" class="content">
-              <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
+          <header>
+            <a href="#main-content" class="skip-link d-sr-only-focusable">{{ $t("Skip to main content") }}</a>
+            <ExtHeader></ExtHeader>
+          </header>
+          <v-main id="main-content">
+            <v-row>
+              <v-col cols="12" md="10" offset-md="1" class="content">
+                <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
 
-              <template v-for="(alert, i) in alerts">
-                <v-snackbar
-                  :key="'altsnack' + i"
-                  class="font-weight-regular"
-                  top
-                  color="success"
-                  v-if="alert.type === 'success'"
-                  v-model="showSnackbar"
-                >
-                  {{ $t(alert.msg) }}
-                  <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
-                </v-snackbar>
-              </template>
+                <template v-for="(alert, i) in alerts">
+                  <v-snackbar
+                    :key="'altsnack' + i"
+                    class="font-weight-regular"
+                    top
+                    color="success"
+                    v-if="alert.type === 'success'"
+                    v-model="showSnackbar"
+                  >
+                    <span v-if="alert.key && alert.params">{{ $t(alert.key, alert.params) }}</span>
+                    <span v-else>{{ $t(alert.msg) }}</span>
+                    <v-btn dark text @click.native="dismiss(alert)">OK</v-btn>
+                  </v-snackbar>
+                </template>
 
-              <template v-if="showAlerts">
-                <v-row
-                  justify="center"
-                  v-for="(alert, i) in alerts"
-                  :key="'alert' + i"
-                >
-                  <v-col cols="12">
-                    <v-alert
-                      v-if="alert.type !== 'success'"
-                      :type="alert.type"
-                      :value="true"
-                      transition="slide-y-transition"
-                    >
-                      <v-row align="center">
-                        <v-col class="grow">{{ alert.msg }}</v-col>
-                        <v-col class="shrink">
-                          <v-btn icon @click.native="dismiss(alert)"
-                            ><v-icon>mdi-close</v-icon></v-btn
-                          >
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-col>
-                </v-row>
-              </template>
+                <template v-if="showAlerts">
+                  <v-row
+                    justify="center"
+                    v-for="(alert, i) in alerts"
+                    :key="'alert' + i"
+                  >
+                    <v-col cols="12">
+                      <v-alert
+                        v-if="alert.type !== 'success'"
+                        :type="alert.type"
+                        :value="true"
+                        transition="slide-y-transition"
+                      >
+                        <v-row align="center">
+                          <v-col class="grow">{{ $t(alert.msg) }}</v-col>
+                          <v-col class="shrink">
+                            <v-btn icon @click.native="dismiss(alert)"
+                              ><v-icon>mdi-close</v-icon></v-btn
+                            >
+                          </v-col>
+                        </v-row>
+                      </v-alert>
+                    </v-col>
+                  </v-row>
+                </template>
 
-              <transition name="fade" mode="out-in">
-                <keep-alive>
-                  <Nuxt/>
-                </keep-alive>
-              </transition>
-            </v-col>
-          </v-row>
-          <ExtFooter></ExtFooter>
+                <transition name="fade" mode="out-in">
+                  <keep-alive>
+                    <Nuxt/>
+                  </keep-alive>
+                </transition>
+              </v-col>
+            </v-row>
+          </v-main>
+          <v-footer :padless="true" color="transparent">
+            <ExtFooter></ExtFooter>
+          </v-footer>
         </v-col>
       </v-row>
     </v-container>
@@ -68,33 +76,38 @@ import "@/compiled-icons/univie-right";
 import "@/compiled-icons/univie-sprache";
 import { config } from "../mixins/config";
 import { context } from "../mixins/context";
+import FaviconMixin from '../mixins/favicon'
 import Vue from "vue";
 import moment from "moment";
 import "@/assets/css/material-icons.css";
 
 export default {
-  mixins: [config, context],
+  mixins: [config, context, FaviconMixin],
   data() {
     return {
       loading: true,
-      i18n_override: {}
+      i18n_override: {},
+      faviconUrl: ``
     }
   },
   metaInfo() {
     let metaInfo = {
+      htmlAttrs: {
+        lang: this.$i18n.locale === 'deu' ? 'de' : this.$i18n.locale === 'ita' ? 'it' : 'en'
+      },
       title: this.$t(this.instanceconfig.title) + ' - ' + this.$t(this.instanceconfig.institution),
       meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: this.instanceconfig.primary }
+      { name: 'theme-color', content: this.$vuetify.theme.dark ? this.$config.darkPrimaryColor : this.$config.primaryColor }
       ]
     };
-    if (this.instanceconfig.cms_css && (this.instanceconfig.cms_css !== '')) {
-      metaInfo.style = [ 
-        { cssText: this.instanceconfig.cms_css, type: 'text/css' } 
-      ]
-    }
     return metaInfo;
+  },
+  watch: {
+    faviconUrl(val) {
+      this.updateFavicon(val)
+    }
   },
   methods: {
     dismiss: function (alert) {
@@ -105,6 +118,9 @@ export default {
       try {
         let settingResponse = await this.$axios.get("/config/public");
         if(settingResponse?.data?.public_config){
+          if(settingResponse?.data?.public_config?.faviconText){
+            this.setFavIconText(settingResponse?.data?.public_config?.faviconText)
+          }
           this.$store.dispatch("setInstanceConfig", settingResponse?.data?.public_config);
           this.$store.dispatch("vocabulary/setInstanceConfig", settingResponse?.data?.public_config);
           if (settingResponse?.data?.public_config?.data_i18n) {
@@ -126,9 +142,20 @@ export default {
         this.loading = false;
       }
       return true
+    },
+    setFavIconText(svgText) {
+      const base64Svg = Buffer.from(svgText).toString('base64')
+      this.faviconUrl = `data:image/svg+xml;base64,${base64Svg}`
     }
   },
   mounted() {
+    if (this.instanceconfig.cms_css && this.instanceconfig.cms_css !== '') {
+      const style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = this.instanceconfig.cms_css;
+      document.head.appendChild(style);
+    }
+
     Object.entries(this.i18n_override).forEach(([lang, messages]) => {
         this.$i18n.mergeLocaleMessage(lang, messages)
       }
@@ -281,17 +308,23 @@ section {
   overflow: auto;
 }
 
-#app {
-  font-family: "Roboto", sans-serif, Arial, Helvetica, sans-serif;
-  font-size: 11.5pt;
-  line-height: 1.42857143;
-  color: black;
-  background-color: white;
-  font-weight: 300;
-  text-rendering: optimizeLegibility;
+a {
+  text-underline-offset: .25rem;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: 1px !important;
 }
 
-a {
+.v-main a {
+  text-decoration: underline;
+}
+.v-main .breadcrumbs-container a:not(:hover) {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+a.v-btn, a {
   text-decoration: none;
 }
 
@@ -318,8 +351,9 @@ address {
   vertical-align: top;
 }
 
-.theme--light.v-card > .v-card__text {
-  color: black;
+.theme--light.v-card > .v-card__title,
+.theme--dark.v-card > .v-card__title {
+  background-color: var(--v-cardtitlebg-base);
 }
 
 .lang-icon {
@@ -398,17 +432,14 @@ address {
   max-width: 300px;
 }
 
-.border-bottom {
-  border-bottom: 1px solid #bdbdbd;
-}
-
-.border-top {
-  border-top: 1px solid #bdbdbd;
-}
-
 .border-left {
   border-left: 1px solid;
   border-color: rgba(0, 0, 0, 0.12);
+}
+
+.theme--dark .border-left {
+  border-left: 1px solid;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 #app .v-btn {
@@ -421,6 +452,19 @@ address {
 
 .univie-grey {
   color: #7b7b7b;
+}
+
+.jsonld-border-left {
+  border-left: 1px solid;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.theme--dark .jsonld-border-left {
+  border-left: 1px solid;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.v-application .pointer-disabled {
+  pointer-events: none;
 }
 </style>
 
@@ -448,9 +492,9 @@ address {
 .float-right {
   float: right;
 }
-
-.jsonld-border-left {
-  border-left: 1px solid;
-  border-color: rgba(0, 0, 0, 0.12);
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
 }
 </style>

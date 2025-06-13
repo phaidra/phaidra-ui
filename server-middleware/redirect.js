@@ -3,12 +3,11 @@ import axios from 'axios'
 import config from '../config/phaidra-ui'
 
 export default async (req, res, next) => {
-  if (/^\/o:\d+$/.test(req.url)) { 
-    let baseURL = process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT
-    let apiBaseURL = process.env.PHAIDRA_API_BASE_URL
-    let pid = req.url.replace('/', '')
-    let params = { q: '*:*', defType: 'edismax', wt: 'json', start: 0, rows: 1, fq: 'pid:"' + pid + '"' }
-    try {
+  let baseURL = process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT
+
+  const redirectEvaluator = async (pid) => {
+      let apiBaseURL = process.env.PHAIDRA_API_BASE_URL;
+      let params = { q: '*:*', defType: 'edismax', wt: 'json', start: 0, rows: 1, fq: 'pid:"' + pid + '"' }
       let response = await axios.request({
         method: 'POST',
         url: apiBaseURL + '/search/select',
@@ -44,6 +43,66 @@ export default async (req, res, next) => {
         }
       }
       redirect(res, baseURL + '/detail/' + pid)
+  }
+
+  if(req.url.includes('/latest')) {
+    try {
+      
+      const match = req.url.match(/\/o:(\d+)\/latest/);
+      let apiBaseURL = process.env.PHAIDRA_API_BASE_URL;
+      let response = await axios.request({
+        method: 'GET',
+        url: apiBaseURL + '/object/o:' + match[1] + '/info',
+      })
+      const versionsData = response.data.info.versions
+      if(versionsData.length){
+        const latestVersionIndex = versionsData.reduce((maxIdx, item, index, arr) => 
+            new Date(item.created) > new Date(arr[maxIdx].created) ? index : maxIdx, 0
+        );
+        if(new Date(response.data.info.created) < new Date(versionsData[latestVersionIndex].created)){
+          await redirectEvaluator(versionsData[latestVersionIndex]['pid'])
+          return
+        }
+      }
+      next()
+    } catch (error) {
+      console.log('error',error)
+      next()
+    }
+  }
+  
+  // Check for pdf download start
+  
+  const regex = /^\/detail\/([^\/]+)\.pdf$/;
+  const match = req.url.match(regex)
+  if(match) {
+    let pid = match[1].replace('.pdf', '')
+    redirect(res, baseURL + '/api/object/' + pid + '/download')
+    return
+  }
+  
+  // Check for pdf download end
+
+  if (process.env.LEGACY_OPEN_REDIRECT === 'true') {
+    if (/^\/open\/o:\d+$/.test(req.url)) { 
+      let pid = req.url.replace('/open', '')
+      let redUrl = baseURL + '/' + pid
+      console.log(redUrl)
+      redirect(res, redUrl)
+      return
+    }
+    if (/^\/view\/o:\d+$/.test(req.url)) { 
+      let pid = req.url.replace('/view', '')
+      let redUrl = baseURL + '/' + pid
+      console.log(redUrl)
+      redirect(res, redUrl)
+      return
+    }
+  }
+  if (/^\/o:\d+$/.test(req.url)) { 
+    let pid = req.url.replace('/', '')
+    try {
+      await redirectEvaluator(pid)
       return
     } catch (error) {
       console.log(error)

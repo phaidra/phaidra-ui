@@ -1,10 +1,8 @@
 <template>
   <div>
-    <v-row class="my-6 ml-2">
-      <v-btn :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
-        <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
-      </v-btn>
-    </v-row>
+    <v-btn color="primary" class="my-4" :to="{ path: `/detail/${pid}`, params: { pid: pid } }">
+      <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
+    </v-btn>
     <v-row>
       <v-col v-if="signedin">
         <template v-if="members.length > 0">
@@ -137,7 +135,7 @@ export default {
       return promise
     },
     orderSaved: function (event) {
-      this.$store.commit('setAlerts', [{ type: 'success', msg: 'Order for object ' + event + ' saved' }])
+      this.$store.commit('setAlerts', [{ type: 'success', key: 'order_saved_for_object', params: { o: event }}])
     }
   },
   beforeRouteEnter: function (to, from, next) {

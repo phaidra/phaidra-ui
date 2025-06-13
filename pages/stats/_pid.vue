@@ -1,27 +1,27 @@
 <template>
   <div>
-    <v-btn class="my-4" :to="{ path: `/detail/${routepid}`, params: { pid: routepid } }">
+    <v-btn color="primary" class="my-4" :to="{ path: `/detail/${routepid}`, params: { pid: routepid } }">
       <v-icon left>mdi-arrow-left</v-icon>{{ $t('Back to detail page') }}
     </v-btn>
     <v-tabs>
-      <v-tab v-if="downloadItems.length > 0">Downloads</v-tab>
-      <v-tab v-if="detailPageItems.length > 0">Views</v-tab>
+      <v-tab v-if="downloadItems.length > 0">{{ $t("Downloads") }}</v-tab>
+      <v-tab v-if="detailPageItems.length > 0">{{ $t("Views") }}</v-tab>
       <v-tab-item v-if="downloadItems.length > 0">
         <v-data-iterator :items="downloadItems" :search="searchDownloads" :item-key="'country'" :sort-by="'total'"
           :sort-desc="true" hide-default-footer>
           <template v-slot:header>
-            <v-toolbar dark color="grey darken-3" class="mb-1">
-              <v-toolbar-title>Downloads of object {{ routepid }}</v-toolbar-title>
+            <v-toolbar flat class="mb-1">
+              <v-toolbar-title class="font-weight-light white--text">{{ $t("Downloads of object") }} {{ routepid }}</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-text-field v-model="searchDownloads" clearable flat solo-inverted hide-details
-                prepend-inner-icon="mdi-map-marker" label="Filter by country code"></v-text-field>
+              <v-text-field v-model="searchDownloads" clearable flat solo hide-details
+                prepend-inner-icon="mdi-magnify" :label="$t('Filter by country code')"></v-text-field>
             </v-toolbar>
           </template>
           <template v-slot:default="props">
             <v-row>
               <v-col v-for="item in props.items" :key="item.country" cols="12" md="4">
                 <v-card>
-                  <v-card-title class="subheading"><span class="primary--text">{{ item.country.toUpperCase()
+                  <v-card-title class="title font-weight-light white--text"><span>{{ item.country.toUpperCase()
                   }}</span><span class="ml-6">{{ item.total }}</span></v-card-title>
                   <v-divider></v-divider>
                   <v-list dense>
@@ -42,18 +42,18 @@
         <v-data-iterator :items="detailPageItems" :search="searchViews" :item-key="'country'" :sort-by="'total'"
           :sort-desc="true" hide-default-footer>
           <template v-slot:header>
-            <v-toolbar dark color="grey darken-3" class="mb-1">
-              <v-toolbar-title>Views of object {{ routepid }}</v-toolbar-title>
+            <v-toolbar flat class="mb-1">
+              <v-toolbar-title class="font-weight-light white--text">{{ $t("Views of object") }} {{ routepid }}</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-text-field v-model="searchViews" clearable flat solo-inverted hide-details
-                prepend-inner-icon="mdi-magnify" label="Filter by country code"></v-text-field>
+              <v-text-field v-model="searchViews" clearable flat solo hide-details
+                prepend-inner-icon="mdi-magnify" :label="$t('Filter by country code')"></v-text-field>
             </v-toolbar>
           </template>
           <template v-slot:default="props">
             <v-row>
               <v-col v-for="item in props.items" :key="item.country" cols="12" md="4">
                 <v-card>
-                  <v-card-title class="subheading"><span class="primary--text">{{ item.country.toUpperCase()
+                  <v-card-title class="title font-weight-light white--text"><span>{{ item.country.toUpperCase()
                   }}</span><span class="ml-6">{{ item.total }}</span></v-card-title>
                   <v-divider></v-divider>
                   <v-list dense>
