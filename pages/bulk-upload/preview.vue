@@ -97,10 +97,10 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
-import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
-import PreviewTableHeader from '~/components/bulk-upload/PreviewTableHeader.vue'
-import PreviewTableCell from '~/components/bulk-upload/PreviewTableCell.vue'
-import { fieldSettings } from '~/config/bulk-upload/field-settings'
+import BulkUploadSteps from '../../components/BulkUploadSteps.vue'
+import PreviewTableHeader from '../../components/bulk-upload/PreviewTableHeader.vue'
+import PreviewTableCell from '../../components/bulk-upload/PreviewTableCell.vue'
+import { fieldSettings } from '../../config/bulk-upload/field-settings'
 
 export default {
   name: 'Preview',

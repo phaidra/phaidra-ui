@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import BulkUploadSteps from '../components/BulkUploadSteps.vue'
 
 export default {
   name: 'BulkUploadLayout',

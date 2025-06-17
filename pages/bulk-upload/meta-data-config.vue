@@ -166,12 +166,12 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
-import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import BulkUploadSteps from '../../components/BulkUploadSteps.vue'
 
-import { fieldSettings } from '~/config/bulk-upload/field-settings'
-import CSVColumnSelector from '~/components/bulk-upload/CSVColumnSelector.vue'
-import SourceSelector from '~/components/bulk-upload/SourceSelector.vue'
-import PhaidraFieldSelector from '~/components/bulk-upload/PhaidraFieldSelector.vue'
+import { fieldSettings } from '../../config/bulk-upload/field-settings'
+import CSVColumnSelector from '../../components/bulk-upload/CSVColumnSelector.vue'
+import SourceSelector from '../../components/bulk-upload/SourceSelector.vue'
+import PhaidraFieldSelector from '../../components/bulk-upload/PhaidraFieldSelector.vue'
 
 export default {
   name: 'MetaDataConfig',

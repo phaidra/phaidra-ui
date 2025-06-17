@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { fieldSettings } from '~/config/bulk-upload/field-settings'
+import { fieldSettings } from '../../config/bulk-upload/field-settings'
 
 export default {
   name: 'SourceSelector',

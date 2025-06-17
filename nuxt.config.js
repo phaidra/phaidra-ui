@@ -1,9 +1,7 @@
 const path = require('path')
 
 export default {
-  // render: {
-  //   csp: true
-  // },
+  // render: { csp: true },
   // Global page headers: https://go.nuxtjs.dev/config-head
   // head: {
   //   title: 'phaidra-ui-nuxt',
@@ -78,7 +76,7 @@ export default {
   },
   publicRuntimeConfig: {
     primaryColor: process.env.PHAIDRA_PRIMARY_COLOR,
-    defaultThemeColor: process.env.PHAIDRA_DEFAULT_THEME_COLOR,
+    defaultTheme: process.env.PHAIDRA_DEFAULT_THEME_COLOR,
     darkPrimaryColor: process.env.PHAIDRA_DARK_PRIMARY_COLOR,
     baseURL: process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT,
     apiBaseURL: process.env.PHAIDRA_API_BASE_URL,

@@ -2,7 +2,7 @@
 
 <template>
   <div class="redirect-container">
-    <h1 class="text-h4 mb-6">Bulk Upload</h1>
+    <h1 class="text-h4 mb-6">Bulk Upload </h1>
     <div class="loader"></div>
     <div class="redirect-text">Loading local storage...</div>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import BulkUploadSteps from '~/components/BulkUploadSteps.vue'
+import BulkUploadSteps from '../../components/BulkUploadSteps.vue'
 
 export default {
   name: 'BulkUploadIndex',
