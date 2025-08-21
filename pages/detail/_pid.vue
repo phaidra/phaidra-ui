@@ -2370,7 +2370,7 @@ export default {
       }
     },
     downloadable: function () {
-      return this.objectInfo.datastreams && this.objectInfo.datastreams.includes("OCTETS")
+      return this.objectInfo.datastreams && this.objectInfo.datastreams.includes("OCTETS") && (this.objectInfo.cmodel !== "Resource") && (this.objectInfo.cmodel !== "Collection")
     },
     hasLaterVersion: function () {
       if (this.$store.state.objectInfo.versions) {
