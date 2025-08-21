@@ -112,8 +112,8 @@ export const fieldSettings = {
     required: true,
     fieldType: 'single-field',
     allowedSources: ['csv-column', 'phaidra-field'],
-    csvDisplayValue: (value) => value.split(','),
-    csvAPIValue: (value) => value.split(','),
+    csvDisplayValue: (value) => value?.split(',') || [],
+    csvAPIValue: (value) => value?.split(',') || [],
     phaidraDisplayValue: (value) => value,
     phaidraFieldValue: (value) => {
       if (!value) return null
@@ -125,8 +125,7 @@ export const fieldSettings = {
         component: 'PIKeyword',
         field: () => {
           const field = fieldslib.getField("keyword")
-          field.suggester = 'keywordsuggester'
-          field.disableSuggest = true
+          field.multiplicable = false
           return field
         },
         getProps: function(value) {
@@ -166,6 +165,7 @@ export const fieldSettings = {
         field: () => {
           const field = fieldslib.getField("object-type-checkboxes")
           field.showValueDefinition = false
+          field.multiplicable = false
           field.vocabulary = 'objecttype'
           field.component = 'select'
           field.label = 'Object Type'
@@ -329,7 +329,7 @@ export const fieldSettings = {
     ]
   },
   'OEFOS': {
-    required: true,
+    required: false,
     fieldType: 'single-field',
     allowedSources: ['phaidra-field'],
     csvDisplayValue: (value) => value,

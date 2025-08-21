@@ -112,6 +112,15 @@
                   </v-col>
                   <v-col cols="6" class="mt-6">{{ $t('Used in the EDM schema in OAI-PMH.') }}</v-col>
                 </v-row>
+                <v-row>
+                  <v-col>
+                    <v-text-field
+                      label="Google site verification code"
+                      v-model="parsedPublicConfigData.googlesiteverificationcode"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6" class="mt-6">{{ $t('Use to register the site in your Google Search Console') }}</v-col>
+                </v-row>
               </v-container>
             </v-tab-item>
 
@@ -231,6 +240,24 @@
                 <v-row>
                   <v-col>
                     <v-checkbox
+                      :label="$t('Hide breadcrumbs on homepage')"
+                      v-model="parsedPublicConfigData.hideBreadcrumbsOnHomepage"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Show/Hide breadcrumbs on homepage.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
+                      :label="$t('Hide institution name by default.')"
+                      v-model="parsedPublicConfigData.hideInstitutionName"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Show/Hide institution name in breadcrumbs.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
                       :label="$t('Upload preview')"
                       v-model="parsedPublicConfigData.forcePreview"
                     ></v-checkbox>
@@ -245,6 +272,15 @@
                     ></v-checkbox>
                   </v-col>
                   <v-col cols="6" class="mt-4">{{ $t("Enable tab for 'Feedback' in Upload form.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-checkbox
+                      :label="$t('Disable Association parent selection')"
+                      v-model="parsedPublicConfigData.isParentSelectionDisabled"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="6" class="mt-4">{{ $t("Disable parent selection in Association dropdown and in tree view.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -340,6 +376,33 @@
                     ></v-textarea>
                   </v-col>
                   <v-col cols="3" class="mt-4">{{ $t("Impressum component. Enclose template in a div.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-textarea
+                      :label="$t('Contact')"
+                      v-model="parsedPublicConfigData.cms_contact"
+                    ></v-textarea>
+                  </v-col>
+                  <v-col cols="3" class="mt-4">{{ $t("Contact component. Enclose template in a div.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-textarea
+                      :label="$t('Code of Ethics')"
+                      v-model="parsedPublicConfigData.cms_code_of_ethics"
+                    ></v-textarea>
+                  </v-col>
+                  <v-col cols="3" class="mt-4">{{ $t("Code of Ethics component. Enclose template in a div.") }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-textarea
+                      :label="$t('Editorial Policies')"
+                      v-model="parsedPublicConfigData.cms_editorial_policies"
+                    ></v-textarea>
+                  </v-col>
+                  <v-col cols="3" class="mt-4">{{ $t("Editorial Policies component. Enclose template in a div.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
@@ -449,39 +512,166 @@
                 <v-row>
                   <v-col>
                     <v-text-field
-                      label="SMTP server"
-                      v-model="parsedPrivateConfigData.smtpserver"
+                      label="SCIM Endpoint"
+                      v-model="parsedPrivateConfigData.scimendpoint"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails.") }}</v-col>
+                  <v-col cols="6" class="mt-6">{{ $t("Currently used for fetching attributes via /Users/{id}.") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-text-field
-                      label="SMTP port"
-                      v-model="parsedPrivateConfigData.smtpport"
-                    ></v-text-field>
+                    <v-card>
+                      <v-card-title class="title font-weight-light white--text">{{ $t("SMTP") }}</v-card-title>
+                      <v-card-text>
+                        <v-row class="mt-4">
+                          <v-col>
+                            <v-text-field
+                              label="SMTP server"
+                              v-model="parsedPrivateConfigData.smtpserver"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails.") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="SMTP port"
+                              v-model="parsedPrivateConfigData.smtpport"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails ") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="SMTP user"
+                              v-model="parsedPrivateConfigData.smtpuser"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails ") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="SMTP password"
+                              v-model="parsedPrivateConfigData.smtppassword"
+                              type="password"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails.") }}</v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
                   </v-col>
-                  <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails ") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-text-field
-                      label="SMTP user"
-                      v-model="parsedPrivateConfigData.smtpuser"
-                    ></v-text-field>
+                    <v-card>
+                      <v-card-title class="title font-weight-light white--text">{{ $t("External LDAP") }}</v-card-title>
+                      <v-card-text>
+                        <v-row class="mt-4">
+                          <v-col>
+                            <v-checkbox
+                              label="Use external LDAP"
+                              v-model="parsedPrivateConfigData.ldapextenable"
+                            ></v-checkbox>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Enable authentication over external LDAP server (only used if user wasn't found in local LDAP).") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP host"
+                              v-model="parsedPrivateConfigData.ldapexthost"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("FDQN of the external LDAP server.") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP port"
+                              v-model="parsedPrivateConfigData.ldapextport"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("LDAP port") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP security principal"
+                              v-model="parsedPrivateConfigData.ldapextprincipal"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Used to bind to LDAP and search it.") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP security principal password"
+                              v-model="parsedPrivateConfigData.ldapextprincipalpassword"
+                              type="password"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Password of the security principal") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP group search bases"
+                              v-model="parsedPrivateConfigData.ldapextgroupssearchbases"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Where groups should be searched. Semicolon separated.") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP user search bases"
+                              v-model="parsedPrivateConfigData.ldapextusersearchbases"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Where users should be searched. Semicolon separated.") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-text-field
+                              label="External LDAP user search filter"
+                              v-model="parsedPrivateConfigData.ldapextusersearchfilter"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("{0} will be replaced with username") }}</v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
                   </v-col>
-                  <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails ") }}</v-col>
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-text-field
-                      label="SMTP password"
-                      v-model="parsedPrivateConfigData.smtppassword"
-                      type="password"
-                    ></v-text-field>
+                    <v-card>
+                      <v-card-title class="title font-weight-light white--text">{{ $t("JWT") }}</v-card-title>
+                      <v-card-text>
+                        <v-row class="mt-4">
+                          <v-col>
+                            <v-textarea
+                              label="Private key"
+                              v-model="parsedPrivateConfigData.jwtprivkey"
+                            ></v-textarea>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("Private key to sign the JWT token") }}</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-textarea
+                              label="JWKS json"
+                              v-model="parsedPrivateConfigData.jwks"
+                            ></v-textarea>
+                          </v-col>
+                          <v-col cols="6" class="mt-6">{{ $t("To expose via /api/jwks. The key used for SCIM must have kid=scim") }}</v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
                   </v-col>
-                  <v-col cols="6" class="mt-6">{{ $t("Used when PHAIDRA sends emails.") }}</v-col>
                 </v-row>
               </v-container>
             </v-tab-item>

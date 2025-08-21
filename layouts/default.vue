@@ -10,7 +10,9 @@
           <v-main id="main-content">
             <v-row>
               <v-col cols="12" md="10" offset-md="1" class="content">
-                <p-breadcrumbs :items="breadcrumbs"></p-breadcrumbs>
+                <client-only>
+                  <p-breadcrumbs :items="breadcrumbs" v-if="$route.path === '/' ? !instanceconfig.hideBreadcrumbsOnHomepage : true"></p-breadcrumbs>
+                </client-only>
 
                 <template v-for="(alert, i) in alerts">
                   <v-snackbar
@@ -36,7 +38,7 @@
                     <v-col cols="12">
                       <v-alert
                         v-if="alert.type !== 'success'"
-                        :type="alert.type"
+                        :type="alert.type === 'danger' ? 'error' : alert.type"
                         :value="true"
                         transition="slide-y-transition"
                       >
@@ -54,9 +56,9 @@
                 </template>
 
                 <transition name="fade" mode="out-in">
-                  <keep-alive>
+                  <v-col>
                     <Nuxt/>
-                  </keep-alive>
+                  </v-col>
                 </transition>
               </v-col>
             </v-row>
@@ -91,9 +93,19 @@ export default {
     }
   },
   metaInfo() {
+    // Detect locale during SSR from cookies, similar to theme detection
+    let currentLocale = this.$i18n.locale;
+    if (process.server) {
+      // During SSR, try to get locale from cookies
+      const ssrCookie = this.$cookies?.get('locale');
+      if (ssrCookie) {
+        currentLocale = ssrCookie;
+      }
+    }
+    
     let metaInfo = {
       htmlAttrs: {
-        lang: this.$i18n.locale === 'deu' ? 'de' : this.$i18n.locale === 'ita' ? 'it' : 'en'
+        lang: currentLocale === 'deu' ? 'de' : currentLocale === 'ita' ? 'it' : 'en'
       },
       title: this.$t(this.instanceconfig.title) + ' - ' + this.$t(this.instanceconfig.institution),
       meta: [
@@ -102,6 +114,12 @@ export default {
       { name: 'theme-color', content: this.$vuetify.theme.dark ? this.$config.darkPrimaryColor : this.$config.primaryColor }
       ]
     };
+    if (this.instanceconfig.googlesiteverificationcode) {
+      metaInfo.meta.push({
+        name: 'google-site-verification', 
+        content: this.instanceconfig.googlesiteverificationcode
+      })
+    }
     return metaInfo;
   },
   watch: {
@@ -210,6 +228,11 @@ export default {
         return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
       }
     });
+    Vue.filter('datetimeutc', function (value) {
+      if (value) {
+        return moment.utc(String(value)).format('DD.MM.YYYY hh:mm:ss')
+      }
+    })
     Vue.filter("date", function (value) {
       if (value) {
         return moment(String(value)).format("DD.MM.YYYY");
@@ -335,12 +358,6 @@ a.v-btn, a {
   max-height: 150px;
 }
 
-.header {
-  box-shadow: 48px 0 0 0 white, -48px 0 0 0 white,
-    0 8px 40px -6px rgba(70, 70, 70, 0.4);
-  background-color: white;
-  z-index: 1;
-}
 address {
   font-style: normal;
 }
@@ -403,6 +420,49 @@ address {
   text-decoration: none;
   color: white;
   font-weight: 400;
+}
+
+
+.header .ph-button:focus {
+  background-color: var(--v-primary-base) !important;
+  border-color: var(--v-primary-base) !important;
+}
+
+.header .ph-button {
+  background-color: var(--v-cardtitlebg-base)!important;
+  border-color: var(--v-cardtitlebg-base)!important;
+}
+
+.header {
+  box-shadow: 48px 0 0 0 white, -48px 0 0 0 white,
+    0 8px 40px -6px rgba(70, 70, 70, 0.4);
+  background-color: white;
+  z-index: 1;
+}
+
+.theme--dark .header {
+  box-shadow: 48px 0 0 0 #121212, -48px 0 0 0 #121212,
+  0 8px 40px -6px rgba(70, 70, 70, 0.4);
+  background-color: #121212;
+}
+
+.header .v-toolbar__items .v-btn {
+  margin-left: 1px;
+}
+
+.header .ph-button-bg {
+  background-color: var(--v-cardtitlebg-base) !important;
+  border-color: var(--v-cardtitlebg-base) !important;
+}
+
+.header .ph-button-bg-dark {
+  background-color: #272727;
+  border-color: #272727;
+}
+
+.header .ph-button-bg-active {
+  background-color: var(--v-primary-base) !important;
+  border-color: var(--v-primary-base) !important;
 }
 
 #quicklinks-button {

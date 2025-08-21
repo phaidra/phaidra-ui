@@ -109,7 +109,6 @@ export default {
       self.form.sections[0].fields.push(description);
 
       let kw = fields.getField("keyword");
-      kw.disableSuggest = true;
       kw.label = "Schlagworte";
       self.form.sections[0].fields.push(kw);
 
@@ -143,7 +142,7 @@ export default {
 
       let lic = fields.getField("license");
       lic.showValueDefinition = true;
-      lic.vocabulary = "alllicenses";
+      lic.vocabulary = "oerlicenses";
       self.form.sections[0].fields.push(lic);
 
       let note = fields.getField("note-checkbox-with-link")

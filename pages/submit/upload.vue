@@ -339,7 +339,6 @@ export default {
         self.form.sections[0].fields.push(lang);
 
         let kw = fields.getField("keyword");
-        kw.disableSuggest = true;
         self.form.sections[0].fields.push(kw);
 
         let role = fields.getField("role");
@@ -348,10 +347,13 @@ export default {
         role.identifierType = "ids:orcid";
         role.showDefinitions = true;
         role.showIdentifier = true;
+        role.isParentSelectionDisabled = this.instanceconfig.isParentSelectionDisabled;
         self.form.sections[0].fields.push(role);
 
         self.form.sections[0].fields.push(fields.getField("oefos-subject"));
-        self.form.sections[0].fields.push(fields.getField("association"));
+        let association = fields.getField("association");
+        association.isParentSelectionDisabled = this.instanceconfig.isParentSelectionDisabled;
+        self.form.sections[0].fields.push(association);
 
         let lic = fields.getField("license");
         lic.showValueDefinition = true;

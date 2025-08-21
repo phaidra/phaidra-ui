@@ -14,11 +14,11 @@
               <v-toolbar-title class="font-weight-light white--text">{{ $t("Downloads of object") }} {{ routepid }}</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-text-field v-model="searchDownloads" clearable flat solo hide-details
-                prepend-inner-icon="mdi-magnify" :label="$t('Filter by country code')"></v-text-field>
+                prepend-inner-icon="mdi-magnify" :label="$t('Filter by country code, eg \'AT\'')"></v-text-field>
             </v-toolbar>
           </template>
           <template v-slot:default="props">
-            <v-row class="mb-4">
+            <v-row no-gutters class="ma-4">
               <v-col v-for="item in props.items" :key="item.country" cols="12" md="4">
                 <v-card>
                   <v-card-title class="title font-weight-light white--text"><span>{{ item.country.toUpperCase()
@@ -46,11 +46,11 @@
               <v-toolbar-title class="font-weight-light white--text">{{ $t("Views of object") }} {{ routepid }}</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-text-field v-model="searchViews" clearable flat solo hide-details
-                prepend-inner-icon="mdi-magnify" :label="$t('Filter by country code')"></v-text-field>
+                prepend-inner-icon="mdi-magnify" :label="$t('Filter by country code, eg \'AT\'')"></v-text-field>
             </v-toolbar>
           </template>
           <template v-slot:default="props">
-            <v-row>
+            <v-row no-gutters class="ma-4">
               <v-col v-for="item in props.items" :key="item.country" cols="12" md="4">
                 <v-card>
                   <v-card-title class="title font-weight-light white--text"><span>{{ item.country.toUpperCase()

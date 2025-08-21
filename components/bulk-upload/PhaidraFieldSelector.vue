@@ -13,16 +13,17 @@
       @input-identifier="value => handleInput(value, 'Identifier')"
       @input-identifier-type="value => handleInput(value, 'Identifier Type')"
       :disabled="disabled"
-      :class="{ 'grey-input': disabled }"
     ></component>
   </div>
 </template>
 
 <script>
 import { fieldSettings } from '../../config/bulk-upload/field-settings'
+import { config } from '../../mixins/config'
 
 export default {
   name: 'PhaidraFieldSelector',
+  mixins: [config],
 
   props: {
     field: {
@@ -30,7 +31,7 @@ export default {
       required: true
     },
     value: {
-      type: [String, Object],
+      type: [String, Object, Array],
       default: null
     },
     disabled: {
@@ -63,10 +64,14 @@ export default {
           ...fieldValue
         }
       } else {
-        return elementConfig.getProps(
+        let props = elementConfig.getProps(
           fieldValue,
           this.handleInput
         )
+        if(props.predicate === "rdax:P00009") {
+          props.isParentSelectionDisabled = this.instanceconfig.isParentSelectionDisabled
+        }
+        return props
       }
     }
   },
@@ -83,7 +88,4 @@ export default {
 </script>
 
 <style scoped>
-.grey-input :deep(.v-input__slot) {
-  background-color: #f5f5f5 !important;
-}
 </style> 

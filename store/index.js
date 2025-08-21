@@ -30,6 +30,7 @@ export const mutations = {
       'phone', 
       'email', 
       'oaidataprovider',
+      'googlesiteverificationcode',
       'languages', 
       'owneremailoverride', 
       'showdeletebutton',
@@ -42,6 +43,9 @@ export const mutations = {
       'cms_footer',
       'cms_home',
       'cms_impressum',
+      'cms_contact',
+      'cms_code_of_ethics',
+      'cms_editorial_policies',
       'cms_submit',
       'cms_css',
       'cms_help',
@@ -54,6 +58,9 @@ export const mutations = {
       'feedback',
       'addannotation',
       'forcePreview',
+      'hideInstitutionName',
+      'isParentSelectionDisabled',
+      'hideBreadcrumbsOnHomepage'
     ] 
     for (const p of configurable) {
       if (instanceconfig.hasOwnProperty(p)) {
@@ -70,15 +77,74 @@ export const mutations = {
   updateBreadcrumbs(state, transition) {
     state.breadcrumbs = [
       {
-        text: this.$i18n.t(state.instanceconfig.institution),
-        external: true,
-        to: state.instanceconfig.institutionurl
-      },
-      {
         text: state.instanceconfig.title,
         to: transition.localePath('/')
       }
     ]
+    if (!state.instanceconfig.hideInstitutionName && !process.server) {
+      state.breadcrumbs.unshift(
+        {
+          text: this.$i18n.t(state.instanceconfig.institution),
+          external: true,
+          to: state.instanceconfig.institutionurl
+        }
+      )
+    }
+    if (transition.to.path.includes('/collections')) {
+      console.log('transition.to', transition.to)
+      state.breadcrumbs.push(
+        {
+          text: 'Collections',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+      if (transition?.to?.query?.title) {
+        state.breadcrumbs.push(
+          {
+            text: transition.to.query.title,
+            to: transition.to.name,
+            disabled: true
+          }
+        )
+      }
+    }
+    if (transition.to.path.includes('/bulk-upload')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Bulk upload',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/contact')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Contact',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/editorial-policies')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Editorial Policies',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
+    if (transition.to.path.includes('/code-of-ethics')) {
+      state.breadcrumbs.push(
+        {
+          text: 'Code of Ethics',
+          to: transition.to.name,
+          disabled: true
+        }
+      )
+    }
     if (transition.to.path.includes('/repostats')) {
       state.breadcrumbs.push(
         {

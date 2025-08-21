@@ -4,7 +4,7 @@ export default {
     title: process.env.TITLE || 'Phaidra Docker',
     showinstanceswitch: 0,
     enablelogin: 1,
-    enabledelete: 1,
+    showdeletebutton: 1,
     suggesters: {
       geonames: 'https://ws.gbv.de/suggest/geonames/'
     },
@@ -13,12 +13,12 @@ export default {
     },
     apis: {
       doi: {
-        baseurl: 'https://doi.org',
+        baseurl: 'doi.org',
         accept: 'application/vnd.citationstyles.csl+json',
-        citationstyles: 'https://citation.crosscite.org/styles/'
+        citationstyles: 'https://citation.doi.org/styles/'
       },
       ror: {
-        baseurl: 'https://api.ror.org'
+        baseurl: 'api.ror.org/v1'
       },
       sherparomeo: {
         url: 'https://v2.sherpa.ac.uk/romeo/api/search',
@@ -35,7 +35,7 @@ export default {
         limit: 50
       },
       yarm: {
-        baseurl: 'https://yarm.phaidra.org'
+        baseurl: 'yarm.phaidra.org'
       }
     },
     monitor: {

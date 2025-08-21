@@ -34,7 +34,8 @@ export default {
     { src: '~/plugins/lodash.js' },
     { src: '~/plugins/vuetify.js', mode: 'client' },
     { src: '~/plugins/phaidra-vue-components' },
-    { src: '~/plugins/bulk-upload-persistence.js', mode: 'client' }
+    { src: '~/plugins/bulk-upload-persistence.js', mode: 'client' },
+    { src: '~/plugins/vuetify-runtime-components.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -70,13 +71,12 @@ export default {
     breaks: true,
     runtime: true
   },
-
   axios: {
     baseURL: process.env.PHAIDRA_API_BASE_URL, // Used as fallback if no runtime config is provided
   },
   publicRuntimeConfig: {
     primaryColor: process.env.PHAIDRA_PRIMARY_COLOR,
-    defaultTheme: process.env.PHAIDRA_DEFAULT_THEME_COLOR,
+    defaultTheme: process.env.PHAIDRA_DEFAULT_THEME,
     darkPrimaryColor: process.env.PHAIDRA_DARK_PRIMARY_COLOR,
     baseURL: process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT,
     apiBaseURL: process.env.PHAIDRA_API_BASE_URL,
@@ -85,9 +85,21 @@ export default {
     },
     defaultLocale: process.env.PHAIDRA_DEFAULT_LANGUAGE
   },
+  // axios: {
+  //     baseURL: 'http://' + process.env.PHAIDRA_API_HOST_INTERNAL + ':3000', // Used as fallback if no runtime config is provided
+  // },
+  // publicRuntimeConfig: {
+  //   primaryColor: process.env.PHAIDRA_PRIMARY_COLOR,
+  //   baseURL: process.env.OUTSIDE_HTTP_SCHEME + '://' + process.env.PHAIDRA_HOSTNAME + process.env.PHAIDRA_PORTSTUB + process.env.PHAIDRA_HOSTPORT,
+  //   apiBaseURL: 'http://' + process.env.PHAIDRA_API_HOST_INTERNAL + ':3000',
+  //   axios: {
+  //     browserBaseURL: 'http://' + process.env.PHAIDRA_API_HOST_INTERNAL + ':3000'
+  //   },
+  //   defaultLocale: process.env.PHAIDRA_DEFAULT_LANGUAGE
+  // },
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    treeShake: true,
+    customVariables: ['~/assets/variables.scss'], // Only works if treeshake is enabled
+    treeShake: true, // If enabled, Vuetify components used in runtime templates need to be imported in the plugins/vuetify-runtime-components.js file
     optionsPath: './vuetify.options.js'
   },
   privateRuntimeConfig: {
@@ -95,7 +107,9 @@ export default {
       baseURL: process.env.PHAIDRA_API_BASE_URL
     }
   },
-
+  // sentry: {
+  //   dsn: config?.global?.monitor?.sentry?.dsn
+  // },
   i18n: {
     langDir: 'locales/',
     locales: [

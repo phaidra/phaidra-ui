@@ -6,12 +6,11 @@
       outlined
       dense
       clearable
-      :label="'Select CSV column'"
+      :label="$t('Select CSV column')"
       hide-details
       class="flex-grow-0 mr-8"
       style="width: 200px"
       :disabled="disabled"
-      :class="{ 'grey-input': disabled }"
     ></v-select>
   </div>
 </template>
@@ -86,7 +85,4 @@ export default {
 </script>
 
 <style scoped>
-.grey-input :deep(.v-input__slot) {
-  background-color: #f5f5f5 !important;
-}
 </style> 
