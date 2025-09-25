@@ -23,9 +23,8 @@ export default async (req, res, next) => {
         if (doc['cmodel']) {
           if (doc['cmodel'] === 'Book') {
             if (!doc.datastreams.includes("POLICY") && !doc.isrestricted) {
-                redirect(res, apiBaseURL + '/object/' + pid + '/preview')
-                return
-              }
+              redirect(res, apiBaseURL + '/object/' + pid + '/preview')
+              return
             }
           }
         }
