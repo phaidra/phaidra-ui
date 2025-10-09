@@ -471,23 +471,6 @@
             >
           </v-row>
           <v-row justify="center" v-if="showPreview">
-          <template v-if="(objectInfo.cmodel === 'Book')">
-
-              <v-btn
-                large
-                raised
-                color="primary"
-                :href="
-                  instanceconfig.api +
-                    '/object/' +
-                    objectInfo.pid +
-                    '/preview'  + '?lang=' + $i18n.locale.substring(0, 2)
-                "
-                target="_blank"
-                >{{ $t("Open in Bookviewer") }}</v-btn
-              >
-            </template>
-            <template v-else>
               <v-col cols="12">
                 <div class="iframe-container" v-if="objectInfo.cmodel === 'Video'">
                   <iframe
@@ -537,7 +520,6 @@
                   >{{ $t("Open in new window") }}</v-btn
                 >
               </v-col>
-            </template>
           </v-row>
 
           <v-divider class="mt-12 mb-10" v-if="showPreview"></v-divider>
